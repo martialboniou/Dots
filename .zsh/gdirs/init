@@ -1,0 +1,18 @@
+#!/usr/bin/env zsh
+# William G. Scott/Wataru Kagawa 
+
+if [[ -d $ZDOTDIR/gdirs/functions ]];then
+ fpath=($ZDOTDIR/gdirs/functions $fpath)
+fi
+
+# ---[ Alias Section ]-------------------------------------------------
+alias dirstack="dirdump; typeset -U dirs_shared ; dirstack"
+alias cd\?="dirdump; typeset -U dirs_shared; dirstack"
+alias gdirs="dirdump; typeset -U dirs_shared; dirstack > /dev/null ; _guidirs"
+
+##if [[ -f $ZDOTDIR/dirstack ]] && [[ ${#dirstack[*]} -eq 0 ]]; then
+## dirstack=( ${(uf)"$(< $ZDOTDIR/dirstack)"} )
+## echo "Loaded the dirstack from disk..."
+##fi
+##chpwd() { dirs -pl >! $ZDOTDIR/dirstack }
+

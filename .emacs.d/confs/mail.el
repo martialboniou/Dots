@@ -1,0 +1,271 @@
+;;; mail.el --- 
+;; 
+;; Filename: mail.el
+;; Description: 
+;; Author: Martial Boniou
+;; Maintainer: 
+;; Created: Sat Feb 19 18:23:21 2011 (+0100)
+;; Version: 
+;; Last-Updated: Fri Mar 11 23:49:18 2011 (+0100)
+;;           By: Martial Boniou
+;;     Update #: 42
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Commentary: Wanderlust
+;; 
+;; 
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Change Log:
+;; 
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;; 
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;; 
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Code:
+
+(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
+
+;; TODO: REPLACE #'BBDB-VCARD-IMPORT BY #'trebb/BBDB-VCARD
+(let ((init-file-name (concat user-login-name ".wl.el")))
+  (let ((loc wl-resource-rep)
+        (init (convert-standard-filename (or (conf-locate (concat init-file-name "c"))
+                                             (conf-locate init-file-name))))
+        (folder (convert-standard-filename (concat (file-name-as-directory mars/local-root-dir)
+                                                   (file-name-as-directory mars/personal-data)
+                                                   "wl/" (user-login-name) ".folders"))))
+    (when (file-exists-p init)
+      (setq wl-init-file init))
+    (when (file-exists-p folder)
+      (setq wl-folders-file folder))
+    (when (file-exists-p loc)
+      (setq wl-icon-directory (expand-file-name
+                               (concat (file-name-as-directory loc)
+                                       "etc/icons")))))) ; icons relative path
+
+(eval-after-load "wl-draft"
+  '(progn
+     (when (boundp 'mail-user-agent)
+       (setq mail-user-agent 'wl-user-agent))
+     (when (fboundp 'define-mail-user-agent)
+       (define-mail-user-agent
+         'wl-user-agent
+         'wl-user-agent-compose
+         'wl-draft-send
+         'wl-draft-kill
+         'mail-send-hook))
+     (setq confirm-frame-action-buffer-alist 
+           (append '((major-mode . (wl-draft-mode)))
+                   confirm-frame-action-buffer-alist))))
+
+
+(eval-after-load "wl"
+  '(progn
+     (setq ssl-program-name "gnutls-cli" 
+           ssl-program-arguments '("-p" service host))
+     (when elmo-localdir-folder-path
+       (setq elmo-maildir-folder-path (concat elmo-localdir-folder-path "/Maildir"))) ; Maildir => <~Mail>/Maildir
+     (when (and (boundp 'mars/w3m-exists) mars/w3m-exists)
+       (require 'octet)                 ; w3m octet for handling attachments
+       (octet-mime-setup))
+     (require 'filladapt)
+     (load "mime-setup")
+     (require 'bbdb-wl)
+     ;; PGP
+     ;; (mars/autoload "pgg"
+     ;;                pgg-encrypt-region
+     ;;                pgg-encrypt-symmetric-region
+     ;;                pgg-decrypt-region
+     ;;                pgg-verify-region
+     ;;                pgg-insert-key
+     ;;                pgg-snarf-keys-region)
+     (bbdb-wl-setup)
+     ;; (defun bbdb-wl-exit-2 ()
+     ;;   (let ((bbdb-buf (get-buffer bbdb-buffer-name)))
+     ;;     (when bbdb-buf
+     ;;       (kill-buffer bbdb-buf)))
+     ;;   (bbdb-save-db nil))
+     
+     ;; (remove-hook 'wl-exit-hook 'bbdb-wl-exit-2) ; kill BBDB buffer on wl quit
+
+     ;; remove wl-biff from local-modeline and set it globally
+     (setq wl-mode-line-display-priority-list '(plug title))
+     (defun wl-mode-line-buffer-identification (&optional id)
+       (let ((priorities '(plug title)))
+         (let ((items (reverse wl-mode-line-display-priority-list))
+               item)
+           (while items
+             (setq item (car items)
+                   items (cdr items))
+             (unless (memq item '(plug))
+               (setq item 'title))
+             (setq priorities (cons item (delq item priorities)))))
+         (let (priority result)
+           (while priorities
+             (setq priority (car priorities)
+                   priorities (cdr priorities))
+             (cond
+              ((eq 'plug priority)
+               (when wl-show-plug-status-on-modeline
+                 (setq result (append result '((wl-modeline-plug-status
+                                                wl-modeline-plug-state-on
+                                                wl-modeline-plug-state-off))))))
+              (t
+               (setq result (append result (or id '("WL: %12b")))))))
+           (prog1
+               (setq mode-line-buffer-identification result)
+             (force-mode-line-update t)))))
+     
+     (let ((biff-states '(wl-modeline-biff-status
+                          wl-modeline-biff-state-on
+                          wl-modeline-biff-state-off)))
+       (unless (member biff-states global-mode-string)
+         (setq global-mode-string
+               (cons '(wl-modeline-biff-status
+                       wl-modeline-biff-state-on
+                       wl-modeline-biff-state-off)
+                     (cons " " global-mode-string)))))
+     
+     (define-key wl-draft-mode-map "\t" 'bbdb-complete-name) ; now TAB => BBDB
+     (setq bbdb-use-pop-up t
+           bbdb-electric-p t             ; be disposable with SPC
+           signature-use-bbdb t
+           bbdb-elided-display t
+           bbdb-always-add-address t
+           bbdb-wl-folder-regexp "^[^+.]"  ; get addresses anything but local or maildirs
+           bbdb-wl-ignore-folder-regexp "^@" ; ignoring `@-' too
+           bbdb-use-alternate-names t    ; use AKA
+           bbdb-message-caching-enabled t ; be fast
+           bbdb-north-american-phone-numbers-p nil
+           wl-summary-from-function 'bbdb-wl-from-func
+           bbdb-auto-notes-alist '(("X-ML-Name" (".*$" ML 0))
+                                   ("X-MailingList" (".*$" ML 0))
+                                   ("X-Ml_Name" (".*$" ML 0))
+                                   ("X-Mailer" (".*$" User-Agent 0))
+                                   ("X-Newsreader" (".*$" User-Agent 0))
+                                   ("User-Agent" (".*$" User-Agent 0)) ; spy MUAs for stats
+                                   ;; X-Face may be catch here too
+                                   )
+           bbdb-file-coding-system 'utf-8-unix ; utf-8 encoding
+           file-coding-system-alist (cons '("\\.bbdb" utf-8 . utf-8)
+                                          file-coding-system-alist)
+           bbdb/mail-auto-create-p 'bbdb-ignore-some-messages-hook
+           bbdb-ignore-some-messages-alist '(("From" . "no.?reply\\|DAEMON\\|daemon\\|facebookmail\\|twitter")))
+     (add-hook 'bbdb-notice-hook 'bbdb-auto-notes-hook)
+     (add-hook 'wl-mail-setup-hook 'bbdb-insinuate-sendmail)
+     ;; citation (see signature in confs/init/wl if any)
+     ;; (mars/autoload '(("mu-cite" mu-cite-original)))
+     ;; (add-hook 'mail-citation-hook 'mu-cite-original)
+     ;; vCard case
+     (load "ch6-bbdb-import-csv-buffer") ; Outlook vCard conversion
+     (require 'bbdb-vcard-import) ; vCard import + the 2 following funs
+     ;; fix silent errors of multi-line address entry
+     (defun wicked/vcard-parse-region (beg end &optional filter)
+       "Parse the raw vcard data in region, and return an alist representing data. This function is just like `vcard-parse-string' except that it operates on a region of the current buffer rather than taking a string as an argument. Note: this function modifies the buffer!"
+       (or filter
+           (setq filter 'vcard-standard-filter))
+       (let ((case-fold-search t)
+             (vcard-data nil)
+             (pos (make-marker))
+             (newpos (make-marker))
+             properties value)
+         (save-restriction
+           (narrow-to-region beg end)
+           (save-match-data
+             ;; Unfold folded lines and delete naked carriage returns
+             (goto-char (point-min))
+             (while (re-search-forward "\r$\\|\n[ \t]" nil t)
+               (goto-char (match-beginning 0))
+               (delete-char 1))
+             (goto-char (point-min))
+             (re-search-forward "^begin:[ \t]*vcard[ \t]*\n")
+             (set-marker pos (point))
+             (while (and (not (looking-at "^end[ \t]*:[ \t]*vcard[ \t]*$"))
+                         (re-search-forward ":[ \t]*" nil t))
+               (set-marker newpos (match-end 0))
+               (setq properties
+                     (vcard-parse-region-properties pos (match-beginning 0)))
+               (set-marker pos (marker-position newpos))
+               (re-search-forward "\n[-A-Z0-9;=]+:")   ;; change to deal with multiline
+               (set-marker newpos (1+ (match-beginning 0))) ;; change to deal with multiline
+               (setq value
+                     (vcard-parse-region-value properties pos (match-beginning 0)))
+               (set-marker pos (marker-position newpos))
+               (goto-char pos)
+               (funcall filter properties value)
+               (setq vcard-data (cons (cons properties value) vcard-data)))))
+         (nreverse vcard-data)))
+
+     ;; import phone number from Gmail or Linkedln vCards
+     (defun wicked/bbdb-vcard-merge (record)
+       "Merge data from vcard interactively into bbdb."
+       (let* ((name (bbdb-vcard-values record "fn"))
+              (company (bbdb-vcard-values record "org"))
+              (net (bbdb-vcard-get-emails record))
+              (addrs (bbdb-vcard-get-addresses record))
+              (phones (bbdb-vcard-get-phones record))
+              (categories (bbdb-vcard-values record "categories"))
+              (notes (and (not (string= "" categories))
+                          (list (cons 'categories categories))))
+              ;; TODO: addrs are not yet imported.  To do this right,
+              ;; figure out a way to map the several labels to
+              ;; `bbdb-default-label-list'.  Note, some phone number
+              ;; conversion may break the format of numbers.
+              (bbdb-north-american-phone-numbers-p nil)
+              (new-record (bbdb-vcard-merge-interactively name
+                                                          company
+                                                          net
+                                                          nil ;; Skip addresses
+                                                          phones ;; Include phones
+                                                          notes)))
+         (setq bbdb-vcard-merged-records (append bbdb-vcard-merged-records
+                                                 (list new-record)))))
+     ;; Replace vcard.el's definition
+     (fset 'vcard-parse-region 'wicked/vcard-parse-region)
+     ;; Replace bbdb-vcard-import.el's definition
+     (fset 'bbdb-vcard-merge 'wicked/bbdb-vcard-merge)
+
+     ;; BBDB db switcher
+     ;; (defun bbdb-switch-to-other-bbdb-file (&optional db dont-ask)
+     ;;   (interactive)
+     ;;   (unless db
+     ;;     (setq db (if dont-ask (expand-file-name "~/.bbdb") ; default one
+     ;;                (read-file-name "Use bbdb database "))))
+     ;;   (setq bbdb-file db
+     ;;         bbdb-buffer (get-file-buffer db)))
+     ;;  (require 'bbdb-rf)                      ; to export BBDB to Outlook...
+     ;; mu-cite (citation/heading/signature) & PGP mailcrypt
+     ;; (require 'mu-cite)
+     ))
+
+(defun mars/draft-email ()
+  "Open an email draft on the default Wanderlust posting user."
+  (interactive)
+  (wl-draft (list (cons 'To "")))
+  (run-hooks 'wl-mail-setup-hook)
+  (mail-position-on-field "To"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; mail.el ends here
+

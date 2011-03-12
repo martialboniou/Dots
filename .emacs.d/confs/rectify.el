@@ -1,0 +1,309 @@
+;;; rectify.el ---
+;;
+;; Filename: rectify.el
+;; Description: corrects and expands
+;; Author: Martial Boniou
+;; Maintainer:
+;; Created: Sat Feb 19 22:39:36 2011 (+0100)
+;; Version:
+;; Last-Updated: Wed Mar  9 15:55:52 2011 (+0100)
+;;           By: Martial Boniou
+;;     Update #: 90
+;; URL:
+;; Keywords:
+;; Compatibility:
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;; Commentary: Error corrector (flymake) + smart expansion (hippie) +
+;;              snippets (yas/jit) + auto-complete
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;; Change Log:
+;;
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;; Code:
+(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
+
+;;; FLYMAKE
+(eval-after-load "flymake"
+  '(progn
+     ;; (add-hook 'find-file-hook 'flymake-find-file-hook)
+     ;; php case TODO: move to web-programming
+     (eval-after-load "nxhtml"
+       '(progn
+          (defun flymake-php-init ()
+            "Use php to check the syntax of the current file."
+            (let* ((temp (flymake-init-create-temp-buffer-copy 'flymake-create-temp-inplace))
+                   (local (file-relative-name temp (file-name-directory buffer-file-name))))
+              (list "php" (list "-f" local "-l"))))
+          (add-to-list 'flymake-err-line-patterns
+                       '("\\(Parse\\|Fatal\\) error: +\\(.*?\\) in \\(.*?\\) on line \\([0-9]+\\)$" 3 4 nil 2))
+          (defmacro add-php-flymake-masks (&rest extensions)
+            `(progn
+               ,@(mapcar (lambda (x)
+                         `(add-to-list
+                           'flymake-allowed-file-name-masks
+                           '(,x flymake-php-init)))
+                       extensions)))
+          (add-php-flymake-masks "\\.php$" "\\.module$" "\\.install$" "\\.inc$" "\\.engine$")))
+;;     (add-hook 'php-mode-hook (lambda () (flymake-mode 1)))
+;;     (define-key php-mode-map '[C-S-h] 'flymake-goto-prev-error)
+;;     (define-key php-mode-map '[C-S-l] 'flymake-goto-prev-error)
+))
+
+;;; HIPPIE-EXPAND
+(eval-after-load "hippie-exp"           ; should be bound to C-p and use
+                                        ; snippets* > semantic > dabbrev
+                                        ; on a full system (*= yasnippet
+                                        ; and your personal expansions).
+  '(progn
+     (when vimpulse-version
+       (defalias 'vimpulse-abbrev-expand-before 'hippie-expand)) ; in order to use C-p thru Vim emulation
+     (setq hippie-expand-try-functions-list
+           '(try-expand-all-abbrevs
+             try-expand-dabbrev
+             try-expand-dabbrev-all-buffers
+             try-expand-dabbrev-from-kill
+             try-complete-lisp-symbol-partially
+             try-complete-lisp-symbol
+             try-complete-file-name-partially
+             try-complete-file-name
+             try-expand-line
+             try-expand-line-all-buffers
+             try-expand-list
+             try-expand-list-all-buffers
+             try-expand-whole-kill))
+     (setq hippie-expand-verbose t)     ; FIXME: for debug only
+     (defadvice hippie-expand (around minibuffer-case (arg) activate)
+       "Add minibuffer case. Inspired by `vimpulse-abbrev-expand-before'."
+       (interactive "P")
+       (if (minibufferp)
+           (minibuffer-complete)
+         (progn
+           ad-do-it)))
+     ;; paredit
+     (eval-after-load "paredit"
+       '(progn
+          (defadvice he-substitute-string (after he-paredit-fix)
+            "Remove extra paren when expanding line in paredit."
+            (if (and paredit-mode (equal (substring str -1) ")"))
+                (progn (backward-delete-char 1) (forward-char))))))
+     ;; additional try functions
+     (defun try-special-dabbrev-substring (old)
+       "Substring expansion. Useful in writing in Lisp."
+       (let ((old-fun (symbol-function 'he-dabbrev-search)))
+         (fset 'he-dabbrev-search
+               (symbol-function 'special-dabbrev-substring-search))
+         (unwind-protect
+             (try-expand-dabbrev old)
+           (fset 'he-dabbrev-search old-fun))))
+     (defun special-dabbrev-substring-search (pattern &optional reverse limit)
+       (let ((result ())
+             (regpat (cond ((not hippie-expand-dabbrev-as-symbol)
+                            (concat (regexp-quote pattern) "\\sw+"))
+                           ((eq (char-syntax (aref pattern 0)) ?_)
+                            (concat (regexp-quote pattern) "\\(\\sw\\|\\s_\\)+"))
+                           (t
+                            (concat (regexp-quote pattern)
+                                    "\\(\\sw\\|\\s_\\)+")))))
+         (while (and (not result)
+                     (if reverse
+                         (re-search-backward regpat limit t)
+                       (re-search-forward regpat limit t)))
+           (setq result (buffer-substring-no-properties (save-excursion
+                                                          (goto-char (match-beginning 0))
+                                                          (skip-syntax-backward "w_")
+                                                          (point))
+                                                        (match-end 0)))
+           (if (he-string-member result he-tried-table t)
+               (setq result nil))) ; ignore if bad prefix or already in table
+         result))
+     (defun calc/try-complete-result (arg)
+       "Expands with `calc'. You must be on the end of the line. The line must end with: ' = ' [MicheleBini 2003/11/28]."
+       (and
+        (not arg) (eolp)
+        (save-excursion
+          (beginning-of-line)
+          (when (and (boundp 'comment-start)
+                     comment-start)
+            (when (looking-at
+                   (concat
+                    "[ \n\t]*"
+                    (regexp-quote comment-start)))
+              (goto-char (match-end 0))
+              (when (looking-at "[^\n\t ]+")
+                (goto-char (match-end 0)))))
+          (looking-at ".* \\(\\([;=]\\) +$\\)"))
+        (save-match-data
+          (require 'calc nil t))
+        (let ((start (match-beginning 0))
+              (op (match-string-no-properties 2)))
+          (save-excursion
+            (goto-char (match-beginning 1))
+            (if (re-search-backward (concat "[\n" op "]") start t)
+                (goto-char (match-end 0)) (goto-char start))
+            (looking-at (concat " *\\(.*[^ ]\\) +" op "\\( +\\)$"))
+            (goto-char (match-end 2))
+            (let* ((b (match-beginning 2))
+                   (e (match-end 2))
+                   (a (match-string-no-properties 1))
+                   (r (calc-do-calc-eval a nil nil)))
+              (when (string-equal a r)
+                (let ((b (save-excursion
+                           (and (search-backward "\n\n" nil t)
+                                (match-end 0))))
+                      (p (current-buffer))
+                      (pos start)
+                      (s nil))
+                  (setq r
+                        (calc-do-calc-eval
+                         (with-temp-buffer
+                           (insert a)
+                           (goto-char (point-min))
+                           (while (re-search-forward
+                                   "[^0-9():!^ \t-][^():!^ \t]*" nil t)
+                             (setq s (match-string-no-properties 0))
+                             (let ((r
+                                    (save-match-data
+                                      (with-current-buffer p ; (save-excursion)
+                                        (goto-char pos)
+                                        (and
+                                         ;; TODO: support for line
+                                         ;; indentation
+                                         (re-search-backward
+                                          (concat "^" (regexp-quote s)
+                                                  " =")
+                                          b t)
+                                         (progn
+                                           (end-of-line)
+                                           (search-backward "=" nil t)
+                                           (and (looking-at "=\\(.*\\)$")
+                                                (match-string-no-properties 1))))))))
+                               (if r (replace-match (concat "(" r ")") t t))))
+                           (buffer-substring (point-min) (point-max)))
+                         nil nil))))
+              (and
+               r
+               (progn
+                 (he-init-string b e)
+                 (he-substitute-string (concat " " r))
+                 t)))))))
+     ;; add semantic
+     (eval-after-load "senator"
+       '(progn
+          (setq hippie-expand-try-functions-list
+                (cons 'senator-try-expand-semantic
+                      hippie-expand-try-functions-list))))
+     ;; load additional try functions
+     (setq hippie-expand-try-functions-list
+           (cons 'try-special-dabbrev-substring
+                 (cons 'calc/try-complete-result
+                       (delq 'calc/try-complete-with-calc-result
+                             hippie-expand-try-functions-list))))
+     ;; file-name expansion
+     (defun special-expand-file-name-at-point ()
+       "Use hippie-expand to expand the file-name."
+       (interactive)
+       (let ((hippie-expand-try-functions-list '(try-complete-file-name-partially try-complete-file-name)))
+         (call-interactively 'hippie-expand)))
+     (bind-key "C-S-p" 'special-expand-file-name-at-point)))
+
+;;; YASNIPPETS
+;; (bound to 'C-p/C-n à la Vim)
+(require 'yas-jit)
+(eval-after-load "yas-jit"
+  '(progn
+     (let ((yas-dir (file-name-directory (locate-library "yasnippet")))
+           (local-yas-dir (concat (file-name-as-directory mars/local-root-dir)
+                                  (file-name-as-directory mars/personal-data)
+                                  "Snippets")))
+       (setq yas/snippet-dirs (if yas-dir (list yas-dir) nil))
+       (when (file-exists-p local-yas-dir)
+         (push local-yas-dir yas/snippet-dirs)))
+     (yas/jit-load)
+     ;; MuMaMo's tab
+     (eval-after-load "nxhtml"
+       '(progn
+      (setq mumamo-map
+        (let ((map (make-sparse-keymap)))
+          (define-key map [(control meta prior)] 'mumamo-backward-chunk)
+          (define-key map [(control meta next)]  'mumamo-forward-chunk)
+          (define-key map [tab] 'yas/expand)
+          map))
+      (mumamo-add-multi-keymap 'mumamo-multi-major-mode mumamo-map)))
+     ;; add `yas' world to `hippie-expand'
+     (eval-after-load "hippie-exp"
+       '(progn
+          (setq hippie-expand-try-functions-list
+                (cons 'yas/hippie-try-expand hippie-expand-try-functions-list))))
+     ;; special case
+     ;; - org-mode
+     (eval-after-load "org"
+       '(progn
+          (defun mars/yas-in-org ()
+            (define-key org-mode-map (kbd "C-.") 'yas/expand)) ; IMPORTANT: <tab> is ``locked''
+          (add-hook 'org-mode-hook (lambda ()
+                                     (make-variable-buffer-local 'yas/trigger-key)
+                                     (setq yas/trigger-key [tab])
+                                     (define-key yas/keymap [tab] 'yas/next-field-group)))))
+     ;; - ruby
+     (eval-after-load "ruby"         ; FIXME: search if ruby is ok (maybe rinari/rhtml here)
+       '(progn
+      (defun yas/advise-indent-function (function-symbol)
+        (eval `(defadvice ,function-symbol (around yas/try-expand-first activate)
+             ,(format
+               "Try to expand a snippet before point, then call `%s' as usual"
+               function-symbol)
+             (let ((yas/fallback-behavior nil))
+               (unless (and (interactive-p)
+                    (yas/expand))
+             ad-do-it)))))
+      (yas/advise-indent-function 'ruby-indent-line)))))
+
+;;; AUTOCOMPLETE
+(require 'auto-complete-config)
+(let ((data-dir (concat (file-name-as-directory mars/local-root-dir)
+                        (file-name-as-directory mars/personal-data)
+                        "ac-dict")))
+  (unless (file-exists-p data-dir)
+    (make-directory data-dir))
+  (add-to-list 'ac-dictionary-directories data-dir))
+(ac-config-default)
+(eval-after-load "semantic-ia"
+  '(progn
+     (defun ac-semantic-candidate (prefix)
+       (if (memq major-mode
+                 '(c-mode c++-mode jde-mode java-mode))
+           (mapcar 'semantic-tag-name
+                   (ignore-errors
+                     (or (semantic-ia-get-completions
+                          (semantic-analyze-current-context) (point))
+                         (senator-find-tag-for-completion (regexp-quote prefix)))))))
+     (defvar ac-source-semantic
+       '((candidates . (lambda () (all-completions ac-prefix (ac-semantic-candidate ac-prefix)))))
+       "Source for semantic.")
+     (setq ac-sources (cons 'ac-source-semantic ac-sources))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; rectify.el ends here

@@ -1,32 +1,27 @@
-;;; box.el ---
+;;; window-manager.el ---
 ;;
-;; Filename: box.el
-;; Description: file management + buffers/windows management
+;; Filename: window-manager.el
+;; Description: buffers/windows management
 ;; Author: Martial Boniou
 ;; Maintainer: Martial Boniou
 ;; Created: Sat Feb 19 11:17:32 2011 (+0100)
 ;; Version: 0.8
-;; Last-Updated: Thu Mar 10 14:26:17 2011 (+0100)
+;; Last-Updated: Mon Mar 14 18:10:37 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 47
+;;     Update #: 63
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Commentary:
-;;  FILE MGMT:
-;;  dired-x / dired-details+ / dired+ / wdired(-extension) / sunrise-commander
-;;  BUF+WIN MGMT:
-;;  Everything to split / tile / cycle / archive windows / autosave current window configuration
+;;; Commentary: everything to split / tile / cycle / archive windows / 
+;;              autosave current window configuration
 ;;  Note: need handmade tiling and buffer-move autoloads
-;;
-;;
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change log: was merged with box.el (previous name of `file-manager.el'
 ;;
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -60,86 +55,7 @@
 (defvar *mars/previous-window-configuration* nil
   "State of windows' configuration to restore.")
 
-;;; CONFIGURATIONS + FUNCTIONS
-;; *DIRED*
-;; - dired-x [guessing shell commands + dired commands for `non-dired' buffers]
-(add-hook 'dired-load-hook
-          (function (lambda ()
-                      (setq dired-dwim-target t) ; easier copies in dir mode
-                      (require 'dired-x)
-                      (define-key dired-mode-map [(control shift r)] 'dired-rar-add-files))))
-;; dired-details(+) [show/hide] & dired+ [colors + bonus] & wdired(-extension) [editable]
-(eval-after-load "dired"
-  '(progn
-     (setq dired-listing-switches "-alh"
-           auto-mode-alist (cons '("[^/]\\.dired$" . dired-virtual-mode)
-                                 auto-mode-alist))
-     (require 'dired-details)
-     (dired-details-install)            ; show/hide (type ")" to show)
-     ;; (require 'dired-details+)
-     (setq dired-details-hidden-string "")
-     (require 'dired+)                  ; colors + bonus
-     (require 'wdired)                  ; editable (type `r' to rename [default was `e'])
-     (require 'wdired-extension)        ; rect-mark + wdired-format-filename
-     (when (boundp 'viper-emacs-state-mode-list)
-       ;; the following line manages the viper/wdired clash
-       ;; (add-to-list 'viper-emacs-state-mode-list 'dired-mode)
-       ;; the following line forces the not-recommended vi nagivation over dired commands
-       (setq mars/dired-vi-purist-map (make-sparse-keymap))
-       (viper-modify-major-mode 'dired-mode 'emacs-state mars/dired-vi-purist-map)
-       (define-key mars/dired-vi-purist-map "k" 'viper-previous-line)
-       (define-key mars/dired-vi-purist-map "l" 'viper-forward-char))))
-
-(eval-after-load "wdired"
-  '(progn
-     (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
-     (define-key wdired-mode-map [return] 'wdired-finish-edit)
-     (setq wdired-allow-to-change-permissions t) ; allow -rwxrwxrwx changes
-     (define-key dired-mode-map
-       [menu-bar immediate wdired-change-to-wdired-mode]
-       '("Edit File Names" . wdired-change-to-wdired-mode))))
-(eval-after-load "dired-x"
-  '(progn
-     (unless (fboundp 'dired-omit-toggle)
-       (defalias 'dired-omit-files 'dired-omit-mode))
-     (setq dired-omit-files-p t
-           dired-omit-files (concat dired-omit-files "\\|^\\..+$")
-           dired-guess-shell-alist-user '(("\\.image" "squeak"))))) ; pharo
-
-;;*SUNRISE-COMMANDER*
-(add-to-list 'auto-mode-alist '("\\.srvm\\'" . sr-virtual-mode))
-(eval-after-load 'sunrise-commander
-  '(progn
-     (defun dired-details-hide()
-   "Make an invisible, evaporable overlay for each file-line's details in this dired buffer."
-   (interactive)
-   (unless (memq major-mode '(dired-mode vc-dired-mode sr-mode))
-     (error "dired-details-hide can only be called in dired mode"))
-   (when dired-details-debug
-     (let ((b (get-buffer-create "dired-details-debug")))
-       (append-to-buffer b (point) (point-max))))
-   (save-excursion
-     (save-restriction
-       (widen)
-       (mapc '(lambda (dir-and-pos)
-                (let ((cached-overlays (assoc (car dir-and-pos)
-                                              dired-details-internal-overlay-list)))
-                  (if cached-overlays
-                      (dired-details-frob-overlays t)
-                    (let ((cache (list (car dir-and-pos)))
-                          (subdir-start (cdr dir-and-pos))
-                          (subdir-end (1- (dired-get-subdir-max dir-and-pos))))
-                      (goto-char subdir-start)
-                      (dired-goto-next-file)
-                      (while (< (point) subdir-end)
-                        (dired-details-make-current-line-overlay cache)
-                        (dired-next-line 1))
-                      (setq dired-details-internal-overlay-list
-                            (cons cache dired-details-internal-overlay-list))))))
-             dired-subdir-alist)))
-   (setq dired-details-state 'hidden))))
-
-;; *ROTATE-WINDOWS* + *TOGGLE-SINGLE-WINDOW*
+;;; ROTATE-WINDOWS + TOGGLE-SINGLE-WINDOW
 (defun rotate-windows-helper(x d)
   (if (equal (cdr x) nil) (set-window-buffer (car x) d)
     (set-window-buffer (car x) (window-buffer (cadr x))) (rotate-windows-helper (cdr x) d)))
@@ -150,7 +66,7 @@
     (unless (null (cdr list))
       (let ((dir  (if (not (or (equal direction 'up)
                                (equal direction 'down)))
-                    'down
+                      'down
                     direction)))
         (if (equal dir 'down)
             (progn
@@ -170,8 +86,8 @@
         (delete-other-windows))
     (unless (null *mars/previous-window-configuration*)
       (restore-window-configuration *mars/previous-window-configuration*))))
-
-;; *WINDMOVE*
+
+;;; WINDMOVE
 (eval-after-load "windmove"
   '(progn
      (defun windmove-do-window-select (dir &optional arg window)
@@ -186,8 +102,8 @@
                      (not (minibuffer-window-active-p other-window)))
                 (message "Minibuffer is inactive"))
                (t (select-window other-window)))))))
-
-;; *NEW-BALANCE-WINDOWS*
+
+;;; NEW-BALANCE-WINDOWS
 ;; Ehud Karni's BALANCE-WINDOWS
 (defun balance-windows (&optional horizontally)
   "Make all visible windows on the current frame the same size (approximately).
@@ -260,4 +176,4 @@ When prefix arg is given,  \"same size\" is same width."
     (select-window curw)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; box.el ends here
+;;; window-manager.el ends here

@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Thu Mar 17 11:01:29 2011 (+0100)
+;; Last-Updated: Thu Mar 17 11:44:24 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 1844
+;;     Update #: 1847
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -279,14 +279,17 @@ twb#emacs at http://paste.lisp.org/display/43546,"
 
 ;; - defs = functions/macros to start with
 (conf-load "defs")
-
 ;; - delete keys' behavior
 (bind-keys
  '("<kp-delete>" delete-char))
 
-;; - redo+ (must be loaded before 'vimpulse if any)
-(require 'redo+)
-;; (eval-after-load "redo" '(progn (setq undo-no-redo t)))
+;; - undo-tree | redo+ (both `vimpulse' compatible)
+(if (locate-library "undo-tree")
+    (require 'undo-tree)                ; display tree by using C-x u 
+  (progn
+    (require 'redo+)
+    (eval-after-load "redo"
+      '(progn (setq undo-no-redo t)))))
 
 ;;; MODAL EDITING & COLOR-THEME WITH PARENTHESES' SUPPORT
 (if *i-am-a-vim-user*
@@ -559,7 +562,7 @@ the should-be-forbidden C-z.")
                   (when *i-am-an-emacsen-dev*
                     '("elisp"        ; emacs as an emacs-lisp development tool (helpers inside)
                       "ladybug"))))) ; emacs as a fast hacking tool (temporary bugfixes inside)
-      
+
   (mapc
    (lambda (x)
      (conf-load x))

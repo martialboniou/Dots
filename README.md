@@ -13,7 +13,10 @@ For example, some functions are useful to navigate in directories:
 * Alt-P: go to the **previous** visited directory;
 are great bindings to change directory without touching your command line.
 
-The starting point is the `.zshenv` then the `.zsh/zshrc.d/` subdirectory (especially the `00-vars.zsh`).
+The starting point is the `.zshenv` then visit:
+* `.zsh/zshrc.d/` subdirectory for environment setting and functions' configuration;
+* `.zsh/env/` subdirectory for `path` customization
+Notice that the numbers in front of file names show you the loading **order** like on a lot GNU Debian classical library setup in `/etc`.
 
 Vim 7
 -----
@@ -29,6 +32,7 @@ A lot of work is needed to enhance the portability but some snippets may be usef
 
 * vimpulse
 * ido
+* undo-tree (use `C-x u` to display tree)
 * org-agenda on org-mode 7+
 * remember
 * semantic (cedet)

@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Sat Mar 12 21:25:45 2011 (+0100)
+;; Last-Updated: Thu Mar 17 11:01:29 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 1831
+;;     Update #: 1844
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -84,31 +84,31 @@ another configuration file.")
 none (and not makeable). If `GENERAL' is true, it will refer to or creates
 a simple `custom.el'."
   (concat (file-name-as-directory mars/local-root-dir)
-      (file-name-as-directory mars/personal-data)
-      (file-name-as-directory subdirectory-in-data)
-      (if general "custom.el"
-        (concat (which-emacs-i-am)
-            "-" (number-to-string emacs-major-version)
-            "-" (replace-regexp-in-string "/" "-" (symbol-name system-type)) ".el"))))
+          (file-name-as-directory mars/personal-data)
+          (file-name-as-directory subdirectory-in-data)
+          (if general "custom.el"
+            (concat (which-emacs-i-am)
+                    "-" (number-to-string emacs-major-version)
+                    "-" (replace-regexp-in-string "/" "-" (symbol-name system-type)) ".el"))))
 (defun safe-build-custom-file (subdirectory-in-data &optional general)
   (let ((file (build-custom-file-name subdirectory-in-data general)))
     (if (file-exists-p file)
-    file
+        file
       (let ((custom-dir (expand-file-name (file-name-directory file))))
-    (if (file-exists-p custom-dir)
-        file            ; path exists
-      (let ((dirs-to-create (split-string custom-dir "/"))
-        (path ""))
-        (nbutlast dirs-to-create)
-        (while dirs-to-create
-          (setq path (concat path (pop dirs-to-create) "/"))
-          (unless (file-exists-p path)
-        (condition-case nil
-            (make-directory path)
-          (error
-           (setq dirs-to-create nil)))))
-        (when (file-exists-p custom-dir)
-          file)))))))       ; path created
+        (if (file-exists-p custom-dir)
+            file            ; path exists
+          (let ((dirs-to-create (split-string custom-dir "/"))
+                (path ""))
+            (nbutlast dirs-to-create)
+            (while dirs-to-create
+              (setq path (concat path (pop dirs-to-create) "/"))
+              (unless (file-exists-p path)
+                (condition-case nil
+                    (make-directory path)
+                  (error
+                   (setq dirs-to-create nil)))))
+            (when (file-exists-p custom-dir)
+              file)))))))       ; path created
 ;; - disable eyecandies
 (disable-eyecandies menu-bar-mode tool-bar-mode scroll-bar-mode)
 ;; - basic customization
@@ -127,8 +127,8 @@ a simple `custom.el'."
 ;;; *HELPERS*
 (defun flatten (list)
   (cond ((atom list) list)
-    ((listp (car list)) (append (flatten (car list)) (flatten (cdr list))))
-    (t (append (list (car list)) (flatten (cdr list))))))
+        ((listp (car list)) (append (flatten (car list)) (flatten (cdr list))))
+        (t (append (list (car list)) (flatten (cdr list))))))
 (defun safe-load (library)
   "Secure load a library."
   (condition-case err
@@ -173,25 +173,25 @@ twb#emacs at http://paste.lisp.org/display/43546,"
   "Checks if `DIR' is a visitable directory or link."
   (and (file-exists-p dir)
        (save-excursion
-     (let ((inspectable t))
-       (condition-case nil
-           (cd dir)
-         (error
-          (setq inspectable nil)))
-       inspectable))))
+         (let ((inspectable t))
+           (condition-case nil
+               (cd dir)
+             (error
+              (setq inspectable nil)))
+           inspectable))))
 (defun mars/add-to-load-path (root &rest pathname)
   (let ((r (file-name-as-directory root)))
     (mapc (lambda (z)
-        (when (stringp z)
-          (let ((p (concat r z)))
-        (when (mergeable-to-path-p p)
-          (let ((dir (expand-file-name p)))
-            (let ((default-directory dir)
-              (orig-load-path load-path))
-              (setq load-path (list (expand-file-name p)))
-              (normal-top-level-add-subdirs-to-load-path)
-              (nconc load-path orig-load-path)))))))
-      (flatten pathname))))
+            (when (stringp z)
+              (let ((p (concat r z)))
+                (when (mergeable-to-path-p p)
+                  (let ((dir (expand-file-name p)))
+                    (let ((default-directory dir)
+                          (orig-load-path load-path))
+                      (setq load-path (list (expand-file-name p)))
+                      (normal-top-level-add-subdirs-to-load-path)
+                      (nconc load-path orig-load-path)))))))
+          (flatten pathname))))
 (defun mars/autoload (libraries-and-functions)
   (mapc (lambda(x)
           (apply 'twb/autoload x))
@@ -246,7 +246,7 @@ twb#emacs at http://paste.lisp.org/display/43546,"
            (unless (file-exists-p mars/loaddefs)
              (load "update-auto-loads")
              (update-autoloads-in-package-area)) ; adds 'update-auto-loads autoloads in loaddefs too
-                                                 ; updates CEDET autoloads for CEDET directories
+                                        ; updates CEDET autoloads for CEDET directories
            (safe-autoloads-load mars/loaddefs)))
       mars/site-lisp-path)
 (add-hook 'kill-emacs-hook 'update-autoloads-in-package-area)
@@ -258,13 +258,15 @@ twb#emacs at http://paste.lisp.org/display/43546,"
                  ("iswitchb"          iswitchb-minibuffer-setup)
                  ("sunrise-commander" sunrise sr-virtual-mode)
                  ("anything"          anything anything-config)
-                 ("header2"           auto-make-header) ; Drew Adams forgot it ?!?
+                 ("hideshowvis"       hideshowvis-enable hideshowvis-minor-mode)
+                 ("header2"           auto-make-header auto-update-file-header)
                  ("psvn"              psvn)
                  ("hippie-exp"        hippie-expand he-init-string he-substitute-string)
                  ("calc-ext"          calc-do-calc-eval)
                  ("hexview-mode"      hexview-find-file)
                  ("simple-call-tree"  simple-call-tree-analyze simple-call-tree-alist)
                  ("pymacs"            pymacs-apply pymacs-call pymacs-eval pymacs-exec pymacs-load)
+                 ("markdown-mode"     markdown-mode)
                  ("newsticker"        newsticker-start newsticker-show-news)
                  ("wl-mailto"         wl-mailto-compose-message-from-mailto-url)
                  ("emms-source-file"  emms-dired emms-add-directory-tree emms-add-directory emms-add-file)
@@ -301,29 +303,25 @@ twb#emacs at http://paste.lisp.org/display/43546,"
 (custom-set-variables
  '(desktop-buffers-not-to-save "\\(^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|.*_flymake.*\\)$")
  '(desktop-files-not-to-save (concat "\\("
-                     "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
-                     "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
-                     "/[^/:]*:\\|.*_flymake\\..*"
-                     "\\)$"))
+                                     "^nn\\.a[0-9]+\\|\\.log\\|(ftp)\\|^tags\\|^TAGS"
+                                     "\\|\\.emacs.*\\|\\.diary\\|\\.newsrc-dribble\\|\\.bbdb"
+                                     "/[^/:]*:\\|.*_flymake\\..*"
+                                     "\\)$"))
  '(desktop-minor-mode-table (quote ((auto-fill-function auto-fill-mode)
-                    (vc-mode nil)
-                    (vc-dired-mode nil)
-                    (flymake-mode nil)
-                    (ecb-minor-mode nil)
-                    (semantic-show-unmatched-syntax-mode nil)
-                    (semantic-stickyfunc-mode nil)
-                    (senator-minor-mode nil)
-                    (semantic-idle-scheduler-mode nil)))))
-;; (mapc
-;;  '(lambda (x)
-;;     (add-to-list 'desktop-buffers-not-to-save x))
-;;  '(dired-mode Info-mode info-lookup-mode fundamental-mode))
+                                    (vc-mode nil)
+                                    (vc-dired-mode nil)
+                                    (flymake-mode nil)
+                                    (ecb-minor-mode nil)
+                                    (semantic-show-unmatched-syntax-mode nil)
+                                    (semantic-stickyfunc-mode nil)
+                                    (senator-minor-mode nil)
+                                    (semantic-idle-scheduler-mode nil)))))
 ;; hooks
 (add-hook 'desktop-save-hook
           'kiwon/save-window-configuration)
 (add-hook 'desktop-after-read-hook
           'kiwon/restore-window-configuration) ; save/restore the last window
-                                               ; configuration with `DESKTOP'
+                                        ; configuration with `DESKTOP'
 ;; desktop + autosave + backup files: see eof
 
 ;;; BUFFERS
@@ -361,7 +359,7 @@ twb#emacs at http://paste.lisp.org/display/43546,"
 ;;; CEDET is loaded from `SAFE-AUTOLOADS-LOAD' if `LOADDEFS' is inside the `mars/site-lisp-path', from `UPDATE-AUTOLOADS-IN-PACKAGE-AREA' otherwise or previously if `*i-am-a-common-lisp-advocate*'
 
 ;;; SERVER
-(start-named-server "mars")
+(when *emacs/normal-startup* (start-named-server "mars"))
 
 ;;; GLOBAL KEYS (see <confs>/shortcuts.el for additionnal keys)
 (bind-keys
@@ -372,6 +370,7 @@ twb#emacs at http://paste.lisp.org/display/43546,"
    "C-x C-h"   help-command ; use F1 for contextual help / C-h and C-w are used as in ASCII
    "C-\\"      esc-map      ; if ESC- is needed
    "C-="       shell-command
+   "M-n"       new-frame                ; XXX check if no issue
    "M-<f2>"    apply-macro-to-region-lines ; use F3/F4 for kmacro start/end
    "C-c o"     anything-occur              ; or simply occur ?
    "M-X"       anything-M-x             ; a super command executor
@@ -408,7 +407,7 @@ twb#emacs at http://paste.lisp.org/display/43546,"
        "C-; C-;" kill-region))
   (progn
     (cua-mode t)                    ; C-c/C-x got timeout in order to make
-                                    ; combinations to work
+                                        ; combinations to work
     (eval-after-load "cua-mode"
       '(progn
          (setq cua-auto-tabify-rectangles nil)
@@ -485,7 +484,7 @@ the should-be-forbidden C-z.")
      (defun ido-recentf-file-name-history ()
        "Find a file in the `file-name-history' using ido for completion. Written by Markus Gattol."
        (interactive)
-       (let* ((all-files file-name-history)
+       (let* ((all-files (remove-duplicates (mapcar 'expand-file-name file-name-history) :test 'string=)) ; remove dups after expanding
               (file-assoc-list (mapcar (lambda (x) (cons (file-name-nondirectory x) x)) all-files))
               (filename-list (remove-duplicates (mapcar 'car file-assoc-list) :test 'string=))
               (ido-make-buffer-list-hook
@@ -516,7 +515,7 @@ the should-be-forbidden C-z.")
              (list 'define-key map (list 'kbd '"C-c F") ''ido-recentf)
              (list 'define-key map (list 'kbd '"C-c C-m") ''make-directory)))
      ;; (add-hook 'emacs-startup-hook (mars/recentf/override-keys global-map))
-))
+     ))
 
 ;;; CONFIGURATION
 ;; init / launch custom or creates a custom-file if none
@@ -536,27 +535,35 @@ the should-be-forbidden C-z.")
             (Custom-buffer-done)))))
 
 ;; confs' files
-(when *emacs/normal-startup*
-  (let ((confs-to-load '(
-                         "gtd"          ; emacs as an planner
-                         "www"          ; emacs as web browser / rss reader
-                         "mail"         ; emacs as a MUA
-                         "formats"      ; emacs as an universal typewriter (format + encodings)
-                         "box"          ; emacs as a file/window-manager
-                         "code"         ; emacs as a coding tool
-                         "rectify"      ; emacs as a rectifier (error corrector/smart completion)
-                         "vt"           ; emacs as a virtual terminal
-                         "media"        ; emacs as a multimedia player (after 'w3m iff needed)
-                         "version"      ; emacs as a vc tool
-                         "crypto"       ; emacs as a secret agent
-                         "shortcuts"    ; emacs as a key commander (better at the end)
-                         ))
-        (emacs-dev-confs (if *i-am-an-emacsen-dev* '("elisp" "ladybug") ; elisp helpers + temporary hacking
-                           nil)))
-    (mapc
-     (lambda (x)
-       (conf-load x))
-     (append confs-to-load emacs-dev-confs))))
+(let ((confs-to-load '(
+                       "formats"        ; emacs as an universal typewriter (format + encodings)
+                       "window-manager" ; emacs as a window-manager
+                       "shortcuts"      ; emacs as a key commander
+                       )))
+  (when *emacs/normal-startup*
+    (setq confs-to-load
+          (append confs-to-load
+                  '(
+                    "crypto"       ; emacs as a secret agent
+                    "gtd"          ; emacs as an planner
+                    "www"          ; emacs as web browser / rss reader
+                    "mail"         ; emacs as a MUA
+                    "file-manager" ; emacs as a file-manager
+                    "code"         ; emacs as a coding tool
+                    "rectify"      ; emacs as a rectifier (error corrector/smart completion)
+                    "version"      ; emacs as a vc tool
+                    "vt"           ; emacs as a virtual terminal
+                    "media"        ; emacs as a multimedia player (after 'w3m iff needed)
+                    "toolbox"      ; emacs as a swiss army knife
+                    )
+                  (when *i-am-an-emacsen-dev*
+                    '("elisp"        ; emacs as an emacs-lisp development tool (helpers inside)
+                      "ladybug"))))) ; emacs as a fast hacking tool (temporary bugfixes inside)
+      
+  (mapc
+   (lambda (x)
+     (conf-load x))
+   confs-to-load))
 
 ;; special init
 ;; - eshell path built from 'exec-path (which is set in Customize file)
@@ -603,32 +610,32 @@ the should-be-forbidden C-z.")
 
 (defmacro define-local-temporary-directory (local-work-directory-symbol)
   "Define the best temporary directory for autosaving or backing files up."
-    (let ((local-tmp-dir (concat (file-name-as-directory mars/local-root-dir)
-                                 (file-name-as-directory mars/personal-data)
-                                 (file-name-as-directory "Temporary"))))
-  (let ((dir-symbol (intern (concat (symbol-name local-work-directory-symbol) "-dir"))))
+  (let ((local-tmp-dir (concat (file-name-as-directory mars/local-root-dir)
+                               (file-name-as-directory mars/personal-data)
+                               (file-name-as-directory "Temporary"))))
+    (let ((dir-symbol (intern (concat (symbol-name local-work-directory-symbol) "-dir"))))
       (unless (symbol-value dir-symbol) ; creates directory iff unset (eg. `vars' may override)
                                         ; this <symbol>-dir must be 'NIL before compiling this macro
-          (if (file-exists-p local-tmp-dir)
-              `(setq ,dir-symbol ,(concat local-tmp-dir
-                                          (file-name-as-directory
-                                           (capitalize (concat
-                                                        (symbol-name local-work-directory-symbol) "s")))))
-            (let ((name (concat (file-name-as-directory mars/temporary-dir)
-                                "emacs_" (symbol-name local-work-directory-symbol) "s/"
-                                (file-name-as-directory (user-login-name)))))
-              `(progn
-                 (setq ,dir-symbol ,name)
-                 (message ,(concat "Beware: your autosave directory named `" name
-                                   "' may be publicly accessed. Be sure to make it hidden to other users.")))))))))
+        (if (file-exists-p local-tmp-dir)
+            `(setq ,dir-symbol ,(concat local-tmp-dir
+                                        (file-name-as-directory
+                                         (capitalize (concat
+                                                      (symbol-name local-work-directory-symbol) "s")))))
+          (let ((name (concat (file-name-as-directory mars/temporary-dir)
+                              "emacs_" (symbol-name local-work-directory-symbol) "s/"
+                              (file-name-as-directory (user-login-name)))))
+            `(progn
+               (setq ,dir-symbol ,name)
+               (message ,(concat "Beware: your autosave directory named `" name
+                                 "' may be publicly accessed. Be sure to make it hidden to other users.")))))))))
 (define-local-temporary-directory autosave)
 (define-local-temporary-directory backup)
 (setq auto-save-file-name-transforms `(("\\([^/]*/\\)*\\(.*\\)" ,(concat autosave-dir "\\2") nil))
       backup-directory-alist (list (cons "." backup-dir)))
 ;; - desktop load
-(desktop-save-mode 1)
-(message "make-directory autosave: %s" (if autosave-dir autosave-dir "crotte"))
-(make-directory autosave-dir t)
+(when *emacs/normal-startup*
+  (desktop-save-mode 1))
+(make-directory autosave-dir t)         ; be sure it exists
 (setq the-desktop-file (concat (file-name-as-directory desktop-dir)
                                desktop-base-file-name)
       the-desktop-lock (concat (file-name-as-directory desktop-dir)
@@ -642,8 +649,9 @@ the should-be-forbidden C-z.")
   (when (not (emacs-process-p ad-return-value))
     (setq ad-return-value nil)))
 ;; - desktop autosave
-(setq mars/desktop-saver-timer
-      (run-with-timer 5 300 'autosave-desktop))
+(when *emacs/normal-startup*
+  (setq mars/desktop-saver-timer
+        (run-with-timer 5 300 'autosave-desktop)))
 ;; - unset temporary directory names
 (setq autosave-dir nil
       backup-dir nil)                   ; otherwise `define-local-temporary-directory' compilation
@@ -671,7 +679,7 @@ the should-be-forbidden C-z.")
                 found)
             (while (and (null found) pending)
               (let ((property (pop pending)))
-                (when (member (with-current-buffer 
+                (when (member (with-current-buffer
                                   buf
                                 (symbol-value (car property))) (cdr property))
                   (message (prin1-to-string property))
@@ -695,3 +703,4 @@ the should-be-forbidden C-z.")
     (display-external-pop-up "Emacs startup"
                              (concat "Emacs loaded in "
                                      (number-to-string load-time) "s"))))
+(put 'narrow-to-region 'disabled nil)

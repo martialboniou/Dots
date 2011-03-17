@@ -9,7 +9,7 @@
 if [ "`uname`" = "Darwin" ]; then
   # MPD daemon launch issue on Mac OS X 10.5 
   #type detach &>/dev/null && alias mpd="detach mpd --no-daemon" || echo "MPD doesn't work as expected"
-  SRC_HILITE_LESSPIPE=/opt/local/bin/src-hilite-lesspipe.sh
+  SRC_HILITE_LESSPIPE=/opt/local/bin/src-hilite-lesspipe.sh # port install source-highlight
   OPEN_COMMAND='open'
   MANPATH=`/usr/bin/manpath`
   export MANPATH=/opt/local/share/man:$MANPATH # MacPorts: man
@@ -20,11 +20,12 @@ if [ "`uname`" = "Darwin" ]; then
     url="man:${1}"
     echo `open $url` # install Bwana; ManOpen is DEPRECATED
   }
+  alias gitk="/usr/bin/wish $(which gitk)"
   MAN_COMMAND=wman
 else # Default
   test -r "$HOME/.dircolors" && eval `dircolors -b $HOME/.dircolors`
   SRC_HILITE_LESSPIPE=/usr/share/source-highlight/src-hilite-lesspipe.sh
-  OPEN_COMMAND='exo-open' # unless XFCE, change it for gnome-open or openapp or anything else!
+  OPEN_COMMAND='gnome-open' # I prefer Gnome to XFCE but I switch metacity for Xmonad
   alias ls='ls --color=auto'
   alias -g open="$OPEN_COMMAND"
 fi

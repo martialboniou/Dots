@@ -1,14 +1,14 @@
-;;; markup.el --- 
+;;; wikiwiki.el --- 
 ;; 
-;; Filename: markup.el
+;; Filename: wikiwiki.el
 ;; Description: 
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:02:05 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Mar 16 20:02:05 2011 (+0100)
+;; Last-Updated: Wed Mar 16 20:39:05 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 1
+;;     Update #: 3
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -48,6 +48,7 @@
 
 (add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 
+(provide 'wiki-wiki)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; markup.el ends here
+;;; wikiwiki.el ends here

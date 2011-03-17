@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri Mar 11 23:49:18 2011 (+0100)
+;; Last-Updated: Sun Mar 13 18:39:43 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 42
+;;     Update #: 55
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -109,7 +109,7 @@
      
      ;; (remove-hook 'wl-exit-hook 'bbdb-wl-exit-2) ; kill BBDB buffer on wl quit
 
-     ;; remove wl-biff from local-modeline and set it globally
+     ;; IMPORTANT: remove wl-biff from local-modeline and set it globally
      (setq wl-mode-line-display-priority-list '(plug title))
      (defun wl-mode-line-buffer-identification (&optional id)
        (let ((priorities '(plug title)))
@@ -136,17 +136,39 @@
            (prog1
                (setq mode-line-buffer-identification result)
              (force-mode-line-update t)))))
-     
      (let ((biff-states '(wl-modeline-biff-status
                           wl-modeline-biff-state-on
+                          wl-modeline-biff-state-off))))
+     (add-hook 'wl-init-hook
+               '(lambda ()
+                   (let ((biff-states '(wl-modeline-biff-status
+                          wl-modeline-biff-state-on
                           wl-modeline-biff-state-off)))
-       (unless (member biff-states global-mode-string)
-         (setq global-mode-string
-               (cons '(wl-modeline-biff-status
-                       wl-modeline-biff-state-on
-                       wl-modeline-biff-state-off)
-                     (cons " " global-mode-string)))))
-     
+                     (unless (member biff-states global-mode-string)
+                       (setq global-mode-string
+                             (cons biff-states
+                                   (cons " " global-mode-string)))))))
+     (add-hook 'wl-exit-hook '(lambda ()
+                                (unless (fboundp 'position)
+                                  (require 'cl))
+                                (let ((biff-states '(wl-modeline-biff-status
+                                                     wl-modeline-biff-state-on
+                                                     wl-modeline-biff-state-off))
+                                      (pending global-mode-string)
+                                      stop (pos 0))
+                                  (while (and (null stop) pending)
+                                    (if (equal (car pending) biff-states)
+                                        (progn
+                                          (setq stop t)
+                                          ;; remove biff and the post-interval
+                                          ;; using CDDR and SETF side-effect
+                                          (if (> pos 0)
+                                              (setf (nthcdr pos global-mode-string) (cddr (nthcdr pos global-mode-string)))
+                                            (setq global-mode-string (cddr global-mode-string))))
+                                      (incf pos))
+                                    (setq pending (cdr pending))))))
+
+     ;; BBDB
      (define-key wl-draft-mode-map "\t" 'bbdb-complete-name) ; now TAB => BBDB
      (setq bbdb-use-pop-up t
            bbdb-electric-p t             ; be disposable with SPC

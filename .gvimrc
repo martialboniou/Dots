@@ -3,13 +3,13 @@
 "colorscheme ir_black
 set columns=93
 if has("mac")
-  set gfn=Monaco:h14
+  set gfn=DejaVu_Sans_Mono:h14
   set lines=52
 elseif has("x11")
   if filereadable(".notebook") " if notebook => smaller fonts
-    set gfn=Bitstream\ Vera\ Sans\ Mono\ 10
+    set gfn=DejaVu\ Sans\ Mono\ 10
   else
-    set gfn=Bitstream\ Vera\ Sans\ Mono\ 14
+    set gfn=DejaVu\ Sans\ Mono\ 14
   endif
  set lines=40
 endif

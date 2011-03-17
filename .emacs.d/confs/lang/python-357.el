@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 23:42:52 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Mar  7 00:05:33 2011 (+0100)
+;; Last-Updated: Wed Mar 16 20:37:03 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 10
+;;     Update #: 11
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -45,8 +45,6 @@
 ;; 
 ;;; Code:
 
-
-
 ;;; PYTHON
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
@@ -57,7 +55,7 @@
       '(indent-tabs-mode nil))
      (define-key py-mode-map (kbd "RET") 'newline-and-indent)))
 (add-hook 'python-mode-hook
-	      (lambda () (smart-operator-mode-on)))
+          (lambda () (smart-operator-mode-on)))
 
 
 ;; PYMACS + ROPE TODO: eval-after-load'ing correctly
@@ -127,7 +125,6 @@
 
         )) ))
 
-
 ;; FLYMAKE
 (add-hook 'python-mode-hook '(lambda () (flymake-mode-on)))
 (eval-after-load "flymake"
@@ -141,7 +138,6 @@
         (list "pyflakes" (list local-file))))
     (add-to-list 'flymake-allowed-file-name-masks
                  '("\\.py\\'" flymake-pyflakes-init))))
-
 
 (provide 'python-357)
 
@@ -157,7 +153,8 @@
 ;; (executable-find "python") to compile Pymacs with 'python setup.py install'
 ;; in (directory-file-name (locate-library "pymacs"))
 ;; (executable-find "easy_install") to compile and install rope in a convenient python path 
-;;+ pyflake
+;;+ pyflakes
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; python-357.el ends here
-s
+

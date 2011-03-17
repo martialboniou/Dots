@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Mar 10 17:42:22 2011 (+0100)
+;; Last-Updated: Sun Mar 13 20:13:07 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 19
+;;     Update #: 24
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -16,7 +16,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Commentary: Pretty (pp-c-l) + encodings switiching + format on save
-;;              helpers + style + image support (iimage)
+;;              helpers + delete-trailing-whitespace + style + image
+;;              support (iimage)
 ;; 
 ;; formats by Martial (2010-2011)
 ;;
@@ -90,7 +91,7 @@ remove whitespace and save the current buffer."
   (save-excursion
     (indent-region (point-min) (point-max) nil))
   (mars/create-header-if-none)
-;;  (delete-trailing-whitespace)
+  (delete-trailing-whitespace)          ; redefined in this file for header case
   (save-buffer))
 (unless (fboundp 'mars/create-header-if-none) (defun mars/create-header-if-none nil nil))
 ;; automatic untabify code belonging to `alexott/untabify-modes'
@@ -103,12 +104,30 @@ remove whitespace and save the current buffer."
   (when (member major-mode alexott/untabify-modes)
     (untabify (point-min) (point-max))))
 (add-hook 'before-save-hook 'alexott/untabify-hook)
-;; delete trailing whitespace
+
+;;; DELETE TRAILING WHITESPACE
 (defalias 'dtw 'delete-trailing-whitespace)
 (defadvice delete-trailing-whitespace (after advising-deletion nil activate)
+  "Advise trailing whitespace deletion."
   (message "Trailing whitespace deleted"))
+;; header case (to keep header2 whitespaces untouched)
+(defun delete-trailing-whitespace ()
+  "Delete all the trailing whitespace EXCEPT those in an header.
+Header2's elements may have a whitespace that should not be removed.
+Otherwise the update regexps won't match."
+  (interactive "*")
+  (save-match-data
+    (save-excursion
+      (goto-char (point-min))
+      (comment-forward (point-max)) ; avoid header comment
+      (while (re-search-forward "\\s-$" nil t)
+        (skip-syntax-backward "-" (save-excursion (forward-line 0) (point)))
+        (save-match-data
+          (if (looking-at ".*\f")
+              (goto-char (match-end 0))))
+        (delete-region (point) (match-end 0))))))
 
-;;; STYLE
+;;; STYLE OBSOLETE
 (setq-default c-basic-offset 4)
 (setq c-default-style "linux")
 (defun mars/c-brace-and-indent-hook ()

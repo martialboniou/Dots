@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 10:19:49 2011 (+0100)
 ;; Version:
-;; Last-Updated: Wed Mar  9 15:47:24 2011 (+0100)
+;; Last-Updated: Mon Mar 14 17:31:47 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 23
+;;     Update #: 24
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -179,6 +179,12 @@ in `util/ourcomments-util' of the `nxhtml' package."
   (flet ((check-valid-string (x) (and init-file (not (eq (string-match x "") 0)))))
     (eval 
      `(apply 'mars/run-emacs nil "-Q" "--debug-init" ,@(when (check-valid-string init-file) `("--load" ,init-file)) ,(when (check-valid-string args) args)))))
+
+(defun mars/emacs-q (&optional init-file args)
+  (interactive "FInit file: \nsArguments: ")
+  (flet ((check-valid-string (x) (and init-file (not (eq (string-match x "") 0)))))
+    (eval 
+     `(apply 'mars/run-emacs nil "-q" ,@(when (check-valid-string init-file) `("--load" ,init-file)) ,(when (check-valid-string args) args)))))
 
 (defun mars/vars-heading ()
   (interactive)

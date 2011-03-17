@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
 ;; Version:
-;; Last-Updated: Wed Mar  9 15:55:52 2011 (+0100)
+;; Last-Updated: Wed Mar 16 18:14:11 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 90
+;;     Update #: 100
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -230,18 +230,21 @@
      (bind-key "C-S-p" 'special-expand-file-name-at-point)))
 
 ;;; YASNIPPETS
-;; (bound to 'C-p/C-n à la Vim)
+;; (bound to 'C-p à la Vim)
 (require 'yas-jit)
-(eval-after-load "yas-jit"
-  '(progn
-     (let ((yas-dir (file-name-directory (locate-library "yasnippet")))
-           (local-yas-dir (concat (file-name-as-directory mars/local-root-dir)
-                                  (file-name-as-directory mars/personal-data)
-                                  "Snippets")))
+(let ((yas-dir (file-name-directory (locate-library "yasnippet")))
+           (local-yas-dir (expand-file-name
+                           (concat (file-name-as-directory mars/local-root-dir)
+                                   (file-name-as-directory mars/personal-data)
+                                   (file-name-as-directory "Snippets")))))
        (setq yas/snippet-dirs (if yas-dir (list yas-dir) nil))
        (when (file-exists-p local-yas-dir)
          (push local-yas-dir yas/snippet-dirs)))
-     (yas/jit-load)
+(yas/jit-load)
+(yas/load-snippet-dirs)
+(yas/global-mode t)                     ; yas as minor mode for all
+(eval-after-load "yas-jit"
+  '(progn
      ;; MuMaMo's tab
      (eval-after-load "nxhtml"
        '(progn
@@ -262,11 +265,14 @@
      (eval-after-load "org"
        '(progn
           (defun mars/yas-in-org ()
-            (define-key org-mode-map (kbd "C-.") 'yas/expand)) ; IMPORTANT: <tab> is ``locked''
-          (add-hook 'org-mode-hook (lambda ()
+            (define-key org-mode-map (kbd "C-.") 'yas/expand)) ; IMPORTANT: if <tab> is ``locked''
+          (defun yas/org-very-safe-expand ()
+            (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
+          (add-hook 'org-mode-hook (lambda () ; org-mode 7+ case
                                      (make-variable-buffer-local 'yas/trigger-key)
                                      (setq yas/trigger-key [tab])
-                                     (define-key yas/keymap [tab] 'yas/next-field-group)))))
+                                     (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+                                     (define-key yas/keymap [tab] 'yas/next-field)))))
      ;; - ruby
      (eval-after-load "ruby"         ; FIXME: search if ruby is ok (maybe rinari/rhtml here)
        '(progn

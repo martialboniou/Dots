@@ -8,7 +8,7 @@
 ;; Version:
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 30
+;;     Update #: 37
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -153,12 +153,14 @@ This can be 0 for immediate, or a floating point value.")
            (110 "* %u %?" "~/.emacs.d/data/Notes/Notes.org" "Notes")        ; 110 => ?n
            (115 "* %u %?" "~/.emacs.d/data/Notes/Iris.gpg"  "Notes"))))     ; 115 => ?s [encrypted]
                                                                             ; 105 => ?i
- '(org-capture-templates
-   (quote (("tname" "Link" entry
-            (file+headline org-default-notes-file "Links to Read")
-            "* %a\n %?\n %i"))))
  '(remember-annotation-functions (quote (org-remember-annotation)))
  '(remember-handler-functions (quote (org-remember-handler))))
+;; capture
+(setq org-capture-templates
+       '(("l"  "Link" entry
+          (file+headline org-default-notes-file "Links to Read")
+          "* %a\n %?\n %i")))           
+;; use bookmarklet: javascript:location.href='org-protocol://capture//l/encodeURIComponent(location.href)+'/'encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection())
 
 (eval-after-load "remember"
   '(progn

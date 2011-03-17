@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Wed Mar  9 15:35:09 2011 (+0100)
+;; Last-Updated: Sun Mar 13 15:34:43 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 34
+;;     Update #: 36
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -670,6 +670,40 @@ wrap-region-or-insert using left and right."
       `(lambda ()
          (interactive)
          (wrap-region-or-insert ,left ,left))))
+
+;;;======================================================================
+;;; From: Jim Janney <jjanney@xmission.xmission.com>
+;;; in comp.emacs
+;;; show and hide comments in program code.
+;; TODO: test it
+(defun overlay-comments(beg end attrs)
+  (save-excursion
+    (goto-char beg)
+    (let (state comment-start comment-end overlay)
+      (while (nth 4 (setq state
+                          (parse-partial-sexp (point) end nil nil nil t)))
+        (goto-char (nth 8 state))
+        (setq comment-start (point))
+        (forward-comment 1)
+        (setq comment-end (point))
+        (while (= (char-before comment-end) ?\n)
+          (setq comment-end (1- comment-end)))
+        (setq overlay (make-overlay comment-start comment-end))
+        (mapc #'(lambda (attr)
+                (overlay-put overlay (car attr) (cdr attr)))
+              attrs)))))
+
+(defun hide-comments()
+  (interactive)
+  (overlay-comments (point-min)
+                    (point-max)
+                    '((category . comment) (invisible . comment))))
+
+(defun show-comments()
+  (interactive)
+  (dolist (ov (overlays-in (point-min) (point-max)))
+    (if (eq (overlay-get ov 'category) 'comment)
+        (delete-overlay ov))))
 
 ;;; OTHER TIPS
 ;;;

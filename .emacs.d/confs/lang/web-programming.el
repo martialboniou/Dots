@@ -6,16 +6,16 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 21:14:44 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sun Mar  6 21:22:35 2011 (+0100)
+;; Last-Updated: Sat Mar 19 16:36:49 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 3
+;;     Update #: 4
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: Nxhtml & MuMaMo / Espresso (JavaScript) / HAML
+;;; Commentary: Nxhtml & MuMaMo / Espresso (JavaScript)
 ;; 
 ;; 
 ;; 
@@ -98,15 +98,6 @@
 ;;; ESPRESSO
 (add-to-list 'auto-mode-alist '("\\.js$"    . espresso-mode))
 (add-to-list 'auto-mode-alist '("\\.json$"  . espresso-mode))
-
-;;; HAML (XHTML Abstraction Markup Language)
-(add-to-list 'auto-mode-alist '("\\.haml$" . haml-mode))
-(eval-after-load "haml-mode"
-  '(progn
-     (add-hook 'haml-mode-hook
-               '(lambda ()
-                  (setq indent-tabs-mode nil) ; uses spaces (no tabs)
-                  (define-key haml-mode-map "\C-m" 'newline-and-indent)))))
 
 (provide 'web-programming)
 

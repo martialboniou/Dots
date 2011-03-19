@@ -1,21 +1,21 @@
 ;;; wikiwiki.el --- 
 ;; 
 ;; Filename: wikiwiki.el
-;; Description: 
+;; Description: Markup and other Wiki text-modes
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:02:05 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Mar 16 20:39:05 2011 (+0100)
+;; Last-Updated: Sat Mar 19 16:38:07 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 3
+;;     Update #: 9
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: 
+;;; Commentary: markdown / textile / yaml-mode / haml-mode
 ;; 
 ;; 
 ;; 
@@ -45,8 +45,29 @@
 ;; 
 ;;; Code:
 
-
-(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+;;; MARKDOWN
+(add-to-list 'auto-mode-alist '("\\.md\\'\\|\\.mkdn\\'\\|\\.markdown\\'" . markdown-mode))
+
+;;; TEXTILE
+(add-to-list 'auto-mode-alist '("\\.textile\\'" . textile-mode))
+
+;;; YAML-MODE
+;; not a markup actually!
+(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
+(eval-after-load "yaml-mode"
+    '(progn
+       (add-hook 'yaml-mode-hook
+                 '(lambda ()
+                    (define-key yaml-mode-map "\C-m" 'newline-and-indent)))))
+
+;;; HAML (XHTML Abstraction Markup Language)
+(add-to-list 'auto-mode-alist '("\\.haml$" . haml-mode))
+(eval-after-load "haml-mode"
+  '(progn
+     (add-hook 'haml-mode-hook
+               '(lambda ()
+                  (setq indent-tabs-mode nil) ; uses spaces (no tabs)
+                  (define-key haml-mode-map "\C-m" 'newline-and-indent)))))
 
 (provide 'wiki-wiki)
 

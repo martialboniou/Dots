@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Thu Mar 17 11:44:24 2011 (+0100)
+;; Last-Updated: Sat Mar 19 14:13:13 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 1847
+;;     Update #: 1849
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -267,6 +267,7 @@ twb#emacs at http://paste.lisp.org/display/43546,"
                  ("simple-call-tree"  simple-call-tree-analyze simple-call-tree-alist)
                  ("pymacs"            pymacs-apply pymacs-call pymacs-eval pymacs-exec pymacs-load)
                  ("markdown-mode"     markdown-mode)
+                 ("yaml-mode"         yaml-mode)
                  ("newsticker"        newsticker-start newsticker-show-news)
                  ("wl-mailto"         wl-mailto-compose-message-from-mailto-url)
                  ("emms-source-file"  emms-dired emms-add-directory-tree emms-add-directory emms-add-file)
@@ -285,7 +286,7 @@ twb#emacs at http://paste.lisp.org/display/43546,"
 
 ;; - undo-tree | redo+ (both `vimpulse' compatible)
 (if (locate-library "undo-tree")
-    (require 'undo-tree)                ; display tree by using C-x u 
+    (require 'undo-tree)                ; display tree by using C-x u
   (progn
     (require 'redo+)
     (eval-after-load "redo"

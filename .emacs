@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Sat Mar 19 14:13:13 2011 (+0100)
+;; Last-Updated: Mon Mar 21 15:05:44 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 1849
+;;     Update #: 1851
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -216,10 +216,6 @@ twb#emacs at http://paste.lisp.org/display/43546,"
   (prefer-coding-system encoding)
   (set-language-environment (symbol-name encoding)))
 
-;;; PACKAGE MANAGER
-;; - pases = wl & org up-to-date
-(conf-load "pases")                     ; path + autoloads here
-
 ;;; GENERATE PATH (add your 'SITE-LISP)
 ;;
 ;; Notice:
@@ -231,6 +227,10 @@ twb#emacs at http://paste.lisp.org/display/43546,"
 ;;
 (mars/add-to-load-path mars/local-root-dir mars/site-lisp-path)
 ;; FIXME: use subdirs.el in those two directories
+
+;;; PACKAGE MANAGEMENT
+;; - check/install (use `pases' for up-to-date wl & org 7)
+(conf-load "packs")                     ; additional path + autoloads here
 
 ;;; COMMON LISP EXTENSION
 (when *i-am-a-common-lisp-advocate*

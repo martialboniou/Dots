@@ -1,8 +1,0 @@
---- 
-emacs-vim: |-
-  Emacs Vimpulse
-
-  u                 undo
-  C-r               redo
-  C-x u             undo-tree
-  

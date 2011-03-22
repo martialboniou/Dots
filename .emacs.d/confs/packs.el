@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Mon Mar 21 18:59:52 2011 (+0100)
+;; Last-Updated: Tue Mar 22 01:16:06 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 62
+;;     Update #: 144
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -52,35 +52,115 @@
 ;; - check if required subdirs are present in `mars/site-lisp-path'
 ;; - install in the first directory of `mars/site-lisp-path' (by default) if not found
 ;; - add required subdirs to LOAD-PATH if newly installed
+;; TODO: write a list of required cli program (especially for Windows users; for them, a recommended GNU binutils should be found):
+;; tar, gzip, autoconf, make, svn, git, darcs, wget (curl if not?), bash, rake (rvm must be installed on Un*x-like)
 (defvar mars/site-lisp-packages nil)
-(setq mars/site-lisp-packages '((vimpulse . ((install . "git git://gitorious.org/vimpulse/vimpulse")
-                                                ))))
-(assoc 'install (cdr (car mars/site-lisp-packages)))
-(unless mars/site-lisp-path
+(setq mars/site-lisp-packages '((vimpulse     . ((get . "git clone git://gitorious.org/vimpulse/vimpulse")
+                                             (install . "make")))
+                                (emms         . ((get . "git clone git://git.sv.gnu.org/emms.git")
+                                              (install . "make; make emms-print-metadata")
+                                              (nosearch . ("bin" "doc" "src"))))
+                                (undo-tree    . ((get . "git clone http://www.dr-qubit.org/git/undo-tree.git")
+                                              (install . "emacs-compile-directory") ; do it from emacs
+                                              ))
+                                (yaml-mode    . ((get . "git clone git://github.com/yoshiki/yaml-mode.git")
+                                              (install . "make")))
+                                (keats        . ((get . "git clone git://github.com/rejeep/keats.git")
+                                                 (install . "emacs-compile-directory")))
+                                (howm-1.3.9.1 . ((get . "wget http://howm.sourceforge.jp/a/howm-1.3.9.1.tar.gz; tar xzvf howm-1.3.9.1.tar.gz; rm howm-1.3.9.1.tar.gz")
+                                                 (install . "./configure; make")
+                                                 (nosearch . ("doc" "en" "ext" "ja" "sample"))))
+                                (haskellmode-emacs . ((get . "darcs get http://code.haskell.org/haskellmode-emacs")
+                                                      (install . "make"))) ; TODO: compile
+                                (magit         . ((get . "git clone git://github.com/philjackson/magit.git")
+                                                  (install . "./configure; make")))
+                                (markdown-mode . ((get . "git clone git://jblevins.org/git/markdown-mode.git")
+                                                  (install . "emacs-compile-directory")))
+                                (yasnippet     . ((get . "svn checkout http://yasnippet.googlecode.com/svn/trunk/ yasnippet")
+                                                  (install . "rake compile")
+                                                  (nosearch . ("doc" "extras" "pkg" "snippets"))))
+                                (mailcrypt-3.5.9 . ((get . "wget http://sourceforge.net/projects/mailcrypt/files/mailcrypt/3.5.9/mailcrypt-3.5.9.tar.gz/download; tar xzvf mailcrypt-3.5.9.tar.gz; rm mailcrypt-3.5.9.tar.gz")
+                                                    (install . "autoconf; ./configure; make")
+                                                    (nosearch . ("autom4te.cache" "tests"))))
+                                (mhc           . ((get . "git clone git://github.com/yoshinari-nomura/mhc.git")
+                                                  (install . "emacs-compile-directory emacs") ; ruby configure.rb; ruby make.rb is OBSOLETE (ftools dependencies)
+                                                  (nosearch . ("icons" "ruby-ext" "samples" "xpm"))))
+                                (mu-cite-201006212322 . ((get . "wget http://www.jpl.org/elips/mu/snapshots/mu-cite-201006212322.tar.gz; tar xzvf mu-cite-201006212322.tar.gz; rm mu-cite-201006212322.tar.gz")
+                                                         ;; no compilation yet / need apel10.8/poem
+                                                         ))
+                                (newsticker-1.99 . ((get . "wget http://download.savannah.gnu.org/releases/newsticker/newsticker-1.99.tar.gz; tar xzvf newsticker-1.99.tar.gz; rm newsticker-1.99.tar.gz")
+                                                    (install . "emacs-compile-directory")))
+                                ;; (circe          . ((get . "cvs -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/circe co circe")
+                                ;;                    (install . "make")))
+                                (color-theme-6.6.0 . ((get . "wget http://download.savannah.gnu.org/releases/color-theme/color-theme-6.6.0.tar.gz; tar xzvf color-theme-6.6.0.tar.gz; rm color-theme-6.6.0.tar.gz")
+                                                      (install . "emacs-compile-directory; emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\" themes"))) ; FIXME: not in path so error in `themes' (not important!)
+                                (darcsum           . ((get . "darcs get --lazy http://joyful.com/repos/darcsum")
+                                                      (install . "emacs-compile-directory")))
+                                (remember          . ((get . "git clone git://repo.or.cz/remember-el.git remember")
+                                                      (install . "make")))
+                                (rinari            . ((get . "git clone git://github.com/eschulte/rinari.git; cd rinari; git submodule init; git submodule update; cd ..") ; FIXME: no compilation yet!
+                                                      (nosearch . ("doc" "test" "util/jump/test" "util/test"))
+                                                      ))
+                                ;; TODO: fetch all the Python/Rope install process
+                                (python-mode        . ((get . "wget http://launchpad.net/python-mode/trunk/5.2.0/+download/python-mode-5.2.0.tgz; tar xzvf python-mode-5.2.0.tgz; rm python-mode-5.2.0.tgz")
+                                                       (nosearch . "website")))
+                                (Pymacs             . ((get . "git clone git://github.com/pinard/Pymacs.git")
+                                                       (install . "make")
+                                                       (nosearch . ("build" "contrib" "Pymacs" "temp" "tests"))))
+                                
+                         ))             ; TODO: verify sig on get ?
+;; (setq mars/site-lisp-path '("../Desktop/test")) ; for test/debug
+(when mars/site-lisp-path
   (let ((site-lisp-path (mapcar (lambda (x)
                                   (expand-file-name
                                    (concat (file-name-as-directory mars/local-root-dir)
                                            (file-name-as-directory x)))) mars/site-lisp-path)))
     (mapc (lambda (x)
             (let ((path site-lisp-path) (found nil) pending)
-              (while (null (or found path))
+              (while (and (not found) path)
                 (setq pending (pop path))
                 (when (file-directory-p (concat pending (symbol-name (car x))))
-                  (setq found pending)        ; FIXME: maybe check 'load-path too
+                  (setq found t)        ; FIXME: try to check thru 'load-path too (eg. 'vimpulse[/]' member)
                   ))
               (unless found
-                (let ((install (assoc 'install (cdr x))))
-                  (if (not install)
+                (let ((get-method (assoc 'get (cdr x))))
+                  (if (not get-method)
                       (error "No method to install %s" (symbol-name (car x)))
-                    (
-                     (save-excursion
-                       (cd found)
-                       )
-                     ))
-                 ))))
+                    (with-temp-buffer
+                      (save-excursion
+                        (save-restriction
+                          (cd (car site-lisp-path)) ; install package in the first site-lisp
+                          (shell-command-to-string (cdr get-method))
+                          (let ((install-method (assoc 'install (cdr x))))
+                            (when install-method
+                              (cd (symbol-name (car x)))
+                              (shell-command-to-string (cdr install-method))))
+                          (dolist (tag '(nosearch noauto cedet))
+                            (let ((tag-method (assoc tag (cdr x))))
+                              (when tag-method
+                                (let ((tag-dirs (cdr tag-method)))
+                                  (when (stringp tag-dirs)
+                                    (setq tag-dirs (list tag-dirs)))
+                                  (mapc '(lambda (dir)
+                                           (let ((dirname (concat (car site-lisp-path)
+                                                                  (file-name-as-directory (symbol-name (car x)))
+                                                                  (file-name-as-directory dir))))
+                                             (when (file-directory-p dirname)
+                                               (condition-case err
+                                                   (with-temp-file
+                                                       (concat dirname "." (symbol-name tag))
+                                                     nil)
+                                                 (error
+                                                  (message "packs: unable to tag `%s' as %s: %s"
+                                                           dirname
+                                                           (symbol-name tag)
+                                                           err))))))
+                                        tag-dirs)))))
+                          (message "packs: %s installed" (car x))
+                          ))))))))
           mars/site-lisp-packages)))
 
-(error "check")
+;; (error "check")
 
 ;;; ELPA
 ;; nothing
@@ -136,13 +216,13 @@
           (error
            (progn
              ;; bootstrap if nothing to load
-             (message (format "pases: bootstrap pases"))
+             (message (format "packs: bootstrap pases"))
              (let* ((pases-url (concat "http://launchpad.net/" pases-name "/trunk/" pases-version "/+download/"))
                     (buffer (condition-case err (url-retrieve-synchronously
                                                  (concat pases-url
                                                          "pases-bootstrap.el"))
                               (error (progn
-                                       (message (format "pases: %s" err))
+                                       (message (format "packs: %s" err))
                                        nil)))))
                (when buffer
                  (save-excursion
@@ -153,7 +233,7 @@
                    (kill-buffer (current-buffer)))))
              ;; fetch and install essential packages after bootstraping
              (if (not (fboundp 'pases:install-package))
-                 (error "pases: bootstraping error: no PASES:INSTALL-PACKAGE function")
+                 (error "packs: bootstraping error: no PASES:INSTALL-PACKAGE function")
                (let ((pases-file-name (concat pases-name "-" pases-version dot pases-name)))
                  (when (file-exists-p (expand-file-name
                                        (concat (file-name-as-directory pases-source-dir)

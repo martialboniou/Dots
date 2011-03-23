@@ -22,6 +22,9 @@ emacs-vim: |
   Split
   C-w v             split-window-horizontally other-window
   
-  Back
+  Forward to Vim
+  M-0               open-with-vim
+  
+  Back to Emacs
   C-x C-z           viper-toggle-key (to switch to Emacs state)
 

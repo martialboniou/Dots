@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Tue Mar 22 23:39:56 2011 (+0100)
+;; Last-Updated: Wed Mar 23 11:20:27 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 184
+;;     Update #: 188
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -115,7 +115,7 @@
                                                        (nosearch . ("cogre/templates" "cogre/tests" "ede/templates" "semantic/doc" "semantic/tests" "srecode/templates" "testprojects" "www"))
                                                        (cedet . ".")))
                                 (ecb                . ((get . "cvs -z3 -d:pserver:anonymous@ecb.cvs.sourceforge.net:/cvsroot/ecb checkout -P ecb")
-                                                       (install . "make CEDET=`echo $PWD/../ecb`") ; FIXME: assume cedet is in the same directory / windows users should use GNU bash TODO: test it on Win32/64
+                                                       (install . "make CEDET=`echo $PWD/../cedet`;make autoloads EBATCH=\"emacs -batch -no-site-file -eval \\\"(add-to-list 'load-path \\\\\\\".\\\\\\\")\\\"\"") ; FIXME: assume cedet is in the same directory / windows users should use GNU bash TODO: test it on Win32/64
                                                        (nosearch . ("ecb-images" "html"))
                                                        (noauto . ".")))
                                 (nxhtml             . ((get . "wget http://ourcomments.org/Emacs/DL/elisp/nxhtml/zip/nxhtml-2.08-100425.zip; unzip nxhtml-2.08-100425.zip;rm nxhtml-2.08-100425.zip")

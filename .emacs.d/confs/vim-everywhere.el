@@ -8,7 +8,7 @@
 ;; Version:
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 49
+;;     Update #: 65
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -52,20 +52,20 @@
   (defun conf-locate (conf) (let ((path (mapcar '(lambda (x) (concat (file-name-as-directory mars/local-root-dir) x)) mars/local-conf-path))) (locate-library conf nil path))))
 (unless (fboundp 'mars/add-to-load-path)
   (let ((local-site-lisp-path (mapcar '(lambda (x) (concat (file-name-as-directory mars/local-root-dir)
-                               (file-name-as-directory x))) mars/site-lisp-path)))
+                                                           (file-name-as-directory x))) mars/site-lisp-path)))
     (setq load-path (append local-site-lisp-path load-path))
     (dolist (local-site-lisp local-site-lisp-path)
       (mapcar '(lambda (x)
-         (let ((found-dirs (directory-files local-site-lisp t (symbol-name x))))
-           (when found-dirs
-             (dolist (found-dir found-dirs)
-               (save-excursion
-             (condition-case nil
-                 (progn
-                   (cd found-dir)
-                   (push (expand-file-name found-dir) load-path))
-               (error nil)))))))
-          '(color-theme vimpulse))))
+                 (let ((found-dirs (directory-files local-site-lisp t (symbol-name x))))
+                   (when found-dirs
+                     (dolist (found-dir found-dirs)
+                       (save-excursion
+                         (condition-case nil
+                             (progn
+                               (cd found-dir)
+                               (push (expand-file-name found-dir) load-path))
+                           (error nil)))))))
+              '(color-theme vimpulse))))
   (load-library "color-theme-autoloads"))
 
 ;;; PREAMBULE
@@ -91,8 +91,8 @@
 
      ;; 2- parenface to add a default color to parentheses as Vim does
      (unless (locate-library "hl-line+")
-         (defface hl-line '((t (:background "grey10"))) "Dummy hl-line.")
-         (setq hl-line-face 'hl-line))
+       (defface hl-line '((t (:background "grey10"))) "Dummy hl-line.")
+       (setq hl-line-face 'hl-line))
      (color-theme-initialize)
      (require 'parenface)
      ;; (dolist (mode '(c-mode cpp-mode java-mode html-mode-hook css-mode-hook emacs-lisp-mode lisp-mode)) (add-hook mode (parenface-add-support
@@ -143,7 +143,7 @@
                                  '(("\\(FIXME:\\|TODO:\\|IMPORTANT:\\|WARNING:\\|ERROR:\\|XXX\\|OBSOLETE\\|DEPRECATED\\)"
                                     1 font-lock-warning-face prepend)))))
      ;; (add-hook 'font-lock-mode-hook 'font-lock-fontify-numbers) ; FIXME: wl-summary doesn't use `font-lock-mode'
-     
+
      ;; 5- additional keyboard bindings (some from http://stackoverflow.com/users/2797/sebastien-roccaserra)
      (define-key viper-vi-global-user-map [(delete)] 'delete-char)
      (define-key viper-vi-global-user-map "/"        'isearch-forward-regexp)
@@ -188,70 +188,70 @@
      (defun remove-last-unwanted-char (lookup-string)
        "Remove -, _, ? or ! characters at the end of a string."
        (while (and
-           (> (length lookup-string) 0)
-           (string-match-p (substring lookup-string -1) "-_?!=")) ; keep '+'
-     (setq lookup-string (substring lookup-string 0 -1)))
+               (> (length lookup-string) 0)
+               (string-match-p (substring lookup-string -1) "-_?!=")) ; keep '+'
+         (setq lookup-string (substring lookup-string 0 -1)))
        lookup-string)
 
      (defun compose-theme-name (theme-name)
        "Make a lispian name for the color-theme function."
        (if (or (null theme-name)
-           (< (length theme-name) 2))
-       ""                                ; no short name
-     (flet ((replace-underscore (string-to-replace)
-                    (replace-regexp-in-string
-                     (char-to-string ?_)
-                     (char-to-string ?-)
-                     (remove-last-unwanted-char string-to-replace))))
-       (concat *color-theme-header* (replace-underscore theme-name)))))
+               (< (length theme-name) 2))
+           ""                                ; no short name
+         (flet ((replace-underscore (string-to-replace)
+                                    (replace-regexp-in-string
+                                     (char-to-string ?_)
+                                     (char-to-string ?-)
+                                     (remove-last-unwanted-char string-to-replace))))
+           (concat *color-theme-header* (replace-underscore theme-name)))))
 
      (defun colorscheme-to-color-theme (colorscheme-name)
        " Returns a theme function in a lambda from a colorscheme name. Works
 if the function exists."
        (let ((theme (if (= (length colorscheme-name) 0)
-            nil
-              (intern (compose-theme-name colorscheme-name)))))
-     (if (functionp theme)
-         theme
-       nil)))
+                        nil
+                      (intern (compose-theme-name colorscheme-name)))))
+         (if (functionp theme)
+             theme
+           nil)))
 
      (defun mars/extract-colorscheme-from-vimrc (&optional fpath)
        "Check the contents of the vimrc file to get the same theme in emacs.
 TODO: case of '''colorscheme' this'' where this is
 ''this = my_colorscheme''."
        (let ((vimfile (or fpath "~/.vimrc")))
-     (if (file-exists-p vimfile)
-         ;; locate used colorscheme in your .vimrc
-         (with-temp-buffer
-           (insert-file-contents vimfile)
-           (end-of-buffer)                       ; backsearching
-           (makunbound 'vim-colorscheme-used)
-           (while (not (boundp 'vim-colorscheme-used))
-         (let ((mat
-            (re-search-backward
-             "[^i]colorscheme \\\([-_A-Za-z0-9]+\\\)" nil t))) ; don't get guicolorscheme
-           (if (not (null mat))
-               (let ((str (match-string 1)))
-             (save-excursion
-               (save-restriction ; FIXME: write it w/o narrowing using
+         (if (file-exists-p vimfile)
+             ;; locate used colorscheme in your .vimrc
+             (with-temp-buffer
+               (insert-file-contents vimfile)
+               (end-of-buffer)                       ; backsearching
+               (makunbound 'vim-colorscheme-used)
+               (while (not (boundp 'vim-colorscheme-used))
+                 (let ((mat
+                        (re-search-backward
+                         "[^i]colorscheme \\\([-_A-Za-z0-9]+\\\)" nil t))) ; don't get guicolorscheme
+                   (if (not (null mat))
+                       (let ((str (match-string 1)))
+                         (save-excursion
+                           (save-restriction ; FIXME: write it w/o narrowing using
                                         ; a 'end instead of nil in 're-search-forward
-                 (let ((pt (point)))
-                   (beginning-of-line)
-                   (narrow-to-region (point) pt)
-                   ;; " is a vimscript comment
-                   (if (not (re-search-forward "\"" nil t))
-                   (setq vim-colorscheme-used str))))))
-             (progn
-               (message "vim-theme::Vim colorscheme: not found at all")
-               (setq vim-colorscheme-used nil)))))
-           (if (stringp vim-colorscheme-used)
-           (let ((found-theme (colorscheme-to-color-theme vim-colorscheme-used)))
-             (message "vim-theme::Your Vim setting file calls \"%s\" as colorscheme" vim-colorscheme-used)
-             (if (functionp found-theme)
-             (progn
-               (setq *chosen-theme* found-theme)
-               (message "vim-theme::loading..."))
-               (message "vim-theme::no corresponding color-theme found; default one loading..."))))))))
+                             (let ((pt (point)))
+                               (beginning-of-line)
+                               (narrow-to-region (point) pt)
+                               ;; " is a vimscript comment
+                               (if (not (re-search-forward "\"" nil t))
+                                   (setq vim-colorscheme-used str))))))
+                     (progn
+                       (message "vim-theme::Vim colorscheme: not found at all")
+                       (setq vim-colorscheme-used nil)))))
+               (if (stringp vim-colorscheme-used)
+                   (let ((found-theme (colorscheme-to-color-theme vim-colorscheme-used)))
+                     (message "vim-theme::Your Vim setting file calls \"%s\" as colorscheme" vim-colorscheme-used)
+                     (if (functionp found-theme)
+                         (progn
+                           (setq *chosen-theme* found-theme)
+                           (message "vim-theme::loading..."))
+                       (message "vim-theme::no corresponding color-theme found; default one loading..."))))))))
 
      ;; defcolor = Vim-like color-theme
      ;; NOTE: - parenface added to customize parentheses' color
@@ -263,22 +263,22 @@ TODO: case of '''colorscheme' this'' where this is
      (defmacro defcolor-theme (name &rest colors)
        "Define a color theme and provide it."
        (let ((funsym (intern (compose-theme-name name))))
-     `(progn
-        (defun ,funsym ()
-          (interactive)
-          (color-theme-install
-           '(,funsym
-         ,@colors)))
-        (provide ',funsym))))
+         `(progn
+            (defun ,funsym ()
+              (interactive)
+              (color-theme-install
+               '(,funsym
+                 ,@colors)))
+            (provide ',funsym))))
 
      ;; ir_black colorscheme
      (defcolor-theme "ir_black"
        ((background-color . "#000000")
-    (background-mode . light)
-    (border-color . "#000000")
-    (cursor-color . "#ffffff")
-    (foreground-color . "#ffffff")
-    (mouse-color . "black"))
+        (background-mode . light)
+        (border-color . "#000000")
+        (cursor-color . "#ffffff")
+        (foreground-color . "#ffffff")
+        (mouse-color . "black"))
        (fringe ((t (:background "#000000"))))
        (mode-line ((t (:foreground "#000000" :background "#a6a6a6"))))
        (region ((t (:background "#262d51"))))
@@ -294,13 +294,60 @@ TODO: case of '''colorscheme' this'' where this is
        ;; Todo: #8f8f8f ; Constant: #99cc99 ; MatchParen: (#f6f3e8; #857b6f) ; CursorLine: (guibg: #121212) ; ErrorMsg: #ff6c60 ; SpecialKey: (#808080 ; #343434) ; Type: #ffffb6; Statement: #6699cc
        )
 
-     ;; inkpot colorscheme
+     ;; inkpot colorscheme on `github.com/ciaranm/inkpot'
      (defcolor-theme "inkpot"
+       ((foreground-color . "#cfbfad")
+        (background-color . "#1e1e27")
+        (border-color . "#2e2e37")      ; hl-line
+        (cursor-color . "#8fff8b")
+        (background-mode . dark))
+       (region ((t (:foreground "#ececed" :background "#4e4e90"))))
+       ;; old one: (region ((t (:foreground "#5e3130" :background "#e9ac5f"))))
+       (highlight ((t (:background "#2e2e37")))) ; 404040
+       (hl-line   ((t (:background "#2e2e37"))))
+       ;; (highlight ((t (:background "#666666")))) ; 404040
+       (fringe ((t (:background "#16161b"))))
+       ;; (paren-face-match ((t (:foreground "#c080d0"))))
+       ;; (paren-face-mismatch ((t (:foreground "#ffffff" :background "#6b302f"))))
+       (paren-face ((t (:foreground "#c080d0"))))
+       (show-paren-match-face ((t (:foreground "#cfbfad" :background "#4e4e8f"))))
+       (show-paren-mismatch-face ((t (:foreground "#ffffff" :background "#6b302f"))))
+       (isearch ((t (:bold t :background "#303030" :foreground "#ad7b57"))))
+       ;; (isearch ((t (:bold t :foreground "#303030" :background "#cd8b60"))))
+       ;; incSearch: (isearch ((t (:bold t :foreground "#303030" :background "#ad7b57"))))
+       (modeline ((t (:bold t :foreground "#b9b9b9" :background "#3e3e5e"))))
+       (modeline-inactive ((t (:foreground "#708090" :background "#3e3e5e"))))
+       (modeline-buffer-id ((t (:bold t :foreground "#b9b9b9" :background "#3e3e5e"))))
+       (minibuffer-prompt ((t (:bold t :foreground "#708090"))))
+       (ediff-current-diff-A ((((class color) (min-colors 16)) ; DiffChange
+                               (:foreground "#ffffcd" :background "#306b8f"))
+                              (((class color)) (:foreground "white" :background "blue3"))
+                              (t (:inverse-video t))))
+       (ediff-fine-diff-A ((((class color) (min-colors 16)) ; DiffText
+                               (:foreground "#ffffcd" :background "#4a2a4a"))
+                              (((class color)) (:foreground "white" :background "green4"))
+                              (t (:inverse-video t))))
+       (font-lock-builtin-face ((t (:foreground "#c080d0"))))
+       (font-lock-comment-face ((t (:foreground "#cd8b00"))))
+       (font-lock-constant-face ((t (:foreground "#ffcd8b"))))
+       (font-lock-doc-face ((t (:foreground "#cd8b00"))))
+       (font-lock-function-name-face ((t (:foreground "#cebfad" :bold t)))) ; or #87cefa
+       (font-lock-keyword-face ((t (:foreground "#808bed")))) ; was c080d0
+       (font-lock-preprocessor-face ((t (:foreground "#309090"))))
+       (font-lock-number-face ((t (:foreground "#f0ad6d"))))
+       (font-lock-reference-face ((t (:bold t :foreground "#808bed"))))
+       (font-lock-string-face ((t (:foreground "#ffcd8b" :background "#404040"))))
+       (font-lock-type-face ((t (:foreground "#ff8bff"))))
+       (font-lock-variable-name-face ((t (:foreground "#ff8bff")))) ; Identifier
+       (font-lock-warning-face ((t (:foreground "#ffffff" :background "#6e2e2e"))))) ; #ce4e4e
+
+     ;; old-inkpot colorscheme (inkpot's old pre-2009 version) DEPRECATED
+     (defcolor-theme "old-inkpot"
        ((foreground-color . "#cebfad")
-    (background-color . "#1e1e27")
-    (border-color . "#2e2e2e")           ; 2e2e37 for cursor line
-    (cursor-color . "#8b8bff")
-    (background-mode . dark))
+        (background-color . "#1e1e27")
+        (border-color . "#2e2e2e")           ; 2e2e37 for cursor line
+        (cursor-color . "#8b8bff")
+        (background-mode . dark))
        (region ((t (:foreground "#ececed" :background "#4e4e90"))))
        ;; old one: (region ((t (:foreground "#5e3130" :background "#e9ac5f"))))
        (highlight ((t (:background "#2e2e37")))) ; 404040
@@ -336,10 +383,10 @@ TODO: case of '''colorscheme' this'' where this is
      ;; underwater colorscheme
      (defcolor-theme "underwater"
        ((foreground-color . "#dfeff6") ; (guifg) Normal
-    (background-color . "#102235") ; (guibg) Normal
-    (border-color . "#122538")     ; (guibg) NonText
-    (cursor-color . "#55a096")     ; (guibg) Cursor
-    (background-mode . dark))      ; background=
+        (background-color . "#102235") ; (guibg) Normal
+        (border-color . "#122538")     ; (guibg) NonText
+        (cursor-color . "#55a096")     ; (guibg) Cursor
+        (background-mode . dark))      ; background=
        (region ((t (:foreground "#dfeff6" :background "#24557a")))) ; Visual
        (highlight ((t (:background "#18374f")))) ; CursorLine
        (fringe ((t (:background "#122538"))))
@@ -371,10 +418,10 @@ TODO: case of '''colorscheme' this'' where this is
      ;; dusk colorscheme
      (defcolor-theme "dusk"
        ((foreground-color . "#fffff0")
-    (background-color . "#203048")
-    (border-color . "#132848")
-    (cursor-color . "#12630c")
-    (background-mode . dark))
+        (background-color . "#203048")
+        (border-color . "#132848")
+        (cursor-color . "#12630c")
+        (background-mode . dark))
        (region ((t (:foreground "#00000f" :background "#dfcfb7"))))
        (highlight ((t (:background "#666666")))) ; 404040
        (fringe ((t (:background "#132848"))))
@@ -413,18 +460,18 @@ TODO: case of '''colorscheme' this'' where this is
        "Open current buffer with Vim. To ensure buffers synchronization, set 'GLOBAL-AUTO-REVERT-MODE to T."
        (interactive)
        (let* ((os (symbol-name system-type))
-          (vim-name (if (string-match "Darwin" os)
-                "mvim"
-              (if (string-match "^Windows.*" os)
-                  "gvim.exe"
-                "vim"))))
-     (message "Open %s with %s..." buffer-file-name vim-name)
-     (shell-command (concat vim-name " " buffer-file-name))))
+              (vim-name (if (string-match "Darwin" os)
+                            "mvim"
+                          (if (string-match "^Windows.*" os)
+                              "gvim.exe"
+                            "vim"))))
+         (message "Open %s with %s..." buffer-file-name vim-name)
+         (shell-command (concat vim-name " " buffer-file-name))))
      (global-set-key '[(meta \0)] 'open-with-vim)))
 
-     ;; - some keybindings
-     ;; remember:
-     ;; C-w = Window manipulation in normal modes; a kind of "'delete-backward-word" elsewhere
+;; - some keybindings
+;; remember:
+;; C-w = Window manipulation in normal modes; a kind of "'delete-backward-word" elsewhere
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; vim-everywhere.el ends here

@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Wed Mar 16 20:49:19 2011 (+0100)
+;; Last-Updated: Wed Mar 23 15:50:53 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 35
+;;     Update #: 45
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -61,26 +61,22 @@
 ;;; DIRECTORIES
 (defvar mars/local-conf-path (list "confs" "confs/init"))
 (defvar mars/site-lisp-path (list "lisp")) ; subdirs are loaded in 'load-path too (FIXME: need reboot .emacs if Custom)
-
-;;; CUSTOMS
-;; (defmacro set-custom-vars (&rest args)
-;;   `(custom-set-variables
-;;     ,(while (elt (list (pop args) (pop args)))
-;;        `(,(car elt) ,(concat (file-name-as-directory mars/local-root-dir)
-;;                              (file-name-as-directory mars/personal-data)
-;;                              (cdr elt))))))
-;; (set-custom-vars info "tota")
-(let ((data-dir (concat (file-name-as-directory mars/local-root-dir)
-                        (file-name-as-directory mars/personal-data))))
-  (custom-set-variables
-   '(mars-windows-archiver-file "~/.emacs.d/data/windows-archiver")
-   '(newsticker-cache-filename "~/.emacs.d/data/newsticker/cache")
-   '(newsticker-imagecache-dirname "~/.emacs.d/data/newsticker/images")
-   '(newsticker-groups-filename "~/.emacs.d/data/newsticker/groups")
-   '(org-diary-agenda-file "~/.emacs.d/data/Notes/Diary.org")
-   '(savehist-file "~/.emacs.d/data/history")
-   '(tramp-persistency-file-name "~/.emacs.d/data/tramp")
-))
+ 
+;;; GLOBAL SYSTEM CUSTOMIZATION
+;; general behavior/convention (`custom-file' being specific to a system)
+(let ((tfile (symbol-file 'mars/local-root-dir 'defvar)))
+  (if tfile
+      (let ((common-pre-custom (expand-file-name
+                                (concat
+                                 (file-name-directory tfile)
+                                 (file-name-as-directory "init")
+                                 "common-pre-custom"))))
+        (condition-case nil
+            (load common-pre-custom)
+          (error
+           (message "vars: no global system customization file loaded (hmm!! maybe what you want...)"))))
+    (error
+     "You probably corrupted the `confs/vars' file")))
 
 ;;; DATA PATH
 (defvar c-include-path nil "Additional include path for C programs.")
@@ -92,6 +88,8 @@
 ;;; PROGRAM NAMES
 (defvar mars/haskell-program-name "/usr/bin/ghci"
   "Haskell interpreter fullname.")
+(custom-set-variables
+ '(tramp-default-method "ssh"))
 
 ;;; SPECIFICS (<data>/sys/vars-<hostname>.el or <data>/vars-<hostname>.el)
 (let ((sys-rep (concat (file-name-as-directory mars/local-root-dir)
@@ -102,7 +100,7 @@
     (condition-case nil
         (load-file (concat sys-rep "vars-" system-name ".el"))
       (error nil))))
-
+
 ;;; LOAD `USER-INIT-FILE' IF EXTERNAL CALL
 (unless (boundp '*emacs/normal-startup*)
   (defvar *emacs/normal-startup* nil))

@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Tue Mar 22 23:01:57 2011 (+0100)
+;; Last-Updated: Wed Mar 23 15:30:35 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 1888
+;;     Update #: 1891
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -126,7 +126,7 @@ a simple `custom.el'."
               file)))))))       ; path created
 ;; - disable eyecandies
 (disable-eyecandies menu-bar-mode tool-bar-mode scroll-bar-mode)
-;; - basic customization
+;; - basic customization / see `confs/init/common-pre-custom' too
 (custom-set-variables
  '(inihibit-startup-message t)
  '(custom-file (safe-build-custom-file "Customize"))
@@ -136,6 +136,7 @@ a simple `custom.el'."
  '(display-time-day-and-date t)
  '(resize-mini-windows 'grow-only)   ; resize windows/frame if needed
  '(max-mini-window-height 0.1)
+ '(focus-follows-mouse nil)
  '(mac-allow-anti-aliasing t))
 (mouse-avoidance-mode 'jump)
 

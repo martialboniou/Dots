@@ -66,8 +66,8 @@ The current version should matching **23.3** and need a major 23 if possible.
 Read `.emacs.d/confs/vars.el` to configure your path. Remember this! By default, `.emacs` makes Emacs to:
 
 1. support utf-8 (`.emacs.d/confs/formats.el` to switch to another encoding) / remove eye candies (no toolbar / no scrollbar);
-2. load packages (like `pases`);
-3. create `load-path` (all files and *subdirs* from `.emacs.d/lisp`);
+2. create `load-path` (all files and *subdirs* from `.emacs.d/lisp`);
+3. load uninstalled packages via scripts in `confs/packs.el` or by using `pases`;
 4. generate `autoloads` at the root of `.emacs.d/lisp` (loading `cedet` if there's extended autoloads for `eieio` classes and methods);
 5. add handmade autoloads if needed;
 6. configure general behavior:

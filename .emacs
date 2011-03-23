@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Mon Mar 21 15:05:44 2011 (+0100)
+;; Last-Updated: Tue Mar 22 23:01:57 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 1851
+;;     Update #: 1888
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -58,10 +58,25 @@ Actually Emacs may be loaded from this file too when called by
 another configuration file.")
 (when *emacs/normal-startup*
   (load "~/.emacs.d/confs/vars"))       ; the only hardcoded path
-(defvar the-desktop-file nil)
+(defvar renew-autoloads-at-startup nil) ; (re-)create autoloads (eg. after a change in `confs/packs.el') FIXME: find a better process
+(defvar the-desktop-file nil)           ; desktop
 (defvar the-desktop-lock nil)
-(defvar confirm-frame-action-buffer-alist nil
-  "Associated list of buffer properties in order to get a confirmation alert during action on the frame containing this buffer. A property is a CONS formed by an information and a LIST of parameters for this information. Example: (MAJOR-MODE . (CHESS-MASTER-MODE MAIL-DRAFT-MODE). See the advised `delete-frame' at the end of this file as a use case.")
+(defvar desktop-dir nil)
+(defvar autosave-dir nil                ; autosave
+  "Temporary variable use to make autosaves directory name.
+(That's where #foo# goes.) It should normally be nil if
+`user-init-file' is compiled.")
+(defvar backup-dir   nil                ;backup
+  "Temporary variable use to make backups directory name.
+(That's where foo~ goes.) It should normally be nil if
+`user-init-file' is compiled.")
+(defvar confirm-frame-action-buffer-alist nil ; kill frame alert
+  "Associated list of buffer properties in order to get a confirmation
+alert during action on the frame containing this buffer. A property
+is a CONS formed by an information and a LIST of parameters for
+this information.
+Example: (MAJOR-MODE . (CHESS-MASTER-MODE MAIL-DRAFT-MODE).
+See the advised `delete-frame' at the end of this file as a use case.")
 
 ;;; *TIMER*
 (defvar emacs-load-start (current-time))
@@ -179,19 +194,29 @@ twb#emacs at http://paste.lisp.org/display/43546,"
              (error
               (setq inspectable nil)))
            inspectable))))
-(defun mars/add-to-load-path (root &rest pathname)
-  (let ((r (file-name-as-directory root)))
-    (mapc (lambda (z)
-            (when (stringp z)
-              (let ((p (concat r z)))
-                (when (mergeable-to-path-p p)
-                  (let ((dir (expand-file-name p)))
-                    (let ((default-directory dir)
-                          (orig-load-path load-path))
-                      (setq load-path (list (expand-file-name p)))
-                      (normal-top-level-add-subdirs-to-load-path)
-                      (nconc load-path orig-load-path)))))))
-          (flatten pathname))))
+(defun mars/add-to-load-path (root &optional &rest pathname)
+  "Add directories to `load-path' according the two following
+patterns:
+ROOT (LIST PATH1 PATH2 ...) => ROOT / PATH1 & ROOT / PATH2 & ...
+ROOT                        => ROOT"
+  (let ((path (if pathname
+                  (let ((r (file-name-as-directory root)))
+                    (mapcar (lambda (x)
+                              (expand-file-name (concat r x)))
+                            (flatten pathname)))
+                (list (expand-file-name root)))))
+    (mapc
+     (lambda (dir)
+       (when (and (mergeable-to-path-p dir)
+                  (not (file-exists-p (concat
+                                       (file-name-as-directory dir)
+                                       ".nosearch")))) ; test exclusion on `dir'
+         (let ((default-directory dir)
+               (orig-load-path load-path))
+           (setq load-path (list dir))
+           (normal-top-level-add-subdirs-to-load-path)
+           (nconc load-path orig-load-path)))) ; reverse path construct
+     path)))
 (defun mars/autoload (libraries-and-functions)
   (mapc (lambda(x)
           (apply 'twb/autoload x))
@@ -238,17 +263,20 @@ twb#emacs at http://paste.lisp.org/display/43546,"
     (safe-load-cedet)))
 
 ;;; GENERATE AUTOLOADS (fetch your 'SITE-LISP 's LOADDEFS or create it)
+;; FIXME: work for one site-lisp dir for instance!!
 (mapc '(lambda (x)
          (let ((mars/loaddefs
                 (concat
                  (file-name-as-directory mars/local-root-dir)
                  (file-name-as-directory x) "loaddefs.el")))
-           (unless (file-exists-p mars/loaddefs)
+           (unless (and (file-exists-p mars/loaddefs)
+                        (not renew-autoloads-at-startup)) ; force to renew in some case even if `loaddefs' exists
              (load "update-auto-loads")
              (update-autoloads-in-package-area)) ; adds 'update-auto-loads autoloads in loaddefs too
                                         ; updates CEDET autoloads for CEDET directories
            (safe-autoloads-load mars/loaddefs)))
       mars/site-lisp-path)
+(setq renew-autoloads-at-startup nil)   ; reset to prevent slow reloading
 (add-hook 'kill-emacs-hook 'update-autoloads-in-package-area)
 
 ;;; HANDMADE AUTOLOADS
@@ -607,10 +635,6 @@ the should-be-forbidden C-z.")
                                             mars/desktop-name))
       desktop-path (list desktop-dir)
       history-length 250)
-(defvar autosave-dir nil
-  "Temporary variable use to make autosaves directory name. (That's where #foo# goes.) It should normally be nil if `user-init-file' is compiled.")
-(defvar backup-dir   nil
-  "Temporary variable use to make backups directory name. (That's where foo~ goes.) It should normally be nil if `user-init-file' is compiled.")
 
 (defmacro define-local-temporary-directory (local-work-directory-symbol)
   "Define the best temporary directory for autosaving or backing files up."

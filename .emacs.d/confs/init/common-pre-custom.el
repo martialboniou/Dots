@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 23 15:15:40 2011 (+0100)
 ;; Version: 0.1
-;; Last-Updated: Wed Mar 23 15:57:57 2011 (+0100)
+;; Last-Updated: Thu Mar 24 13:19:09 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 20
+;;     Update #: 35
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -22,6 +22,8 @@
 ;;                  - personal data related path
 ;;                  - general desired behavior
 ;;                  - better default colors
+;; 
+;; IMPORTANT: DON'T COMPILE
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -59,39 +61,40 @@
 ;; (set-custom-vars info "tota")
 (let ((data-dir (concat (file-name-as-directory mars/local-root-dir)
                         (file-name-as-directory mars/personal-data))))
-  (custom-set-variables
-   '(mars-windows-archiver-file "~/.emacs.d/data/windows-archiver")
-   '(newsticker-cache-filename "~/.emacs.d/data/newsticker/cache")
-   '(newsticker-imagecache-dirname "~/.emacs.d/data/newsticker/images")
-   '(newsticker-groups-filename "~/.emacs.d/data/newsticker/groups")
-   '(org-diary-agenda-file "~/.emacs.d/data/Notes/Diary.org")
-   '(savehist-file "~/.emacs.d/data/history")
-   '(tramp-persistency-file-name "~/.emacs.d/data/tramp")
-   '(auto-insert-directory "~/.emacs.d/data/Insert")
-   '(emms-cache-file "~/.emacs.d/.emms-cache")
-   ))
+  (setq mars-windows-archiver-file "~/.emacs.d/data/windows-archiver"
+        newsticker-cache-filename "~/.emacs.d/data/newsticker/cache"
+        newsticker-imagecache-dirname "~/.emacs.d/data/newsticker/images"
+        newsticker-groups-filename "~/.emacs.d/data/newsticker/groups"
+        org-diary-agenda-file "~/.emacs.d/data/Notes/Diary.org"
+        savehist-file "~/.emacs.d/data/history"
+        tramp-persistency-file-name "~/.emacs.d/data/tramp"
+        auto-insert-directory "~/.emacs.d/data/Insert"
+        emms-cache-file "~/.emacs.d/.emms-cache"))
 
 ;;; GENERAL BEHAVIOR
-(custom-set-variables
- '(standard-indent 4)
- '(tab-width 4)
- '(autosave-interval 50)
- '(undo-limit 50000)
- '(auto-compression-mode t)
- '(backup-by-copying t)
- '(backup-by-copying-when-linked t)
- '(backup-by-copying-when-mismatch t)
- '(completion-ignore-case t t)
- '(custom-buffer-done-kill t)
- '(newsticker-display-interval 15.3)
-
- )
+(setq standard-indent 4
+      tab-width 4
+      autosave-interval 50
+      undo-limit 50000
+      auto-compression-mode t
+      backup-by-copying t
+      backup-by-copying-when-linked t
+      backup-by-copying-when-mismatch t
+      completion-ignore-case t
+      custom-buffer-done-kill t
+      newsticker-display-interval 15.3)
 
 ;;; BETTER DEFAULT COLORS
+(set-face-attribute 'default nil
+                    :background "#1e1e27"
+                    :foreground "#cebfad"
+                    :height 140
+                    :foundry "apple"
+                    :family "DejaVu_Sans_Mono") ; TODO: force DejaVu_Sans_Mono font install on OSX
 (custom-set-faces
- ;; '(default ((t (:inherit nil :stipple nil :background "#1e1e27" :foreground "#cebfad" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 140 :width normal :foundry "apple" :family "DejaVu_Sans_Mono")))) ; TODO: force DejaVu_Sans_Mono font install on OSX
- '(hl-paren-colors (quote ("orange1" "yellow1" "greenyellow" "green1" "springgreen1" "cyan1" "slateblue1" "magenta1" "purple")))  ; rainbow in lispem
  '(action-lock-face ((((class color)) (:background "black" :foreground "DeepSkyBlue" :overline "yellow"))))
+ ;; rainbow in lispem
+ '(hl-paren-colors ("orange1" "yellow1" "greenyellow" "green1" "springgreen1" "cyan1" "slateblue1" "magenta1" "purple"))
  ;; default paren-face for matching
  '(paren-face-match ((t (:background "#8722c9" :foreground "black"))))
  '(paren-face-mismatch ((t (:background "#E67321" :foreground "black"))))

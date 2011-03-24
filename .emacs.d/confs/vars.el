@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Wed Mar 23 15:50:53 2011 (+0100)
+;; Last-Updated: Thu Mar 24 12:11:04 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 45
+;;     Update #: 51
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -61,30 +61,40 @@
 ;;; DIRECTORIES
 (defvar mars/local-conf-path (list "confs" "confs/init"))
 (defvar mars/site-lisp-path (list "lisp")) ; subdirs are loaded in 'load-path too (FIXME: need reboot .emacs if Custom)
- 
+(let ((pases-source-dir (expand-file-name
+                         (concat
+                          (file-name-as-directory "~")
+                          (file-name-as-directory ".pases.d"))))) ; or (locate-library "wl") if standard install
+  (when (file-exists-p pases-source-dir) ; IMPORTANT: if `pases' is installed with `confs/packs.el', reboot Emacs
+    (unless (fboundp 'remove-if-not)
+     (require 'cl))
+    (let ((wl-name-list (remove-if-not (lambda (x)
+                                         (and (string-match "^wl" x)
+                                              (null (string-match ".pases$" x))))
+                                       (directory-files pases-source-dir))))
+      (message (prin1-to-string wl-name-list))
+      (when wl-name-list
+        (defvar wl-resource-rep (concat pases-source-dir
+                                        (file-name-as-directory
+                                         (car (last wl-name-list))))
+          "Wanderlust resource repository."))))) ; used in `confs/mail.el'
+
 ;;; GLOBAL SYSTEM CUSTOMIZATION
 ;; general behavior/convention (`custom-file' being specific to a system)
-(let ((tfile (symbol-file 'mars/local-root-dir 'defvar)))
-  (if tfile
-      (let ((common-pre-custom (expand-file-name
-                                (concat
-                                 (file-name-directory tfile)
-                                 (file-name-as-directory "init")
-                                 "common-pre-custom"))))
-        (condition-case nil
-            (load common-pre-custom)
-          (error
-           (message "vars: no global system customization file loaded (hmm!! maybe what you want...)"))))
+(let ((common-pre-custom (expand-file-name
+                          (concat
+                           (file-name-directory load-file-name)
+                           (file-name-as-directory "init")
+                           "common-pre-custom"))))
+  (condition-case nil
+      (load common-pre-custom)
     (error
-     "You probably corrupted the `confs/vars' file")))
+     (message "vars: no global system customization file loaded (hmm!! maybe what you want...)"))))
 
 ;;; DATA PATH
 (defvar c-include-path nil "Additional include path for C programs.")
 (defvar cpp-include-path nil "Additional include path for C++ programs")
-(defvar wl-resource-rep (expand-file-name (concat (file-name-directory "~")
-                          (file-name-as-directory ".pases.d")
-                          (file-name-as-directory "wl-2.15.9.pases")))
-  "Wanderlust resource repository.")    ; or (locate-library "wl") if standard install
+
 ;;; PROGRAM NAMES
 (defvar mars/haskell-program-name "/usr/bin/ghci"
   "Haskell interpreter fullname.")
@@ -102,6 +112,7 @@
       (error nil))))
 
 ;;; LOAD `USER-INIT-FILE' IF EXTERNAL CALL
+(setq *emacs/normal-startup t)
 (unless (boundp '*emacs/normal-startup*)
   (defvar *emacs/normal-startup* nil))
 (when (and (not *emacs/normal-startup*) (not user-init-file))

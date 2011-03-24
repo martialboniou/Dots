@@ -8,7 +8,7 @@
 ;; Version:
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 65
+;;     Update #: 117
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -271,188 +271,133 @@ TODO: case of '''colorscheme' this'' where this is
                  ,@colors)))
             (provide ',funsym))))
 
-     ;; ir_black colorscheme
-     (defcolor-theme "ir_black"
-       ((background-color . "#000000")
-        (background-mode . light)
-        (border-color . "#000000")
-        (cursor-color . "#ffffff")
-        (foreground-color . "#ffffff")
-        (mouse-color . "black"))
-       (fringe ((t (:background "#000000"))))
-       (mode-line ((t (:foreground "#000000" :background "#a6a6a6"))))
-       (region ((t (:background "#262d51"))))
-       (font-lock-builtin-face ((t (:foreground "#fff494"))))
-       (font-lock-comment-face ((t (:foreground "#a1a1a1"))))
-       (font-lock-function-name-face ((t (:foreground "#ffd2a7"))))
-       (font-lock-keyword-face ((t (:foreground "#96cbfe"))))
-       (font-lock-string-face ((t (:foreground "#a8ff60" :background "#000000")))) ; Number: #ff73fd
-       (font-lock-type-face ((t (:foreground"#ffffb6"))))
-       (font-lock-variable-name-face ((t (:foreground "#ffffff"))))
-       (minibuffer-prompt ((t (:foreground "#ffffff" :bold t))))
-       (font-lock-warning-face ((t (:foreground "#ff6c60" :bold t))))
-       ;; Todo: #8f8f8f ; Constant: #99cc99 ; MatchParen: (#f6f3e8; #857b6f) ; CursorLine: (guibg: #121212) ; ErrorMsg: #ff6c60 ; SpecialKey: (#808080 ; #343434) ; Type: #ffffb6; Statement: #6699cc
-       )
-
-     ;; inkpot colorscheme on `github.com/ciaranm/inkpot'
-     (defcolor-theme "inkpot"
-       ((foreground-color . "#cfbfad")
-        (background-color . "#1e1e27")
-        (border-color . "#2e2e37")      ; hl-line
-        (cursor-color . "#8fff8b")
-        (background-mode . dark))
-       (region ((t (:foreground "#ececed" :background "#4e4e90"))))
-       ;; old one: (region ((t (:foreground "#5e3130" :background "#e9ac5f"))))
-       (highlight ((t (:background "#2e2e37")))) ; 404040
-       (hl-line   ((t (:background "#2e2e37"))))
-       ;; (highlight ((t (:background "#666666")))) ; 404040
-       (fringe ((t (:background "#16161b"))))
-       ;; (paren-face-match ((t (:foreground "#c080d0"))))
-       ;; (paren-face-mismatch ((t (:foreground "#ffffff" :background "#6b302f"))))
-       (paren-face ((t (:foreground "#c080d0"))))
-       (show-paren-match-face ((t (:foreground "#cfbfad" :background "#4e4e8f"))))
-       (show-paren-mismatch-face ((t (:foreground "#ffffff" :background "#6b302f"))))
-       (isearch ((t (:bold t :background "#303030" :foreground "#ad7b57"))))
-       ;; (isearch ((t (:bold t :foreground "#303030" :background "#cd8b60"))))
-       ;; incSearch: (isearch ((t (:bold t :foreground "#303030" :background "#ad7b57"))))
-       (modeline ((t (:bold t :foreground "#b9b9b9" :background "#3e3e5e"))))
-       (modeline-inactive ((t (:foreground "#708090" :background "#3e3e5e"))))
-       (modeline-buffer-id ((t (:bold t :foreground "#b9b9b9" :background "#3e3e5e"))))
-       (minibuffer-prompt ((t (:bold t :foreground "#708090"))))
-       (ediff-current-diff-A ((((class color) (min-colors 16)) ; DiffChange
+     ;; wombat colorscheme (2007/01/22 version) by Lars H. Nielsen
+     (defcolor-theme "wombat"
+       ((foreground-color . "#f6f3e8")  ; +Normal guifg
+        (background-color . "#242424")  ; +Normal guibg
+        (border-color . "#2d2d2d")      ; +CursorLine
+        (cursor-color . "#656565")      ; +Cursor guibg
+        (background-mode . dark))       ; color orientation
+       (cursor ((t (:foreground nil :background "#656565")))) ; +Cursor
+       (region ((t (:foreground "#f6f3e8" :background "#444444")))) ; +Visual
+       (highlight ((t (:background "#2d2d2d")))) ; +CursorLine
+       (hl-line   ((t (:background "#2d2d2d")))) ; +CursorLine
+       (fringe ((t (:foreground "#857b6f" :background "#000000")))) ; +LineNr
+       (paren-face ((t (:foreground "#e7f6da")))) ; +Special
+       (show-paren-match-face ((t (:foreground "#f6f3e8" :background "#857b6f" :bold t)))) ; +MatchParen
+       (show-paren-mismatch-face ((t (:foreground "#ffffff" :background "#6e2e2e"))))  ; +Error " from inkpot
+       (isearch ((t (:inverse-video t :bold nil :underline nil)))) ; +Search | (inverse-video)
+       (modeline ((t (:italic t :bold nil :foreground "#f6f3e8" :background "#444444")))) ; +StatusLine
+       (modeline-inactive ((t (:bold nil :foreground "#857b6f" :background "#444444")))) ; +StatusLineNC | User2
+       (modeline-buffer-id ((t (:italic t :bold t :foreground "#f6f3e8" :background "#202020")))) ; +StatusLine
+       (minibuffer-prompt ((t (:bold t :foreground "##f6f3e8")))) ; +User2 guifg | Title guifg
+       (ediff-current-diff-A ((((class color) (min-colors 16))
                                (:foreground "#ffffcd" :background "#306b8f"))
                               (((class color)) (:foreground "white" :background "blue3"))
-                              (t (:inverse-video t))))
-       (ediff-fine-diff-A ((((class color) (min-colors 16)) ; DiffText
-                               (:foreground "#ffffcd" :background "#4a2a4a"))
-                              (((class color)) (:foreground "white" :background "green4"))
-                              (t (:inverse-video t))))
-       (font-lock-builtin-face ((t (:foreground "#c080d0"))))
-       (font-lock-comment-face ((t (:foreground "#cd8b00"))))
-       (font-lock-constant-face ((t (:foreground "#ffcd8b"))))
-       (font-lock-doc-face ((t (:foreground "#cd8b00"))))
-       (font-lock-function-name-face ((t (:foreground "#cebfad" :bold t)))) ; or #87cefa
-       (font-lock-keyword-face ((t (:foreground "#808bed")))) ; was c080d0
-       (font-lock-preprocessor-face ((t (:foreground "#309090"))))
-       (font-lock-number-face ((t (:foreground "#f0ad6d"))))
-       (font-lock-reference-face ((t (:bold t :foreground "#808bed"))))
-       (font-lock-string-face ((t (:foreground "#ffcd8b" :background "#404040"))))
-       (font-lock-type-face ((t (:foreground "#ff8bff"))))
-       (font-lock-variable-name-face ((t (:foreground "#ff8bff")))) ; Identifier
-       (font-lock-warning-face ((t (:foreground "#ffffff" :background "#6e2e2e"))))) ; #ce4e4e
+                              (t (:inverse-video t)))) ; +DiffChange " from inkpot
+       (ediff-fine-diff-A ((((class color) (min-colors 16)) 
+                            (:foreground "#ffffcd" :background "#4a2a4a"))
+                           (((class color)) (:foreground "white" :background "green4"))
+                           (t (:inverse-video t)))) ; +DiffText " from inkpot
+       (font-lock-builtin-face ((t (:foreground "#e7f6da")))) ; +Special
+       (font-lock-comment-face ((t (:foreground "#99968b" :italic t)))) ; +Comment
+       (font-lock-constant-face ((t (:foreground "#e5786d")))) ; +Constant
+       (font-lock-doc-face ((t (:foreground "#99968b" :italic t)))) ; +Comment
+       (font-lock-function-name-face ((t (:foreground "#cae682" :bold nil)))) ; +Function | Normal guifg (bold)
+       (font-lock-keyword-face ((t (:foreground "#8ac6f2")))) ; +Statement
+       (font-lock-preprocessor-face ((t (:foreground "#e5786d")))) ; +PreProc
+       (font-lock-number-face ((t (:foreground "#e5786d")))) ; +Number
+       (font-lock-reference-face ((t (:bold t :foreground "#8ac6f2")))) ; +Statement
+       (font-lock-string-face ((t (:foreground "#95e454" :background nil :italic t)))) ; +String
+       (font-lock-type-face ((t (:foreground "#cae682")))) ; +Type
+       (font-lock-variable-name-face ((t (:foreground "#cae682")))) ; +Identifier
+       (font-lock-warning-face ((t (:foreground "#ffffff" :background "#6e2e2e"))))) ; +Error | ErrorMsg " from inkpot
 
-     ;; old-inkpot colorscheme (inkpot's old pre-2009 version) DEPRECATED
-     (defcolor-theme "old-inkpot"
-       ((foreground-color . "#cebfad")
-        (background-color . "#1e1e27")
-        (border-color . "#2e2e2e")           ; 2e2e37 for cursor line
-        (cursor-color . "#8b8bff")
-        (background-mode . dark))
-       (region ((t (:foreground "#ececed" :background "#4e4e90"))))
-       ;; old one: (region ((t (:foreground "#5e3130" :background "#e9ac5f"))))
-       (highlight ((t (:background "#2e2e37")))) ; 404040
-       (hl-line   ((t (:background "#2e2e37"))))
-       ;; (highlight ((t (:background "#666666")))) ; 404040
-       (fringe ((t (:background "#16161b"))))
-       ;; (paren-face-match ((t (:foreground "#c080d0"))))
-       ;; (paren-face-mismatch ((t (:foreground "#ffffff" :background "#6b302f"))))
-       (paren-face ((t (:foreground "#c080d0"))))
-       (show-paren-match-face ((t (:foreground "#cfbfad" :background "#4e4e8f"))))
-       (show-paren-mismatch-face ((t (:foreground "#ffffff" :background "#6b302f"))))
-       (isearch ((t (:bold t :background "#303030" :foreground "#ad7b57"))))
-       ;; (isearch ((t (:bold t :foreground "#303030" :background "#cd8b60"))))
-       ;; incSearch: (isearch ((t (:bold t :foreground "#303030" :background "#ad7b57"))))
-       (modeline ((t (:bold t :foreground "#b9b9b9" :background "#3e3e5e"))))
-       (modeline-inactive ((t (:foreground "#708090" :background "#3e3e5e"))))
-       (modeline-buffer-id ((t (:bold t :foreground "#b9b9b9" :background "#3e3e5e"))))
-       (minibuffer-prompt ((t (:bold t :foreground "#708090"))))
-       (font-lock-builtin-face ((t (:foreground "#c080d0"))))
-       (font-lock-comment-face ((t (:foreground "#cd8b00"))))
-       (font-lock-constant-face ((t (:foreground "#ffcd8b"))))
-       (font-lock-doc-face ((t (:foreground "#cd8b00"))))
-       (font-lock-function-name-face ((t (:foreground "#cebfad" :bold t)))) ; or #87cefa
-       (font-lock-keyword-face ((t (:foreground "#808bed")))) ; was c080d0
-       (font-lock-preprocessor-face ((t (:foreground "#309090"))))
-       (font-lock-number-face ((t (:foreground "#f0ad6d"))))
-       (font-lock-reference-face ((t (:bold t :foreground "#808bed"))))
-       (font-lock-string-face ((t (:foreground "#ffcd8b" :background "#404040"))))
-       (font-lock-type-face ((t (:foreground "#ff8bff"))))
-       (font-lock-variable-name-face ((t (:foreground "#ff8bff")))) ; Identifier
-       (font-lock-warning-face ((t (:foreground "#ffffff" :background "#6e2e2e")))))
+     ;; inkpot colorscheme from `github.com/ciaranm/inkpot'
+     (defcolor-theme "inkpot"
+       ((foreground-color . "#cfbfad")  ; +Normal guifg
+        (background-color . "#1e1e27")  ; +Normal guibg
+        (border-color . "#2e2e37")      ; +CursorLine
+        (cursor-color . "#8b8bff")      ; +Cursor guibg
+        (background-mode . dark))       ; color orientation
+       (region ((t (:foreground "#eeeeee" :background "#4e4e8f")))) ; +Visual
+       (highlight ((t (:background "#2e2e37")))) ; +CursorLine
+       (hl-line   ((t (:background "#2e2e37")))) ; +CursorLine
+       (fringe ((t (:foreground "#8b8bcd" :background "#2e2e2e")))) ; +LineNr
+       (paren-face ((t (:foreground "#c080d0")))) ; +Special
+       (show-paren-match-face ((t (:foreground "#cfbfad" :background "#4e4e8f" :bold nil)))) ; +MatchParen
+       (show-paren-mismatch-face ((t (:foreground "#ffffff" :background "#6e2e2e"))))  ; +Error
+       (isearch ((t (:bold t :background "#303030" :foreground "#ad7b57")))) ; +Search
+       (modeline ((t (:bold t :foreground "#b9b9b9" :background "#3e3e5e")))) ; +StatusLine
+       (modeline-inactive ((t (:foreground "#708090" :background "#3e3e5e")))) ; +StatusLineNC | User2
+       (modeline-buffer-id ((t (:bold t :foreground "#b9b9b9" :background "#3e3e5e")))) ; +StatusLine
+       (minibuffer-prompt ((t (:bold t :foreground "#7070a0")))) ; +User2 guifg
+       (ediff-current-diff-A ((((class color) (min-colors 16))
+                               (:foreground "#ffffcd" :background "#306b8f"))
+                              (((class color)) (:foreground "white" :background "blue3"))
+                              (t (:inverse-video t)))) ; +DiffChange
+       (ediff-fine-diff-A ((((class color) (min-colors 16)) 
+                            (:foreground "#ffffcd" :background "#4a2a4a"))
+                           (((class color)) (:foreground "white" :background "green4"))
+                           (t (:inverse-video t)))) ; +DiffText
+       (font-lock-builtin-face ((t (:foreground "#c080d0")))) ; +Special
+       (font-lock-comment-face ((t (:foreground "#cd8b00" :italic nil)))) ; +Comment
+       (font-lock-constant-face ((t (:foreground "#ffcd8b")))) ; +Constant
+       (font-lock-doc-face ((t (:foreground "#cd8b00" :italic nil)))) ; +Comment
+       (font-lock-function-name-face ((t (:foreground "#cfbfad" :bold t)))) ; +Normal guifg (bold)
+       (font-lock-keyword-face ((t (:foreground "#808bed")))) ; +Statement
+       (font-lock-preprocessor-face ((t (:foreground "#409090")))) ; +PreProc
+       (font-lock-number-face ((t (:foreground "#f0ad6d")))) ; +Number
+       (font-lock-reference-face ((t (:bold t :foreground "#808bed")))) ; +Statement
+       (font-lock-string-face ((t (:foreground "#ffcd8b" :background "#404040" :italic nil)))) ; +String
+       (font-lock-type-face ((t (:foreground "#ff8bff")))) ; +Type
+       (font-lock-variable-name-face ((t (:foreground "#ff8bff")))) ; +Identifier
+       (font-lock-warning-face ((t (:foreground "#ffffff" :background "#6e2e2e"))))) ; +Error
 
-     ;; underwater colorscheme
-     (defcolor-theme "underwater"
-       ((foreground-color . "#dfeff6") ; (guifg) Normal
-        (background-color . "#102235") ; (guibg) Normal
-        (border-color . "#122538")     ; (guibg) NonText
-        (cursor-color . "#55a096")     ; (guibg) Cursor
-        (background-mode . dark))      ; background=
-       (region ((t (:foreground "#dfeff6" :background "#24557a")))) ; Visual
-       (highlight ((t (:background "#18374f")))) ; CursorLine
-       (fringe ((t (:background "#122538"))))
-       ;; (paren-face-match ((t (:foreground "#c080d0"))))
-       ;; (paren-face-mismatch ((t (:foreground "#ffffff" :background "#6b302f"))))
-       (paren-face ((t (:foreground "#fffff0"))))
-       (show-paren-match-face ((t (:foreground "#ffffff" :background "#439ea9" :bold t)))) ; MatchParen
-       (show-paren-mismatch-face ((t (:foreground "#ffffff")))) ; (guifg) MatchParen
-       (isearch ((t (:bold t :foreground "#e2daef" :background "#af81f4")))) ; IncSearch
-       ;; incSearch: (isearch ((t (:bold t :foreground "#303030" :background "#ad7b57"))))
-       (modeline ((t (:foreground "#96defa" :background "#0c1926"))))
-       (modeline-inactive ((t (:foreground "#68cee8" :background "#0c1926"))))
-       (modeline-buffer-id ((t (:foreground "#96defa" :background "#203048"))))
-       (minibuffer-prompt ((t (:bold t :foreground "#dfeff6"))))
-       (font-lock-builtin-face ((t (:foreground "#8ac6f2")))) ; Identifier (?Function)
-       (font-lock-comment-face ((t (:foreground "#3e71a1" :italic t)))) ; Comment
-       (font-lock-constant-face ((t (:foreground "#96defa")))) ; Constant
-       (font-lock-doc-face ((t (:foreground "#3e71a1")))) ; (italic|none) Comment
-       (font-lock-function-name-face ((t (:foreground "#96defa" :bold t)))) ; (bold) Normal
-       (font-lock-keyword-face ((t (:foreground "#8ac6f2")))) ; Keyword
-       (font-lock-preprocessor-face ((t (:foreground "#ef6145")))) ; PreProc
-       (font-lock-number-face ((t (:foreground "#96defa")))) ; Number
-       (font-lock-reference-face ((t (:foreground "#68cee8")))) ; Statement?
-       (font-lock-string-face ((t (:foreground "#89e14b" :italic t)))) ; String
-       (font-lock-type-face ((t (:foreground "#41b2ea")))) ; Type
-       (font-lock-variable-name-face ((t (:foreground "#8ac6f2")))) ; Identifier
-       (font-lock-warning-face ((t (:foreground "#aded80" :background "#579929" :bold t))))) ; Todo
-
-     ;; dusk colorscheme
-     (defcolor-theme "dusk"
-       ((foreground-color . "#fffff0")
-        (background-color . "#203048")
-        (border-color . "#132848")
-        (cursor-color . "#12630c")
-        (background-mode . dark))
-       (region ((t (:foreground "#00000f" :background "#dfcfb7"))))
-       (highlight ((t (:background "#666666")))) ; 404040
-       (fringe ((t (:background "#132848"))))
-       ;; (paren-face-match ((t (:foreground "#c080d0"))))
-       ;; (paren-face-mismatch ((t (:foreground "#ffffff" :background "#6b302f"))))
-       (paren-face ((t (:foreground "#fffff0"))))
-       (show-paren-match-face ((t (:foreground "#fffff0" :background "#197f80"))))
-       (show-paren-mismatch-face ((t (:foreground "#fffff0")))) ; a background color in the future
-       (isearch ((t (:bold t :foreground "#000000" :background "#a5fd9e"))))
-       ;; incSearch: (isearch ((t (:bold t :foreground "#303030" :background "#ad7b57"))))
-       (modeline ((t (:bold t :foreground "#0a0481" :background "#bfbfbf"))))
-       (modeline-inactive ((t (:foreground "#7e7e7e" :background "#bfbfbf"))))
-       (modeline-buffer-id ((t (:bold t :foreground "#0a0481" :background "#bfbfbf"))))
-       (minibuffer-prompt ((t (:bold t :foreground "#fffff0"))))
-       (font-lock-builtin-face ((t (:foreground "#d2a31f")))) ; fba2a1 (pink)
-       (font-lock-comment-face ((t (:foreground "#7d808f"))))
-       (font-lock-constant-face ((t (:foreground "#ffcd8b"))))
-       (font-lock-doc-face ((t (:foreground "#cd8b00"))))
-       (font-lock-function-name-face ((t (:foreground "#fffff0" :bold t)))) ;
-       (font-lock-keyword-face ((t (:foreground "#efe68a"))))
-       (font-lock-preprocessor-face ((t (:foreground "#d2a31f"))))
-       (font-lock-number-face ((t (:foreground "#f0ad6d"))))
-       (font-lock-reference-face ((t (:bold t :foreground "#808bed"))))
-       (font-lock-string-face ((t (:foreground "#91b3c2"))))
-       (font-lock-type-face ((t (:foreground "#ff8bff"))))
-       (font-lock-variable-name-face ((t (:foreground "#ee9b9c")))) ; Identifier
-       (font-lock-warning-face ((t (:foreground "#2d8eff")))))
+     ;; ir_black colorscheme (2011/01/19 version) from `github.com/lukaszb/vim-irblack'
+     (defcolor-theme "ir_black"
+       ((foreground-color . "#F6F3E8")  ; +Normal guifg
+        (background-color . "black")    ; +Normal guibg
+        (border-color . "#121212")      ; +CursorLine
+        (background-mode . dark))       ; color orientation
+       (cursor ((t (:foreground "black" :background "white")))) ; +Cursor
+       (region ((t (:background "#262D51")))) ; +Visual
+       (highlight ((t (:background "#121212")))) ; +CursorLine
+       (hl-line   ((t (:background "#121212")))) ; +CursorLine
+       (fringe ((t (:foreground "#3D3D3D" :background "black")))) ; +LineNr
+       (paren-face ((t (:foreground "#E18964")))) ; +Special
+       (show-paren-match-face ((t (:foreground "#f6f3e8" :background "#857b6f" :bold nil)))) ; +MatchParen
+       (show-paren-mismatch-face ((t (:foreground "black" :background "#FF6C60"))))  ; +Error | ErrorMsg
+       (isearch ((t (:bold t :underline t)))) ; +Search
+       (modeline ((t (:italic t :foreground "#CCCCCC" :background "#202020")))) ; +StatusLine
+       (modeline-inactive ((t (:foreground "black" :background "#202020")))) ; +StatusLineNC | User2
+       (modeline-buffer-id ((t (:bold t :foreground "#CCCCCC" :background "#202020")))) ; +StatusLine
+       (minibuffer-prompt ((t (:bold t :foreground "#f6f3e8")))) ; +User2 guifg | Title guifg
+       (ediff-current-diff-A ((((class color) (min-colors 16))
+                               (:foreground "#ffffcd" :background "#306b8f"))
+                              (((class color)) (:foreground "white" :background "blue3"))
+                              (t (:inverse-video t)))) ; +DiffChange " from inkpot
+       (ediff-fine-diff-A ((((class color) (min-colors 16)) 
+                            (:foreground "#ffffcd" :background "#4a2a4a"))
+                           (((class color)) (:foreground "white" :background "green4"))
+                           (t (:inverse-video t)))) ; +DiffText " from inkpot
+       (font-lock-builtin-face ((t (:foreground "#E18964")))) ; +Special
+       (font-lock-comment-face ((t (:foreground "#7C7C7C" :italic nil)))) ; +Comment
+       (font-lock-constant-face ((t (:foreground "#99CC99")))) ; +Constant
+       (font-lock-doc-face ((t (:foreground "#7C7C7C" :italic nil)))) ; +Comment
+       (font-lock-function-name-face ((t (:foreground "#FFD2A7" :bold nil)))) ; +Function | Normal guifg (bold)
+       (font-lock-keyword-face ((t (:foreground "#6699CC")))) ; +Statement
+       (font-lock-preprocessor-face ((t (:foreground "#96CBFE")))) ; +PreProc
+       (font-lock-number-face ((t (:foreground "#FF73FD")))) ; +Number
+       (font-lock-reference-face ((t (:bold t :foreground "#6699CC")))) ; +Statement
+       (font-lock-string-face ((t (:foreground "#A8FF60" :background nil :italic nil)))) ; +String
+       (font-lock-type-face ((t (:foreground "#FFFFB6")))) ; +Type
+       (font-lock-variable-name-face ((t (:foreground "#C6C5FE")))) ; +Identifier
+       (font-lock-warning-face ((t (:foreground "black" :background "#FF6C60"))))) ; +Error | ErrorMsg
 
      ;; 5- fetch your vim colorscheme and load a mockup adapter
-     (setq *chosen-theme* (colorscheme-to-color-theme "inkpot")) ; default theme
-     ;; (mars/extract-colorscheme-from-vimrc)
+     (setq *chosen-theme* (colorscheme-to-color-theme "wombat")) ; default theme
+     (mars/extract-colorscheme-from-vimrc)
      (funcall *chosen-theme*)
 
      ;; 6- open the current buffer in Vim (when Emacs modal editing comes short)

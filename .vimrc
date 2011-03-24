@@ -120,7 +120,7 @@ if &t_Co > 2 || has("gui_running")
     syntax on
 endif
 if &t_Co == 256 || has("gui_running")
-    colorscheme inkpot " ir_black \" underwater-mod \" dusk \" inkpot \" ir_black \" railscasts \" from Ruby theme in Textmate
+    colorscheme wombat " inkpot \" ir_black \" railscasts \" from Ruby theme in Textmate
 endif
 
 "" color template pattern

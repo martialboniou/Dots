@@ -16,6 +16,7 @@ if [ "`uname`" = "Darwin" ]; then
   export LSCOLORS=dxgxcxdxbxegedabagacad
   alias ls='ls -G' # AIX/BSD ls command
   alias ghci='EDITOR=mvim ghci'
+  alias gvim=mvim
   function wman() {
     url="man:${1}"
     echo `open $url` # install Bwana; ManOpen is DEPRECATED

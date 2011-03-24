@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Wed Mar 23 11:20:27 2011 (+0100)
+;; Last-Updated: Thu Mar 24 21:18:26 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 188
+;;     Update #: 191
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -53,7 +53,7 @@
 ;; - install in the first directory of `mars/site-lisp-path' (by default) if not found
 ;; - add required subdirs to LOAD-PATH if newly installed
 ;; TODO: write a list of required cli program (especially for Windows users; for them, install msys?):
-;; tar, gzip, autoconf, make, svn, git, darcs, wget (curl if not?), bash, rake (rvm must be installed on Un*x-like)
+;; tar, gzip, autoconf, make, svn, git, darcs, wget (curl if not?), bash, rake (rvm must be installed on Un*x-like), bzr
 (defvar mars/site-lisp-packages nil)
 (setq mars/site-lisp-packages '((vimpulse     . ((get . "git clone git://gitorious.org/vimpulse/vimpulse")
                                                  (install . "make")))
@@ -118,9 +118,11 @@
                                                        (install . "make CEDET=`echo $PWD/../cedet`;make autoloads EBATCH=\"emacs -batch -no-site-file -eval \\\"(add-to-list 'load-path \\\\\\\".\\\\\\\")\\\"\"") ; FIXME: assume cedet is in the same directory / windows users should use GNU bash TODO: test it on Win32/64
                                                        (nosearch . ("ecb-images" "html"))
                                                        (noauto . ".")))
-                                (nxhtml             . ((get . "wget http://ourcomments.org/Emacs/DL/elisp/nxhtml/zip/nxhtml-2.08-100425.zip; unzip nxhtml-2.08-100425.zip;rm nxhtml-2.08-100425.zip")
+                                (nxhtml             . ((get . "bzr branch lp:nxhtml")
+                                                       ;; the following version is not compatible with 23 due to deprecated face
+                                                       ;; (get . "wget http://ourcomments.org/Emacs/DL/elisp/nxhtml/zip/nxhtml-2.08-100425.zip; unzip nxhtml-2.08-100425.zip;rm nxhtml-2.08-100425.zip")
                                                        (install . "cd nxhtml;emacs-compile-directory;cd ../related;emacs-compile-directory;cd ../util;emacs-compile-directory;cd ..;emacs-compile-directory")
-                                                       (nosearch . ("alts" "etc" "nxhtml" "related" "tests" "util" "zipped-utils"))
+                                                       (nosearch . ("alts" "etc" "nxhtml" "related" "tests" "util" ".bzr"))
                                                        (noauto . ".")))
                                 (emacs-w3m          . ((get . "cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot checkout emacs-w3m")
                                                        (install . "autoconf;./configure;make")

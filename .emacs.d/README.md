@@ -16,4 +16,4 @@ Windows users
 
 *This version is unchecked*
 
-You will need `msys` and/or `MingW` and the following program: `bash`, `tar`, `gzip`, `autoconf`, `make`, `svn`, `git`, `cvs`, `darcs`, `wget`, `rake`/`ruby` (via `pik`), `python` and its setup tool in order to use `easy_install`. You should install *Haskell plateform* (useful to get `darcs` via `cabal`, the Haskell package manager), `mplayer` (to use `emms`) and/or `mpd`.
+You will need `msys` and/or `MingW` and the following program: `bash`, `tar`, `gzip`, `autoconf`, `make`, `svn`, `git`, `cvs`, `darcs`, `wget`, `rake`/`ruby` (via `pik`), `python` and its setup tool in order to use `easy_install`. You should install *Haskell plateform* (useful to get `darcs` via `cabal`, the Haskell package manager), `bzr`, `mplayer` (to use `emms`) and/or `mpd`.

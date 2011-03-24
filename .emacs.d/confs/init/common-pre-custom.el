@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 23 15:15:40 2011 (+0100)
 ;; Version: 0.1
-;; Last-Updated: Thu Mar 24 15:57:13 2011 (+0100)
+;; Last-Updated: Thu Mar 24 21:02:17 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 37
+;;     Update #: 62
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -102,15 +102,21 @@
 (custom-set-faces
  '(action-lock-face ((((class color)) (:background "black" :foreground "DeepSkyBlue" :overline "yellow"))))
  ;; default paren-face for matching
- '(paren-face-match ((t (:background "#8722c9" :foreground "black"))))
- '(paren-face-mismatch ((t (:background "#E67321" :foreground "black"))))
- '(paren-face-no-match ((((class color)) (:background "DarkRed" :foreground "black"))))
+ '(paren-face-match ((t (:inherit show-paren-match-face))))
+ '(paren-face-mismatch ((t (:inherit show-paren-mismatch-face))))
+ '(paren-face-no-match ((((class color) (background dark)) (:inherit paren-face :background "IndianRed4"))
+                        (((class color) (background light))(:inherit paren-face :background "IndianRedD1"))))
  ;; viper using inheritance
  '(viper-minibuffer-emacs ((((class color)) (:inherit font-lock-warning-face))))
  '(viper-minibuffer-insert ((((class color)) (:inherit default))))
  '(viper-minibuffer-vi ((((class color)) (:inherit font-lock-builtin-face))))
  '(viper-replace-overlay ((t nil)))
  '(viper-search ((((class color)) (:inherit isearch))))
+ ;; dark background friend ido colors
+ '(ido-only-match ((((class color) (background dark)) (:foreground "#00cd00"))  ; green3
+                   (((class color) (background light)) (:foreground "#228b22")))) ; ForestGreen
+ '(ido-subdir ((((class color) (background dark)) (:foreground "cd0000")) 
+                   (((class color) (background light)) (:foreground "8b2222"))))
  ;; anything using inheritance
  '(anything-M-x-key-face ((t (:inherit font-lock-reference-face :underline t))))
  '(anything-dir-heading ((t (:inherit font-lock-doc-face :weight bold))))
@@ -124,24 +130,43 @@
  '(anything-match ((t (:inherit match :inverse-video t))))
  '(anything-overlay-line-face ((t (:inherit font-lock-warning-face :foreground "default"))))
  ;; obvious trailing whitespace
- '(trailing-whitespace ((t (:background "grey" :strike-through "red"))))
+ '(trailing-whitespace ((((class color) (background dark))
+                         (:background "gray90" :strike-through "red1"))
+                        (((class color) (background light))   
+                         (:background "gray10" :strike-through "red1"))))
  ;; no more flashy background in MuMaMo
- '(mumamo-background-chunk-major ((((class color) (min-colors 88) (background dark)) (:background "gray10"))))
- '(mumamo-background-chunk-submode1 ((((class color) (min-colors 88) (background dark)) (:background "gray20"))))
+ '(mumamo-background-chunk-major ((((class color) (min-colors 88)
+                                    (background dark)) (:background "gray10"))
+                                  (((class color) (min-colors 88)
+                                    (background light)) (:background "gray90"))))
+ '(mumamo-background-chunk-submode1 ((((class color) (min-colors 88)
+                                       (background dark)) (:background "gray20"))
+                                     (((class color) (min-colors 88)
+                                       (background light)) (:background "gray80"))))
  ;; no more pinkish flymake
- '(flymake-errline ((((class color)) (:background "#dd4400"))))
- '(flymake-warnline ((((class color)) (:background "SlateBlue4"))))
+ '(flymake-errline ((((class color)) (:inherit font-lock-warning-face))))
+ '(flymake-warnline ((((class color)) (:inherit font-lock-warning-face :inverse-video t))))
  ;; clearer dired
- '(diredp-dir-priv ((((background dark)) (:inherit font-lock-doc-face :weight bold))))
- '(diredp-file-name ((((background dark)) (:inherit default))))
+ '(diredp-dir-priv ((t (:inherit font-lock-doc-face :weight bold))))
+ '(diredp-file-name ((t (:inherit default))))
  ;; greyish ediff / color-theme or vimpulse may override this
- '(ediff-even-diff-Ancestor ((((class color) (min-colors 16)) (:background "Grey40" :foreground "White"))))
- '(ediff-even-diff-B ((((class color) (min-colors 16)) (:background "Grey40" :foreground "White"))))
- '(ediff-odd-diff-A ((((class color) (min-colors 16)) (:background "Grey40" :foreground "White"))))
- '(ediff-odd-diff-C ((((class color) (min-colors 16)) (:background "Grey40" :foreground "White"))))
+ '(ediff-even-diff-Ancestor ((((class color) (min-colors 16) (background dark))   (:background "SlateGray4" :foreground "SlateGray1"))
+                             (((class color) (min-colors 16) (background light)) (:background "SlateGray1" :foreground "SlateGray4"))))
+ '(ediff-odd-diff-A ((((class color) (min-colors 16) (background dark)) (:background "gray40" :foreground "white"))
+                     (((class color) (min-colors 16) (background light)) (:background "gray60" :foreground "black"))))
+ '(ediff-odd-diff-B ((((class color) (min-colors 16) (background dark)) (:background "gray40" :foreground "white"))
+                     (((class color) (min-colors 16) (background light)) (:background "gray60" :foreground "black"))))
+ '(ediff-odd-diff-C ((((class color) (min-colors 16) (background dark)) (:background "gray40" :foreground "white"))
+                     (((class color) (min-colors 16) (background light)) (:background "gray60" :foreground "black"))))
+ '(ediff-even-diff-A ((((class color) (min-colors 16) (background dark)) (:background "gray20" :foreground "white"))
+                      (((class color) (min-colors 16) (background light)) (:background "gray80" :foreground "black"))))
+ '(ediff-even-diff-B ((((class color) (min-colors 16) (background dark)) (:background "gray20" :foreground "white"))
+                      (((class color) (min-colors 16) (background light)) (:background "gray80" :foreground "black"))))
+ '(ediff-even-diff-C ((((class color) (min-colors 16) (background dark)) (:background "gray20" :foreground "white"))
+                      (((class color) (min-colors 16) (background light)) (:background "gray80" :foreground "black"))))
  ;; readable default faces for emms
- '(emms-playlist-selected-face ((((class color) (background dark)) (:background "GoldenRod" :foreground "black"))))
- '(emms-playlist-track-face ((((class color) (background dark)) (:foreground "#8722c9"))))
+ '(emms-playlist-selected-face ((((class color)) (:inherit font-lock-keyword-face))))
+ '(emms-playlist-track-face ((((class color)) (:inherit default))))
  ;; readable default faces for wanderlust AKA wl
  '(wl-highlight-action-argument-face ((((class color) (background dark)) (:foreground "orange" :slant italic))))
  '(wl-highlight-demo-face ((((class color) (background dark)) (:background "#000000" :foreground "#d9ffd9"))))
@@ -174,8 +199,8 @@
  '(wl-highlight-summary-thread-top-face ((((class color) (background dark)) (:foreground "GreenYellow"))))
  '(wl-highlight-summary-unread-face ((((class color) (background dark)) (:foreground "#eee"))))
  ;; readable default faces for newsticker
- '(newsticker-enclosure-face ((t (:background "orange" :foreground "black" :weight bold))))
- '(newsticker-treeview-selection-face ((((class color) (background dark)) (:background "#bbbbff" :foreground "black"))))
+ ;; '(newsticker-enclosure-face ((t (:background "orange" :foreground "black" :weight bold))))
+ '(newsticker-treeview-selection-face ((((class color)) (:inherit newsticker-treeview-new-face :inverse-video t))))
  ;; howm needs more sober default colors
  '(howm-menu-list-face ((t (:foreground "green"))))
  '(howm-mode-keyword-face ((((class color)) (:foreground "green"))))

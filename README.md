@@ -43,7 +43,7 @@ A lot of work is needed to enhance the portability but some snippets may be usef
 * yasnippet
 * auto-complete
 * hippie-expand (on `C-p`)
-* Nxhtml (`espresso` should be used as `js2-mode` doesn't work with MuMaMo)
+* Nxhtml (`espresso` should be used (newly renamed `js`) as `js2-mode` doesn't work with MuMaMo)
 
 Some packages may also be useful in order to help this configuration to work fine. Please download:
 

@@ -8,7 +8,7 @@
 ;; Version:
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 118
+;;     Update #: 121
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -171,11 +171,14 @@
      (define-key viper-vi-global-user-map " d" 'viper-kill-buffer)
 
      ;; 6- colorize <> modes
+     (setq viper-vi-state-id
+           (concat (propertize "<V>" 'face 'font-lock-string-face) " ")
+           viper-insert-state-id
+           (concat (propertize "<I>" 'face 'font-lock-string-face) " ")
+           viper-replace-state-id
+           (concat (propertize "<R>" 'face 'font-lock-string-face) " "))
      (require 'hi-lock)
-     (setq viper-vi-state-id (concat (propertize "<V>" 'face 'hi-blue-b) " ")
-           viper-emacs-state-id (concat (propertize "<E>" 'face 'hi-red-b) " ")
-           viper-insert-state-id (concat (propertize "<I>" 'face 'hi-blue-b) " ")
-           viper-replace-state-id (concat (propertize "<R>" 'face 'hi-blue-b) " "))
+     (setq viper-emacs-state-id (concat (propertize "<E>" 'face 'hi-red-b) " "))
      (put 'viper-mode-string 'risky-local-variable t)
 
      ;; choose a theme according to your Vim setup (~/.vimrc by default)
@@ -295,7 +298,7 @@ TODO: case of '''colorscheme' this'' where this is
                                (:foreground "#ffffcd" :background "#306b8f"))
                               (((class color)) (:foreground "white" :background "blue3"))
                               (t (:inverse-video t)))) ; +DiffChange " from inkpot
-       (ediff-fine-diff-A ((((class color) (min-colors 16)) 
+       (ediff-fine-diff-A ((((class color) (min-colors 16))
                             (:foreground "#ffffcd" :background "#4a2a4a"))
                            (((class color)) (:foreground "white" :background "green4"))
                            (t (:inverse-video t)))) ; +DiffText " from inkpot
@@ -336,7 +339,7 @@ TODO: case of '''colorscheme' this'' where this is
                                (:foreground "#ffffcd" :background "#306b8f"))
                               (((class color)) (:foreground "white" :background "blue3"))
                               (t (:inverse-video t)))) ; +DiffChange
-       (ediff-fine-diff-A ((((class color) (min-colors 16)) 
+       (ediff-fine-diff-A ((((class color) (min-colors 16))
                             (:foreground "#ffffcd" :background "#4a2a4a"))
                            (((class color)) (:foreground "white" :background "green4"))
                            (t (:inverse-video t)))) ; +DiffText
@@ -377,7 +380,7 @@ TODO: case of '''colorscheme' this'' where this is
                                (:foreground "#ffffcd" :background "#306b8f"))
                               (((class color)) (:foreground "white" :background "blue3"))
                               (t (:inverse-video t)))) ; +DiffChange " from inkpot
-       (ediff-fine-diff-A ((((class color) (min-colors 16)) 
+       (ediff-fine-diff-A ((((class color) (min-colors 16))
                             (:foreground "#ffffcd" :background "#4a2a4a"))
                            (((class color)) (:foreground "white" :background "green4"))
                            (t (:inverse-video t)))) ; +DiffText " from inkpot

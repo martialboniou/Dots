@@ -8,7 +8,7 @@
 ;; Version:
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 117
+;;     Update #: 118
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -224,7 +224,7 @@ TODO: case of '''colorscheme' this'' where this is
              ;; locate used colorscheme in your .vimrc
              (with-temp-buffer
                (insert-file-contents vimfile)
-               (end-of-buffer)                       ; backsearching
+               (end-of-buffer)                       ; backward searching
                (makunbound 'vim-colorscheme-used)
                (while (not (boundp 'vim-colorscheme-used))
                  (let ((mat

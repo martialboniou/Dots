@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 23 15:15:40 2011 (+0100)
 ;; Version: 0.1
-;; Last-Updated: Thu Mar 24 13:19:09 2011 (+0100)
+;; Last-Updated: Thu Mar 24 15:57:13 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 35
+;;     Update #: 37
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -86,15 +86,21 @@
 
 ;;; BETTER DEFAULT COLORS
 (set-face-attribute 'default nil
-                    :background "#1e1e27"
-                    :foreground "#cebfad"
                     :height 140
                     :foundry "apple"
                     :family "DejaVu_Sans_Mono") ; TODO: force DejaVu_Sans_Mono font install on OSX
+(setq hl-paren-colors
+      '("orange1"
+        "yellow1"
+        "greenyellow"
+        "green1"
+        "springgreen1"
+        "cyan1"
+        "slateblue1"
+        "magenta1"
+        "purple"))                      ; draw rainbows in LISPEM
 (custom-set-faces
  '(action-lock-face ((((class color)) (:background "black" :foreground "DeepSkyBlue" :overline "yellow"))))
- ;; rainbow in lispem
- '(hl-paren-colors ("orange1" "yellow1" "greenyellow" "green1" "springgreen1" "cyan1" "slateblue1" "magenta1" "purple"))
  ;; default paren-face for matching
  '(paren-face-match ((t (:background "#8722c9" :foreground "black"))))
  '(paren-face-mismatch ((t (:background "#E67321" :foreground "black"))))

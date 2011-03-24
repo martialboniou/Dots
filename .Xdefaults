@@ -1,0 +1,106 @@
+Xft.antialias: true
+! URxvt colors based on vim/colors/underwater
+URxvt*geometry: 74x60
+!URxvt*font: xft:Liberation Mono:style=Regular:pixelsize=15
+URxvt*font: xft:Monospace:pixelsize=14
+!was Inconsolata
+URxvt*scrollBar: false
+URxvt*depth: 32
+!URxvt*background: rgba:0000/0000/0000/aaaa
+!URxvt*fading: 15
+!URxvt*fadeColor: black
+!URxvt*cursorColor: yellow
+URxvt*cursorColor: #55a096
+!URxvt*pointerColor: yellow
+URxvt*pointerColor: #55a096
+URxvt*pointerColor2: black
+URxvt*transparent: false
+!URxvt*transparent: true
+!URxvt.shading: 10
+!URxvt*inheritPixmap: true
+URxvt*saveLines: 6000
+URxvt*termName: xterm-256color
+
+!*VT100*color0: black
+!*VT100*color1: red3
+!*VT100*color2: green3
+!*VT100*color3: yellow3
+!*VT100*color4: blue2
+!*VT100*color5: magenta3
+!*VT100*color6: cyan3
+!*VT100*color7: gray90
+!*VT100*color8: gray50
+!*VT100*color9: red
+!*VT100*color10: green
+!*VT100*color11: yellow
+!*VT100*color12: rgb:5c/5c/ff
+!*VT100*color13: magenta
+!*VT100*color14: cyan
+!*VT100*color15: white
+
+! underwater Vim colorscheme to X
+!*background: #d3d3d3
+!*color0: #2e3436
+!*background: #102235
+!*foreground: #dfeff6
+!*color0: #102235
+!*color1: #af81f4
+!*color2: #3e71a1
+!*color13: #96defa
+!*color4: #89e14b
+!*color5: #8ac6f2
+!*color10: #41b2ea
+!*color7: #68cee8
+!*color8: #ef6145
+!*color9: #dfeff6
+!*color6: #2f577c
+!*color11: #e2daef
+!*color12: #18374f
+!*color3: #2d7889
+!*color14: #1e415e
+!*color15: #ffffff
+!*colorUL: #8ac6f2
+!*colorBD: #68cee8
+
+! wombat Vim colorscheme to X
+*background: #242424
+*foreground: #f6f3e8
+! LineNr guibg > tmux line / public directory fg
+*color0: #000000
+! PreProc > binary
+*color1: #e5786d
+! Number > prompt[user@hostname]
+*color2: #e5786d
+! Identifier > directory / prompt[date]
+*color3: #cae682
+! Comment
+*color4: #99968b
+! Function
+*color5: #cae682
+! Statement > symlink / prompt[line]
+*color6: #8ac6f2
+! Keyword
+*color7: #8ac6f2
+! Special
+*color8: #e7f6da
+! Constant
+*color9: #e5786d
+! String
+*color10: #95e454
+! Visual guibg
+*color11: #444444
+! SpecialKey guifg > prompt[delimiter]
+*color12: #808080
+! Todo
+*color13: #8f8f8f
+! Statement
+*color14: #8ac6f2
+! Folded
+*color15: #384048
+! StatusLine guibg
+*colorUL: #444444
+! Function
+*colorBD: #cae682
+
+!!
+!xrdb -load ~/.Xdefaults

@@ -53,7 +53,7 @@ Some packages may also be useful in order to help this configuration to work fin
 * multi-term
 * pp-c-l
 
-Anything is not as fast/smart as ido but it's very useful for displaying a one shot buffer. For example, type `<f5><f8>` to display a list: 
+Anything is not as fast/smart as ido but it's very useful for displaying a one shot buffer. For example, type `<f5><f8>` to display a list including: 
 
 * current buffers;
 * recently open files;
@@ -61,7 +61,7 @@ Anything is not as fast/smart as ido but it's very useful for displaying a one s
 
 See `.emacs.d/confs/shortcuts.el` for good ideas of bindings especially for buffer/window/frame navigation using tiling/cycling (thing about larswm or [Xmonad](http://xmonad.org/tour.html)) or for `<f5>`-`<f8>` keys (`<f5><f5>` toggle the current frame from multiple buffers to a single view on the current buffer via `revive.el`).
 
-The current version should matching **23.3** and need a major 23 if possible.
+The current version should match **23.3** and need a major 23 if possible.
 
 Read `.emacs.d/confs/vars.el` to configure your path. Remember this! By default, `.emacs` makes Emacs to:
 

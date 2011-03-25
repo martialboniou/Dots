@@ -8,7 +8,7 @@
 ;; Version:
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 121
+;;     Update #: 158
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -90,9 +90,11 @@
      (require 'vimpulse)
 
      ;; 2- parenface to add a default color to parentheses as Vim does
-     (unless (locate-library "hl-line+")
-       (defface hl-line '((t (:background "grey10"))) "Dummy hl-line.")
-       (setq hl-line-face 'hl-line))
+     (if (locate-library "hl-line+")
+         (global-hl-line-mode)
+       (progn
+         (defface hl-line '((t (:background "grey10"))) "Dummy hl-line.")
+         (setq hl-line-face 'hl-line)))
      (color-theme-initialize)
      (require 'parenface)
      ;; (dolist (mode '(c-mode cpp-mode java-mode html-mode-hook css-mode-hook emacs-lisp-mode lisp-mode)) (add-hook mode (parenface-add-support
@@ -274,26 +276,42 @@ TODO: case of '''colorscheme' this'' where this is
                  ,@colors)))
             (provide ',funsym))))
 
-     ;; wombat colorscheme (2007/01/22 version) by Lars H. Nielsen
-     (defcolor-theme "wombat"
-       ((foreground-color . "#f6f3e8")  ; +Normal guifg
-        (background-color . "#242424")  ; +Normal guibg
-        (border-color . "#2d2d2d")      ; +CursorLine
-        (cursor-color . "#656565")      ; +Cursor guibg
-        (background-mode . dark))       ; color orientation
-       (cursor ((t (:foreground nil :background "#656565")))) ; +Cursor
-       (region ((t (:foreground "#f6f3e8" :background "#444444")))) ; +Visual
-       (highlight ((t (:background "#2d2d2d")))) ; +CursorLine
-       (hl-line   ((t (:background "#2d2d2d")))) ; +CursorLine
-       (fringe ((t (:foreground "#857b6f" :background "#000000")))) ; +LineNr
-       (paren-face ((t (:foreground "#e7f6da")))) ; +Special
-       (show-paren-match-face ((t (:foreground "#f6f3e8" :background "#857b6f" :bold t)))) ; +MatchParen
-       (show-paren-mismatch-face ((t (:foreground "#ffffff" :background "#6e2e2e"))))  ; +Error " from inkpot
+     ;; wombat colorscheme 256 mod (2010/07/23 version) Liang/Bespalov/Nielsen (dengmao@gmail.com)
+     (defcolor-theme "wombat256mod"
+       ((background-mode . dark))       ; color orientation
+       (default ((((class color) (min-colors 4096)) (:foreground "#e3e0d7" :background "#242424"))
+                 (((class color) (min-colors 256)) (:foreground "#d0d0d0" :background "#1c1c1c")))) ; +Normal
+       (border ((((class color) (min-colors 4096)) (:background "#32322f"))
+                (((class color) (min-colors 256)) (:background "#303030")))) ; +CursorLine
+       (cursor ((((class color) (min-colors 4096)) (:foreground "#242424" :background "#eae788"))
+                (((class color) (min-colors 256)) (:foreground "#1c1c1c" :background "#ffff87")))) ; +Cursor
+       (region ((((class color) (min-colors 4096)) (:foreground "#c3c6ca" :background "#554d4b"))
+                (((class color) (min-colors 256)) (:foreground "#c6c6c6" :background "#303030")))) ; +Visual
+       (highlight ((((class color) (min-colors 4096)) (:background "#32322f"))
+                (((class color) (min-colors 256)) (:background "#303030")))) ; +CursorLine
+       (hl-line ((((class color) (min-colors 4096)) (:background "#32322f"))
+                 (((class color) (min-colors 256)) (:background "#303030")))) ; +CursorLine
+       (fringe ((((class color) (min-colors 4096)) (:foreground "#857b6f" :background "#080808"))
+                (((class color) (min-colors 256)) (:foreground "#626262" :background "#080808")))) ; +LineNr
+
+       (paren-face ((((class color) (min-colors 4096)) (:foreground "#eadead"))
+                    (((class color) (min-colors 256)) (:foreground "#ffffaf")))) ; +Special
+       (show-paren-match-face 
+        ((((class color) (min-colors 4096)) (:foreground "#eae788" :background "#857b6f" :bold t))
+         (((class color) (min-colors 256)) (:foreground "#ffff87" :background "#87875f" :bold t)))) ; +MatchParen
+       (show-paren-mismatch-face
+        ((((class color) (min-colors 4096)) (:foreground "#ff2026" :background "#3a3a3a" :bold t))
+         (((class color) (min-colors 256)) (:foreground "#ff0000" :background "#303030" :bold t)))) ; +ErrorMsg
        (isearch ((t (:inverse-video t :bold nil :underline nil)))) ; +Search | (inverse-video)
-       (modeline ((t (:italic t :bold nil :foreground "#f6f3e8" :background "#444444")))) ; +StatusLine
-       (modeline-inactive ((t (:bold nil :foreground "#857b6f" :background "#444444")))) ; +StatusLineNC | User2
-       (modeline-buffer-id ((t (:italic t :bold t :foreground "#f6f3e8" :background "#202020")))) ; +StatusLine
-       (minibuffer-prompt ((t (:bold t :foreground "##f6f3e8")))) ; +User2 guifg | Title guifg
+       (modeline
+        ((((class color)) (:italic t   :bold nil :foreground "#ffffd7" :background "#444444")))) ; +StatusLine       
+       (modeline-inactive
+        ((((class color) (min-colors 4096)) (:italic nil :bold nil :foreground "#857b6f" :background "#444444"))
+         (((class color) (min-colors 256))  (:italic nil :bold nil :foreground "#626262" :background "#444444")))) ; +StatusLineNC | User2
+      (modeline-buffer-id
+       ((((class color)) (:italic t   :bold nil :foreground "#ffffd7" :background "#444444")))) ; +StatusLine
+      (minibuffer-prompt
+       ((((class color)) (:bold t :foreground "#ffffd7")))) ; +Title | User2 guifg
        (ediff-current-diff-A ((((class color) (min-colors 16))
                                (:foreground "#ffffcd" :background "#306b8f"))
                               (((class color)) (:foreground "white" :background "blue3"))
@@ -302,21 +320,44 @@ TODO: case of '''colorscheme' this'' where this is
                             (:foreground "#ffffcd" :background "#4a2a4a"))
                            (((class color)) (:foreground "white" :background "green4"))
                            (t (:inverse-video t)))) ; +DiffText " from inkpot
-       (font-lock-builtin-face ((t (:foreground "#e7f6da")))) ; +Special
-       (font-lock-comment-face ((t (:foreground "#99968b" :italic t)))) ; +Comment
-       (font-lock-constant-face ((t (:foreground "#e5786d")))) ; +Constant
-       (font-lock-doc-face ((t (:foreground "#99968b" :italic t)))) ; +Comment
-       (font-lock-function-name-face ((t (:foreground "#cae682" :bold nil)))) ; +Function | Normal guifg (bold)
-       (font-lock-keyword-face ((t (:foreground "#8ac6f2")))) ; +Statement
-       (font-lock-preprocessor-face ((t (:foreground "#e5786d")))) ; +PreProc
-       (font-lock-number-face ((t (:foreground "#e5786d")))) ; +Number
-       (font-lock-reference-face ((t (:bold t :foreground "#8ac6f2")))) ; +Statement
-       (font-lock-string-face ((t (:foreground "#95e454" :background nil :italic t)))) ; +String
-       (font-lock-type-face ((t (:foreground "#cae682")))) ; +Type
-       (font-lock-variable-name-face ((t (:foreground "#cae682")))) ; +Identifier
-       (font-lock-warning-face ((t (:foreground "#ffffff" :background "#6e2e2e"))))) ; +Error | ErrorMsg " from inkpot
+       (font-lock-builtin-face 
+        ((((class color) (min-colors 4096)) (:foreground "#eadead"))
+         (((class color) (min-colors 256)) (:foreground "#ffffaf")))) ; +Special
+        (font-lock-comment-face
+        ((((class color) (min-colors 4096)) (:foreground "#9c998e" :italic t))
+         (((class color) (min-colors 256)) (:foreground "#949494"  :italic t)))) ; +Comment
+        (font-lock-constant-face
+         ((((class color) (min-colors 4096)) (:foreground "#e5786d"))
+          (((class color) (min-colors 256)) (:foreground "#d7875f")))) ; +Constant
+        (font-lock-number-face
+         ((((class color) (min-colors 4096)) (:foreground "#e5786d"))
+          (((class color) (min-colors 256)) (:foreground "#d7875f")))) ; +Number
+        (font-lock-preprocessor-face
+         ((((class color) (min-colors 4096)) (:foreground "#e5786d"))
+          (((class color) (min-colors 256)) (:foreground "#d7875f")))) ; +PreProc
+        (font-lock-function-name-face
+         ((((class color) (min-colors 4096)) (:foreground "#cae982"))
+          (((class color) (min-colors 256)) (:foreground "#d7ff87")))) ; +Function | Normal guifg (bold)
+        (font-lock-variable-name-face
+         ((((class color) (min-colors 4096)) (:foreground "#cae982"))
+          (((class color) (min-colors 256)) (:foreground "#d7ff87")))) ; +Identifier
+        (font-lock-keyword-face
+         ((((class color) (min-colors 4096)) (:foreground "#88b8f6"))
+          (((class color) (min-colors 256)) (:foreground "#87afff")))) ; +Keyword | Statement
+        (font-lock-reference-face
+         ((((class color) (min-colors 4096)) (:foreground "#88b8f6"))
+          (((class color) (min-colors 256)) (:foreground "#87afff")))) ; +Statement
+        (font-lock-string-face
+         ((((class color) (min-colors 4096)) (:italic t :background nil :foreground "#95e454"))
+          (((class color) (min-colors 256))  (:italic t :background nil :foreground "#87d75f")))) ; +String
+        (font-lock-type-face
+         ((((class color) (min-colors 4096)) (:foreground "#d4d987"))
+          (((class color) (min-colors 256)) (:foreground "#d7d787")))) ; +Type
+        (font-lock-warning-face
+         ((((class color) (min-colors 4096)) (:foreground "#ff2026" :background "#3a3a3a" :bold t))
+          (((class color) (min-colors 256)) (:foreground "#ff0000" :background "#303030" :bold t))))) ; +ErrorMsg
 
-     ;; inkpot colorscheme from `github.com/ciaranm/inkpot'
+     ;; inkpot colorscheme from `github.com/ciaranm/inkpot' TODO: 256 colors' version
      (defcolor-theme "inkpot"
        ((foreground-color . "#cfbfad")  ; +Normal guifg
         (background-color . "#1e1e27")  ; +Normal guibg
@@ -329,7 +370,9 @@ TODO: case of '''colorscheme' this'' where this is
        (fringe ((t (:foreground "#8b8bcd" :background "#2e2e2e")))) ; +LineNr
        (paren-face ((t (:foreground "#c080d0")))) ; +Special
        (show-paren-match-face ((t (:foreground "#cfbfad" :background "#4e4e8f" :bold nil)))) ; +MatchParen
-       (show-paren-mismatch-face ((t (:foreground "#ffffff" :background "#6e2e2e"))))  ; +Error
+        (show-paren-mismatch-face
+        ((((class color) (min-colors 4096)) (:foreground "#ffffff" :background "#6e2e2e" :bold t))
+         (((class color) (min-colors 256)) (:foreground "#5fd7af" :background "#0087df" :bold t)))) ; +Error
        (isearch ((t (:bold t :background "#303030" :foreground "#ad7b57")))) ; +Search
        (modeline ((t (:bold t :foreground "#b9b9b9" :background "#3e3e5e")))) ; +StatusLine
        (modeline-inactive ((t (:foreground "#708090" :background "#3e3e5e")))) ; +StatusLineNC | User2
@@ -355,51 +398,12 @@ TODO: case of '''colorscheme' this'' where this is
        (font-lock-string-face ((t (:foreground "#ffcd8b" :background "#404040" :italic nil)))) ; +String
        (font-lock-type-face ((t (:foreground "#ff8bff")))) ; +Type
        (font-lock-variable-name-face ((t (:foreground "#ff8bff")))) ; +Identifier
-       (font-lock-warning-face ((t (:foreground "#ffffff" :background "#6e2e2e"))))) ; +Error
-
-     ;; ir_black colorscheme (2011/01/19 version) from `github.com/lukaszb/vim-irblack'
-     (defcolor-theme "ir_black"
-       ((foreground-color . "#F6F3E8")  ; +Normal guifg
-        (background-color . "black")    ; +Normal guibg
-        (border-color . "#121212")      ; +CursorLine
-        (background-mode . dark))       ; color orientation
-       (cursor ((t (:foreground "black" :background "white")))) ; +Cursor
-       (region ((t (:background "#262D51")))) ; +Visual
-       (highlight ((t (:background "#121212")))) ; +CursorLine
-       (hl-line   ((t (:background "#121212")))) ; +CursorLine
-       (fringe ((t (:foreground "#3D3D3D" :background "black")))) ; +LineNr
-       (paren-face ((t (:foreground "#E18964")))) ; +Special
-       (show-paren-match-face ((t (:foreground "#f6f3e8" :background "#857b6f" :bold nil)))) ; +MatchParen
-       (show-paren-mismatch-face ((t (:foreground "black" :background "#FF6C60"))))  ; +Error | ErrorMsg
-       (isearch ((t (:bold t :underline t)))) ; +Search
-       (modeline ((t (:italic t :foreground "#CCCCCC" :background "#202020")))) ; +StatusLine
-       (modeline-inactive ((t (:foreground "black" :background "#202020")))) ; +StatusLineNC | User2
-       (modeline-buffer-id ((t (:bold t :foreground "#CCCCCC" :background "#202020")))) ; +StatusLine
-       (minibuffer-prompt ((t (:bold t :foreground "#f6f3e8")))) ; +User2 guifg | Title guifg
-       (ediff-current-diff-A ((((class color) (min-colors 16))
-                               (:foreground "#ffffcd" :background "#306b8f"))
-                              (((class color)) (:foreground "white" :background "blue3"))
-                              (t (:inverse-video t)))) ; +DiffChange " from inkpot
-       (ediff-fine-diff-A ((((class color) (min-colors 16))
-                            (:foreground "#ffffcd" :background "#4a2a4a"))
-                           (((class color)) (:foreground "white" :background "green4"))
-                           (t (:inverse-video t)))) ; +DiffText " from inkpot
-       (font-lock-builtin-face ((t (:foreground "#E18964")))) ; +Special
-       (font-lock-comment-face ((t (:foreground "#7C7C7C" :italic nil)))) ; +Comment
-       (font-lock-constant-face ((t (:foreground "#99CC99")))) ; +Constant
-       (font-lock-doc-face ((t (:foreground "#7C7C7C" :italic nil)))) ; +Comment
-       (font-lock-function-name-face ((t (:foreground "#FFD2A7" :bold nil)))) ; +Function | Normal guifg (bold)
-       (font-lock-keyword-face ((t (:foreground "#6699CC")))) ; +Statement
-       (font-lock-preprocessor-face ((t (:foreground "#96CBFE")))) ; +PreProc
-       (font-lock-number-face ((t (:foreground "#FF73FD")))) ; +Number
-       (font-lock-reference-face ((t (:bold t :foreground "#6699CC")))) ; +Statement
-       (font-lock-string-face ((t (:foreground "#A8FF60" :background nil :italic nil)))) ; +String
-       (font-lock-type-face ((t (:foreground "#FFFFB6")))) ; +Type
-       (font-lock-variable-name-face ((t (:foreground "#C6C5FE")))) ; +Identifier
-       (font-lock-warning-face ((t (:foreground "black" :background "#FF6C60"))))) ; +Error | ErrorMsg
+       (font-lock-warning-face
+        ((((class color) (min-colors 4096)) (:foreground "#ffffff" :background "#6e2e2e" :bold t))
+         (((class color) (min-colors 256)) (:foreground "#5fd7af" :background "#0087df" :bold t))))) ; +Error
 
      ;; 5- fetch your vim colorscheme and load a mockup adapter
-     (setq *chosen-theme* (colorscheme-to-color-theme "wombat")) ; default theme
+     (setq *chosen-theme* (colorscheme-to-color-theme "wombat256mod")) ; default theme
      (mars/extract-colorscheme-from-vimrc)
      (funcall *chosen-theme*)
 

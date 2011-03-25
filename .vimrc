@@ -116,11 +116,24 @@ set foldminlines=2 " don't fold 3 lines
 set fillchars=fold:=
 set foldtext=MyFoldFunction()
 
+" Colors & colorscheme
 if &t_Co > 2 || has("gui_running")
     syntax on
 endif
+if &term == "rxvt-unicode" || &term == "xterm-256color" || &term == "urxvt"
+ set t_Co=256 " 256 colors > URxvt & xterm-256color simili-terms like iTerm2
+ set columns=93
+ let currentHost = system('hostname | tr -d "\n"')
+ if currentHost == "cendre"
+  set lines=42 " aqua display with Dock.app
+ elseif currentHost == "monarde"
+  set lines=38 " 12'' laptop on Ubuntu
+ elseif currentHost == "macabre"
+  set lines=49 " gnome/clfswm display on 4:3 screen
+ endif
+endif
 if &t_Co == 256 || has("gui_running")
-    colorscheme wombat " inkpot \" ir_black \" railscasts \" from Ruby theme in Textmate
+    colorscheme wombat256mod " inkpot \" ir_black \" railscasts \" from Ruby theme in Textmate
 endif
 
 "" color template pattern
@@ -659,21 +672,7 @@ if has("mac")
 endif
 
 " CSApprox: color schemes terminal adapter
-if !has("x11")
- let g:CSApprox_loaded = 1
-endif
+" if !has("x11")
+"  let g:CSApprox_loaded = 1
+" endif
 
-" URxvt
-if &term == "rxvt-unicode"
- set t_Co=256
-" colorscheme ir_black " force the color scheme to be loaded
- set columns=93
- let currentHost = system('hostname | tr -d "\n"')
- if currentHost == "cendre"
-  set lines=42 " aqua display with Dock.app
- elseif currentHost == "monarde"
-  set lines=38 " 12'' laptop on Ubuntu
- elseif currentHost == "macabre"
-  set lines=49 " gnome/clfswm display on 4:3 screen
- endif
-endif

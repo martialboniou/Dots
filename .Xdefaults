@@ -62,45 +62,46 @@ URxvt*termName: xterm-256color
 !*colorUL: #8ac6f2
 !*colorBD: #68cee8
 
-! wombat Vim colorscheme to X
-*background: #242424
-*foreground: #f6f3e8
+! wombat256mod Vim colorscheme to X
+!
+*background: #1c1c1c
+*foreground: #d0d0d0
 ! LineNr guibg > tmux line / public directory fg
-*color0: #000000
+*color0: #080808
 ! PreProc > binary
-*color1: #e5786d
-! Number > prompt[user@hostname]
-*color2: #e5786d
+*color1: #d7875f
+! Type > prompt[user@hostname]
+*color2: #d7d787
 ! Identifier > directory / prompt[date]
-*color3: #cae682
+*color3: #d7ff87
 ! Comment
-*color4: #99968b
+*color4: #949494
 ! Function
-*color5: #cae682
+*color5: #d7ff87
 ! Statement > symlink / prompt[line]
-*color6: #8ac6f2
+*color6: #87afff
 ! Keyword
-*color7: #8ac6f2
+*color7: #87afff
 ! Special
-*color8: #e7f6da
+*color8: #ffffaf
 ! Constant
-*color9: #e5786d
+*color9: #d7875f
 ! String
-*color10: #95e454
+*color10: #87d75f
 ! Visual guibg
-*color11: #444444
+*color11: #303030
 ! SpecialKey guifg > prompt[delimiter]
-*color12: #808080
+*color12: #626262
 ! Todo
-*color13: #8f8f8f
+*color13: #87875f
 ! Statement
-*color14: #8ac6f2
+*color14: #87afff
 ! Folded
-*color15: #384048
+*color15: #8787af
 ! StatusLine guibg
 *colorUL: #444444
 ! Function
-*colorBD: #cae682
+*colorBD: #d7ff87
 
 !!
 !xrdb -load ~/.Xdefaults

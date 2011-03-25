@@ -4,7 +4,7 @@
 # http://chm.duquesne.free.fr/blog
 
 if test -z ${TMUX}; then
-  tmux
+  tmux -2
 fi
 # when quitting tmux, try to attach if DTMUX is not unset
 while [[ -z ${TMUX} ]]; do

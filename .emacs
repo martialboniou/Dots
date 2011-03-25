@@ -350,11 +350,12 @@ ROOT                        => ROOT"
                                     (senator-minor-mode nil)
                                     (semantic-idle-scheduler-mode nil)))))
 ;; hooks
-(add-hook 'desktop-save-hook
-          'kiwon/save-window-configuration)
-(add-hook 'desktop-after-read-hook
-          'kiwon/restore-window-configuration) ; save/restore the last window
-                                        ; configuration with `DESKTOP'
+(when window-system			; FIXME: debug / not working perse
+    (add-hook 'desktop-save-hook
+	      'kiwon/save-window-configuration)
+    (add-hook 'desktop-after-read-hook
+	      'kiwon/restore-window-configuration)) ; save/restore the last window
+                                                    ; configuration with `DESKTOP'
 ;; desktop + autosave + backup files: see eof
 
 ;;; BUFFERS
@@ -424,9 +425,10 @@ ROOT                        => ROOT"
                                         ; - buffers (prefer `ido-switch-buffer' [C-x C-b] or `cycle-buffer' [<f5><f[4|6]>] for faster cycling)
                                         ; - recentf (prefer `ido-recentf-file-name-history' [C-x C-f] for faster finding)
                                         ; - files in `default-directory' (not present in `anything-mini')
-   "C-c C-9"   anything-imenu))         ; IMPORTANT: useful for fast code navigation (w/o `ecb' fancies)
+   "C-c C-9"   anything-imenu           ; IMPORTANT: useful for fast code navigation (w/o `ecb' fancies)
                                         ;            anything-browse-code map on [<f7><f7>] too
-
+   "C-<f10>"   tmm-menubar              ; key-controlled menu (`<f10>' is default but awkward on OSX/Gnome) IMPORTANT: remember this for `no-window-system' session
+))
 
 ;; C-w should be used for 'backward-word-delete so there should be
 ;; another way to do cut/copy/paste:

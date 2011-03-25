@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Thu Mar 24 21:18:26 2011 (+0100)
+;; Last-Updated: Fri Mar 25 22:53:19 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 191
+;;     Update #: 192
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -53,7 +53,7 @@
 ;; - install in the first directory of `mars/site-lisp-path' (by default) if not found
 ;; - add required subdirs to LOAD-PATH if newly installed
 ;; TODO: write a list of required cli program (especially for Windows users; for them, install msys?):
-;; tar, gzip, autoconf, make, svn, git, darcs, wget (curl if not?), bash, rake (rvm must be installed on Un*x-like), bzr
+;; tar, gzip, autoconf, make, svn, git, darcs, curl, wget, bash, rake (rvm must be installed on Un*x-like), bzr
 (defvar mars/site-lisp-packages nil)
 (setq mars/site-lisp-packages '((vimpulse     . ((get . "git clone git://gitorious.org/vimpulse/vimpulse")
                                                  (install . "make")))
@@ -67,7 +67,7 @@
                                                  (install . "make")))
                                 (keats        . ((get . "git clone git://github.com/rejeep/keats.git")
                                                  (install . "emacs-compile-directory")))
-                                (howm-1.3.9.1 . ((get . "wget http://howm.sourceforge.jp/a/howm-1.3.9.1.tar.gz; tar xzvf howm-1.3.9.1.tar.gz; rm howm-1.3.9.1.tar.gz")
+                                (howm-1.3.9.1 . ((get . "curl http://howm.sourceforge.jp/a/howm-1.3.9.1.tar.gz | tar zx")
                                                  (install . "./configure; make")
                                                  (nosearch . ("doc" "en" "ext" "ja" "sample"))))
                                 (haskellmode-emacs . ((get . "darcs get http://code.haskell.org/haskellmode-emacs")
@@ -79,20 +79,20 @@
                                 (yasnippet     . ((get . "svn checkout http://yasnippet.googlecode.com/svn/trunk/ yasnippet")
                                                   (install . "rake compile")
                                                   (nosearch . ("doc" "extras" "pkg" "snippets"))))
-                                (mailcrypt-3.5.9 . ((get . "wget http://sourceforge.net/projects/mailcrypt/files/mailcrypt/3.5.9/mailcrypt-3.5.9.tar.gz/download; tar xzvf mailcrypt-3.5.9.tar.gz; rm mailcrypt-3.5.9.tar.gz")
+                                (mailcrypt-3.5.9 . ((get . "wget http://sourceforge.net/projects/mailcrypt/files/mailcrypt/3.5.9/mailcrypt-3.5.9.tar.gz/download; tar zxf mailcrypt-3.5.9.tar.gz; rm mailcrypt-3.5.9.tar.gz") ; no pipe b/c URL redirect
                                                     (install . "autoconf; ./configure; make")
                                                     (nosearch . ("autom4te.cache" "tests"))))
                                 (mhc           . ((get . "git clone git://github.com/yoshinari-nomura/mhc.git")
                                                   (install . "emacs-compile-directory emacs") ; ruby configure.rb; ruby make.rb is OBSOLETE (ftools dependencies)
                                                   (nosearch . ("icons" "ruby-ext" "samples" "xpm"))))
-                                (mu-cite-201006212322 . ((get . "wget http://www.jpl.org/elips/mu/snapshots/mu-cite-201006212322.tar.gz; tar xzvf mu-cite-201006212322.tar.gz; rm mu-cite-201006212322.tar.gz")
+                                (mu-cite-201006212322 . ((get . "curl http://www.jpl.org/elips/mu/snapshots/mu-cite-201006212322.tar.gz | tar zx")
                                                          ;; no compilation yet / need apel10.8/poem
                                                          ))
-                                (newsticker-1.99 . ((get . "wget http://download.savannah.gnu.org/releases/newsticker/newsticker-1.99.tar.gz; tar xzvf newsticker-1.99.tar.gz; rm newsticker-1.99.tar.gz")
+                                (newsticker-1.99 . ((get . "wget http://download.savannah.gnu.org/releases/newsticker/newsticker-1.99.tar.gz; tar zxf newsticker-1.99.tar.gz; rm newsticker-1.99.tar.gz")
                                                     (install . "emacs-compile-directory")))
                                 ;; (circe          . ((get . "cvs -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/circe co circe")
                                 ;;                    (install . "make")))
-                                (color-theme-6.6.0 . ((get . "wget http://download.savannah.gnu.org/releases/color-theme/color-theme-6.6.0.tar.gz; tar xzvf color-theme-6.6.0.tar.gz; rm color-theme-6.6.0.tar.gz")
+                                (color-theme-6.6.0 . ((get . "wget http://download.savannah.gnu.org/releases/color-theme/color-theme-6.6.0.tar.gz; tar zxf color-theme-6.6.0.tar.gz; rm color-theme-6.6.0.tar.gz")
                                                       (install . "emacs-compile-directory; emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\" themes"))) ; FIXME: not in path so error in `themes' (not important!)
                                 (darcsum           . ((get . "darcs get --lazy http://joyful.com/repos/darcsum")
                                                       (install . "emacs-compile-directory")))
@@ -102,7 +102,7 @@
                                                       (nosearch . ("doc" "test" "util/jump/test" "util/test"))
                                                       ))
                                 ;; TODO: fetch all the Python/Rope install process
-                                (python-mode        . ((get . "wget http://launchpad.net/python-mode/trunk/5.2.0/+download/python-mode-5.2.0.tgz; tar xzvf python-mode-5.2.0.tgz; rm python-mode-5.2.0.tgz")
+                                (python-mode        . ((get . "curl http://launchpad.net/python-mode/trunk/5.2.0/+download/python-mode-5.2.0.tgz | tar zx")
                                                        (nosearch . "website")))
                                 (Pymacs             . ((get . "git clone git://github.com/pinard/Pymacs.git")
                                                        (install . "make")
@@ -120,7 +120,7 @@
                                                        (noauto . ".")))
                                 (nxhtml             . ((get . "bzr branch lp:nxhtml")
                                                        ;; the following version is not compatible with 23 due to deprecated face
-                                                       ;; (get . "wget http://ourcomments.org/Emacs/DL/elisp/nxhtml/zip/nxhtml-2.08-100425.zip; unzip nxhtml-2.08-100425.zip;rm nxhtml-2.08-100425.zip")
+                                                       ;; (get . "curl http://ourcomments.org/Emacs/DL/elisp/nxhtml/zip/nxhtml-2.08-100425.zip > _nxhtml.zip; unzip _nxhtml.zip; rm _nxhtml.zip") ; `unzip' is not pipe-friendly
                                                        (install . "cd nxhtml;emacs-compile-directory;cd ../related;emacs-compile-directory;cd ../util;emacs-compile-directory;cd ..;emacs-compile-directory")
                                                        (nosearch . ("alts" "etc" "nxhtml" "related" "tests" "util" ".bzr"))
                                                        (noauto . ".")))

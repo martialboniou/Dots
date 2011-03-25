@@ -1,7 +1,7 @@
 --- 
-emacs: |-
+emacs: |
   Emacs (I mean this one!)
-
+  
   Fast keys
   (see emacs_fast)
   
@@ -44,11 +44,14 @@ emacs: |-
   
   Ibuffer
   '                 kill-all-dired-buffers
-
+  
   Anything
   C-.               anything-execute-persistent-action
   
-  Unicode in Emacs:
+  Unicode in Emacs
   M-x switch-encodings
                     mars/define-encodings 'utf-8 | latin1
   
+  No-window-system session
+  C-<f10>           tmm-menubar (<f10> is default but not always available)
+

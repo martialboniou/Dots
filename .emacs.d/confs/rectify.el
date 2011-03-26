@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
 ;; Version:
-;; Last-Updated: Wed Mar 16 18:14:11 2011 (+0100)
+;; Last-Updated: Sat Mar 26 17:31:51 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 100
+;;     Update #: 105
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -230,7 +230,7 @@
      (bind-key "C-S-p" 'special-expand-file-name-at-point)))
 
 ;;; YASNIPPETS
-;; (bound to 'C-p à la Vim)
+;; bound to 'C-p à la Vim
 (require 'yas-jit)
 (let ((yas-dir (file-name-directory (locate-library "yasnippet")))
            (local-yas-dir (expand-file-name

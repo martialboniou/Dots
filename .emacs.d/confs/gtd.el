@@ -8,7 +8,7 @@
 ;; Version:
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 37
+;;     Update #: 40
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -50,9 +50,9 @@
 ;;; ORG MODE
 ;; (from 'Using Org Mode as a Day Planner' by John Wiegley)
 (defvar *notes-dir* (concat (file-name-as-directory
-                 (concat (file-name-as-directory mars/local-root-dir)
-                     mars/personal-data))
-                "Notes"))
+                             (concat (file-name-as-directory mars/local-root-dir)
+                                     mars/personal-data))
+                            "Notes"))
 
 (require 'org-install)
 (require 'org-protocol)
@@ -106,13 +106,13 @@ This can be 0 for immediate, or a floating point value.")
                        (org-archive-subtree)))))))))
      (defalias 'archive-done-tasks 'wiegley/org-archive-done-tasks)))
 ;; viper compatibility
-;; (if (boundp 'viper-version)
-;;     (define-key viper-vi-global-user-map "C-c /" 'org-sparse-tree))
-;; windmove compatibility
-;;(add-hook 'org-shiftup-final-hook    'windmove-up)
-;;(add-hook 'org-shiftleft-final-hook  'windmove-left)
-;;(add-hook 'org-shiftdown-final-hook  'windmove-down)
-;;(add-hook 'org-shiftright-final-hook 'windmove-right)
+(if (boundp 'viper-version)
+    (define-key viper-vi-global-user-map "C-c /" 'org-sparse-tree))
+;; windmove compatibility OBSOLETE
+;; (add-hook 'org-shiftup-final-hook    'windmove-up)
+;; (add-hook 'org-shiftleft-final-hook  'windmove-left)
+;; (add-hook 'org-shiftdown-final-hook  'windmove-down)
+;; (add-hook 'org-shiftright-final-hook 'windmove-right)
 ;; remember
 (org-remember-insinuate)
 (add-hook 'remember-mode-hook 'org-remember-apply-template)
@@ -152,14 +152,14 @@ This can be 0 for immediate, or a floating point value.")
    (quote ((116 "* TODO %?\n  %u" "~/.emacs.d/data/Notes/Todo.org" "Tasks") ; 116 => ?t
            (110 "* %u %?" "~/.emacs.d/data/Notes/Notes.org" "Notes")        ; 110 => ?n
            (115 "* %u %?" "~/.emacs.d/data/Notes/Iris.gpg"  "Notes"))))     ; 115 => ?s [encrypted]
-                                                                            ; 105 => ?i
+                                        ; 105 => ?i
  '(remember-annotation-functions (quote (org-remember-annotation)))
  '(remember-handler-functions (quote (org-remember-handler))))
 ;; capture
 (setq org-capture-templates
-       '(("l"  "Link" entry
-          (file+headline org-default-notes-file "Links to Read")
-          "* %a\n %?\n %i")))           
+      '(("l"  "Link" entry
+         (file+headline org-default-notes-file "Links to Read")
+         "* %a\n %?\n %i")))
 ;; use bookmarklet: javascript:location.href='org-protocol://capture//l/encodeURIComponent(location.href)+'/'encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection())
 
 (eval-after-load "remember"
@@ -187,16 +187,16 @@ This can be 0 for immediate, or a floating point value.")
 (defun jump-to-org-agenda ()
   (interactive)
   (let ((buf (get-buffer "*Org Agenda*"))
-    wind)
+        wind)
     (if buf
-    (if (setq wind (get-buffer-window buf))
-        (select-window wind)
-      (if (called-interactively-p)
-          (progn
-        (select-window (display-buffer buf t t))
-        (org-fit-window-to-buffer))
-        (with-selected-window (display-buffer buf)
-          (org-fit-window-to-buffer))))
+        (if (setq wind (get-buffer-window buf))
+            (select-window wind)
+          (if (called-interactively-p)
+              (progn
+                (select-window (display-buffer buf t t))
+                (org-fit-window-to-buffer))
+            (with-selected-window (display-buffer buf)
+              (org-fit-window-to-buffer))))
       (call-interactively 'org-agenda-list))))
 
 (defun mars/today-calendar ()

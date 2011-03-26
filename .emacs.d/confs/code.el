@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Mar 16 20:39:49 2011 (+0100)
+;; Last-Updated: Sat Mar 26 18:03:35 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 298
+;;     Update #: 305
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -267,14 +267,14 @@ Move point to the beginning of the line, and run the normal hook
        (local-set-key "\C-c\C-r" 'semantic-symref))
      (add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
      ;; hook & customs
-     (add-hook 'semantic-init-hooks '(lambda () (imenu-add-to-menubar "TAGS")))
+     (add-hook 'semantic-init-hooks '(lambda () (imenu-add-to-menubar "TAGS"))) ; FIXME: BUG??
      (custom-set-variables
       '(semantic-idle-scheduler-idle-time 3)
       '(semantic-self-insert-show-completion-function (lambda () (semantic-ia-complete-symbol-menu (point))))
       '(global-semantic-tag-folding-mode t nil (semantic-util-modes)))
      ;;     (global-semantic-folding-mode 1) ; FIXME: no more
-     (defun mars/Qt ()
-       (setq qt4-base-dir "/usr/local/Qt4.7/include"))
+     (defun mars/Qt ()                  ; TODO: temp var for test => to move to vars-<specific>.el
+       (setq qt4-base-dir "/Library/Frameworks/QtCore.framework/Headers")) 
      (defun mars/semantic-tags ()
        ;; GNU global support
        (require 'semanticdb-global)

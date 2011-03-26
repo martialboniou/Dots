@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 23 15:15:40 2011 (+0100)
 ;; Version: 0.1
-;; Last-Updated: Thu Mar 24 21:02:17 2011 (+0100)
+;; Last-Updated: Sat Mar 26 16:54:30 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 62
+;;     Update #: 66
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -130,10 +130,10 @@
  '(anything-match ((t (:inherit match :inverse-video t))))
  '(anything-overlay-line-face ((t (:inherit font-lock-warning-face :foreground "default"))))
  ;; obvious trailing whitespace
- '(trailing-whitespace ((((class color) (background dark))
-                         (:background "gray90" :strike-through "red1"))
-                        (((class color) (background light))   
-                         (:background "gray10" :strike-through "red1"))))
+ ;; '(trailing-whitespace ((((class color) (background dark))
+ ;;                         (:background "gray90" :strike-through "red1"))
+ ;;                        (((class color) (background light))   
+ ;;                         (:background "gray10" :strike-through "red1"))))
  ;; no more flashy background in MuMaMo
  '(mumamo-background-chunk-major ((((class color) (min-colors 88)
                                     (background dark)) (:background "gray10"))
@@ -149,7 +149,10 @@
  ;; clearer dired
  '(diredp-dir-priv ((t (:inherit font-lock-doc-face :weight bold))))
  '(diredp-file-name ((t (:inherit default))))
- ;; greyish ediff / color-theme or vimpulse may override this
+ ;; TODO: clearer org-mode
+ ;; '(org-date ((((color class)) (:inherit font-lock-number-face))))
+ ;; '(org-agenda ((((color class)) (:inherit font-lock-keyword-face))))
+ ;; greyish ediff (NOTE: color-theme may override this)
  '(ediff-even-diff-Ancestor ((((class color) (min-colors 16) (background dark))   (:background "SlateGray4" :foreground "SlateGray1"))
                              (((class color) (min-colors 16) (background light)) (:background "SlateGray1" :foreground "SlateGray4"))))
  '(ediff-odd-diff-A ((((class color) (min-colors 16) (background dark)) (:background "gray40" :foreground "white"))
@@ -168,8 +171,8 @@
  '(emms-playlist-selected-face ((((class color)) (:inherit font-lock-keyword-face))))
  '(emms-playlist-track-face ((((class color)) (:inherit default))))
  ;; readable default faces for wanderlust AKA wl
- '(wl-highlight-action-argument-face ((((class color) (background dark)) (:foreground "orange" :slant italic))))
- '(wl-highlight-demo-face ((((class color) (background dark)) (:background "#000000" :foreground "#d9ffd9"))))
+ ;'(wl-highlight-action-argument-face ((((class color) (background dark)) (:foreground "orange" :slant italic))))
+ '(wl-highlight-action-argument-face ((((class color)) (:inherit font-lock-builtin-face :italic t :slant italic))))
  '(wl-highlight-folder-closed-face ((((class color) (background dark)) (:foreground "red"))))
  '(wl-highlight-folder-few-face ((((class color) (background dark)) (:foreground "gold" :slant italic :weight bold))))
  '(wl-highlight-folder-many-face ((((class color) (background dark)) (:foreground "#ddee99" :slant italic :weight bold))))

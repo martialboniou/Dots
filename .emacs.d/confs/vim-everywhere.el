@@ -1,31 +1,31 @@
 ;;; vim-everywhere.el ---
 ;;
 ;; Filename: vim-everywhere.el
-;; Description:
+;; Description: Vimpulse configuration
 ;; Author: Martial Boniou
-;; Maintainer:
+;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
-;; Version:
-;; Last-Updated:
+;; Version: 0.3
+;; Last-Updated: Sat Mar 26 16:24:26 2011 (+0100)
 ;;           By:
-;;     Update #: 158
-;; URL:
-;; Keywords:
-;; Compatibility:
+;;     Update #: 207
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+;; 
 ;;; Commentary: Vimpulse + your Vim colorscheme in Emacs
-;;
+;; 
 ;; keep (quite) same syntax highlighting everywhere
 ;; by hondana@gmx.com 2001-2011
-;;
-;;
+;; 
+;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
+;; 
 ;;; Change Log:
-;;
-;;
+;; 
+;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; This program is free software; you can redistribute it and/or
@@ -102,14 +102,14 @@
      ;; 3- nothing to add (mis)match parentheses (vimpulse uses 'show-parens
      ;;    so there's no need to add 'mic-paren)
 
-     ;; 4- TODO: colorize numbers & warnings
+     ;; 4- colorize numbers, todos & warnings
      (defface font-lock-number-face
        '((((type tty) (class color)) (:foreground "pink"))
          (((type tty) (class mono))  (:inverse-video t))
          (((class color) (background dark))  (:foreground "pink"))
          (((class color) (background light)) (:foreground "grey10"))
          (t ()))
-       "Face lock mode face used to highlight numbers."
+       "Face name to use for numbers."
        :group 'basic-faces)
      (defvar font-lock-number-face 'font-lock-number-face)
      (defun font-lock-fontify-numbers ()
@@ -118,6 +118,25 @@
                                '(("[^a-zA-Z_]\\(0x[0-9a-fA-F]+\\)"     1 font-lock-number-face) ; hexa
                                  ("[^a-zA-Z_]\\(-?[0-9]+\\.[0-9]+\\)"  1 font-lock-number-face) ; float
                                  ("[^a-zA-Z_1-9-]\\(-?[0-9]+U?L?L?\\)" 1 font-lock-number-face)))) ; int
+     (defface font-lock-todo-face
+       '((((type tty) (class color)) (:foreground "yellow"))
+         (((type tty) (class mono))  (:underline t))
+         (((class color) (background dark))  (:foreground "gold"))
+         (((class color) (background light)) (:foreground "goldenrod"))
+         (t ()))
+       "Face name to use for todos."
+       :group 'basic-faces)
+     (defvar font-lock-todo-face 'font-lock-todo-face)
+     (defface font-lock-notify-face
+       '((((type tty) (class color)) (:foreground "blue"))
+         (((type tty) (class mono))  (:inverse-video t :underline t))
+         (((class color) (background dark))  (:foreground "DarkSlateGray1"))
+         (((class color) (background light)) (:foreground "DarkSlateGray4"))
+         (t ()))
+       "Face name to use for notifications. As `font-lock-warning-face' may be used as Vim's
+ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
+       :group 'basic-faces)
+     (defvar font-lock-notify-face 'font-lock-notify-face)
      (dolist (mode '(lisp-mode
                      emacs-lisp-mode
                      lisp-interaction-mode
@@ -142,9 +161,14 @@
        (progn
          (add-hook (intern (concat (symbol-name mode) "-hook")) 'font-lock-fontify-numbers)
          (font-lock-add-keywords mode
-                                 '(("\\(FIXME:\\|TODO:\\|IMPORTANT:\\|WARNING:\\|ERROR:\\|XXX\\|OBSOLETE\\|DEPRECATED\\)"
+                                 '(("\\(FIXME:\\|TODO:\\)"
+                                    1 font-lock-builtin-face prepend))) ; FIXME: builtin here b/c todo is too grayish in `Wombat256mod'
+         (font-lock-add-keywords mode
+                                 '(("\\(IMPORTANT:\\|WARNING:\\|NOTE:\\|DEPRECATED\\)"
+                                    1 font-lock-notify-face prepend)))
+         (font-lock-add-keywords mode
+                                 '(("\\(ERROR:\\|XXX\\|OBSOLETE\\)"
                                     1 font-lock-warning-face prepend)))))
-     ;; (add-hook 'font-lock-mode-hook 'font-lock-fontify-numbers) ; FIXME: wl-summary doesn't use `font-lock-mode'
 
      ;; 5- additional keyboard bindings (some from http://stackoverflow.com/users/2797/sebastien-roccaserra)
      (define-key viper-vi-global-user-map [(delete)] 'delete-char)
@@ -288,7 +312,7 @@ TODO: case of '''colorscheme' this'' where this is
        (region ((((class color) (min-colors 4096)) (:foreground "#c3c6ca" :background "#554d4b"))
                 (((class color) (min-colors 256)) (:foreground "#c6c6c6" :background "#303030")))) ; +Visual
        (highlight ((((class color) (min-colors 4096)) (:background "#32322f"))
-                (((class color) (min-colors 256)) (:background "#303030")))) ; +CursorLine
+                   (((class color) (min-colors 256)) (:background "#303030")))) ; +CursorLine
        (hl-line ((((class color) (min-colors 4096)) (:background "#32322f"))
                  (((class color) (min-colors 256)) (:background "#303030")))) ; +CursorLine
        (fringe ((((class color) (min-colors 4096)) (:foreground "#857b6f" :background "#080808"))
@@ -296,7 +320,7 @@ TODO: case of '''colorscheme' this'' where this is
 
        (paren-face ((((class color) (min-colors 4096)) (:foreground "#eadead"))
                     (((class color) (min-colors 256)) (:foreground "#ffffaf")))) ; +Special
-       (show-paren-match-face 
+       (show-paren-match-face
         ((((class color) (min-colors 4096)) (:foreground "#eae788" :background "#857b6f" :bold t))
          (((class color) (min-colors 256)) (:foreground "#ffff87" :background "#87875f" :bold t)))) ; +MatchParen
        (show-paren-mismatch-face
@@ -304,58 +328,77 @@ TODO: case of '''colorscheme' this'' where this is
          (((class color) (min-colors 256)) (:foreground "#ff0000" :background "#303030" :bold t)))) ; +ErrorMsg
        (isearch ((t (:inverse-video t :bold nil :underline nil)))) ; +Search | (inverse-video)
        (modeline
-        ((((class color)) (:italic t   :bold nil :foreground "#ffffd7" :background "#444444")))) ; +StatusLine       
+        ((((class color)) (:italic t   :bold nil :foreground "#ffffd7" :background "#444444")))) ; +StatusLine
        (modeline-inactive
         ((((class color) (min-colors 4096)) (:italic nil :bold nil :foreground "#857b6f" :background "#444444"))
          (((class color) (min-colors 256))  (:italic nil :bold nil :foreground "#626262" :background "#444444")))) ; +StatusLineNC | User2
-      (modeline-buffer-id
-       ((((class color)) (:italic t   :bold nil :foreground "#ffffd7" :background "#444444")))) ; +StatusLine
-      (minibuffer-prompt
-       ((((class color)) (:bold t :foreground "#ffffd7")))) ; +Title | User2 guifg
-       (ediff-current-diff-A ((((class color) (min-colors 16))
-                               (:foreground "#ffffcd" :background "#306b8f"))
-                              (((class color)) (:foreground "white" :background "blue3"))
-                              (t (:inverse-video t)))) ; +DiffChange " from inkpot
-       (ediff-fine-diff-A ((((class color) (min-colors 16))
-                            (:foreground "#ffffcd" :background "#4a2a4a"))
-                           (((class color)) (:foreground "white" :background "green4"))
-                           (t (:inverse-video t)))) ; +DiffText " from inkpot
-       (font-lock-builtin-face 
+       (modeline-buffer-id
+        ((((class color)) (:italic t :slant italic :bold nil :foreground "#ffffd7" :background "#444444")))) ; +StatusLine
+       (minibuffer-prompt
+        ((((class color)) (:bold t :foreground "#ffffd7")))) ; +Title | User2 guifg
+       (font-lock-builtin-face
         ((((class color) (min-colors 4096)) (:foreground "#eadead"))
          (((class color) (min-colors 256)) (:foreground "#ffffaf")))) ; +Special
-        (font-lock-comment-face
-        ((((class color) (min-colors 4096)) (:foreground "#9c998e" :italic t))
-         (((class color) (min-colors 256)) (:foreground "#949494"  :italic t)))) ; +Comment
-        (font-lock-constant-face
-         ((((class color) (min-colors 4096)) (:foreground "#e5786d"))
-          (((class color) (min-colors 256)) (:foreground "#d7875f")))) ; +Constant
-        (font-lock-number-face
-         ((((class color) (min-colors 4096)) (:foreground "#e5786d"))
-          (((class color) (min-colors 256)) (:foreground "#d7875f")))) ; +Number
-        (font-lock-preprocessor-face
-         ((((class color) (min-colors 4096)) (:foreground "#e5786d"))
-          (((class color) (min-colors 256)) (:foreground "#d7875f")))) ; +PreProc
-        (font-lock-function-name-face
-         ((((class color) (min-colors 4096)) (:foreground "#cae982"))
-          (((class color) (min-colors 256)) (:foreground "#d7ff87")))) ; +Function | Normal guifg (bold)
-        (font-lock-variable-name-face
-         ((((class color) (min-colors 4096)) (:foreground "#cae982"))
-          (((class color) (min-colors 256)) (:foreground "#d7ff87")))) ; +Identifier
-        (font-lock-keyword-face
-         ((((class color) (min-colors 4096)) (:foreground "#88b8f6"))
-          (((class color) (min-colors 256)) (:foreground "#87afff")))) ; +Keyword | Statement
-        (font-lock-reference-face
-         ((((class color) (min-colors 4096)) (:foreground "#88b8f6"))
-          (((class color) (min-colors 256)) (:foreground "#87afff")))) ; +Statement
-        (font-lock-string-face
-         ((((class color) (min-colors 4096)) (:italic t :background nil :foreground "#95e454"))
-          (((class color) (min-colors 256))  (:italic t :background nil :foreground "#87d75f")))) ; +String
-        (font-lock-type-face
-         ((((class color) (min-colors 4096)) (:foreground "#d4d987"))
-          (((class color) (min-colors 256)) (:foreground "#d7d787")))) ; +Type
-        (font-lock-warning-face
-         ((((class color) (min-colors 4096)) (:foreground "#ff2026" :background "#3a3a3a" :bold t))
-          (((class color) (min-colors 256)) (:foreground "#ff0000" :background "#303030" :bold t))))) ; +ErrorMsg
+       (font-lock-comment-face
+        ((((class color) (min-colors 4096)) (:foreground "#9c998e" :italic t :slant italic))
+         (((class color) (min-colors 256)) (:foreground "#949494"  :italic t :slant italic)))) ; +Comment
+       (font-lock-comment-delimiter-face
+        ((((color class)) (:inherit font-lock-comment-face))))
+       (font-lock-constant-face
+        ((((class color) (min-colors 4096)) (:foreground "#e5786d"))
+         (((class color) (min-colors 256)) (:foreground "#d7875f")))) ; +Constant
+       (font-lock-preprocessor-face
+        ((((class color) (min-colors 4096)) (:foreground "#e5786d"))
+         (((class color) (min-colors 256)) (:foreground "#d7875f")))) ; +PreProc
+       (font-lock-function-name-face
+        ((((class color) (min-colors 4096)) (:foreground "#cae982"))
+         (((class color) (min-colors 256)) (:foreground "#d7ff87")))) ; +Function | Normal guifg (bold)
+       (font-lock-variable-name-face
+        ((((class color) (min-colors 4096)) (:foreground "#cae982"))
+         (((class color) (min-colors 256)) (:foreground "#d7ff87")))) ; +Identifier
+       (font-lock-keyword-face
+        ((((class color) (min-colors 4096)) (:foreground "#88b8f6"))
+         (((class color) (min-colors 256)) (:foreground "#87afff")))) ; +Keyword | Statement
+       (font-lock-reference-face
+        ((((class color) (min-colors 4096)) (:foreground "#88b8f6"))
+         (((class color) (min-colors 256)) (:foreground "#87afff")))) ; +Statement
+       (font-lock-string-face
+        ((((class color) (min-colors 4096)) (:italic t :slant italic :background nil :foreground "#95e454"))
+         (((class color) (min-colors 256))  (:italic t :slant italic :background nil :foreground "#87d75f")))) ; +String
+       (font-lock-type-face
+        ((((class color) (min-colors 4096)) (:foreground "#d4d987"))
+         (((class color) (min-colors 256)) (:foreground "#d7d787")))) ; +Type
+       (font-lock-warning-face         ; as Error
+        ((((class color) (min-colors 4096)) (:foreground "#ff2026" :background "#3a3a3a" :bold t))
+         (((class color) (min-colors 256)) (:foreground "#ff0000" :background "#303030" :bold t)))) ; ErrorMsg
+       ;; bonus faces = number & notify & todo
+       (font-lock-number-face
+        ((((class color) (min-colors 4096)) (:foreground "#e5786d"))
+         (((class color) (min-colors 256)) (:foreground "#d7875f")))) ; +Number
+       (font-lock-negation-char-face
+        ((((class color)) (:inherit font-lock-number-face))))
+       (font-lock-notify-face          ; as Warning
+        ((((class color)) (:foreground "#ff5f55"))))                  ; WarningMsg
+       (font-lock-todo-face            ; as Todo
+        ((((class color) (min-colors 4096)) (:foreground "#857b6f" :italic t :slant italic))
+         (((class color) (min-colors 256)) (:foreground "#87875f" :italic t :slant italic)))) ; +Todo
+       ;; auto-complete
+       (ac-candidate-face
+        ((((class color)) (:foreground "#ffffd7" :background "#444444")))) ; Pmenu
+       (ac-selection-face
+        ((((class color) (min-colors 4096)) (:foreground "#080808" :background "#cae982"))
+         (((class color) (min-colors 256)) (:foreground "#080808" :background "#d7ff87")))) ; PmenuSel
+       ;; ediff faces
+       (ediff-current-diff-A ((((class color) (min-colors 4096))
+                               (:background "#382a37"))
+                              (((class color) (min-colors 256))
+                               (:background "3a3a3a"))
+                              (t (:inverse-video t)))) ; +DiffChange
+       (ediff-fine-diff-A ((((class color) (min-colors 4096))
+                            (:background "#73186e"))
+                           (((class color) (min-colors 256))
+                            (:background "5f005f"))
+                           (t (:inverse-video t))))) ; +DiffText
 
      ;; inkpot colorscheme from `github.com/ciaranm/inkpot' TODO: 256 colors' version
      (defcolor-theme "inkpot"
@@ -370,7 +413,7 @@ TODO: case of '''colorscheme' this'' where this is
        (fringe ((t (:foreground "#8b8bcd" :background "#2e2e2e")))) ; +LineNr
        (paren-face ((t (:foreground "#c080d0")))) ; +Special
        (show-paren-match-face ((t (:foreground "#cfbfad" :background "#4e4e8f" :bold nil)))) ; +MatchParen
-        (show-paren-mismatch-face
+       (show-paren-mismatch-face
         ((((class color) (min-colors 4096)) (:foreground "#ffffff" :background "#6e2e2e" :bold t))
          (((class color) (min-colors 256)) (:foreground "#5fd7af" :background "#0087df" :bold t)))) ; +Error
        (isearch ((t (:bold t :background "#303030" :foreground "#ad7b57")))) ; +Search
@@ -402,12 +445,12 @@ TODO: case of '''colorscheme' this'' where this is
         ((((class color) (min-colors 4096)) (:foreground "#ffffff" :background "#6e2e2e" :bold t))
          (((class color) (min-colors 256)) (:foreground "#5fd7af" :background "#0087df" :bold t))))) ; +Error
 
-     ;; 5- fetch your vim colorscheme and load a mockup adapter
+     ;; fetch your vim colorscheme and load a mockup adapter
      (setq *chosen-theme* (colorscheme-to-color-theme "wombat256mod")) ; default theme
      (mars/extract-colorscheme-from-vimrc)
      (funcall *chosen-theme*)
 
-     ;; 6- open the current buffer in Vim (when Emacs modal editing comes short)
+     ;; 7- open the current buffer in Vim (when Emacs modal editing comes short)
      (defun open-with-vim ()
        "Open current buffer with Vim. To ensure buffers synchronization, set 'GLOBAL-AUTO-REVERT-MODE to T."
        (interactive)
@@ -416,7 +459,7 @@ TODO: case of '''colorscheme' this'' where this is
                             "mvim"
                           (if (string-match "^Windows.*" os)
                               "gvim.exe"
-                            "vim"))))
+                            "gvim"))))
          (message "Open %s with %s..." buffer-file-name vim-name)
          (shell-command (concat vim-name " " buffer-file-name))))
      (global-set-key '[(meta \0)] 'open-with-vim)))

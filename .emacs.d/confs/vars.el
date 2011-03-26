@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Thu Mar 24 12:11:04 2011 (+0100)
+;; Last-Updated: Sat Mar 26 21:52:42 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 51
+;;     Update #: 54
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -72,7 +72,6 @@
                                          (and (string-match "^wl" x)
                                               (null (string-match ".pases$" x))))
                                        (directory-files pases-source-dir))))
-      (message (prin1-to-string wl-name-list))
       (when wl-name-list
         (defvar wl-resource-rep (concat pases-source-dir
                                         (file-name-as-directory
@@ -86,10 +85,11 @@
                            (file-name-directory load-file-name)
                            (file-name-as-directory "init")
                            "common-pre-custom"))))
-  (condition-case nil
+  (condition-case err
       (load common-pre-custom)
     (error
-     (message "vars: no global system customization file loaded (hmm!! maybe what you want...)"))))
+     (message "vars: global system customization loading error: %s" err)
+     (sleep-for emacs/breaktime-on-error))))
 
 ;;; DATA PATH
 (defvar c-include-path nil "Additional include path for C programs.")

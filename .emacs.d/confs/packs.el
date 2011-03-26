@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Fri Mar 25 22:53:19 2011 (+0100)
+;; Last-Updated: Sat Mar 26 14:43:45 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 192
+;;     Update #: 197
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -53,7 +53,7 @@
 ;; - install in the first directory of `mars/site-lisp-path' (by default) if not found
 ;; - add required subdirs to LOAD-PATH if newly installed
 ;; TODO: write a list of required cli program (especially for Windows users; for them, install msys?):
-;; tar, gzip, autoconf, make, svn, git, darcs, curl, wget, bash, rake (rvm must be installed on Un*x-like), bzr
+;; tar, gzip, autoconf, make, svn, git, darcs, curl, bash, rake (rvm must be installed on Un*x-like), bzr
 (defvar mars/site-lisp-packages nil)
 (setq mars/site-lisp-packages '((vimpulse     . ((get . "git clone git://gitorious.org/vimpulse/vimpulse")
                                                  (install . "make")))
@@ -79,7 +79,7 @@
                                 (yasnippet     . ((get . "svn checkout http://yasnippet.googlecode.com/svn/trunk/ yasnippet")
                                                   (install . "rake compile")
                                                   (nosearch . ("doc" "extras" "pkg" "snippets"))))
-                                (mailcrypt-3.5.9 . ((get . "wget http://sourceforge.net/projects/mailcrypt/files/mailcrypt/3.5.9/mailcrypt-3.5.9.tar.gz/download; tar zxf mailcrypt-3.5.9.tar.gz; rm mailcrypt-3.5.9.tar.gz") ; no pipe b/c URL redirect
+                                (mailcrypt-3.5.9 . ((get . "curl -L http://sourceforge.net/projects/mailcrypt/files/mailcrypt/3.5.9/mailcrypt-3.5.9.tar.gz/download | tar zx") ; -L b/c URL redirect
                                                     (install . "autoconf; ./configure; make")
                                                     (nosearch . ("autom4te.cache" "tests"))))
                                 (mhc           . ((get . "git clone git://github.com/yoshinari-nomura/mhc.git")
@@ -88,11 +88,11 @@
                                 (mu-cite-201006212322 . ((get . "curl http://www.jpl.org/elips/mu/snapshots/mu-cite-201006212322.tar.gz | tar zx")
                                                          ;; no compilation yet / need apel10.8/poem
                                                          ))
-                                (newsticker-1.99 . ((get . "wget http://download.savannah.gnu.org/releases/newsticker/newsticker-1.99.tar.gz; tar zxf newsticker-1.99.tar.gz; rm newsticker-1.99.tar.gz")
+                                (newsticker-1.99 . ((get . "curl -L http://download.savannah.gnu.org/releases/newsticker/newsticker-1.99.tar.gz | tar zx")
                                                     (install . "emacs-compile-directory")))
                                 ;; (circe          . ((get . "cvs -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/circe co circe")
                                 ;;                    (install . "make")))
-                                (color-theme-6.6.0 . ((get . "wget http://download.savannah.gnu.org/releases/color-theme/color-theme-6.6.0.tar.gz; tar zxf color-theme-6.6.0.tar.gz; rm color-theme-6.6.0.tar.gz")
+                                (color-theme-6.6.0 . ((get . "curl -L http://download.savannah.gnu.org/releases/color-theme/color-theme-6.6.0.tar.gz | tar zx")
                                                       (install . "emacs-compile-directory; emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\" themes"))) ; FIXME: not in path so error in `themes' (not important!)
                                 (darcsum           . ((get . "darcs get --lazy http://joyful.com/repos/darcsum")
                                                       (install . "emacs-compile-directory")))
@@ -119,9 +119,9 @@
                                                        (nosearch . ("ecb-images" "html"))
                                                        (noauto . ".")))
                                 (nxhtml             . ((get . "bzr branch lp:nxhtml")
-                                                       ;; the following version is not compatible with 23 due to deprecated face
+                                                       ;; the following version is not fully compatible with 23 due to deprecated face + a bug I found about remove-hooking Viper in `util/mumamo'
                                                        ;; (get . "curl http://ourcomments.org/Emacs/DL/elisp/nxhtml/zip/nxhtml-2.08-100425.zip > _nxhtml.zip; unzip _nxhtml.zip; rm _nxhtml.zip") ; `unzip' is not pipe-friendly
-                                                       (install . "cd nxhtml;emacs-compile-directory;cd ../related;emacs-compile-directory;cd ../util;emacs-compile-directory;cd ..;emacs-compile-directory")
+                                                       (install . "emacs-compile-directory;cd nxhtml;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";cd ../related;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";cd ../util;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";")
                                                        (nosearch . ("alts" "etc" "nxhtml" "related" "tests" "util" ".bzr"))
                                                        (noauto . ".")))
                                 (emacs-w3m          . ((get . "cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot checkout emacs-w3m")

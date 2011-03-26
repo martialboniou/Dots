@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Wed Mar 23 15:30:35 2011 (+0100)
+;; Last-Updated: Sat Mar 26 21:45:01 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 1891
+;;     Update #: 1897
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -77,7 +77,7 @@ is a CONS formed by an information and a LIST of parameters for
 this information.
 Example: (MAJOR-MODE . (CHESS-MASTER-MODE MAIL-DRAFT-MODE).
 See the advised `delete-frame' at the end of this file as a use case.")
-
+
 ;;; *TIMER*
 (defvar emacs-load-start (current-time))
 (defvar emacs/breaktime-on-error 3
@@ -350,11 +350,11 @@ ROOT                        => ROOT"
                                     (senator-minor-mode nil)
                                     (semantic-idle-scheduler-mode nil)))))
 ;; hooks
-(when window-system			; FIXME: debug / not working perse
+(when window-system         ; FIXME: debug / not working perse
     (add-hook 'desktop-save-hook
-	      'kiwon/save-window-configuration)
+          'kiwon/save-window-configuration)
     (add-hook 'desktop-after-read-hook
-	      'kiwon/restore-window-configuration)) ; save/restore the last window
+          'kiwon/restore-window-configuration)) ; save/restore the last window
                                                     ; configuration with `DESKTOP'
 ;; desktop + autosave + backup files: see eof
 
@@ -379,9 +379,9 @@ ROOT                        => ROOT"
             (setq recently-killed-list
                   (delq buf-file recently-killed-list)))
           buffer-files-list)
-         (message "echo: %s" (prin1-to-string
-                              (reduce 'cons recently-killed-list
-                                      :start 0 :end 10)))
+         ;; (message "echo: %s" (prin1-to-string
+         ;;                      (reduce 'cons recently-killed-list
+         ;;                              :start 0 :end 10)))
          (find-file
           (if arg (nth arg recently-killed-list)
             (car recently-killed-list)))))))

@@ -37,7 +37,7 @@ A lot of work is needed to enhance the portability but some snippets may be usef
 * remember
 * semantic (cedet)
 * wanderlust
-* wdired (**TODO:** need some hack to work with viper/vimpulse)
+* wdired (an *editable* `dired`; some wrappers in `confs` for `viper`/`vimpulse` case)
 * anything
 * ibuffer (a `dired` for buffers)
 * yasnippet

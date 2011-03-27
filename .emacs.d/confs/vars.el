@@ -90,6 +90,37 @@
     (error
      (message "vars: global system customization loading error: %s" err)
      (sleep-for emacs/breaktime-on-error))))
+;; test with conf-locate / conf-load
+
+;;; MINGW/MSYS COMPATIBILITY
+(if (memq system-type '(ms-dos windows-nt))
+    (defvar mingw-executable-binary-suffixes
+      '(".exe" ".com" ".bat" ".cmd" ".btm" ""))
+  (defun mingw-executable-find (command)
+    "Search for COMMAND in `exec-path' and return the absolute file name.
+Return nil if COMMAND is not found anywhere in `exec-path'."
+    (let ((list exec-path)
+	  file)
+      (while list
+	(setq list
+	      (if (and (setq file (expand-file-name command (car list)))
+		       (let ((suffixes mingw-executable-binary-suffixes)
+			     candidate)
+			 (while suffixes
+			   (setq candidate (concat file (car suffixes)))
+			   (if (and (file-exists-p candidate) ; `file-executable-p' is not convenient
+				    (not (file-directory-p candidate)))
+			       (setq suffixes nil)
+			     (setq suffixes (cdr suffixes))
+			     (setq candidate nil)))
+			 (setq file candidate)))
+		  nil
+		(setq file nil)
+		(cdr list))))
+      file))
+  (defalias 'executable-find 'mingw-executable-find)
+  (setq explicit-shell-file-name "bash")
+  (setq shell-file-name "bash"))
 
 ;;; DATA PATH
 (defvar c-include-path nil "Additional include path for C programs.")

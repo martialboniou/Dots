@@ -87,8 +87,7 @@
 ;;; BETTER DEFAULT COLORS
 (set-face-attribute 'default nil
                     :height 140
-                    :foundry "apple"
-                    :family "DejaVu_Sans_Mono") ; TODO: force DejaVu_Sans_Mono font install on OSX
+                    :family "DejaVu Sans Mono") ; TODO: force DejaVu_Sans_Mono font install on OSX
 (setq hl-paren-colors
       '("orange1"
         "yellow1"

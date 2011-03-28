@@ -52,8 +52,12 @@
 ;; - check if required subdirs are present in `mars/site-lisp-path'
 ;; - install in the first directory of `mars/site-lisp-path' (by default) if not found
 ;; - add required subdirs to LOAD-PATH if newly installed
-;; TODO: write a list of required cli program (especially for Windows users; for them, install msys?):
-;; tar, gzip, autoconf, make, svn, git, darcs, curl, bash, rake (rvm must be installed on Un*x-like), bzr
+;; IMPORTANT: required programs are:
+;; - bash, touch; 
+;; - make, autoconf, rake (need ruby; `rvm' must be installed on Un*k-like);
+;; - curl, cvs, svn, bzr, git, darcs, easy_install (via python/setuptools);
+;; - tar, gzip, unzip
+;; Windows users, install mingw/msys/gnuwin and complete installation with ruby/gem, python/setuptools/bzr and haskell/cabal/darcs:
 (defvar mars/site-lisp-packages nil)
 (setq mars/site-lisp-packages '((vimpulse     . ((get . "git clone git://gitorious.org/vimpulse/vimpulse")
                                                  (install . "make")))
@@ -108,7 +112,7 @@
                                                        (install . "make")
                                                        (nosearch . ("build" "contrib" "Pymacs" "temp" "tests"))))
                                 (bbdb               . ((get . "cvs -d \":pserver:anonymous:@bbdb.cvs.sourceforge.net:/cvsroot/bbdb\" checkout bbdb")
-                                                       (install . "autoconf;./configure;cd lisp;make bbdb-autoloads.el;cd ..; make") ; soon DEPRECATED
+                                                       (install . "autoconf;./configure;cd lisp;make autoloadsc;cd ..; make") ; soon DEPRECATED / IMPORTANT: problem in configure on Windows: `emacs' path with spaces
                                                        (nosearch . ("autom4te.cache" "bits/bbdb-filters/doc" "html" "tex" "texinfo" "utils"))))
                                 (cedet              . ((get . "cvs -z3 -d \":pserver:anonymous:@cedet.cvs.sourceforge.net:/cvsroot/cedet\" checkout -P cedet")
                                                        (install . "make")

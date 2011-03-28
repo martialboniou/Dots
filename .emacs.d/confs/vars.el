@@ -66,12 +66,11 @@
                           (file-name-as-directory "~")
                           (file-name-as-directory ".pases.d"))))) ; or (locate-library "wl") if standard install
   (when (file-exists-p pases-source-dir) ; IMPORTANT: if `pases' is installed with `confs/packs.el', reboot Emacs
-    (unless (fboundp 'remove-if-not)
+    (unless (fboundp 'remove-if)
      (require 'cl))
-    (let ((wl-name-list (remove-if-not (lambda (x)
-                                         (and (string-match "^wl" x)
-                                              (null (string-match ".pases$" x))))
-                                       (directory-files pases-source-dir))))
+    (let ((wl-name-list (remove-if (lambda (x)
+                                        (string-match ".pases$" x))
+                                       (directory-files pases-source-dir nil "^wl"))))
       (when wl-name-list
         (defvar wl-resource-rep (concat pases-source-dir
                                         (file-name-as-directory

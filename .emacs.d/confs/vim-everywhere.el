@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: Sat Mar 26 16:24:26 2011 (+0100)
+;; Last-Updated: mar. mars 29 11:11:29 2011 (+0200)
 ;;           By:
-;;     Update #: 207
+;;     Update #: 209
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -75,10 +75,12 @@
   "Viper key to switch between Emacs and Vi Normal modes")
 (defvar viper-mode nil
   "Boolean flag to run Viper or not")
-
 (let ((vi-conf (conf-locate (concat (user-login-name) ".viper"))))
-  (when vi-conf
-    (setq viper-custom-file-name (convert-standard-filename vi-conf))))
+  (if vi-conf
+      (setq viper-custom-file-name (convert-standard-filename vi-conf))
+    (let ((default-conf (conf-locate "default.viper")))
+      (when default-conf
+        (setq viper-custom-file-name (convert-standard-filename default-conf))))))
 (setq viper-toggle-key "\C-x\C-z" ; no more C-z ('minimize' then works on Mac)
       viper-mode t)
 (require 'viper)

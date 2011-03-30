@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Mar 24 12:35:48 2011 (+0100)
-;;           By: Martial Boniou
-;;     Update #: 57
+;; Last-Updated: mar. mars 29 11:31:47 2011 (+0200)
+;;           By: mars
+;;     Update #: 64
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -48,20 +48,28 @@
 (unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
 
 ;; TODO: REPLACE #'BBDB-VCARD-IMPORT BY #'trebb/BBDB-VCARD
-(let ((init-file-name (concat user-login-name ".wl.el")))
-  (let ((loc wl-resource-rep)
-        (init (convert-standard-filename (or (conf-locate (concat init-file-name "c"))
-                                             (conf-locate init-file-name))))
-        (folder (convert-standard-filename (concat (file-name-as-directory mars/local-root-dir)
-                                                   (file-name-as-directory mars/personal-data)
-                                                   "wl/" (user-login-name) ".folders"))))
+(let* ((init-file-name (concat user-login-name ".wl"))
+       (init (or (conf-locate init-file-name)
+                 (conf-locate "default.wl")))
+       (folder-directory (concat (file-name-as-directory mars/local-root-dir)
+                                 (file-name-as-directory mars/personal-data)
+                                 "wl/"))
+       (folder (convert-standard-filename (concat (file-name-as-directory mars/local-root-dir)
+                                                  (file-name-as-directory mars/personal-data)
+                                                  "wl/" (user-login-name) ".folders"))))
+  (when init
     (when (file-exists-p init)
-      (setq wl-init-file init))
-    (when (file-exists-p folder)
-      (setq wl-folders-file folder))
-    (when (file-exists-p loc)
+      (setq wl-init-file (convert-standard-filename init))))
+  (let ((wl-fldr (concat folder-directory (user-login-name) ".folders")))
+    (if (file-exists-p wl-fldr)
+        (setq wl-folders-file (convert-standard-filename wl-fldr))
+      (let ((default-wl-fldr (concat folder-directory "default.folders")))
+        (when (file-exists-p default-wl-fldr)
+          (setq wl-folders-file (convert-standard-filename default-wl-fldr))))))
+  (when (boundp 'wl-resource-rep)
+    (when (file-exists-p wl-resource-rep)
       (setq wl-icon-directory (expand-file-name
-                               (concat (file-name-as-directory loc)
+                               (concat (file-name-as-directory wl-resource-rep)
                                        "etc/icons")))))) ; icons relative path
 
 (eval-after-load "wl-draft"
@@ -79,14 +87,11 @@
            (append '((major-mode . (wl-draft-mode)))
                    confirm-frame-action-buffer-alist))))
 
-
 (eval-after-load "wl"
   '(progn
-     (setq ssl-program-name "gnutls-cli" 
-           ssl-program-arguments '("-p" service host))
      (when elmo-localdir-folder-path
        (setq elmo-maildir-folder-path (concat elmo-localdir-folder-path "/Maildir"))) ; Maildir => <~Mail>/Maildir
-     (when (and (boundp 'mars/w3m-exists) mars/w3m-exists)
+     (when (executable-find w3m-program-name)
        (require 'octet)                 ; w3m octet for handling attachments
        (octet-mime-setup))
      (require 'filladapt)

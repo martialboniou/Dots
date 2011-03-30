@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 13:08:32 2011 (+0100)
 ;; Version:
-;; Last-Updated: Fri Mar 11 23:59:39 2011 (+0100)
-;;           By: Martial Boniou
-;;     Update #: 22
+;; Last-Updated: mar. mars 29 22:34:38 2011 (+0200)
+;;           By: mars
+;;     Update #: 27
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -48,13 +48,9 @@
 (unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
 
 ;;; W3M
-(setq mars/w3m-exists t)
-
 (eval-after-load "w3m"
   '(progn
-     (setq w3m-command (or (executable-find "w3m")
-                           "/opt/local/bin/w3m")
-           w3m-home-page "http://www.google.fr"
+     (setq w3m-home-page "http://www.google.fr"
            w3m-cookie-accept-bad-cookies t
            w3m-toggle-inline-image t
            w3m-cookie-file (concat (file-name-as-directory mars/local-root-dir)
@@ -63,10 +59,12 @@
 
 ;;; NEWSTICKER
 (when (require 'newsticker nil t)
-  (require 'w3m)
-  (setq newsticker-html-rendererer 'w3m-region
-        ;; browse-url-browser-function 'w3m-browse-url ; w3m as browser
-        newsticker-automatically-mark-items-as-old t
+  (when (executable-find w3m-program-name)
+    (require 'w3m)
+    (setq newsticker-html-rendererer 'w3m-region)
+    ;; (setq browse-url-browser-function 'w3m-browse-url) ; w3m as browser
+    )
+  (setq newsticker-automatically-mark-items-as-old t
         newsticker-automatically-mark-visited-items-as-old t
         newsticker-retrieval-method (quote extern)
         newsticker-wget-arguments (quote ("-q" "-O" "-" "--user-agent" "testing"))))

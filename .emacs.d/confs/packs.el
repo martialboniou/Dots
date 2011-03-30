@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Sat Mar 26 14:43:45 2011 (+0100)
-;;           By: Martial Boniou
-;;     Update #: 197
+;; Last-Updated: mar. mars 29 23:01:30 2011 (+0200)
+;;           By: mars
+;;     Update #: 198
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -129,7 +129,7 @@
                                                        (nosearch . ("alts" "etc" "nxhtml" "related" "tests" "util" ".bzr"))
                                                        (noauto . ".")))
                                 (emacs-w3m          . ((get . "cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot checkout emacs-w3m")
-                                                       (install . "autoconf;./configure;make")
+                                                       (install . "emacs -batch -q -no-site-file -l w3mhack.el NONE -f w3mhack-nonunix-install")
                                                        (nosearch . ("attic" "autom4te.cache" "doc" "icons" "icons30" "patches" "shimbun"))))
 
                                 ))             ; TODO: verify sig on get ?

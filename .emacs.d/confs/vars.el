@@ -114,9 +114,9 @@
 ;; test with conf-locate / conf-load
 
 ;;; MINGW/MSYS COMPATIBILITY
-(if (memq system-type '(ms-dos windows-nt))
-    (defvar mingw-executable-binary-suffixes
-      '(".exe" ".com" ".bat" ".cmd" ".btm" ""))
+(when (member system-type '(ms-dos windows-nt))
+  (defvar mingw-executable-binary-suffixes
+    '(".exe" ".com" ".bat" ".cmd" ".btm" ""))
   (defun mingw-executable-find (command)
     "Search for COMMAND in `exec-path' and return the absolute file name.
 Return nil if COMMAND is not found anywhere in `exec-path'."

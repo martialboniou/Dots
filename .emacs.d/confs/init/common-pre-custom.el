@@ -85,8 +85,8 @@
       newsticker-display-interval 15.3)
 
 ;;; BETTER DEFAULT COLORS
-(if (member system-type '(windows-nt ms-dos))
-    ();(set-face-attribute 'default :height 120)
+(unless (member system-type '(windows-nt ms-dos))
+    ;(set-face-attribute 'default :height 120)
   (set-face-attribute 'default nil
                       :height 140
                       :family "DejaVu Sans Mono")) ; TODO: force DejaVu_Sans_Mono font install on OSX

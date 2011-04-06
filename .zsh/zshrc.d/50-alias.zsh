@@ -20,8 +20,9 @@ alias po=popd
 #alias d='dirs -v'
 alias h=history
 alias top=htop
+alias stop='kill -TSTP' # csh like stop
 alias grep=egrep
-alias ll='ls -lh'
+alias ll='ls -lah'
 alias la='ls -a'
 # List only directories and symbolic
 # links that point to directories
@@ -53,12 +54,15 @@ alias cd.='cd ..' # honestly 'cd .' is normally unused
 alias purge="rm -i *~" # emacs temp files to the void
 
 # Suffixes (->hondana@gmx.com)
-alias -s html=w3m
-alias -s org=w3m
+alias -s html=w3m -T text/html
 alias -s pdf=$OPEN_COMMAND
 alias -s pl=perl
 alias -s py=python
 alias -s rb=ruby
 alias -s st=gst
+# `*-w3m` defined in 10-specific.zsh
+alias -s org=org-w3m
+alias -s {md,mkdn,markdown}=markdown-w3m
+alias -s textile=textile-w3m
 # autoload -U zsh-mime-setup
 # zsh-mime-setup

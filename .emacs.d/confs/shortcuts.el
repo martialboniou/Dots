@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Thu Mar 10 14:49:22 2011 (+0100)
+;; Last-Updated: Thu Apr  7 17:43:11 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 87
+;;     Update #: 88
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -123,12 +123,12 @@
 ;; tell your functions unreachable via autoloads (generally defined in confs file
 ;; instead of <site-lisp> files). Use `fmakunbound' to test it.
 (defun-dummy t
-  ("code"   . (mars/save-n-purge-code mars/toggle-ecb))
-  ("box"    . mars/toggle-single-window)
-  ("media"  . (mars/safe-emms-start-stop mars/emms-any-streams))
-  ("gtd"    . (make-remember-frame mars/today-calendar mars/unscheduled-tasks))
-  ("mail"   . mars/draft-email)
-  ("crypto" . mars/hexedit))
+  ("code"           . (mars/save-n-purge-code mars/toggle-ecb))
+  ("window-manager" . mars/toggle-single-window)
+  ("media"          . (mars/safe-emms-start-stop mars/emms-any-streams))
+  ("gtd"            . (make-remember-frame mars/today-calendar mars/unscheduled-tasks))
+  ("mail"           . mars/draft-email)
+  ("crypto"         . mars/hexedit))
 (defun-dummy nil undo-kill-buffer ibuffer cycle-buffer cycle-buffer-backward)
 
 ;;; KEYBINDINGS

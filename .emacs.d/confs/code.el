@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sat Mar 26 18:03:35 2011 (+0100)
+;; Last-Updated: Thu Apr  7 17:47:33 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 305
+;;     Update #: 329
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -310,11 +310,15 @@ Move point to the beginning of the line, and run the normal hook
     (when (boundp 'ecb-activated-window-configuration)
       (setq activated ecb-activated-window-configuration))
     activated))
+(defun ecb-activated-in-this-frame ()
+  (and (ecb-activated)
+       (eq (selected-frame)
+           ecb-frame)))
 (eval-after-load "ecb"
   '(progn
      (setq ecb-tip-of-the-day nil)
      (push '(ecb-minor-mode nil) desktop-minor-mode-table) ; compatibility with DESKTOP
-     ;; ECB version of mars/toggle-single-window defined in <confs>/box.el
+     ;; ECB version of mars/toggle-single-window defined in <confs>/window-manager.el
      (if (fboundp 'mars/toggle-single-window)
          (progn
            (defvar mars/ecb-previously-running nil
@@ -322,8 +326,8 @@ Move point to the beginning of the line, and run the normal hook
            (defadvice mars/toggle-single-window (around ecb-active activate)
              (interactive)
              (if (cdr (window-list nil 0))
-                 (if (ecb-activated)
-                     (when (y-or-n-p "ECB is running. Do you want to deactivate ECB? ")
+                 (if (ecb-activated-in-this-frame)
+                     (when (y-or-n-p "This frame is ECB'd. Do you want to deactivate ECB? ")
                        (ecb-deactivate)
                        (setq mars/ecb-previously-running t)
                        (delete-other-windows))
@@ -341,7 +345,7 @@ Move point to the beginning of the line, and run the normal hook
      ;; ECB version of mars-windows-archiver-save
      (defadvice mars-windows-archiver-save (around ecb-active activate)
        (interactive)
-       (if (ecb-activated)
+       (if (ecb-activated-in-this-frame)
            (when (y-or-n-p "BEWARE: you should deactivate ecb first. Archive the current window configuration anyway? ")
              (let ((dont-alert t))
                ad-do-it))
@@ -349,7 +353,7 @@ Move point to the beginning of the line, and run the normal hook
            ad-do-it)))
      ;; ECB version of kiwon/save-window-configuration
      (defadvice kiwon/save-window-configuration (around ecb-active (&optional ecb-manage) activate)
-       (let ((ecb-active (ecb-activated)))
+       (let ((ecb-active (ecb-activated-in-this-frame)))
          (when (and ecb-manage ecb-active) ; you cannot deactivate ecb when desktop is autosaved so
            (ecb-deactivate))               ; `ecb-manage' is here for the `kill-emacs-hook' case
          (progn
@@ -361,8 +365,14 @@ Move point to the beginning of the line, and run the normal hook
 (defun mars/toggle-ecb ()
   (interactive)
   (if (ecb-activated)
-      (when (y-or-n-p "Stop ecb? ")
-        (ecb-deactivate))
+      (if (ecb-activated-in-this-frame)
+          (when (y-or-n-p "Stop ecb? ")
+            (ecb-deactivate))
+        (when (y-or-n-p "Switch ecb to this current frame? ")
+          (let ((frm (selected-frame)))
+            (ecb-deactivate)
+            (select-frame-set-input-focus frm)
+            (ecb-activate))))
     (when (y-or-n-p "Start ecb? ")
       (ecb-activate))))
 

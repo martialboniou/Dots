@@ -6,7 +6,7 @@ Everything should work with a bit of customization on Mac OS X and most of Linux
 Zsh
 ---
 
-Because the best shell make the most beautiful pearls. Zsh is a better Bourne with every fancy things from Korn. Forget [Bash](http://www.bash2zsh.com/) ! And get a better shell with smarter completions.
+Because the best shell make the most beautiful pearls. Zsh is a better Bourne with every fancy things from `csh` like *aliases*. Forget [Bash](http://www.bash2zsh.com/) ! And get a better shell with smarter completions.
 
 For example, some functions are useful to navigate in directories:
 * Alt-U: go **up** in directory;

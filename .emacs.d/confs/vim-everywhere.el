@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: mar. mars 29 11:11:29 2011 (+0200)
+;; Last-Updated: Sat Apr  9 10:33:45 2011 (+0200)
 ;;           By:
-;;     Update #: 209
+;;     Update #: 212
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -304,7 +304,9 @@ TODO: case of '''colorscheme' this'' where this is
 
      ;; wombat colorscheme 256 mod (2010/07/23 version) Liang/Bespalov/Nielsen (dengmao@gmail.com)
      (defcolor-theme "wombat256mod"
-       ((background-mode . dark))       ; color orientation
+       ((foreground-color . "#e3e0d7")  ; +Normal guifg
+        (background-color . "#242424")  ; +Normal guibg
+        (background-mode . dark))       ; color orientation
        (default ((((class color) (min-colors 4096)) (:foreground "#e3e0d7" :background "#242424"))
                  (((class color) (min-colors 256)) (:foreground "#d0d0d0" :background "#1c1c1c")))) ; +Normal
        (border ((((class color) (min-colors 4096)) (:background "#32322f"))
@@ -367,6 +369,8 @@ TODO: case of '''colorscheme' this'' where this is
        (font-lock-string-face
         ((((class color) (min-colors 4096)) (:italic t :slant italic :background nil :foreground "#95e454"))
          (((class color) (min-colors 256))  (:italic t :slant italic :background nil :foreground "#87d75f")))) ; +String
+       (font-lock-doc-face
+        ((((color class)) (:inherit font-lock-string-face))))
        (font-lock-type-face
         ((((class color) (min-colors 4096)) (:foreground "#d4d987"))
          (((class color) (min-colors 256)) (:foreground "#d7d787")))) ; +Type
@@ -449,6 +453,7 @@ TODO: case of '''colorscheme' this'' where this is
 
      ;; fetch your vim colorscheme and load a mockup adapter
      (setq *chosen-theme* (colorscheme-to-color-theme "wombat256mod")) ; default theme
+     ;; or (setq *chosen-theme* (colorscheme-to-color-theme "inkpot"))
      (mars/extract-colorscheme-from-vimrc)
      (funcall *chosen-theme*)
 
@@ -472,4 +477,3 @@ TODO: case of '''colorscheme' this'' where this is
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; vim-everywhere.el ends here
-

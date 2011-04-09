@@ -6,16 +6,16 @@
 ;; Maintainer: 
 ;; Created: Sat Mar  5 23:58:09 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sat Mar  5 23:58:54 2011 (+0100)
+;; Last-Updated: Fri Apr  8 23:06:47 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 2
+;;     Update #: 11
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: 
+;;; Commentary: gst / factorcode 
 ;; 
 ;; 
 ;; 
@@ -47,9 +47,17 @@
 
 ;;; GNU SMALLTALK
 (require 'smalltalk-mode-init)
-
-
-;;; CPP
+
+;;; FACTOR
+(when (boundp 'factorcode-source-rep)
+  (when (file-exists-p factorcode-source-rep)
+    (load (apply 'concat
+                 (nconc
+                  (mapcar '(lambda (x) (file-name-as-directory x))
+                          (list factorcode-source-rep
+                                "misc"
+                                "fuel"))
+                  '("fu"))) t)))        ; fu.el autoloads
 
 (provide 'pure-object)
 

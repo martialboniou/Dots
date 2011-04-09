@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Apr  7 17:47:33 2011 (+0200)
+;; Last-Updated: Sat Apr  9 10:09:37 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 329
+;;     Update #: 330
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -306,10 +306,8 @@ Move point to the beginning of the line, and run the normal hook
 
 ;;; ECB
 (defun ecb-activated ()
-  (let ((activated nil))
-    (when (boundp 'ecb-activated-window-configuration)
-      (setq activated ecb-activated-window-configuration))
-    activated))
+  (when (boundp 'ecb-activated-window-configuration)
+    (not (null ecb-activated-window-configuration))))
 (defun ecb-activated-in-this-frame ()
   (and (ecb-activated)
        (eq (selected-frame)

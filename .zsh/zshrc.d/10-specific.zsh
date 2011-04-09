@@ -10,15 +10,16 @@ MONO_SCRIPT_BIN=$HOME/.tools/scripts
 
 # W3M powered markup language translator
 # using ruby gems
+alias html-w3m='w3m -T text/html' # check 50-alias.zsh
 function org-w3m () {
-  org-ruby -t html $1 | w3m -T text/html
+  org-ruby -t html $1 | html-w3m
 }
 function markdown-w3m () {
-  rdiscount $1 | w3m -T text/html
+  rdiscount $1 | html-w3m
 }
 alias -g md-w3m='markdown-w3m'
 function textile-w3m () {
-  redcloth $1 | w3m -T text/html
+  redcloth $1 | html-w3m
 }
 
 # Mac OS X specificities first

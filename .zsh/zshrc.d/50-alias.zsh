@@ -36,6 +36,9 @@ alias monitor="netstat | grep -v localhost | grep -v stream | grep -v dgram"
 if [ "$MAN_COMMAND" ]; then
   alias man=$MAN_COMMAND
 fi
+if which elinks &> /dev/null; then
+  alias html-w3m='elinks'
+fi
 # Global aliases -- These do not have to be
 # at the beginning of the command line.
 alias -g L='less'
@@ -54,13 +57,14 @@ alias cd.='cd ..' # honestly 'cd .' is normally unused
 alias purge="rm -i *~" # emacs temp files to the void
 
 # Suffixes (->hondana@gmx.com)
-alias -s html=w3m -T text/html
+alias -s html=html-w3m
 alias -s pdf=$OPEN_COMMAND
 alias -s pl=perl
 alias -s py=python
 alias -s rb=ruby
 alias -s st=gst
 # `*-w3m` defined in 10-specific.zsh
+alias -s html=html-w3m
 alias -s org=org-w3m
 alias -s {md,mkdn,markdown}=markdown-w3m
 alias -s textile=textile-w3m

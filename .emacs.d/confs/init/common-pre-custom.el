@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 23 15:15:40 2011 (+0100)
 ;; Version: 0.1
-;; Last-Updated: Sat Mar 26 16:54:30 2011 (+0100)
+;; Last-Updated: Mon Apr 11 10:58:52 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 66
+;;     Update #: 67
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -181,6 +181,7 @@
  '(wl-highlight-folder-unread-face ((((class color) (background dark)) (:foreground "#3486f5"))))
  '(wl-highlight-folder-zero-face ((((class color) (background dark)) (:foreground "white" :weight bold))))
  '(wl-highlight-header-separator-face ((((class color)) (:background "DarkRed" :foreground "Black"))))
+ '(wl-highlight-demo-face ((((class color)) (:inherit default))))
  '(wl-highlight-logo-face ((((class color) (background dark)) (:background "#000000" :foreground "SkyBlue"))))
  '(wl-highlight-message-citation-header ((((class color) (background dark)) (:foreground "Yellow" :slant italic))))
  '(wl-highlight-message-header-contents ((t (:foreground "DarkOrange" :weight normal))))

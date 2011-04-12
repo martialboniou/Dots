@@ -1,14 +1,14 @@
 ;;; formats.el --- 
 ;; 
 ;; Filename: formats.el
-;; Description: Formats, styles, encodings and image support
+;; Description: Formats, styles, encodings, spelling and image support
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sun Mar 13 20:13:07 2011 (+0100)
+;; Last-Updated: Tue Apr 12 22:28:52 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 24
+;;     Update #: 31
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -17,7 +17,7 @@
 ;; 
 ;;; Commentary: Pretty (pp-c-l) + encodings switiching + format on save
 ;;              helpers + delete-trailing-whitespace + style + image
-;;              support (iimage)
+;;              support (iimage) + flyspell
 ;; 
 ;; formats by Martial (2010-2011)
 ;;
@@ -173,6 +173,30 @@ Otherwise the update regexps won't match."
            (set-face-underline-p 'org-link nil)
          (set-face-underline-p 'org-link t))
        (iimage-mode))))
+
+(eval-after-load "ispell"
+  '(progn
+     (setq flyspell-issue-welcome-flag nil)
+     (setq ispell-default-dictionary "fr_FR")
+     (when spelling-tool-name
+       (setq ispell-program-name spelling-tool-name))
+     (when ispell-program-name               ; boost needed if aspell
+       (when (eq 'aspell
+                 (intern (car (last (split-string ispell-program-name "/")))))
+         (setq ispell-extra-args '("--sug-mode=ultra"))))))
+(add-hook 'text-mode-hook 'turn-on-flyspell)
+(defvar lang-ring nil
+  "The spelling check ring of dictionary names for the language I usually write")
+(let ((langs '("en_US" "fr_FR")))
+  (setq lang-ring (make-ring (length langs)))
+  (dolist (elem langs) (ring-insert lang-ring elem)))
+(defun cycle-ispell-languages ()
+  (interactive)
+  (let ((lang (ring-ref lang-ring -1)))
+    (ring-insert lang-ring lang)
+    (ispell-change-dictionary lang)))
+;; (global-set-key [f6] 'cycle-ispell-languages)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; formats.el ends here

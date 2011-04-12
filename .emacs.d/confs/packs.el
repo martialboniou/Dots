@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: mar. mars 29 23:01:30 2011 (+0200)
-;;           By: mars
-;;     Update #: 198
+;; Last-Updated: Tue Apr 12 14:28:27 2011 (+0200)
+;;           By: Martial Boniou
+;;     Update #: 206
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -58,6 +58,7 @@
 ;; - curl, cvs, svn, bzr, git, darcs, easy_install (via python/setuptools);
 ;; - tar, gzip, unzip
 ;; Windows users, install mingw/msys/gnuwin and complete installation with ruby/gem, python/setuptools/bzr and haskell/cabal/darcs:
+;; NOTE: try el-get to replace pases and all this
 (defvar mars/site-lisp-packages nil)
 (setq mars/site-lisp-packages '((vimpulse     . ((get . "git clone git://gitorious.org/vimpulse/vimpulse")
                                                  (install . "make")))
@@ -131,7 +132,9 @@
                                 (emacs-w3m          . ((get . "cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot checkout emacs-w3m")
                                                        (install . "emacs -batch -q -no-site-file -l w3mhack.el NONE -f w3mhack-nonunix-install")
                                                        (nosearch . ("attic" "autom4te.cache" "doc" "icons" "icons30" "patches" "shimbun"))))
-
+                                (auctex-11.86       . ((get . "curl -L http://ftp.gnu.org/gnu/auctex/auctex-11.86.tar.gz | tar zx")
+                                                       ;; TODO: (install . "emacs -Q -eval \"\" ;./configure --with-lispdir=. --with-texmf-dir=/usr/local/texlive/texmf-local;make")
+                                                       (nosearch . ("doc" "images" "preview" "style"))))
                                 ))             ; TODO: verify sig on get ?
 (defun mars/populate-site-lisp (&optional only-mark)
   "Check if a package exists. If no package found, fetch it, install it

@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Fri Apr  8 22:42:21 2011 (+0200)
+;; Last-Updated: Tue Apr 12 14:59:47 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 75
+;;     Update #: 78
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -162,6 +162,8 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 (defvar factorcode-source-rep "~/Dynamics/factor/src/factor"
   "The up-to-date factor source repository. The Emacs environment
 named FUEL must be found in the `misc/fuel' subdirectory.")
+(defvar spelling-tool-name nil
+  "The default program for spell checking. May be set to NIL.")
 
 ;;; SPECIFICS (<data>/sys/vars-<hostname>.el or <data>/vars-<hostname>.el)
 (let ((sys-rep (concat (file-name-as-directory mars/local-root-dir)

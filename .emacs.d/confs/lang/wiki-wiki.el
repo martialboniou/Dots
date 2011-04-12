@@ -6,16 +6,16 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:02:05 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sat Mar 19 16:38:07 2011 (+0100)
+;; Last-Updated: Tue Apr 12 21:33:09 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 9
+;;     Update #: 21
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: markdown / textile / yaml-mode / haml-mode
+;;; Commentary: markdown / textile / yaml-mode / haml-mode / auctex
 ;; 
 ;; 
 ;; 
@@ -68,6 +68,19 @@
                '(lambda ()
                   (setq indent-tabs-mode nil) ; uses spaces (no tabs)
                   (define-key haml-mode-map "\C-m" 'newline-and-indent)))))
+
+;;; AUCTEX
+(require 'tex-site nil t)
+(eval-after-load "tex-site"
+  '(progn
+     (require 'tex-style nil t)
+     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+     (add-hook 'reftex-load-hook 'imenu-add-menubar-index)
+     (add-hook 'reftex-mode-hook 'imenu-add-menubar-index)
+     (add-hook 'reftex-mode-hook '(lambda ()
+                                    (setq TeX-open-quote "«~")
+                                    (setq TeX-close-quote "~»")
+                                    (auto-fill-mode t)))))
 
 (provide 'wiki-wiki)
 

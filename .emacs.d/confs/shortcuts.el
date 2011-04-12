@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Thu Apr  7 17:43:11 2011 (+0200)
+;; Last-Updated: Tue Apr 12 22:35:24 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 88
+;;     Update #: 91
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -129,7 +129,7 @@
   ("gtd"            . (make-remember-frame mars/today-calendar mars/unscheduled-tasks))
   ("mail"           . mars/draft-email)
   ("crypto"         . mars/hexedit))
-(defun-dummy nil undo-kill-buffer ibuffer cycle-buffer cycle-buffer-backward)
+(defun-dummy nil undo-kill-buffer ibuffer cycle-buffer cycle-buffer-backward cycle-ispell-languages)
 
 ;;; KEYBINDINGS
 ;; <f5> + <f6> => toggle single window + cycle/(undo-)kill-buffer + windows configuration archiver
@@ -148,7 +148,8 @@
                                   (mars/save-n-purge-code     . "<f5>")
                                   (anything-simple-call-tree  . prev)
                                   (anything-browse-code       . id) ; faster than ecb
-                                  (mars/toggle-ecb            . next))
+                                  (mars/toggle-ecb            . next)
+                                  (cycle-ispell-languages     . "ESC"))
 ;; <f8> => daily tasks
 (global-unset-key [f8])
 (mars/build-ordered-function-keys "f8" mars/emms-any-streams

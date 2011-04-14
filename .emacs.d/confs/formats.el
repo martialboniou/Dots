@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Apr 12 22:28:52 2011 (+0200)
+;; Last-Updated: Wed Apr 13 14:06:29 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 31
+;;     Update #: 40
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -174,6 +174,12 @@ Otherwise the update regexps won't match."
          (set-face-underline-p 'org-link t))
        (iimage-mode))))
 
+;;; FLYSPELL
+(add-hook 'text-mode-hook 'turn-on-flyspell)
+(when *i-am-a-dvorak-typist*
+  ;; .emacs defines C-; for fast copy-paste-cut key-bindings
+  (setq flyspell-auto-correct-binding
+        [(control ?\')]))        ; use C-' instead
 (eval-after-load "ispell"
   '(progn
      (setq flyspell-issue-welcome-flag nil)
@@ -184,7 +190,6 @@ Otherwise the update regexps won't match."
        (when (eq 'aspell
                  (intern (car (last (split-string ispell-program-name "/")))))
          (setq ispell-extra-args '("--sug-mode=ultra"))))))
-(add-hook 'text-mode-hook 'turn-on-flyspell)
 (defvar lang-ring nil
   "The spelling check ring of dictionary names for the language I usually write")
 (let ((langs '("en_US" "fr_FR")))
@@ -195,8 +200,6 @@ Otherwise the update regexps won't match."
   (let ((lang (ring-ref lang-ring -1)))
     (ring-insert lang-ring lang)
     (ispell-change-dictionary lang)))
-;; (global-set-key [f6] 'cycle-ispell-languages)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; formats.el ends here

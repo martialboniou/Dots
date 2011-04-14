@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:02:05 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Apr 12 21:33:09 2011 (+0200)
+;; Last-Updated: Wed Apr 13 11:29:48 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 21
+;;     Update #: 25
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -74,13 +74,14 @@
 (eval-after-load "tex-site"
   '(progn
      (require 'tex-style nil t)
+     (setq TeX-PDF-mode t)              ; pdflatex as default
      (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+     ;; (add-hook 'LaTeX-mode-hook 'turn-on-auto-fill) ; auto fill if you wish
      (add-hook 'reftex-load-hook 'imenu-add-menubar-index)
      (add-hook 'reftex-mode-hook 'imenu-add-menubar-index)
      (add-hook 'reftex-mode-hook '(lambda ()
                                     (setq TeX-open-quote "«~")
-                                    (setq TeX-close-quote "~»")
-                                    (auto-fill-mode t)))))
+                                    (setq TeX-close-quote "~»")))))
 
 (provide 'wiki-wiki)
 

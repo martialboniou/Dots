@@ -1,6 +1,6 @@
 #!/usr/bin/zsh
 #
-# use ALT_U and ALT_P to go up one level in history and 
+# use ^U and ^P to go one level up in history and 
 # go backwards respectively so we have no more 'cd ..'
 # lines in our terminal
 
@@ -14,7 +14,11 @@ go-to-previous () {
  zle reset-prompt
 }; zle -N go-to-previous
 
-bindkey '^[u' go-up
-bindkey '^[p' go-to-previous
-
-
+# prefer Ctrl (in ASCII standard VT way) than Alt
+# note: ^U erase line but there's other bindings
+#       to do so like <ESC>dd when `bindkeys -v`
+# TODO: test vi or emacs modes
+bindkey -M viins '^u' go-up
+bindkey -M vicmd '^u' go-up
+bindkey -M viins '^p' go-to-previous
+bindkey -M vicmd '^p' go-to-previous

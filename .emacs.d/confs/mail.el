@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 
-;; Last-Updated: mar. mars 29 11:31:47 2011 (+0200)
-;;           By: mars
-;;     Update #: 64
+;; Last-Updated: Wed Apr 13 19:00:50 2011 (+0200)
+;;           By: Martial Boniou
+;;     Update #: 70
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -172,7 +172,17 @@
                                             (setq global-mode-string (cddr global-mode-string))))
                                       (incf pos))
                                     (setq pending (cdr pending))))))
-
+     ;; MIME-VIEW
+     (eval-after-load "mime-view"
+       '(progn
+          ;; add pdf support
+          (ctree-set-calist-strictly
+           'mime-acting-condition
+           '((mode . "play")
+             (type . application)(subtype . pdf)
+             (method . my-mime-save-content-find-file)))
+          ;; IMPORTANT: hack needed not to truncate lines in MIME-VIEW          
+          (add-hook 'mime-view-mode-hook 'no-line-wrap-this-buffer))) ; defined in <confs/defs.el>
      ;; BBDB
      (define-key wl-draft-mode-map "\t" 'bbdb-complete-name) ; now TAB => BBDB
      (setq bbdb-use-pop-up t

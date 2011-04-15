@@ -3,7 +3,9 @@
 
 # ---[ Load ]----------------------------------------------------------
 
-autoload -U dirstack dirdump cpath
+autoload -U dirstack dirdump cpath chpwd
+
+chpwd
 
 # ---[ Limit Size ]----------------------------------------------------
 
@@ -15,18 +17,13 @@ command cp $ZDOTDIR/zdirdump /tmp/$tmp_timestamp.zdirdump
 command tail -n 250 /tmp/$tmp_timestamp.zdirdump >| $ZDOTDIR/zdirdump
 command rm -f /tmp/$tmp_timestamp.zdirdump
 
-typeset -ga chpwd_functions
-chpwd_functions+=settab
-chpwd_functions+=settitle
-chpwd_functions+=dirdump
-
 # ---[ GUI ]-----------------------------------------------------------
 typeset -U dirs_shared
 dirstack $1 > /dev/null
 
 # ---[ Alias Section ]-------------------------------------------------
-alias dirstack="dirdump; typeset -U dirs_shared ; dirstack"
-alias cd\?="dirdump; typeset -U dirs_shared; dirstack"
+alias dirstack='dirdump; typeset -U dirs_shared; dirstack'
+alias cd\?='dirdump; typeset -U dirs_shared; dirstack'
 if [[ $(uname) == Darwin ]];then
  autoload -U _guidirs
  #_guidirs 2> /dev/null

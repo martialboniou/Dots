@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Apr 13 19:00:50 2011 (+0200)
+;; Last-Updated: Fri Apr 15 12:05:00 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 70
+;;     Update #: 73
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -182,8 +182,10 @@
              (type . application)(subtype . pdf)
              (method . my-mime-save-content-find-file)))
           ;; IMPORTANT: hack needed not to truncate lines in MIME-VIEW          
-          (add-hook 'mime-view-mode-hook 'no-line-wrap-this-buffer))) ; defined in <confs/defs.el>
+          (add-hook 'mime-view-mode-hook 'no-line-wrap-this-buffer) ; defined in <confs/defs.el>
+          (add-hook 'wl-message-redisplay-hook 'no-line-wrap-this-buffer-internal)))
      ;; BBDB
+     (remove-hook 'wl-message-redisplay-hook 'bbdb-wl-get-update-record) ; FIXME: temporary to avoid annoying mismatch bugs; fix ASAP
      (define-key wl-draft-mode-map "\t" 'bbdb-complete-name) ; now TAB => BBDB
      (setq bbdb-use-pop-up t
            bbdb-electric-p t             ; be disposable with SPC

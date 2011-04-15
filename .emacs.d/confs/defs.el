@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Wed Apr 13 21:22:16 2011 (+0200)
+;; Last-Updated: Fri Apr 15 12:08:14 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 40
+;;     Update #: 47
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -449,12 +449,12 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
                   (delete-file mk-server-socket-file))))))
 
 (defun add-hook-once (hook function &optional append local)
-            "Same as `add-hook', but FUN is only run once.
-    Also contrary to `add-hook', this is not idempotent."
-            ;; FIXME: need to check if `function' was already added to the hook.
-            (let ((code (list 'lambda)))
-              (setcdr code `(() (,function) (remove-hook ',hook ',code ',local)))
-              (add-hook hook code append local))) ; XEmacs compatible hook management
+  "Same as `add-hook', but FUN is only run once.
+   Also contrary to `add-hook', this is not idempotent."
+  ;; FIXME: need to check if `function' was already added to the hook.
+  (let ((code (list 'lambda)))
+    (setcdr code `(() (,function) (remove-hook ',hook ',code ',local)))
+    (add-hook hook code append local))) ; XEmacs compatible hook management
 
 ;;; find-file with automake directory DEPRECATED (b/c ido M-m)
 ;; (defadvice find-file (before make-directory-maybe (filename &optional wildcards) activate)
@@ -523,11 +523,12 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
   (setq truncate-lines nil))
 (defun no-line-wrap-this-buffer ()
   (lexical-let ((buf (current-buffer)))
-    (add-hook ;;-once                      ; defined here
+    (add-hook-once                      ; defined here
      'post-command-hook
      (lambda ()
-       (with-current-buffer buf
-         (no-line-wrap-this-buffer-internal))))))
+       (when (buffer-name buf)          ; avoid bad usage
+           (with-current-buffer buf
+             (no-line-wrap-this-buffer-internal)))))))
 
 ;;; fix amazon URL
 (defun fix-amazon-url ()

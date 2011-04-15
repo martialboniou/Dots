@@ -13,8 +13,8 @@ print ${PWD// /_SPACE_}  >>| $ZDOTDIR/zdirdump
 	# Now create an array called global_dirs.  It is generated
 	# from the entries in the above file.
 
- junk=()
- junk=( $(<  $ZDOTDIR/zdirdump ) )
+junk=()
+junk=( $(<  $ZDOTDIR/zdirdump ) )
 
 lines=${#junk}
 
@@ -26,7 +26,7 @@ done
 
 unset i
 
- dirs_shared=( $invjunk )
- typeset -U dirs_shared
- export dirs_shared
+dirs_shared=( $invjunk )
+typeset -U dirs_shared
+export dirs_shared
 

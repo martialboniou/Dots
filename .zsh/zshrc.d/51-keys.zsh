@@ -7,10 +7,10 @@ bindkey -M viins '^e' end-of-line
 bindkey -M vicmd '^e' end-of-line
 bindkey -M viins '^t' transpose-chars
 bindkey -M vicmd '^t' transpose-chars
+bindkey -M viins '^R' history-incremental-search-backward
+bindkey -M viins '^F' history-incremental-search-forward
+bindkey -M vicmd '/'  history-incremental-search-backward
+bindkey -M vicmd '?'  history-incremental-search-forward
 bindkey "^[[3~" delete-char
 bindkey '^q' push-line-or-edit
-bindkey -M viins '^r' history-incremental-search-backward
-bindkey -M vicmd '^r' history-incremental-search-backward
-bindkey "^[[3A"  history-beginning-search-backward
-bindkey "^[[3B"  history-beginning-search-forward
 bindkey -s '^B' " &\n"

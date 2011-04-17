@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: Sat Apr  9 10:33:45 2011 (+0200)
+;; Last-Updated: Sun Apr 17 13:38:36 2011 (+0200)
 ;;           By:
-;;     Update #: 212
+;;     Update #: 215
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -321,7 +321,6 @@ TODO: case of '''colorscheme' this'' where this is
                  (((class color) (min-colors 256)) (:background "#303030")))) ; +CursorLine
        (fringe ((((class color) (min-colors 4096)) (:foreground "#857b6f" :background "#080808"))
                 (((class color) (min-colors 256)) (:foreground "#626262" :background "#080808")))) ; +LineNr
-
        (paren-face ((((class color) (min-colors 4096)) (:foreground "#eadead"))
                     (((class color) (min-colors 256)) (:foreground "#ffffaf")))) ; +Special
        (show-paren-match-face

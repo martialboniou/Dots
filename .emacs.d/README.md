@@ -14,7 +14,7 @@ You don't need to do this before running your emacs for the first time.
 Modern UN*X/BSD users
 ---------------------
 
-Ensure you installed the following packages via `macports` on OS X or your favorite `deb`/`rpm` package manager:
+Ensure you installed the following packages via `homebrew`/`macports` on OS X or your favorite `deb`/`rpm` package manager:
 
 * `cvs`
 * `svn`
@@ -52,6 +52,14 @@ Now you can install:
     $ cabal install darcs
 * OPTIONAL: `chit`, as small reference card to keep an eye on your favorite cheatsheets, via `rubygem`:
     $ gem install chit
+
+### Mac OS X tip
+
+In order to get perfect colors everywhere, please compile your Emacs 23.2+ with the following `configure` options:
+
+    $ ./configure --without-dbus --with-ns --disable-ns-self-contained
+    
+after having replaced all references (methods/variables) from `*Calibrated*` to `*Device*` (especially the method `#colorWithCalibratedRed:green:blue:alpha:`) in the `src/nsterm.m` file.
 
 Windows users
 -------------

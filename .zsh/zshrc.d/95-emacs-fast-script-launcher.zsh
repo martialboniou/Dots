@@ -6,9 +6,10 @@
 #
 
 DEBUG=0
-# IMPORTANT: emacs ought to have `(server-start)` at startup
+# IMPORTANT: emacs ought to have `(server-start $USERNAME)` at startup
 EMACS=emacs
 EMACSCLIENT=emacsclient
+EMACSNAMESERVER=$USERNAME
 
 if [[ -d "${EMACSEN_SPATH:=${HOME}/.emacs.d/scripts}" ]]; then
     foreach scpt in $(command ls -d ${EMACSEN_SPATH}/*.el | awk '{sub(/\.el$/,"",$1);print}')
@@ -16,7 +17,8 @@ if [[ -d "${EMACSEN_SPATH:=${HOME}/.emacs.d/scripts}" ]]; then
     if [[ $DEBUG > 0 ]]; then
       echo "$scpt =>  #$ALIAS_SCRIPT"
     fi
-    alias -- \#$ALIAS_SCRIPT="$EMACSCLIENT --eval \"(progn (raise-frame (selected-frame))`cat ${scpt}.el`)\" 2>/dev/null || $EMACS -l $scpt"
+    alias -- \#$ALIAS_SCRIPT="$EMACSCLIENT --socket-name=$EMACSNAMESERVER --eval \"(progn (raise-frame (selected-frame))`cat ${scpt}.el`)\" 2>/dev/null || $EMACS -l $scpt"
     end
 fi
-alias \#=$EMACSCLIENT
+alias emacsclient='$EMACSCLIENT --socket-name=$EMACSNAMESERVER'
+alias \#='emacsclient'

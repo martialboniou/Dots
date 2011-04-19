@@ -51,7 +51,7 @@ alias -- rh='cd' # Dvorak keyboard: overuse of 'return' key
                  # may shift your hand from the row line
 alias ..='cd ..'
 alias cd..='cd ..'
-alias cd.='cd ..' # honestly 'cd .' is normally unused
+alias cd.='cd ..' # honestly 'cd .' is normally unused alone
 
 # Dump specific
 alias purge="rm -i *~" # emacs temp files to the void
@@ -68,5 +68,15 @@ alias -s html=html-w3m
 alias -s org=org-w3m
 alias -s {md,mkdn,markdown}=markdown-w3m
 alias -s textile=textile-w3m
+
+# Additional aliases
+# pdf generation from markdown 
+## source: eugenkiss.com/blog/2011/fiction-in-markdown-with-pandoc
+if (( $+commands[markdown2pdf] )); then # works with `cabal install pandoc`
+  _a5_template="$HOME/.pandoc/templates/a5book.tex"
+  alias makebookpdf='markdown2pdf --template=$_a5_template'
+  alias makebookpdftoc='markdown2pdf --toc --template=$_a5_template'
+  unset _as_template
+fi
 # autoload -U zsh-mime-setup
 # zsh-mime-setup

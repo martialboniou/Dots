@@ -22,9 +22,10 @@ emacs: |
   Interactive
   C-p               hippie-expand
   C-c o             anything-occur
-  M-X               anything-M-x
-  C-:               anything-M-x
   C-=               shell-command
+  M-x               smex or execute-extended-command if no 'smex
+  C-:               smex or anything-M-x             if no 'smex
+  M-X               smex-major-mode-commands         if 'smex
   C-\               esc-map
   C-c C-9           anything-imenu
   C-c C-0           anything-mini

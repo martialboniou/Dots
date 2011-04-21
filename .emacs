@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Sat Mar 26 21:45:01 2011 (+0100)
+;; Last-Updated: Thu Apr 21 11:46:51 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 1897
+;;     Update #: 1907
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -407,9 +407,8 @@ ROOT                        => ROOT"
    "M-n"       new-frame                ; XXX check if no issue
    "M-<f2>"    apply-macro-to-region-lines ; use F3/F4 for kmacro start/end
    "C-c o"     anything-occur              ; or simply occur ?
-   "M-X"       anything-M-x             ; a super command executor
    ;; "M-:"       anything-eval-expression-with-eldoc ; a super evaluator
-   "C-:"       anything-M-x             ; C-S-; = M-X
+   "C-:"       anything-M-x             ; C-S-; NOTE: may be smex if 'smex
    "C-c l"     org-store-link ; [default]
    "C-x C-b"   ido-switch-buffer        ; switch buffer on "C-x C-b" (faster than typing "C-x b")
    "C-x b"     ibuffer                  ; nice buffer browser (a la `dired')
@@ -469,7 +468,16 @@ ROOT                        => ROOT"
            ido-default-file-method 'raise-frame ; you may ask if it should be displayed in the current
                                         ; window via `maybe-frame'. Let `ido-switch-buffer' do this.
            ido-default-buffer-method 'selected-window
-           ido-ignore-extensions t))) ; `completion-ignored-extensions'
+           ido-ignore-extensions t)     ; `completion-ignored-extensions'
+     (condition-case err
+         (smex-initialize)
+       (error "emacs: smex disabled: %s" err))
+     (eval-after-load "smex"
+       '(progn
+          (bind-keys
+           '("M-x" smex
+             "C-:" smex
+             "M-X" smex-major-mode-commands))))))
 
 ;;; IBUFFER (better than 'electric-buffer-list)
 (eval-after-load "ibuffer"

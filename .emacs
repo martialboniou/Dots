@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Thu Apr 21 11:46:51 2011 (+0200)
+;; Last-Updated: Fri Apr 22 11:29:10 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 1907
+;;     Update #: 1908
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -468,16 +468,16 @@ ROOT                        => ROOT"
            ido-default-file-method 'raise-frame ; you may ask if it should be displayed in the current
                                         ; window via `maybe-frame'. Let `ido-switch-buffer' do this.
            ido-default-buffer-method 'selected-window
-           ido-ignore-extensions t)     ; `completion-ignored-extensions'
-     (condition-case err
-         (smex-initialize)
-       (error "emacs: smex disabled: %s" err))
-     (eval-after-load "smex"
-       '(progn
-          (bind-keys
-           '("M-x" smex
-             "C-:" smex
-             "M-X" smex-major-mode-commands))))))
+           ido-ignore-extensions t)))   ; `completion-ignored-extensions'
+(condition-case err
+    (smex-initialize)
+  (error "emacs: smex disabled: %s" err))
+(eval-after-load "smex"
+  '(progn
+     (bind-keys
+      '("M-x" smex
+        "C-:" smex
+        "M-X" smex-major-mode-commands))))
 
 ;;; IBUFFER (better than 'electric-buffer-list)
 (eval-after-load "ibuffer"

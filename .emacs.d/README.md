@@ -39,7 +39,7 @@ In order to install `ruby` I firmly recommend to get it via `rvm`:
     $ source "$HOME/.rvm/scripts/rvm"
     $ rvm install ree,1.9.2-head,jruby
 
-You should add `[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"` to your `.bashrc` or `.zshrc`. If you use the complete `Dots` packages, the `Dots/.zsh/env/03-rvm.zsh` creates a good path for you for your `zsh` configuration.
+You should add `[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"` to your `.bashrc` or `.zshrc`. If you use the complete `Dots` packages, the `Dots/.zsh/env/03-rvm.zsh` creates a good path for you for your `zsh` configuration. **ATTENTION** using `rvm` on `zsh` requires `zsh 4.3.10+` (all scripts are tested using a *4.3.11* MacPorts `zsh-devel` install with `mp_completion` and `pcre` options).
 
 To install `haskell`, I don't recommend you to install the `ghc` package and try to build everything by hand: you should install [haskell-plateform](http://sporkcode.wordpress.com/2009/07/11/installing-the-haskell-platform-in-ubuntu/) instead.
 

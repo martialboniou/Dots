@@ -11,7 +11,7 @@ while [[ -z ${TMUX} ]]; do
   nop() { }
   trap nop INT
   ( sleep 5; kill -INT $$ 2> /dev/null ) & disown %%
-  echo -n "Don't re-attach last session [y/k/_]? "
+  echo -n "Don't re-attach last session [y/K/_]? "
   read -k1 DTMUX
   case ${DTMUX:-out} in
       y) tmux attach || break

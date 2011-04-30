@@ -5,10 +5,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
-;; Version: 0.3
-;; Last-Updated: Sun Apr 17 13:38:36 2011 (+0200)
+;; Version: 0.3.1
+;; Last-Updated: Mon Apr 25 17:28:52 2011 (+0200)
 ;;           By:
-;;     Update #: 215
+;;     Update #: 220
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -104,7 +104,10 @@
      ;; 3- nothing to add (mis)match parentheses (vimpulse uses 'show-parens
      ;;    so there's no need to add 'mic-paren)
 
-     ;; 4- colorize numbers, todos & warnings
+     ;; 4- line numbering
+     (require 'linum-settings)
+
+     ;; 5- colorize numbers, todos & warnings
      (defface font-lock-number-face
        '((((type tty) (class color)) (:foreground "pink"))
          (((type tty) (class mono))  (:inverse-video t))
@@ -172,7 +175,7 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
                                  '(("\\(ERROR:\\|XXX\\|OBSOLETE\\)"
                                     1 font-lock-warning-face prepend)))))
 
-     ;; 5- additional keyboard bindings (some from http://stackoverflow.com/users/2797/sebastien-roccaserra)
+     ;; 6- additional keyboard bindings (some from http://stackoverflow.com/users/2797/sebastien-roccaserra)
      (define-key viper-vi-global-user-map [(delete)] 'delete-char)
      (define-key viper-vi-global-user-map "/"        'isearch-forward-regexp)
      (define-key viper-vi-global-user-map "?"        'isearch-backward-regexp)
@@ -198,7 +201,7 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
      (push '("close" (delete-window))        ex-token-alist)
      (define-key viper-vi-global-user-map " d" 'viper-kill-buffer)
 
-     ;; 6- colorize <> modes
+     ;; 7- colorize <> modes
      (setq viper-vi-state-id
            (concat (propertize "<V>" 'face 'font-lock-string-face) " ")
            viper-insert-state-id
@@ -456,7 +459,7 @@ TODO: case of '''colorscheme' this'' where this is
      (mars/extract-colorscheme-from-vimrc)
      (funcall *chosen-theme*)
 
-     ;; 7- open the current buffer in Vim (when Emacs modal editing comes short)
+     ;; 8- open the current buffer in Vim (when Emacs modal editing comes short)
      (defun open-with-vim ()
        "Open current buffer with Vim. To ensure buffers synchronization, set 'GLOBAL-AUTO-REVERT-MODE to T."
        (interactive)

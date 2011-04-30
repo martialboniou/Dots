@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sat Apr  9 10:09:37 2011 (+0200)
+;; Last-Updated: Mon Apr 25 10:49:40 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 330
+;;     Update #: 333
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -109,96 +109,101 @@
 ;; if `*i-am-a-vim-user*'
 ;;
 ;; globalize hideshow
+;(when window-system
+;  (require 'hideshow))
 (require 'hideshow)
-(define-globalized-minor-mode global-hs-mode
-  hs-minor-mode turn-on-hs-if-desired
-  :initialize 'custom-initialize-delay
-  :init-value t
-  :group 'hideshow
-  :version "23.0")
-(defun turn-on-hs-if-desired ()
-  (when (cond ((eq hs-global-modes t)
-               t)
-              ((eq (car-safe hs-global-modes) 'not)
-               (not (memq major-mode (cdr hs-global-modes))))
-              (t (memq major-mode hs-global-modes)))
-    (let (inhibit-quit)
-      (unless hs-minor-mode
-        (hs-minor-mode 1)
-        ;; hideshowvis case
-        (hideshowvis-enable)))))
-(defcustom hs-global-modes nil
-  "All modes that need hideshow minor mode activated"
-  :type '(choice (const :tag "none" nil)
-                 (const :tag "all" t)
-                 (set :menu-tag "mode specific" :tag "modes"
-                      :value (not)
-                      (const :tag "Except" not)
-                      (repeat :inline t (symbol :tag "mode"))))
-  :group 'hideshow)
-(custom-set-variables
- '(hs-global-modes (quote (c-mode
-                           objc-mode
-                           c++-mode
-                           java-mode
-                           perl-mode
-                           php-mode
-                           js-mode ; espresso indeed
-                           emacs-lisp-mode
-                           lisp-mode
-                           scheme-mode
-                           qi-mode
-                           clojure-mode
-                           ruby-mode    ; rinari ?
-                           python-mode))))
-(global-hs-mode t)
-;; ruby case
-(add-to-list 'hs-special-modes-alist
-             '(ruby-mode
-               "\\(def\\|do\\|{\\)" "\\(end\\|end\\|}\\)" "#"
-               (lambda (arg) (ruby-end-of-block)) nil))
-;; hs-hide-all-comments
-(defun hs-hide-all-comments ()
-  "Hide all top level blocks, if they are comments, displaying only first line.
+(eval-after-load "hideshow"
+  '(progn
+     (define-globalized-minor-mode global-hs-mode
+       hs-minor-mode turn-on-hs-if-desired
+       :initialize 'custom-initialize-delay
+       :init-value t
+       :group 'hideshow
+       :version "23.0")
+     (defun turn-on-hs-if-desired ()
+       (when (cond ((eq hs-global-modes t)
+                    t)
+                   ((eq (car-safe hs-global-modes) 'not)
+            (not (memq major-(mark)ode (cdr hs-global-modes))))
+                   (t (memq major-mode hs-global-modes)))
+         (let (inhibit-quit)
+           (unless hs-minor-mode
+             (hs-minor-mode 1)
+             ;; hideshowvis case - IMPORTANT: not no-window-system friendly
+             (when window-system
+               (hideshowvis-enable))))))
+     (defcustom hs-global-modes nil
+       "All modes that need hideshow minor mode activated"
+       :type '(choice (const :tag "none" nil)
+                      (const :tag "all" t)
+                      (set :menu-tag "mode specific" :tag "modes"
+                           :value (not)
+                           (const :tag "Except" not)
+                           (repeat :inline t (symbol :tag "mode"))))
+       :group 'hideshow)
+     (custom-set-variables
+      '(hs-global-modes (quote (c-mode
+                                objc-mode
+                                c++-mode
+                                java-mode
+                                perl-mode
+                                php-mode
+                                js-mode ; = espresso
+                                emacs-lisp-mode
+                                lisp-mode
+                                scheme-mode
+                                qi-mode
+                                clojure-mode
+                                ruby-mode    ; rinari ?
+                                python-mode))))
+     (global-hs-mode t)
+     ;; ruby case
+     (add-to-list 'hs-special-modes-alist
+                  '(ruby-mode
+                    "\\(def\\|do\\|{\\)" "\\(end\\|end\\|}\\)" "#"
+                    (lambda (arg) (ruby-end-of-block)) nil))
+     ;; hs-hide-all-comments
+     (defun hs-hide-all-comments ()
+       "Hide all top level blocks, if they are comments, displaying only first line.
 Move point to the beginning of the line, and run the normal hook
 `hs-hide-hook'.  See documentation for `run-hooks'."
-  (interactive)
-  (hs-life-goes-on
-   (save-excursion
-     (unless hs-allow-nesting
-       (hs-discard-overlays (point-min) (point-max)))
-     (goto-char (point-min))
-     (let ((spew (make-progress-reporter "Hiding all comment blocks..."
-                                         (point-min) (point-max)))
-           (re (concat "\\(" hs-c-start-regexp "\\)")))
-       (while (re-search-forward re (point-max) t)
-         (if (match-beginning 1)
-             ;; found a comment, probably
-             (let ((c-reg (hs-inside-comment-p)))
-               (when (and c-reg (car c-reg))
-                 (if (> (count-lines (car c-reg) (nth 1 c-reg)) 1)
-                     (hs-hide-block-at-point t c-reg)
-                   (goto-char (nth 1 c-reg))))))
-         (progress-reporter-update spew (point)))
-       (progress-reporter-done spew)))
-   (beginning-of-line)
-   (run-hooks 'hs-hide-hook)))
-;; toggle hiding even w/o hideshow
-(defun toggle-hiding (column)
-  (interactive "P")
-  (if hs-minor-mode
-      (if (condition-case nil
-              (hs-toggle-hiding)
-            (error t))
-          (hs-show-all))
-    (toggle-selective-display column)))
-(defun toggle-selective-display (column)
-  (interactive "P")
-  (set-selective-display
-   (or column
-       (unless selective-display
-         (1+ (current-column))))))
-(global-set-key (kbd "C-+") 'toggle-hiding)
+       (interactive)
+       (hs-life-goes-on
+        (save-excursion
+          (unless hs-allow-nesting
+            (hs-discard-overlays (point-min) (point-max)))
+          (goto-char (point-min))
+          (let ((spew (make-progress-reporter "Hiding all comment blocks..."
+                                              (point-min) (point-max)))
+                (re (concat "\\(" hs-c-start-regexp "\\)")))
+            (while (re-search-forward re (point-max) t)
+              (if (match-beginning 1)
+                  ;; found a comment, probably
+                  (let ((c-reg (hs-inside-comment-p)))
+                    (when (and c-reg (car c-reg))
+                      (if (> (count-lines (car c-reg) (nth 1 c-reg)) 1)
+                          (hs-hide-block-at-point t c-reg)
+                        (goto-char (nth 1 c-reg))))))
+              (progress-reporter-update spew (point)))
+            (progress-reporter-done spew)))
+        (beginning-of-line)
+        (run-hooks 'hs-hide-hook)))
+     ;; toggle hiding even w/o hideshow
+     (defun toggle-hiding (column)
+       (interactive "P")
+       (if hs-minor-mode
+           (if (condition-case nil
+                   (hs-toggle-hiding)
+                 (error t))
+               (hs-show-all))
+         (toggle-selective-display column)))
+     (defun toggle-selective-display (column)
+       (interactive "P")
+       (set-selective-display
+        (or column
+            (unless selective-display
+              (1+ (current-column))))))
+     (global-set-key (kbd "C-+") 'toggle-hiding)))
 
 ;;; CEDET
 (eval-after-load "cedet"
@@ -407,7 +412,7 @@ Move point to the beginning of the line, and run the normal hook
      ;; (define-key paredit-mode-map [(meta ?\))]
      ;;   'paredit-close-parenthesis-and-newline)
      ))
-(eval-after-load "highlight-parentheses"
+(defun test-four () ;;eval-after-load "highlight-parentheses"
   '(progn
      (when (assoc 'highlight-parentheses-mode minor-mode-alist)
        (setcdr (assoc 'highlight-parentheses-mode minor-mode-alist) '(""))) ; IMPORTANT: don't display name in mode-line
@@ -502,7 +507,7 @@ Then save the file as \"my-file.dot\" and run
                       simple-call-tree-alist)
                      ";\n")
           ";\n}"))
-;; sct-graphviz (iff graphviz)
+;; TDDO: sct-graphviz (iff graphviz)
 (let ((graphviz-command (executable-find "dot")))
   (when graphviz-command
     (defvar sct-graphviz-dir (expand-file-name
@@ -542,7 +547,7 @@ Then save the file as \"my-file.dot\" and run
   (require 'peyton-jones-family)        ; for ML family and QiII
   (require 'web-programming)            ; for web languages (nxhtml/espresso)
   ;; (require 'python-357)                 ; for python
-  )
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; code.el ends here

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri Apr 15 12:05:00 2011 (+0200)
+;; Last-Updated: Tue Apr 26 14:39:08 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 73
+;;     Update #: 74
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -89,6 +89,8 @@
 
 (eval-after-load "wl"
   '(progn
+     (unless window-system
+       (setq wl-demo-display-logo nil))
      (when elmo-localdir-folder-path
        (setq elmo-maildir-folder-path (concat elmo-localdir-folder-path "/Maildir"))) ; Maildir => <~Mail>/Maildir
      (when (executable-find w3m-program-name)

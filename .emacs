@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Fri Apr 22 11:29:10 2011 (+0200)
+;; Last-Updated: Fri Apr 29 21:36:40 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 1908
+;;     Update #: 1930
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -50,6 +50,13 @@
   "If true, additional Dvorak-friendly keybindings.")
 (defvar *i-am-a-common-lisp-advocate* t
   "If true, require CL emacs extension (eg. EIEIO).")
+(defvar *i-can-do-yubitsume-now* t
+  "If true, enable pinky-free helpers as STICKY-CONTROL.
+A `yubitsume' is a japanese apologies' ritual which generally
+consists in cutting off the portion of his left little finger
+above the top knuckle. In no-window-system mode, most of these
+helpers is active to work on most 70's designed VT where the
+Ctrl-Shift combination is unknown.")
 
 ;;; *VARS*
 (defvar *emacs/normal-startup* t
@@ -66,7 +73,7 @@ another configuration file.")
   "Temporary variable use to make autosaves directory name.
 (That's where #foo# goes.) It should normally be nil if
 `user-init-file' is compiled.")
-(defvar backup-dir   nil                ;backup
+(defvar backup-dir   nil                ; backup
   "Temporary variable use to make backups directory name.
 (That's where foo~ goes.) It should normally be nil if
 `user-init-file' is compiled.")
@@ -287,7 +294,6 @@ ROOT                        => ROOT"
                  ("iswitchb"          iswitchb-minibuffer-setup)
                  ("sunrise-commander" sunrise sr-virtual-mode)
                  ("anything"          anything anything-config)
-                 ("hideshowvis"       hideshowvis-enable hideshowvis-minor-mode)
                  ("header2"           auto-make-header auto-update-file-header)
                  ("psvn"              psvn)
                  ("hippie-exp"        hippie-expand he-init-string he-substitute-string)
@@ -302,6 +308,9 @@ ROOT                        => ROOT"
                  ("emms-source-file"  emms-dired emms-add-directory-tree emms-add-directory emms-add-file)
                  ("emms"              emms-playlist-buffer-list emms)
                  ("emms-streams"      emms-streams emms-stream-init)))
+(when window-system
+  (mars/autoload
+   '(("hideshowvis"     hideshowvis-enable hideshowvis-minor-mode))))
 
 ;;; ESSENTIAL TOOLS
 ;; - auto-cache byte-compiled libraries
@@ -350,11 +359,10 @@ ROOT                        => ROOT"
                                     (senator-minor-mode nil)
                                     (semantic-idle-scheduler-mode nil)))))
 ;; hooks
-(when window-system         ; FIXME: debug / not working perse
-    (add-hook 'desktop-save-hook
+(add-hook 'desktop-save-hook
           'kiwon/save-window-configuration)
-    (add-hook 'desktop-after-read-hook
-          'kiwon/restore-window-configuration)) ; save/restore the last window
+(add-hook 'desktop-after-read-hook
+          'kiwon/restore-window-configuration) ; save/restore the last window
                                                     ; configuration with `DESKTOP'
 ;; desktop + autosave + backup files: see eof
 
@@ -440,8 +448,8 @@ ROOT                        => ROOT"
        "C-; C-a" yank
        "C-; C-;" kill-region))
   (progn
-    (cua-mode t)                    ; C-c/C-x got timeout in order to make
-                                        ; combinations to work
+    (cua-mode t)                    ; C-c/C-x got timeout in order
+                                    ; to make combinations to work
     (eval-after-load "cua-mode"
       '(progn
          (setq cua-auto-tabify-rectangles nil)
@@ -449,6 +457,19 @@ ROOT                        => ROOT"
          (setq cua-keep-region-after-copy t))))) ; MS Windows behavior
 (global-unset-key (kbd "C-z"))      ; ELSCREEN or other packages may use it
 (global-unset-key (kbd "C-x C-z"))  ; reserved for viper-mode
+;; sticky-control when required
+(unless (and (not *i-can-do-yubitsume-now*) window-system)
+  (require 'sticky-control)
+  (setq sticky-control-timeout 0.3)
+  (eval-after-load "sticky-control"
+    '(progn
+       (if *i-am-a-dvorak-typist*
+           (setq sticky-control-shortcuts
+                 (cons '(59 . [(control \;)])
+                       sticky-control-shortcuts))
+         (setq sticky-control-shortcuts
+               (cons '(?v . "\C-v")     ; paste in CUA-mode
+                     sticky-control-shortcuts))))))
 
 ;;; IDO (faster than icicles)
 (eval-after-load "ido"
@@ -726,6 +747,7 @@ the should-be-forbidden C-z.")
             (if (and found (not (y-or-n-p (format "Are you sure you want to delete this frame? "))))
                 nil
               (progn ad-do-it))))))))
+
 ;; reload emacs
 (defun reload-emacs ()
   (let ((memo *emacs/normal-startup*))
@@ -733,7 +755,7 @@ the should-be-forbidden C-z.")
     (load user-init-file)
     (setq *emacs/normal-startup* memo)))
 
-;; time
+;; load time
 (let ((load-time (destructuring-bind (hi lo ms) (current-time)
                    (- (+ hi lo) (+ (first emacs-load-start)
                                    (second emacs-load-start))))))

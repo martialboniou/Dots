@@ -1,6 +1,7 @@
 #!/bin/sh
-emacs -nw -q -l ~/.emacs.d/confs/gtd.el --eval "(progn (mapc (lambda (x) (conf-load x)) '(\"www\" \"mail\"))(wl)(add-hook 'wl-exit-hook 'kill-emacs))"
+emacs -q -l ~/.emacs.d/confs/gtd.el --eval "(progn (add-hook 'wl-exit-hook 'kill-emacs)(mapc (lambda (x) (conf-load x)) '(\"www\" \"mail\"))(condition-case err (wl) (error \"%s\")))" $*
 # first load `gtd` to get `Org` (and a minimalist configuration including `conf-load` function)
+# then say to kill emacs on `wl` exiting
 # then load `www` to get `emacs-w3m`
 # then load `mail` to get `wl` a.k.a. Wanderlust MUA (as `Org` and `emacs-w3m` are previously loaded, `org-mode`/`org-tbl` and `w3m` dumping will be used to annote/draw tables and render HTML respectively)
-# finally run `wl` and say to kill emacs on `wl` exiting
+# finally run `wl` securely (to avoid `elmo` to corrupt `emacs` startup if offline)

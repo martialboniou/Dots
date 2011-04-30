@@ -25,6 +25,9 @@
 ;;
 ;;; Change log: switch from emms2 to emms3 (cvs branches through darcs)
 ;;
+;;  TODO: split `loaddefs' in `loaddefs' + `cedet-loaddefs' autoloads
+;;        in order not to load CEDET when media is loaded as standalone
+;;        (b/c no need extra autoloads and CEDET in this case)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

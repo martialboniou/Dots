@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 26 00:15:15 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Mar  1 16:39:30 2011 (+0100)
+;; Last-Updated: Tue Apr 26 13:38:43 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 7
+;;     Update #: 10
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -115,9 +115,9 @@
 ;; (vimpulse-map "td" 'elscreen-kill)
 ;; (vimpulse-map "tt" '(lambda ()
 ;;                      (interactive)
-;; 		     (elscreen-create)
-;; 		     (anything-recentf)
-;; 	))
+;;           (elscreen-create)
+;;           (anything-recentf)
+;;  ))
 ;; (vimpulse-map "H" 'elscreen-previous)
 ;; (vimpulse-map "L" 'elscreen-next)
 ;; (define-key viper-minibuffer-map "\C-g" 'keyboard-escape-quit)

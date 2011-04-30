@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Tue Apr 12 22:35:24 2011 (+0200)
+;; Last-Updated: Wed Apr 27 20:42:45 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 91
+;;     Update #: 93
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -139,7 +139,7 @@
                                   (cycle-buffer               . prev)
                                   (kill-this-buffer           . "<f1>")
                                   ((lambda () (interactive)
-                                     (undo-kill-buffer ()))   . "ESC")
+                                     (undo-kill-buffer ()))   . "<f2>")
                                   (anything                   . "<f8>"))
 (mars/build-windows-archiver-function-keys "f6")
 ;; <f7> => hack tools
@@ -149,7 +149,7 @@
                                   (anything-simple-call-tree  . prev)
                                   (anything-browse-code       . id) ; faster than ecb
                                   (mars/toggle-ecb            . next)
-                                  (cycle-ispell-languages     . "ESC"))
+                                  (cycle-ispell-languages     . "<f2>"))
 ;; <f8> => daily tasks
 (global-unset-key [f8])
 (mars/build-ordered-function-keys "f8" mars/emms-any-streams
@@ -179,7 +179,7 @@
                              (buf-move-down)
                              (previous-buffer))
              "C-S-<end>"   delete-window
-             "C-{"         shrink-window-horizontally
+             "C-{"         shrink-window-horizontally ; TODO: replace both b/c paredit
              "C-}"         enlarge-window-horizontally
              "C-^"         enlarge-window
              ;; - Swap buffers: M-<up> etc.

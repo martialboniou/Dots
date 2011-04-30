@@ -3,7 +3,7 @@ emacs: |
   Emacs (I mean this one!)
   
   Fast keys
-  (see emacs_fast)
+  (see emacs/fast)
   
   Basics
   C-h               delete-backward-char (use <f1> for help)

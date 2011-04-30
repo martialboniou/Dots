@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 23 15:15:40 2011 (+0100)
 ;; Version: 0.1
-;; Last-Updated: Mon Apr 11 10:58:52 2011 (+0200)
+;; Last-Updated: Mon Apr 25 23:16:10 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 67
+;;     Update #: 84
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -82,7 +82,9 @@
       backup-by-copying-when-mismatch t
       completion-ignore-case t
       custom-buffer-done-kill t
-      newsticker-display-interval 15.3)
+      newsticker-display-interval 15.3
+      linum+-dynamic-format "%%%dd "
+      linum+-smart-format linum+-dynamic-format)
 
 ;;; BETTER DEFAULT COLORS
 (unless (member system-type '(windows-nt ms-dos))
@@ -90,16 +92,27 @@
   (set-face-attribute 'default nil
                       :height 140
                       :family "DejaVu Sans Mono")) ; TODO: force DejaVu_Sans_Mono font install on OSX
-(setq hl-paren-colors
-      '("orange1"
-        "yellow1"
-        "greenyellow"
-        "green1"
-        "springgreen1"
-        "cyan1"
-        "slateblue1"
-        "magenta1"
-        "purple"))                      ; draw rainbows in LISPEM
+(if window-system
+  (setq hl-paren-colors
+        '("orange1"
+          "yellow1"
+          "greenyellow"
+          "green1"
+          "springgreen1"
+          "cyan1"
+          "slateblue1"
+          "magenta1"
+          "purple"))
+  (setq hl-paren-colors                 ; TODO: yellow1 not found in term / investigate
+        '("orange1"
+          "yellow"
+          "greenyellow"
+          "green1"
+          "springgreen1"
+          "cyan1"
+          "slateblue1"
+          "magenta1"
+          "purple")))                      ; draw rainbows in LISPEM
 (custom-set-faces
  '(action-lock-face ((((class color)) (:background "black" :foreground "DeepSkyBlue" :overline "yellow"))))
  ;; default paren-face for matching
@@ -113,6 +126,8 @@
  '(viper-minibuffer-vi ((((class color)) (:inherit font-lock-builtin-face))))
  '(viper-replace-overlay ((t nil)))
  '(viper-search ((((class color)) (:inherit isearch))))
+ ;; linum as fringe (like LineNr in Vim)
+ '(linum ((((class color)) (:inherit fringe))))
  ;; dark background friend ido colors
  '(ido-only-match ((((class color) (background dark)) (:foreground "#00cd00"))  ; green3
                    (((class color) (background light)) (:foreground "#228b22")))) ; ForestGreen
@@ -203,6 +218,9 @@
  '(wl-highlight-summary-target-face ((((class color)) (:foreground "HotPink1"))))
  '(wl-highlight-summary-thread-top-face ((((class color) (background dark)) (:foreground "GreenYellow"))))
  '(wl-highlight-summary-unread-face ((((class color) (background dark)) (:foreground "#eee"))))
+ '(wl-highlight-summary-normal-face ((((class color) (background dark)) (:foreground "PaleGreen"))))
+ '(wl-highlight-summary-low-read-face ((((class color) (background dark)) (:inherit wl-highlight-summary-normal-face :slant italic))))
+ '(wl-highlight-summary-high-read-face ((((class color) (background dark)) (:inherit wl-highlight-summary-normal-face :weight bold))))
  ;; readable default faces for newsticker
  ;; '(newsticker-enclosure-face ((t (:background "orange" :foreground "black" :weight bold))))
  '(newsticker-treeview-selection-face ((((class color)) (:inherit newsticker-treeview-new-face :inverse-video t))))

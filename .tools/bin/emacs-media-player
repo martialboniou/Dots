@@ -1,2 +1,6 @@
 #!/bin/sh
-emacs -nw -q -l ~/.emacs.d/confs/media.el
+emacs -q -l ~/.emacs.d/confs/media.el --eval "(progn (require 'emms)(emms-history-load)(unless (fboundp 'remove-if) (require 'cl))(let ((buf (car (remove-if '(lambda (x) (= (buffer-size x) 0)) (emms-playlist-buffer-list)))))(if (null buf) (emms) (switch-to-buffer buf))))" $*
+# first load `media` (and a minimalist configuration)
+# then require `emms` (as `emms-history-load` is not in `loaddefs`)
+# then restore the last historic with `emms-history-load`
+# finally go to the last playlist or open a new one if none is found

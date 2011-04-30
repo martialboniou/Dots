@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Fri Apr 15 12:08:14 2011 (+0200)
+;; Last-Updated: Wed Apr 27 23:01:39 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 47
+;;     Update #: 49
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -232,7 +232,6 @@ file; display a message otherwise."
     (beginning-of-line)
     (newline)))
 (ad-activate 'previous-line)
-
 
 ;;; NOTIFIERS
 (defun display-external-pop-up (title msg &optional icon sound)

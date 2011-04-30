@@ -110,7 +110,7 @@
       (load common-pre-custom)
     (error
      (message "vars: global system customization loading error: %s" err)
-     (sleep-for emacs/breaktime-on-error))))
+     (sleep-for 3))))
 ;; test with conf-locate / conf-load
 
 ;;; MINGW/MSYS COMPATIBILITY

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:02:05 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Apr 13 11:29:48 2011 (+0200)
+;; Last-Updated: Sun May  8 18:09:20 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 25
+;;     Update #: 30
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -71,6 +71,9 @@
 
 ;;; AUCTEX
 (require 'tex-site nil t)
+(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+(setq TeX-source-correlate-method 'synctex)
+(setq TeX-synctex-tex-flags (format "--synctex=1 --servername=%s" (user-login-name)))
 (eval-after-load "tex-site"
   '(progn
      (require 'tex-style nil t)
@@ -81,7 +84,22 @@
      (add-hook 'reftex-mode-hook 'imenu-add-menubar-index)
      (add-hook 'reftex-mode-hook '(lambda ()
                                     (setq TeX-open-quote "«~")
-                                    (setq TeX-close-quote "~»")))))
+                                    (setq TeX-close-quote "~»")))
+     ;; OSX users should use Skim.app instead of Preview.app
+     (when (eq system-type 'darwin)
+       (add-hook 'LaTeX-mode-hook (lambda ()
+                                    (add-to-list 'TeX-expand-list
+                                                 '("%q" skim-make-url))))
+       (defun skim-make-url ()
+         (concat (TeX-current-line)
+                 " "
+                 (expand-file-name (funcall file (TeX-output-extension) t)
+                                   (file-name-directory (TeX-master-file)))
+                 " "
+                 (buffer-file-name)))
+       (setq TeX-view-program-list
+             '(("Skim" "/Applications/Skim.app/Contents/SharedSupport/displayline %q")))
+       (setq TeX-view-program-selection '((output-pdf "Skim"))))))
 
 (provide 'wiki-wiki)
 

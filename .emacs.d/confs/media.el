@@ -166,7 +166,7 @@
                      (if number
                          (format "%s: %s - [%03d] %s" artist album (string-to-int number) title)
                        (format "%s: %s - %s" artist album title))
-                   (emms-track-simple-description track)))))
+                   (emms-track-remote-simple-description track)))))
        ;; (set-face-attribute 'emms-playlist-track-face    nil :font "DejaVu Sans-10")
        ;; (set-face-attribute 'emms-playlist-selected-face nil :background "White" :foreground "Firebrick")
        ;; Initialization

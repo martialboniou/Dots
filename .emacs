@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Fri Apr 29 21:36:40 2011 (+0200)
+;; Last-Updated: Sun May  1 10:43:37 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 1930
+;;     Update #: 1935
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -405,9 +405,9 @@ ROOT                        => ROOT"
 
 ;;; GLOBAL KEYS (see <confs>/shortcuts.el for additionnal keys)
 (bind-keys
- '("C-x C-f"   ido-recentf-file-name-history          ; IMPORTANT: C-x C-f is not `find-file' anymore (C-f to switch to `ido-find-file' only works from `ido-buffer-internal' and `ido-file-internal' derivatives.)
+ '("C-x C-f"   ido-recentf-file-name-history          ; IMPORTANT: C-x C-f is not `find-file' anymore (C-f to switch to `ido-find-file' only works from `ido-buffer-internal' and `ido-file-internal' derivatives.) [but use [(jxf)] in `sticky-control'] 
    "C-x F"     ido-recentf
-   "C-x f"     ido-find-file ; may be called from `ido-switch-buffer' (doing C-x C-b C-f)
+   "C-x f"     ido-find-file ; may be called from `ido-switch-buffer' (doing C-x C-b C-f) [but use [(jxjf)] in `sticky-control']
    "C-h"       delete-backward-char ; C-w as 'DELETE-BACKWARD-WORD in Vi emu
    "C-x C-h"   help-command ; use F1 for contextual help / C-h and C-w are used as in ASCII
    "C-\\"      esc-map      ; if ESC- is needed
@@ -418,8 +418,8 @@ ROOT                        => ROOT"
    ;; "M-:"       anything-eval-expression-with-eldoc ; a super evaluator
    "C-:"       anything-M-x             ; C-S-; NOTE: may be smex if 'smex
    "C-c l"     org-store-link ; [default]
-   "C-x C-b"   ido-switch-buffer        ; switch buffer on "C-x C-b" (faster than typing "C-x b")
-   "C-x b"     ibuffer                  ; nice buffer browser (a la `dired')
+   "C-x C-b"   ido-switch-buffer        ; switch buffer on "C-x C-b" (faster than typing "C-x b") [but use [(jxb)] in `sticky-control']
+   "C-x b"     ibuffer                  ; nice buffer browser (a la `dired') [but use [(jxjb)] in `sticky-control']
    "C-p"       hippie-expand            ; like Vim next-expansion key
    "C-c _ w"   whitespace-mode
    "C-c _ t"   whitespace-toggle-options
@@ -463,6 +463,15 @@ ROOT                        => ROOT"
   (setq sticky-control-timeout 0.3)
   (eval-after-load "sticky-control"
     '(progn
+       ;; - revert FIND-FILE and SWITCH-BUFFER actions
+       (setq sticky-control-shortcuts
+             (append
+              '("xf"  . 'ido-recentf-file-name-history)
+              '("xjf" . 'ido-find-file)
+              '("xb"  . 'ido-switch-buffer)
+              '("xjb" . 'ibuffer)
+              sticky-control-shortcuts))
+       ;; - dvorak copy/paste or CUA shortcuts
        (if *i-am-a-dvorak-typist*
            (setq sticky-control-shortcuts
                  (cons '(59 . [(control \;)])
@@ -658,7 +667,8 @@ the should-be-forbidden C-z.")
           'mars-windows-archiver-load-in-session)
 
 ;; minibuffer histories
-(savehist-mode 1)
+(when *emacs/normal-startup*
+  (savehist-mode 1))
 
 ;; desktop & autosave & backup files -> one place (like vim/backup)
 ;; - desktop directories

@@ -62,7 +62,8 @@
 (defvar mars/site-lisp-packages nil)
 (setq mars/site-lisp-packages '((vimpulse     . ((get . "git clone git://gitorious.org/vimpulse/vimpulse")
                                                  (install . "make")))
-                                (emms         . ((get . "git clone git://git.sv.gnu.org/emms.git")
+                                ;; emms main branch on git://git.sv.gnu.org/emms.git
+                                (emms         . ((get . "git clone git://github.com/martialboniou/emms.git")
                                                  (install . "make; make emms-print-metadata")
                                                  (nosearch . ("bin" "doc" "src"))))
                                 (undo-tree    . ((get . "git clone http://www.dr-qubit.org/git/undo-tree.git")
@@ -95,8 +96,6 @@
                                                          ))
                                 (newsticker-1.99 . ((get . "curl -L http://download.savannah.gnu.org/releases/newsticker/newsticker-1.99.tar.gz | tar zx")
                                                     (install . "emacs-compile-directory")))
-                                ;; (circe          . ((get . "cvs -z3 -d:pserver:anonymous@cvs.savannah.nongnu.org:/sources/circe co circe")
-                                ;;                    (install . "make")))
                                 (color-theme-6.6.0 . ((get . "curl -L http://download.savannah.gnu.org/releases/color-theme/color-theme-6.6.0.tar.gz | tar zx")
                                                       (install . "emacs-compile-directory; emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\" themes"))) ; FIXME: not in path so error in `themes' (not important!)
                                 (darcsum           . ((get . "darcs get --lazy http://joyful.com/repos/darcsum")

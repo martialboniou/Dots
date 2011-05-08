@@ -1,3 +1,9 @@
+2011-05-06  Martial Boniou  <Martial.Boniou@gmx.com>
+
+	* media.el (locate-library): introduce emms-stream-info processes fix
+	- vlc needs vlc://quit to quit
+	- mplayer needs cache to get some fields
+
 2011-03-09  Martial Boniou  <Martial.Boniou@gmx.com>
 
 	* media.el: test emms-start-stop ok

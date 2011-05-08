@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Jan 19 20:16:06 2008
 ;; Version:
-;; Last-Updated: Fri Mar 11 12:47:13 2011 (+0100)
+;; Last-Updated: Fri May  6 18:58:42 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 84
+;;     Update #: 88
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -105,6 +105,28 @@
        ;; load
        (emms-devel)                            ; emms-smart-browse on <F2>
        (emms-default-players)
+
+       ;; fix processes for `emms-stream-info'
+       (eval-after-load "emms-stream-info"
+         '(progn
+            ;; - mplayer need cache or "Icy Info" field may not be reached
+            (defun emms-stream-info-mplayer-backend (url)
+              "Backend command for running mplayer on URL. NEED CACHE"
+              (condition-case excep
+                  (call-process "mplayer" nil t nil
+                                "-endpos" "0" "-vo" "null" "-ao" "null"
+                                url)
+                (file-error
+                 (error "Could not find the mplayer backend binary"))))
+            ;; - vlc requires vlc://quit to properly end
+            (defun emms-stream-info-vlc-backend (url)
+              "Backend command for running VLC on URL."
+              (condition-case excep
+                  (call-process "vlc" nil t nil
+                                "-vvv" "--intf" "dummy" "--stop-time" "1" "--noaudio"
+                                url "vlc://quit")
+                (file-error
+                 (error "Could not find the VLC backend binary"))))))
 
        ;; use the script by Fang Lungang to create cover_small/cover_med
 

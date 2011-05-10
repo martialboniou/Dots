@@ -1,5 +1,5 @@
 #!/bin/sh
-emacs -q -l ~/.emacs.d/confs/media.el --eval "(progn (require 'emms)(emms-history-load)(unless (fboundp 'remove-if) (require 'cl))(let ((buf (car (remove-if '(lambda (x) (= (buffer-size x) 0)) (emms-playlist-buffer-list)))))(if (null buf) (emms) (switch-to-buffer buf))))" $*
+emacs -q -l ~/.emacs.d/confs/media.el --eval "(progn (require 'emms)(emms-history-load)(unless (fboundp 'remove-if) (require 'cl))(let ((buf (car (remove-if '(lambda (x) (= (buffer-size x) 0)) (emms-playlist-buffer-list)))))(if (null buf) (emms) (switch-to-buffer buf)))(add-hook 'emms-player-started-hook '(lambda () (set-process-query-on-exit-flag (get-process \"emms-player-simple-process\") nil))))" $*
 # first load `media` (and a minimalist configuration)
 # then require `emms` (as `emms-history-load` is not in `loaddefs`)
 # then restore the last historic with `emms-history-load`

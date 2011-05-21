@@ -14,7 +14,7 @@ while [[ -z ${TMUX} ]]; do
   echo -n "Don't re-attach last session [y/K/_]? "
   read -k1 DTMUX
   case ${DTMUX:-out} in
-      y) tmux attach || break
+      y) break
           ;;
       K) while true; do
           exit
@@ -23,7 +23,7 @@ while [[ -z ${TMUX} ]]; do
       out) echo "$(tput cuu1)$(tput dl1)*** timeout ***"
           break
           ;;
-      *) break
+      *) tmux attach || break
           ;;
   esac
 done

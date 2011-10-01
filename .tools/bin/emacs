@@ -1,9 +1,0 @@
-#!/bin/sh
-
-EMACS_PATH=/Applications/Emacs.app/Contents/MacOS/Emacs # actualize if needed or try to name Emacs.app your current emacs
-
-if [ $(id -u) = "0" ]; then
-  sudo $EMACS_PATH "$@"
-else
-  $EMACS_PATH "$@"
-fi

@@ -26,10 +26,10 @@ function textile-w3m () {
 if [ "`uname`" = "Darwin" ]; then
   # MPD daemon launch issue on Mac OS X 10.5 
   #type detach &>/dev/null && alias mpd="detach mpd --no-daemon" || echo "MPD doesn't work as expected"
-  SRC_HILITE_LESSPIPE=/opt/local/bin/src-hilite-lesspipe.sh # port install source-highlight
+  SRC_HILITE_LESSPIPE=src-hilite-lesspipe.sh # port install source-highlight
   OPEN_COMMAND='open'
   MANPATH=`/usr/bin/manpath`
-  export MANPATH=/opt/local/share/man:$MANPATH # MacPorts: man
+  export MANPATH=/usr/brewery/share/man:$MANPATH # MacPorts: man
   export LSCOLORS=dxgxcxdxbxegedabagacad
   alias ls='ls -G' # AIX/BSD ls command
   alias ghci='EDITOR=mvim ghci'
@@ -39,7 +39,7 @@ if [ "`uname`" = "Darwin" ]; then
     echo `open $url` # install Bwana; ManOpen is DEPRECATED
   }
   alias gitk="/usr/bin/wish $(which gitk)"
-  MAN_COMMAND=wman
+  MAN_COMMAND=man # or wman
 else # Default
   test -r "$HOME/.dircolors" && eval `dircolors -b $HOME/.dircolors`
   SRC_HILITE_LESSPIPE=/usr/share/source-highlight/src-hilite-lesspipe.sh

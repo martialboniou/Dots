@@ -61,6 +61,11 @@
 ;; (set-custom-vars info "tota")
 (let ((data-dir (concat (file-name-as-directory mars/local-root-dir)
                         (file-name-as-directory mars/personal-data))))
+  (mapc (lambda (x) 
+          (let ((newdir (file-name-as-directory (concat (file-name-as-directory "~/.emacs.d/data") x))))
+               (unless (file-exists-p newdir)
+                       (make-directory newdir t))))
+    '("newsticker/images" "Insert" "BBDB"))
   (setq mars-windows-archiver-file "~/.emacs.d/data/windows-archiver"
         newsticker-cache-filename "~/.emacs.d/data/newsticker/cache"
         newsticker-imagecache-dirname "~/.emacs.d/data/newsticker/images"
@@ -69,6 +74,9 @@
         savehist-file "~/.emacs.d/data/history"
         tramp-persistency-file-name "~/.emacs.d/data/tramp"
         auto-insert-directory "~/.emacs.d/data/Insert"
+        bbdb-file (concat (file-name-as-directory "~/.emacs.d/data/BBDB")
+                          (user-login-name)
+                          ".bbdb")
         emms-cache-file "~/.emacs.d/.emms-cache"))
 
 ;;; GENERAL BEHAVIOR

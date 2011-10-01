@@ -206,7 +206,7 @@ if has("autocmd")
         "@Clojure
         " cf. end of file """ Clojure let clj ...
         "@newLISP (deprecated)
-        au! filetypedetect BufNewFile, BufRead *.lsp set filetype=newlisp
+        "au! filetypedetect BufNewFile, BufRead *.lsp set filetype=newlisp
 
         "@Haskell
         au BufEnter *.hs compiler ghc

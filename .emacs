@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Sun May  1 10:43:37 2011 (+0200)
+;; Last-Updated: Tue Oct  4 16:35:20 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 1935
+;;     Update #: 1938
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -300,6 +300,7 @@ ROOT                        => ROOT"
                  ("calc-ext"          calc-do-calc-eval)
                  ("hexview-mode"      hexview-find-file)
                  ("simple-call-tree"  simple-call-tree-analyze simple-call-tree-alist)
+                 ("inf-shen"          shen-mode) ; loading shen-mode too
                  ("pymacs"            pymacs-apply pymacs-call pymacs-eval pymacs-exec pymacs-load)
                  ("markdown-mode"     markdown-mode)
                  ("yaml-mode"         yaml-mode)

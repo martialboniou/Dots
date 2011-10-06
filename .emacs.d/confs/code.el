@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Apr 25 10:49:40 2011 (+0200)
+;; Last-Updated: Mon Oct  3 14:50:21 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 333
+;;     Update #: 338
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -386,7 +386,7 @@ Move point to the beginning of the line, and run the normal hook
                      (paredit-mode +1)
                      (highlight-parentheses-mode t))))
       '(emacs-lisp-mode-hook lisp-mode-hook lisp-interaction-mode-hook
-                             clojure-mode-hook scheme-mode-hook qi-mode-hook
+                             clojure-mode-hook scheme-mode-hook qi-mode-hook shen-mode-hook
                              slime-repl-mode-hook inferior-lisp-mode-hook inferior-qi-mode-hook))
 (eval-after-load "paredit"
   '(progn
@@ -544,7 +544,8 @@ Then save the file as \"my-file.dot\" and run
   (require 'pure-object)                ; for smalltalk / factor / io
   (require 'wiki-wiki)                  ; for markup languages as mediawiki or markdown
   ;; (require 'church-inspired)            ; for lisp (including scheme)
-  (require 'peyton-jones-family)        ; for ML family and QiII
+  ;; (require 'marseille)                  ; for logic and expert programming (including prolog)
+  (require 'peyton-jones-family)        ; for ML family and lambdaassociates (better place than 'CHURCH-INSPIRED or 'MARSEILLE)
   (require 'web-programming)            ; for web languages (nxhtml/espresso)
   ;; (require 'python-357)                 ; for python
 )

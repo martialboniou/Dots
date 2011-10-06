@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:40:26 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Mar 16 21:22:33 2011 (+0100)
+;; Last-Updated: Thu Oct  6 14:50:58 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 6
+;;     Update #: 29
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -52,6 +52,35 @@
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indent) ; or indent or simple-indent
 ;; inferior mode
 (setq haskell-program-name mars/haskell-program-name)
+
+;;; SHEN MODE
+(add-to-list 'auto-mode-alist '("\\.shen\\'" . shen-mode))
+(eval-after-load "inf-shen"
+  '(progn
+     (defun check-balanced-parens (start end)
+       "Check if parentheses in the region are balanced. Signals a 
+scan-error if not." 
+       (save-restriction 
+         (save-excursion 
+           (let ((deactivate-mark nil)) 
+             (condition-case c 
+                 (progn 
+                   (narrow-to-region start end) 
+                   (goto-char (point-min))
+                   (while (/= 0 (- (point)
+                                   (forward-list)))) 
+                   t)
+               (scan-error (signal 'scan-error '("Region parentheses not balanced."))))))))
+     (defadvice shen-eval-region (around shen-secure-eval (start end &optional and-go) activate)
+       (interactive "r\nP")
+       (let (cancel)
+         (condition-case err
+             (check-balanced-parens start end)      
+           (error (when (y-or-n-p (format "%s Cancel ?" (error-message-string err)))
+                    (setq cancel t))))
+         (unless cancel
+           ad-do-it)))))
+
 
 (provide 'peyton-jones-family)
 

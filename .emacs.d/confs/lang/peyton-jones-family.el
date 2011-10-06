@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:40:26 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Oct  6 14:50:58 2011 (+0200)
+;; Last-Updated: Thu Oct  6 18:37:24 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 29
+;;     Update #: 34
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -73,14 +73,13 @@ scan-error if not."
                (scan-error (signal 'scan-error '("Region parentheses not balanced."))))))))
      (defadvice shen-eval-region (around shen-secure-eval (start end &optional and-go) activate)
        (interactive "r\nP")
-       (let (cancel)
-         (condition-case err
-             (check-balanced-parens start end)      
-           (error (when (y-or-n-p (format "%s Cancel ?" (error-message-string err)))
-                    (setq cancel t))))
-         (unless cancel
-           ad-do-it)))))
-
+       (when (condition-case err
+                 (progn
+                   (check-balanced-parens start end)
+                   t)      
+               (error
+                (y-or-n-p (format "%s Eval anyway ?" (error-message-string err)))))
+         ad-do-it))))
 
 (provide 'peyton-jones-family)
 

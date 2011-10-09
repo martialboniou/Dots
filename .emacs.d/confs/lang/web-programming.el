@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 21:14:44 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sat Mar 19 16:36:49 2011 (+0100)
+;; Last-Updated: Thu Oct  6 21:10:14 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 4
+;;     Update #: 8
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -47,14 +47,7 @@
 
 
 ;;; NXHTML
-(let ((name       "nxhtml")
-      (nxhtml-dir (locate-library "autostart")))
-  (when nxhtml-dir
-    (when (and (eq (string-match (concat ".*\\/" name ".*") nxhtml-dir) 0) ; check "/nxhtml" pattern is in the path
-               (file-exists-p (concat (file-name-directory nxhtml-dir)
-                                      (concat name "/" name ".el")))) ; check nxhtml.el exists
-      (load nxhtml-dir))))
-
+(nxhtml-loader)                         ; defined in DEFS
 
   ;; PHP/CSS/HTML/JavaScript
   ;; (autoload 'nxhtml-mumamo-mode "~/.emacs.d/packages/nxhtml/autostart.el" nil t)

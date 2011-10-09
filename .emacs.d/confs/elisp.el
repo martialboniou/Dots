@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 10:19:49 2011 (+0100)
 ;; Version:
-;; Last-Updated: Mon Mar 14 17:31:47 2011 (+0100)
+;; Last-Updated: Thu Oct  6 21:15:21 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 24
+;;     Update #: 26
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -189,6 +189,11 @@ in `util/ourcomments-util' of the `nxhtml' package."
 (defun mars/vars-heading ()
   (interactive)
   (insert "(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) %s)) (error %s)))\n" "vars" "Unable to get custom variables"))
+
+;;; UNIT TESTS
+;;
+(ert2-loader)                           ; ensure to load lennart-borgman
+                                        ; tools included in NXHTML library
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; elisp.el ends here

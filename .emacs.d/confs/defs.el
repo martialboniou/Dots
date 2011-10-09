@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Wed Apr 27 23:01:39 2011 (+0200)
+;; Last-Updated: Thu Oct  6 21:09:32 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 49
+;;     Update #: 52
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -824,6 +824,19 @@ which is not affected by suffix optional argument."
   (interactive)
   (let ((inhibit-read-only t))
     (erase-buffer)))
+
+;; lennart-borgman libraries' loaders
+(defun nxhtml-loader ()
+  "load NXHTML library and all lennart-borgman libraries (including Unit Test additions named ERT2)"
+  (unless (fboundp 'nxhtml-list-loaded-features)
+    (let ((name       "nxhtml")
+          (nxhtml-dir (locate-library "autostart")))
+      (when nxhtml-dir
+        (when (and (eq (string-match (concat ".*\\/" name ".*") nxhtml-dir) 0) ; check "/nxhtml" pattern is in the path
+                   (file-exists-p (concat (file-name-directory nxhtml-dir)
+                                          (concat name "/" name ".el")))) ; check nxhtml.el exists
+          (load nxhtml-dir))))))
+(defalias 'ert2-loader 'nxhtml-loader)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; defs.el ends here

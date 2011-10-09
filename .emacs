@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Tue Oct  4 16:35:20 2011 (+0200)
-;;           By: Martial Boniou
-;;     Update #: 1938
+;; Last-Updated: Sun Oct  9 18:45:33 2011 (+0200)
+;;           By: Ubuntu
+;;     Update #: 1940
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -678,6 +678,8 @@ the should-be-forbidden C-z.")
                                             mars/desktop-name))
       desktop-path (list desktop-dir)
       history-length 250)
+(unless (file-directory-p desktop-dir)
+  (make-directory desktop-dir))
 
 (defmacro define-local-temporary-directory (local-work-directory-symbol)
   "Define the best temporary directory for autosaving or backing files up."

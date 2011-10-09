@@ -139,8 +139,8 @@
  ;; dark background friend ido colors
  '(ido-only-match ((((class color) (background dark)) (:foreground "#00cd00"))  ; green3
                    (((class color) (background light)) (:foreground "#228b22")))) ; ForestGreen
- '(ido-subdir ((((class color) (background dark)) (:foreground "cd0000")) 
-                   (((class color) (background light)) (:foreground "8b2222"))))
+ '(ido-subdir ((((class color) (background dark)) (:foreground "#cd0000")) 
+                   (((class color) (background light)) (:foreground "#8b2222"))))
  ;; anything using inheritance
  '(anything-M-x-key-face ((t (:inherit font-lock-reference-face :underline t))))
  '(anything-dir-heading ((t (:inherit font-lock-doc-face :weight bold))))

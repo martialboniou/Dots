@@ -1,3 +1,3 @@
-if [[ "$SYSTEM" -eq "Darwin" ]]; then
+if [[ "$SYSTEM" == "Darwin" ]]; then
   [[ -d "/Library/MySQL/bin" ]] && add_path /Library/MySQL/bin
 fi

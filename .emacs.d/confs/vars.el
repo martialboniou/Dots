@@ -78,6 +78,10 @@
           "Wanderlust resource repository."))))) ; used in `confs/mail.el'
 
 ;;; FIRST TIME
+(unless (boundp '*i-am-a-vim-user*)	; TODO: choose a definitive place for those vars
+  (defvar *i-am-a-vim-user* t))
+(unless (boundp '*i-am-a-dvorak-typist*)
+  (defvar *i-am-a-dvorak-typist*))	; used iff loaded in <confs> context
 (let ((first-file (expand-file-name
                    (concat (file-name-as-directory mars/local-root-dir)
                            (file-name-as-directory mars/personal-data)
@@ -178,6 +182,7 @@ named FUEL must be found in the `misc/fuel' subdirectory.")
                          (symbol-name system-type) ".el"))
     (error nil)))
 
+(message "okok")
 ;;; LOAD `USER-INIT-FILE' IF EXTERNAL CALL
 (setq *emacs/normal-startup t)
 (unless (boundp '*emacs/normal-startup*)

@@ -1,5 +1,5 @@
 #!/bin/sh
-emacs -q -l ~/.emacs.d/confs/gtd.el --eval "(progn (add-hook 'wl-exit-hook 'kill-emacs)(mapc (lambda (x) (conf-load x)) '(\"www\" \"mail\"))(condition-case err (wl) (error \"%s\")))" $*
+emacs --debug-init -q -l ~/.emacs.d/confs/gtd.el --eval "(progn (add-hook 'wl-exit-hook 'kill-emacs)(mapc (lambda (x) (conf-load x)) '(\"www\" \"mail\"))(condition-case err (wl) (error \"%s\")))" $*
 # first load `gtd` to get `Org` (and a minimalist configuration including `conf-load` function)
 # then say to kill emacs on `wl` exiting
 # then load `www` to get `emacs-w3m`

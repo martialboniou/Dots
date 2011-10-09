@@ -126,7 +126,7 @@
                                 (nxhtml             . ((get . "bzr branch lp:nxhtml")
                                                        ;; the following version is not fully compatible with 23 due to deprecated face + a bug I found about remove-hooking Viper in `util/mumamo'
                                                        ;; (get . "curl http://ourcomments.org/Emacs/DL/elisp/nxhtml/zip/nxhtml-2.08-100425.zip > _nxhtml.zip; unzip _nxhtml.zip; rm _nxhtml.zip") ; `unzip' is not pipe-friendly
-                                                       (install . "emacs-compile-directory;cd nxhtml;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";cd ../related;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";cd ../util;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";")
+                                                       (install . "cd util; sed \"/remove-hook 'text-mode-hook 'viper-mode/d\" mumamo.el > mumamo_tmp.el; mv mumamo_tmp.el mumamo.el; cd ..; emacs-compile-directory;cd nxhtml;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";cd ../related;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";cd ../util;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";")
                                                        (nosearch . ("alts" "etc" "nxhtml" "related" "tests" "util" ".bzr"))
                                                        (noauto . ".")))
                                 (emacs-w3m          . ((get . "cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot checkout emacs-w3m")

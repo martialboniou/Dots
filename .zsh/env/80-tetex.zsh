@@ -1,4 +1,4 @@
-if [[ "$SYSTEM" -eq "Darwin" ]]; then
+if [[ "$SYSTEM" == "Darwin" ]]; then
     TETEX_BIN=/usr/texbin
     if [[ -d "$TETEX_BIN" ]]; then
         add_path ${TETEX_BIN}

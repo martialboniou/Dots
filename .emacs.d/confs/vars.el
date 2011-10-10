@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Tue Apr 12 14:59:47 2011 (+0200)
+;; Last-Updated: Mon Oct 10 15:59:00 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 78
+;;     Update #: 79
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -61,27 +61,31 @@
 ;;; DIRECTORIES
 (defvar mars/local-conf-path (list "confs" "confs/init"))
 (defvar mars/site-lisp-path (list "lisp")) ; subdirs are loaded in 'load-path too (FIXME: need reboot .emacs if Custom)
-(let ((pases-source-dir (expand-file-name
-                         (concat
-                          (file-name-as-directory "~")
-                          (file-name-as-directory ".pases.d"))))) ; or (locate-library "wl") if standard install
-  (when (file-exists-p pases-source-dir) ; IMPORTANT: if `pases' is installed with `confs/packs.el', reboot Emacs
-    (unless (fboundp 'remove-if)
-     (require 'cl))
-    (let ((wl-name-list (remove-if (lambda (x)
-                                        (string-match ".pases$" x))
+(defvar wl/pases-install nil "True if Wanderlust is a PASES package.")
+
+(if wl/pases-install
+    (let ((pases-source-dir (expand-file-name
+                             (concat
+                              (file-name-as-directory "~")
+                              (file-name-as-directory ".pases.d"))))) ; or (locate-library "wl") if standard install
+      (when (file-exists-p pases-source-dir) ; IMPORTANT: if `pases' is installed with `confs/packs.el', reboot Emacs
+        (unless (fboundp 'remove-if)
+          (require 'cl))
+        (let ((wl-name-list (remove-if (lambda (x)
+                                         (string-match ".pases$" x))
                                        (directory-files pases-source-dir nil "^wl"))))
-      (when wl-name-list
-        (defvar wl-resource-rep (concat pases-source-dir
-                                        (file-name-as-directory
-                                         (car (last wl-name-list))))
-          "Wanderlust resource repository."))))) ; used in `confs/mail.el'
+          (when wl-name-list
+            (defvar wl-resource-rep (concat pases-source-dir
+                                            (file-name-as-directory
+                                             (car (last wl-name-list))))
+              "Wanderlust resource repository.")))))
+  (defvar)) ; used in `confs/mail.el'
 
 ;;; FIRST TIME
-(unless (boundp '*i-am-a-vim-user*)	; TODO: choose a definitive place for those vars
+(unless (boundp '*i-am-a-vim-user*)     ; TODO: choose a definitive place for those vars
   (defvar *i-am-a-vim-user* t))
 (unless (boundp '*i-am-a-dvorak-typist*)
-  (defvar *i-am-a-dvorak-typist*))	; used iff loaded in <confs> context
+  (defvar *i-am-a-dvorak-typist*))      ; used iff loaded in <confs> context
 (let ((first-file (expand-file-name
                    (concat (file-name-as-directory mars/local-root-dir)
                            (file-name-as-directory mars/personal-data)

@@ -123,6 +123,19 @@
                                                        (install . "make CEDET=`echo $PWD/../cedet`;make autoloads EBATCH=\"emacs -batch -no-site-file -eval \\\"(add-to-list 'load-path \\\\\\\".\\\\\\\")\\\"\"") ; FIXME: assume cedet is in the same directory / windows users should use GNU bash TODO: test it on Win32/64
                                                        (nosearch . ("ecb-images" "html"))
                                                        (noauto . ".")))
+                                (apel               . ((get . "git clone git://github.com/wanderlust/apel.git")
+                                                       (install . "make")))
+                                (flim               . ((get . "git clone git://github.com/wanderlust/flim.git")
+                                                       (install . "make LISPDIR=..")
+                                                       (nosearch . "tests")))
+                                (semi               . ((get . "git clone git://github.com/wanderlust/semi.git")
+                                                       (install . "make LISPDIR=..")))
+                                (wanderlust         . ((get . "git clone git://github.com/wanderlust/wanderlust.git")
+                                                       (install . "echo \"(setq load-path (append (list \\\"$PWD/../apel\\\" \\\"$PWD/../flim\\\" \\\"$PWD/../semi\\\") load-path))(setq wl-install-utils t)\" > WL-CFG;make") ; let wl, elmo & utils *uninstalled*
+                                                       (nosearch . ("doc" "etc" "samples" "tests"))))
+                                (org-mode           . ((get . "git clone git://orgmode.org/org-mode.git")
+                                                       (install . "make; emacs-compile-directory contrib/lisp") ; compile contrib too
+                                                       (nosearch . ("BUGFIXING" "EXPERIMENTAL" "UTILITIES" "contrib/babel" "contrib/doc" "contrib/odt" "contrib/scripts" "doc" "testing"))))
                                 (nxhtml             . ((get . "bzr branch lp:nxhtml")
                                                        ;; the following version is not fully compatible with 23 due to deprecated face + a bug I found about remove-hooking Viper in `util/mumamo'
                                                        ;; (get . "curl http://ourcomments.org/Emacs/DL/elisp/nxhtml/zip/nxhtml-2.08-100425.zip > _nxhtml.zip; unzip _nxhtml.zip; rm _nxhtml.zip") ; `unzip' is not pipe-friendly
@@ -225,7 +238,9 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
 ;; nothing
 
 ;;; PASES
+;; no more
 ;; Erik Hetzner's Pases (http://e6h.org/pases/)
+(defun pases/wl-org-install ()
 (unless (executable-find "unzip")     ; hang on unreachable `unzip'
   (cond
    ((eq system-type 'window-nt)
@@ -314,7 +329,7 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
                                                     x dot pases-name))))
                   (append wanderlust-package-list org-package-list))
                  ;; FIXME: remove *Compile-Log* window instead of other-windows
-                 (delete-other-windows))))))))))
+                 (delete-other-windows)))))))))))
 (defun mars/pases:reload ()
   "Reload pases. Find the loader file inside the `pases:package-dirs'."
   (interactive)

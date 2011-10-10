@@ -66,11 +66,11 @@
       (let ((default-wl-fldr (concat folder-directory "default.folders")))
         (when (file-exists-p default-wl-fldr)
           (setq wl-folders-file (convert-standard-filename default-wl-fldr))))))
-  (when (boundp 'wl-resource-rep)
-    (when (file-exists-p wl-resource-rep)
+    (when (and (not (null wl-resource-rep))
+               (file-exists-p wl-resource-rep))
       (setq wl-icon-directory (expand-file-name
                                (concat (file-name-as-directory wl-resource-rep)
-                                       "etc/icons")))))) ; icons relative path
+                                       "etc/icons"))))) ; icons relative path
 
 (eval-after-load "wl-draft"
   '(progn

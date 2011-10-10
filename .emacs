@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Sun Oct  9 18:45:33 2011 (+0200)
-;;           By: Ubuntu
-;;     Update #: 1940
+;; Last-Updated: Mon Oct 10 21:35:30 2011 (+0200)
+;;           By: Martial Boniou
+;;     Update #: 1943
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -98,7 +98,7 @@ See the advised `delete-frame' at the end of this file as a use case.")
   `(if (fboundp ',form)
        (,form ,@args)))
 (defmacro disable-eyecandies (&rest modes)
-  `(progn ,@(mapcar '(lambda (x) `(if-bound-call ,x -1)) modes)))
+  `(progn ,@(mapcar #'(lambda (x) `(if-bound-call ,x -1)) modes)))
 (defun which-emacs-i-am ()
   (if (string-match "XEmacs\\|Lucid" emacs-version) "xemacs" "gnuemacs"))
 (defun build-custom-file-name (subdirectory-in-data &optional general)
@@ -132,7 +132,9 @@ a simple `custom.el'."
             (when (file-exists-p custom-dir)
               file)))))))       ; path created
 ;; - disable eyecandies
-(disable-eyecandies menu-bar-mode tool-bar-mode scroll-bar-mode)
+(if (and (featurep 'ns) (eq window-system 'ns))
+    (disable-eyecandies tool-bar-mode scroll-bar-mode) ; OS X reclaims its menus
+  (disable-eyecandies menu-bar-mode tool-bar-mode scroll-bar-mode))
 ;; - basic customization / see `confs/init/common-pre-custom' too
 (custom-set-variables
  '(inihibit-startup-message t)
@@ -162,7 +164,7 @@ a simple `custom.el'."
        (sleep-for emacs/breaktime-on-error)))))
 (defun conf-locate (conf)
   "Locate a configuration file. Normally out of the `LOAD-PATH'."
-  (let ((path (mapcar '(lambda (x) (concat (file-name-as-directory mars/local-root-dir) x)) mars/local-conf-path)))
+  (let ((path (mapcar #'(lambda (x) (concat (file-name-as-directory mars/local-root-dir) x)) mars/local-conf-path)))
     (locate-library conf nil path)))
 (defun conf-load (conf)
   "Load a configuration file."
@@ -272,7 +274,7 @@ ROOT                        => ROOT"
 
 ;;; GENERATE AUTOLOADS (fetch your 'SITE-LISP 's LOADDEFS or create it)
 ;; FIXME: work for one site-lisp dir for instance!!
-(mapc '(lambda (x)
+(mapc #'(lambda (x)
          (let ((mars/loaddefs
                 (concat
                  (file-name-as-directory mars/local-root-dir)
@@ -316,13 +318,11 @@ ROOT                        => ROOT"
 ;;; ESSENTIAL TOOLS
 ;; - auto-cache byte-compiled libraries
 ;; (safe-load "byte-code-cache")
-
 ;; - defs = functions/macros to start with
 (conf-load "defs")
 ;; - delete keys' behavior
 (bind-keys
  '("<kp-delete>" delete-char))
-
 ;; - undo-tree | redo+ (both `vimpulse' compatible)
 (if (locate-library "undo-tree")
     (require 'undo-tree)                ; display tree by using C-x u

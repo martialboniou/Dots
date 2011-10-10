@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.3.1
-;; Last-Updated: Mon Apr 25 17:28:52 2011 (+0200)
+;; Last-Updated: Mon Oct 10 22:17:51 2011 (+0200)
 ;;           By:
-;;     Update #: 220
+;;     Update #: 222
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -157,6 +157,8 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
                      howm-mode
                      org-mode
                      haskell-mode
+                     qi-mode
+                     shen-mode
                      smalltalk-mode
                      factor-mode
                      js2-mode
@@ -475,7 +477,7 @@ TODO: case of '''colorscheme' this'' where this is
 
 ;; - some keybindings
 ;; remember:
-;; C-w = Window manipulation in normal modes; a kind of "'delete-backward-word" elsewhere
+;; C-w = Window manipulation in normal modes; a kind of `DELETE-BACKWARD-WORD' elsewhere
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; vim-everywhere.el ends here

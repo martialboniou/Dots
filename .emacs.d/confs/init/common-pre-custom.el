@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 23 15:15:40 2011 (+0100)
 ;; Version: 0.1
-;; Last-Updated: Mon Apr 25 23:16:10 2011 (+0200)
+;; Last-Updated: Mon Oct 10 22:42:32 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 84
+;;     Update #: 87
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -93,6 +93,10 @@
       newsticker-display-interval 15.3
       linum+-dynamic-format "%%%dd "
       linum+-smart-format linum+-dynamic-format)
+(when (featurep 'ns)
+  (setq ns-alternate-modifier nil
+        ns-command-modifier 'meta       ; NeXT/Apple computers got real Meta keys
+        ns-antialias-text t))
 
 ;;; BETTER DEFAULT COLORS
 (unless (member system-type '(windows-nt ms-dos))

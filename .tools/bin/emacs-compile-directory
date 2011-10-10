@@ -23,3 +23,4 @@ done
 fi
 
 $EMACS $arg -eval "(progn $acc (setq load-path (cons (expand-file-name \".\") load-path))(eval-when-compile (require 'cl))(dolist (file (remove-if 'file-directory-p (directory-files \".\" t \"^[^.]*.el$\")))(byte-compile-file file)))"
+

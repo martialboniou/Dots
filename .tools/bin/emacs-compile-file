@@ -41,4 +41,5 @@ case $# in
       echo "$file: no such a file or directory"
       exit 1
       ;;
-  esac
+esac
+

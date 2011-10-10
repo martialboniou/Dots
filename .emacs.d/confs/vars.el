@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Mon Oct 10 15:59:00 2011 (+0200)
+;; Last-Updated: Mon Oct 10 18:43:05 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 79
+;;     Update #: 81
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -62,7 +62,7 @@
 (defvar mars/local-conf-path (list "confs" "confs/init"))
 (defvar mars/site-lisp-path (list "lisp")) ; subdirs are loaded in 'load-path too (FIXME: need reboot .emacs if Custom)
 (defvar wl/pases-install nil "True if Wanderlust is a PASES package.")
-
+(defvar wl-resource-rep nil "Wanderlust resource repository.")
 (if wl/pases-install
     (let ((pases-source-dir (expand-file-name
                              (concat
@@ -75,11 +75,15 @@
                                          (string-match ".pases$" x))
                                        (directory-files pases-source-dir nil "^wl"))))
           (when wl-name-list
-            (defvar wl-resource-rep (concat pases-source-dir
-                                            (file-name-as-directory
-                                             (car (last wl-name-list))))
-              "Wanderlust resource repository.")))))
-  (defvar)) ; used in `confs/mail.el'
+            (setq wl-resource-rep (concat pases-source-dir
+                                          (file-name-as-directory
+                                           (car (last wl-name-list)))))))))
+  (let ((wl-lib (locate-library "wl")))
+    (unless (null wl-lib)
+            (setq wl-resource-rep (expand-file-name
+                                   (file-name-directory
+                                    (directory-file-name
+                                     (file-name-directory wl-lib)))))))) ; used in `confs/mail.el'
 
 ;;; FIRST TIME
 (unless (boundp '*i-am-a-vim-user*)     ; TODO: choose a definitive place for those vars

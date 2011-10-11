@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Thu Oct  6 21:09:32 2011 (+0200)
+;; Last-Updated: Tue Oct 11 16:07:14 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 52
+;;     Update #: 53
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -377,6 +377,12 @@ the personal Emacs Lisp configuration directory."
        "\\b\\([^@ \n\t]+\\)[ \n\t]+\\1\\b" nil 'move)
       (message "Found duplicated word.")
       (message "End of buffer")))
+
+(unless (fboundp 'trim-string)		; defined in `confs/packs' TODO: merge
+  (defun trim-string (string)
+    "Remove white spaces in beginning and ending of STRING.
+White space here is any of: space, tab, emacs newline (line feed, ASCII 10). --xah"
+    (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))))
 
 (defun to-unix-eol (fpath)
   "Change file's line ending to unix convention."

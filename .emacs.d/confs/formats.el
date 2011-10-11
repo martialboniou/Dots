@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Apr 13 14:06:29 2011 (+0200)
+;; Last-Updated: Tue Oct 11 10:54:42 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 40
+;;     Update #: 49
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -175,31 +175,36 @@ Otherwise the update regexps won't match."
        (iimage-mode))))
 
 ;;; FLYSPELL
-(add-hook 'text-mode-hook 'turn-on-flyspell)
-(when *i-am-a-dvorak-typist*
-  ;; .emacs defines C-; for fast copy-paste-cut key-bindings
-  (setq flyspell-auto-correct-binding
-        [(control ?\')]))        ; use C-' instead
-(eval-after-load "ispell"
-  '(progn
-     (setq flyspell-issue-welcome-flag nil)
-     (setq ispell-default-dictionary "fr_FR")
-     (when spelling-tool-name
-       (setq ispell-program-name spelling-tool-name))
-     (when ispell-program-name               ; boost needed if aspell
-       (when (eq 'aspell
-                 (intern (car (last (split-string ispell-program-name "/")))))
-         (setq ispell-extra-args '("--sug-mode=ultra"))))))
-(defvar lang-ring nil
-  "The spelling check ring of dictionary names for the language I usually write")
-(let ((langs '("en_US" "fr_FR")))
-  (setq lang-ring (make-ring (length langs)))
-  (dolist (elem langs) (ring-insert lang-ring elem)))
-(defun cycle-ispell-languages ()
-  (interactive)
-  (let ((lang (ring-ref lang-ring -1)))
-    (ring-insert lang-ring lang)
-    (ispell-change-dictionary lang)))
+(let ((spell-checker-name (or spelling-tool-name 'aspell)))
+  ;; run FLYSPELL if `spell-checker-name' is the name of an executable
+  (if (executable-find (symbol-name spell-checker-name))
+    (add-hook 'text-mode-hook 'turn-on-flyspell)
+    (message "formats: you should install %s in order to work with flyspell checker" (symbol-name spell-checker-name)))
+  (when *i-am-a-dvorak-typist*
+    ;; .emacs defines C-; for fast copy-paste-cut key-bindings in dvorak typing context
+    (setq flyspell-auto-correct-binding
+          [(control ?\')]))        ; use C-' instead
+  (eval-after-load "ispell"             ; configure flyspell even if FLYSPELL is
+                                        ; muted at startup
+    '(progn
+       (setq flyspell-issue-welcome-flag nil)
+       (setq ispell-default-dictionary "fr_FR")
+       (when spelling-tool-name
+         (setq ispell-program-name spelling-tool-name))
+       (when ispell-program-name               ; boost needed if aspell
+         (when (eq 'aspell
+                   (intern (car (last (split-string ispell-program-name "/")))))
+           (setq ispell-extra-args '("--sug-mode=ultra"))))))
+  (defvar lang-ring nil
+    "The spelling check ring of dictionary names for the language I usually write")
+  (let ((langs '("en_US" "fr_FR")))
+    (setq lang-ring (make-ring (length langs)))
+    (dolist (elem langs) (ring-insert lang-ring elem)))
+  (defun cycle-ispell-languages ()
+    (interactive)
+    (let ((lang (ring-ref lang-ring -1)))
+      (ring-insert lang-ring lang)
+      (ispell-change-dictionary lang))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; formats.el ends here

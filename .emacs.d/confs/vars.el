@@ -56,7 +56,6 @@
 
 ;;; DIRECTORY NAME
 (defvar mars/personal-data "data")
-(defvar mars/desktop-name "desktop")
 
 ;;; DIRECTORIES
 (defvar mars/local-conf-path (list "confs" "confs/init"))

@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Mon Oct 10 21:35:30 2011 (+0200)
+;; Last-Updated: Wed Oct 12 11:33:52 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 1943
+;;     Update #: 1944
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -515,9 +515,6 @@ ROOT                        => ROOT"
   '(define-key ibuffer-mode-map (kbd "'") 'kill-all-dired-buffers))
 
 ;;; ANYTHING
-(setq anything-c-adaptive-history-file (concat (file-name-as-directory mars/local-root-dir)
-                                               (file-name-as-directory mars/personal-data)
-                                               "anything-c-adaptive-history"))
 (require 'anything-match-plugin)
 (require 'anything-config)
 (eval-after-load "anything-config"
@@ -673,13 +670,15 @@ the should-be-forbidden C-z.")
 
 ;; desktop & autosave & backup files -> one place (like vim/backup)
 ;; - desktop directories
-(setq desktop-dir (expand-file-name (concat (file-name-as-directory mars/local-root-dir)
-                                            (file-name-as-directory mars/personal-data)
-                                            mars/desktop-name))
-      desktop-path (list desktop-dir)
+(unless desktop-dir
+ (setq desktop-dir (expand-file-name 
+                    (concat
+                     (file-name-as-directory mars/local-root-dir)
+                     (file-name-as-directory mars/personal-data)
+                     "desktop"))))
+(make-directory desktop-dir t)
+(setq desktop-path (list desktop-dir)
       history-length 250)
-(unless (file-directory-p desktop-dir)
-  (make-directory desktop-dir))
 
 (defmacro define-local-temporary-directory (local-work-directory-symbol)
   "Define the best temporary directory for autosaving or backing files up."

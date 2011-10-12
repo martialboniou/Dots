@@ -108,10 +108,11 @@
                                                           (nosearch . ("doc" "test" "util/jump/test" "util/test"))
                                                           ))
                                     ;; TODO: fetch all the Python/Rope install process
-                                    (python-mode        . ((get . "curl http://launchpad.net/python-mode/trunk/5.2.0/+download/python-mode-5.2.0.tgz | tar zx")
+                                    (python-mode        . ((get . "curl -L http://launchpad.net/python-mode/trunk/5.2.0/+download/python-mode-5.2.0.tgz | tar zx")
+                                                           (install . "emacs-compile-directory .")
                                                            (nosearch . "website")))
                                     (Pymacs             . ((get . "git clone git://github.com/pinard/Pymacs.git")
-                                                           (install . "make")
+                                                           (install . "make install") ; install Pymacs.egg in your python site-packges TODO: may require `eshell' for root install and su/sudo
                                                            (nosearch . ("build" "contrib" "Pymacs" "temp" "tests"))))
                                     (bbdb               . ((get . "cvs -d \":pserver:anonymous:@bbdb.cvs.sourceforge.net:/cvsroot/bbdb\" checkout bbdb")
                                                            (install . "autoconf;./configure;cd lisp;make autoloadsc;cd ..; make") ; soon DEPRECATED / IMPORTANT: problem in configure on Windows: `emacs' path with spaces

@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou
 ;; Created: Sat Feb 19 11:17:32 2011 (+0100)
 ;; Version: 0.8
-;; Last-Updated: Mon Mar 14 18:10:37 2011 (+0100)
+;; Last-Updated: Fri Oct 14 16:58:03 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 63
+;;     Update #: 70
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -16,7 +16,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Commentary: everything to split / tile / cycle / archive windows / 
-;;              autosave current window configuration
+;;              autosave current window configuration / no windowing
+;;              mouse support
 ;;  Note: need handmade tiling and buffer-move autoloads
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -174,6 +175,13 @@ When prefix arg is given,  \"same size\" is same width."
 
     ;; (message "")
     (select-window curw)))
+
+;;; NO WINDOWING MOUSE SUPPORT
+;; enable mouse in xterm, RXvts and iTerm2.app
+(unless window-system
+  (xterm-mouse-mode t)
+  ;; mouse wheel support
+  (require 'mwheel-term))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; window-manager.el ends here

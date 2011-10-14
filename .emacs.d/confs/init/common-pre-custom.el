@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 23 15:15:40 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: Wed Oct 12 11:31:28 2011 (+0200)
+;; Last-Updated: Fri Oct 14 14:29:25 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 89
+;;     Update #: 91
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -63,42 +63,42 @@
                         (file-name-as-directory mars/personal-data))))
   (mapc (lambda (x) 
           (let ((newdir (file-name-as-directory (concat (file-name-as-directory "~/.emacs.d/data") x))))
-	    (unless (file-exists-p newdir)
-	      (make-directory newdir t))))
-	'("cache/semanticdb"
-	  "cache/newsticker/cache"
-	  "cache/newsticker/images"
-	  "cache/newsticker/groups"
-	  "cache/eshell"
-	  "Notes" "Insert" "BBDB" "elmo"))
+        (unless (file-exists-p newdir)
+          (make-directory newdir t))))
+    '("cache/semanticdb"
+      "cache/newsticker/cache"
+      "cache/newsticker/images"
+      "cache/newsticker/groups"
+      "cache/eshell"
+      "Notes" "Insert" "BBDB" "elmo"))
   (let ((data-cache (expand-file-name (file-name-as-directory "~/.emacs.d/data/cache"))))
     (unless (fboundp 'flet) (require 'cl)) ; elisp obviously needs R*RS | CL standard
     (flet ((cachize (file) (expand-file-name (concat (file-name-as-directory data-cache) file))))
-	  (setq mars-windows-archiver-file (cachize "windows-archiver")
-		kiwon/last-window-configuration-file (cachize "last-window-configuration")
-		desktop-dir data-cache
-		desktop-base-file-name "desktop"
-		desktop-base-lock-name (concat "." desktop-base-file-name ".lock")
-		ido-save-directory-list-file (cachize "ido-last")
-		recentf-save-file (cachize "recentf")
-		anything-c-adaptive-history-file (cachize "anything-c-adaptive-history")
-		newsticker-cache-filename (cachize "newsticker/cache")
-		newsticker-imagecache-dirname (cachize "newsticker/images")
-		newsticker-groups-filename (cachize "newsticker/groups")
-		org-diary-agenda-file "~/.emacs.d/data/Notes/Diary.org"
-		savehist-file (cachize "history")
-		tramp-persistency-file-name (cachize "tramp")
+      (setq mars-windows-archiver-file (cachize "windows-archiver")
+        kiwon/last-window-configuration-file (cachize "last-window-configuration")
+        desktop-dir data-cache
+        desktop-base-file-name "desktop"
+        desktop-base-lock-name (concat "." desktop-base-file-name ".lock")
+        ido-save-directory-list-file (cachize "ido-last")
+        recentf-save-file (cachize "recentf")
+        anything-c-adaptive-history-file (cachize "anything-c-adaptive-history")
+        newsticker-cache-filename (cachize "newsticker/cache")
+        newsticker-imagecache-dirname (cachize "newsticker/images")
+        newsticker-groups-filename (cachize "newsticker/groups")
+        org-diary-agenda-file "~/.emacs.d/data/Notes/Diary.org"
+        savehist-file (cachize "history")
+        tramp-persistency-file-name (cachize "tramp")
         ac-comphist-file (cachize "ac-comphist.dat")
-		semanticdb-default-save-directory (cachize "semanticdb")
-		ede-project-placeholder-cache-file (cachize "projects.ede")
-		ecb-tip-of-the-day-file (cachize "ecb-tip-of-day.el")
-		auto-insert-directory "~/.emacs.d/data/Insert"
-		bbdb-file (concat (file-name-as-directory "~/.emacs.d/data/BBDB")
-				  (user-login-name)
-				  ".bbdb")
-		elmo-msgdb-directory "~/.emacs.d/data/elmo"
-		eshell-directory-name (file-name-as-directory (cachize "eshell")) ; may need a final `slash'
-		emms-cache-file (cachize "emms-cache")))))
+        semanticdb-default-save-directory (cachize "semanticdb")
+        ede-project-placeholder-cache-file (cachize "projects.ede")
+        ecb-tip-of-the-day-file (cachize "ecb-tip-of-day.el")
+        auto-insert-directory "~/.emacs.d/data/Insert"
+        bbdb-file (concat (file-name-as-directory "~/.emacs.d/data/BBDB")
+                  (user-login-name)
+                  ".bbdb")
+        elmo-msgdb-directory "~/.emacs.d/data/elmo"
+        eshell-directory-name (file-name-as-directory (cachize "eshell")) ; may need a final `slash'
+        emms-cache-file (cachize "emms-cache")))))
 
 ;;; GENERAL BEHAVIOR
 (setq standard-indent 4

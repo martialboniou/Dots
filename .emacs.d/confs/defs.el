@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Tue Oct 11 16:07:14 2011 (+0200)
+;; Last-Updated: Fri Oct 14 14:15:17 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 53
+;;     Update #: 55
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -378,7 +378,7 @@ the personal Emacs Lisp configuration directory."
       (message "Found duplicated word.")
       (message "End of buffer")))
 
-(unless (fboundp 'trim-string)		; defined in `confs/packs' TODO: merge
+(unless (fboundp 'trim-string)      ; defined in `confs/packs' TODO: merge
   (defun trim-string (string)
     "Remove white spaces in beginning and ending of STRING.
 White space here is any of: space, tab, emacs newline (line feed, ASCII 10). --xah"
@@ -843,6 +843,14 @@ which is not affected by suffix optional argument."
                                           (concat name "/" name ".el")))) ; check nxhtml.el exists
           (load nxhtml-dir))))))
 (defalias 'ert2-loader 'nxhtml-loader)
+
+;; toggle-transparency
+(defun toggle-transparency ()
+  (interactive)
+  (let ((opa (if (/=  (or (cadr (frame-parameter nil 'alpha)) 100) 100)
+                 '(100 100)
+               '(97 92))))
+    (modify-all-frames-parameters (list (cons 'alpha opa)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; defs.el ends here

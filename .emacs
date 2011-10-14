@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Wed Oct 12 11:33:52 2011 (+0200)
+;; Last-Updated: Fri Oct 14 14:30:13 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 1944
+;;     Update #: 1954
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -57,6 +57,10 @@ consists in cutting off the portion of his left little finger
 above the top knuckle. In no-window-system mode, most of these
 helpers is active to work on most 70's designed VT where the
 Ctrl-Shift combination is unknown.")
+(defvar *i-like-shoji* t
+  "If true, enable transparency in window-system. Shoji are
+japanese window divider consisting of translucent paper over
+a frame.")
 
 ;;; *VARS*
 (defvar *emacs/normal-startup* t
@@ -71,16 +75,16 @@ another configuration file.")
 (defvar desktop-dir nil)
 (defvar autosave-dir nil                ; autosave
   "Temporary variable use to make autosaves directory name.
-(That's where #foo# goes.) It should normally be nil if
+That's where #foo# goes. It should normally be nil if
 `user-init-file' is compiled.")
 (defvar session-dir nil                 ; session
   "Temporary variable use to record interrupted sessions
-for latter recovery. (That's where .saves-<pid>-<hostname>
-goes.) It should normally be nil if `user-init-file' is
+for latter recovery. That's where .saves-<pid>-<hostname>
+goes. It should normally be nil if `user-init-file' is
 compiled. This directory is known as `auto-save-list'.")
 (defvar backup-dir   nil                ; backup
   "Temporary variable use to make backups directory name.
-(That's where foo~ goes.) It should normally be nil if
+That's where foo~ goes. It should normally be nil if
 `user-init-file' is compiled.")
 (defvar confirm-frame-action-buffer-alist nil ; kill frame alert
   "Associated list of buffer properties in order to get a confirmation
@@ -432,6 +436,7 @@ ROOT                        => ROOT"
    "C-c = w"   global-whitespace-mode
    "C-c = t"   global-whitespace-toggle-options
    "C-x 4 t"   transpose-buffers
+   "C-M-z"     toggle-transparency
    "C-c C-m"   make-directory           ; or M-m in `ido'
    "C-c C-0"   anything-mini            ; buffers (w/o `ibuffer' tags) & recentf (w/o `ido-recentf' completion)
                                         ; See shortcuts.el: anything on [<f5><f8>] for fast navigation in:
@@ -774,6 +779,11 @@ the should-be-forbidden C-z.")
     (setq *emacs/normal-startup* t)
     (load user-init-file)
     (setq *emacs/normal-startup* memo)))
+
+;; translucent emacs window
+(when (and window-system
+           (> emacs-major-version 23))
+  (toggle-transparency))
 
 ;; load time
 (let ((load-time (destructuring-bind (hi lo ms) (current-time)

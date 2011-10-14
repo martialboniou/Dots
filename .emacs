@@ -73,6 +73,11 @@ another configuration file.")
   "Temporary variable use to make autosaves directory name.
 (That's where #foo# goes.) It should normally be nil if
 `user-init-file' is compiled.")
+(defvar session-dir nil                 ; session
+  "Temporary variable use to record interrupted sessions
+for latter recovery. (That's where .saves-<pid>-<hostname>
+goes.) It should normally be nil if `user-init-file' is
+compiled. This directory is known as `auto-save-list'.")
 (defvar backup-dir   nil                ; backup
   "Temporary variable use to make backups directory name.
 (That's where foo~ goes.) It should normally be nil if
@@ -365,7 +370,7 @@ ROOT                        => ROOT"
 (add-hook 'desktop-after-read-hook
           'kiwon/restore-window-configuration) ; save/restore the last window
                                                     ; configuration with `DESKTOP'
-;; desktop + autosave + backup files: see eof
+;; desktop + autosave + session + backup files: see eof
 
 ;;; BUFFERS
 (require 'uniquify)
@@ -668,7 +673,7 @@ the should-be-forbidden C-z.")
 (when *emacs/normal-startup*
   (savehist-mode 1))
 
-;; desktop & autosave & backup files -> one place (like vim/backup)
+;; desktop & autosave & session & backup files -> one place (like vim/backup)
 ;; - desktop directories
 (unless desktop-dir
  (setq desktop-dir (expand-file-name 
@@ -681,7 +686,7 @@ the should-be-forbidden C-z.")
       history-length 250)
 
 (defmacro define-local-temporary-directory (local-work-directory-symbol)
-  "Define the best temporary directory for autosaving or backing files up."
+  "Define the best temporary directory for registering files and sessions."
   (let ((local-tmp-dir (concat (file-name-as-directory mars/local-root-dir)
                                (file-name-as-directory mars/personal-data)
                                (file-name-as-directory "Temporary"))))
@@ -700,9 +705,11 @@ the should-be-forbidden C-z.")
                (setq ,dir-symbol ,name)
                (message ,(concat "Beware: your autosave directory named `" name
                                  "' may be publicly accessed. Be sure to make it hidden to other users.")))))))))
-(define-local-temporary-directory autosave)
-(define-local-temporary-directory backup)
+(define-local-temporary-directory autosave) ; #<files>#
+(define-local-temporary-directory session)  ; .saves-<pid>-<hostname>
+(define-local-temporary-directory backup)   ; !<backup-directory>!<backup-file>!.~<index>~
 (setq auto-save-file-name-transforms `(("\\([^/]*/\\)*\\(.*\\)" ,(concat autosave-dir "\\2") nil))
+      auto-save-list-file-prefix (concat (file-name-as-directory session-dir) ".saves-")
       backup-directory-alist (list (cons "." backup-dir)))
 ;; - desktop load
 (when *emacs/normal-startup*
@@ -726,6 +733,7 @@ the should-be-forbidden C-z.")
         (run-with-timer 5 300 'autosave-desktop)))
 ;; - unset temporary directory names
 (setq autosave-dir nil
+      session-dir nil
       backup-dir nil)                   ; otherwise `define-local-temporary-directory' compilation
                                         ; of the symbol test (in UNLESS clause) doesn't work
 

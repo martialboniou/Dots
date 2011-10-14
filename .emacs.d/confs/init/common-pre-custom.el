@@ -88,6 +88,7 @@
 		org-diary-agenda-file "~/.emacs.d/data/Notes/Diary.org"
 		savehist-file (cachize "history")
 		tramp-persistency-file-name (cachize "tramp")
+        ac-comphist-file (cachize "ac-comphist.dat")
 		semanticdb-default-save-directory (cachize "semanticdb")
 		ede-project-placeholder-cache-file (cachize "projects.ede")
 		ecb-tip-of-the-day-file (cachize "ecb-tip-of-day.el")

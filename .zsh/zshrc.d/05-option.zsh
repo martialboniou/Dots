@@ -21,7 +21,8 @@ setopt   autopushd pushdminus extendedglob rcquotes mailwarning pushdsilent push
 unsetopt BG_NICE HUP autoparamslash
 
 # Prompt
-source $ZDOTDIR/.zshprompt
+source $ZDOTDIR/prompts/advanced
+#source $ZDOTDIR/prompts/minimal
 setprompt
 
 # Don't expand files matching:

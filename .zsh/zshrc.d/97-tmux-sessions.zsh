@@ -4,7 +4,9 @@
 # http://chm.duquesne.free.fr/blog
 
 if test -z ${TMUX}; then
-  tmux $* # $* to pass args like `chdir` at startup 
+  if [[ isemacs -eq 0 ]]; then # don't start tmux in emacsen vt
+    tmux $* # $* to pass args like `chdir` at startup
+  fi
 fi
 # when quitting tmux, try to attach if DTMUX is not unset
 while [[ -z ${TMUX} ]]; do

@@ -20,9 +20,12 @@ setopt   autoresume pushdsilent
 setopt   autopushd pushdminus extendedglob rcquotes mailwarning pushdsilent pushdtohome
 unsetopt BG_NICE HUP autoparamslash
 
-# Prompt
-source $ZDOTDIR/prompts/advanced
-#source $ZDOTDIR/prompts/minimal
+# Prompt: minimal prompt for emacsen vt
+if [[ isemacs -eq 0 ]]; then
+  source $ZDOTDIR/prompts/advanced
+else
+  source $ZDOTDIR/prompts/minimal
+fi
 setprompt
 
 # Don't expand files matching:

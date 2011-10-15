@@ -29,8 +29,10 @@ Vim 7
 
 *Need some tidy up*
 
-Gnu Emacs 23
-------------
+Gnu Emacs 23.2+ or 24
+---------------------
+
+All scripts in `.emacs.d` are tested on Emacs 23.3 and Emacs 24.0.90.
 
 A great monothread OS for manipulating files, code, versioning tools, email but a poor editor compared to Vim. Fortunately Vimpulse gives us a better Emacs with modal edition mixed with the powertools of Emacs.
 
@@ -48,7 +50,7 @@ A lot of work is needed to enhance the portability but some snippets may be usef
 * `anything`
 * `ibuffer` (a `dired` for buffers)
 * `yasnippet`
-* `auto-complete
+* `auto-complete`
 * `hippie-expand` (on `C-p`)
 * `nxhtml` (`js` (previously known as `espresso`) should be used as `js2-mode` doesn't work with `mmm-mode`)
 
@@ -69,22 +71,23 @@ Some packages may also be useful in order to help this configuration to work fin
 
 See `.emacs.d/confs/shortcuts.el` for good ideas of bindings especially for buffer/window/frame navigation using tiling/cycling (thing about larswm or [Xmonad](http://xmonad.org/tour.html)) or for `<f5>`-`<f8>` keys (`<f5><f5>` toggle the current frame from multiple buffers to a single view on the current buffer via `revive.el`).
 
-The current version should match **23.3** and need a major 23 if possible. (I recommend to use an `emacs` 23.2 or more because some radical changes where made in the byte-code after `emacs` 23.1.)
+The current version should match **24.0** and need a major 23 if possible. (I recommend to use an `emacs` 23.2 or more because some radical changes where made in the byte-code after `emacs` 23.1.)
 
 Read `.emacs.d/confs/vars.el` to configure your path. Remember this! By default, `.emacs` makes Emacs to:
 
 1. support UTF-8 (`.emacs.d/confs/formats.el` to switch to another encoding) / remove eye candies (no toolbar / no scrollbar);
 2. create `load-path` (all files and *subdirs* from `.emacs.d/lisp`);
-3. load uninstalled packages via scripts in `confs/packs.el` or by using `pases`;
+3. load uninstalled packages via scripts in `confs/packs.el`;
 4. generate `autoloads` at the root of `.emacs.d/lisp` (loading `cedet` if there's extended autoloads for `eieio` classes and methods);
 5. add handmade autoloads if needed;
 6. configure general behavior:
   * buffers and `ido` (**BEWARE**: `C-x C-b` to switch buffers, `C-x C-f` to find file in history, `C-x f` to find file normally),
   * `desktop` + `revive` (to save window configuration on quit),
-  * `autosave` (no more `*~` everywhere; all temporary files are kept in `.emacs.d/data`)
+  * `autosave` and `auto-save-list` (no more `*~` everywhere; all temporary files are kept in `.emacs.d/data`)
 7. load specific configuration files.
 
-Here, `require` is often avoided because automagically generated `autoload`s and `eval-after-load` is over-used.
+Here, `require` is often avoided because automagically generated `autoload`s and `eval-after-load` is over-used. (That's why Emacs should start quickly. Don't worry if your first startup is slow: Emacs will fetch additional packages like `nxhtml`, a newest `cedet` or `wanderlust` in order to work ultimately.)
+
 `.emacs.d/confs/vim-everywhere` is a bit special and hard to understand. It is here to:
 
 * load `viper` and `vimpulse`

@@ -1,4 +1,4 @@
 #!/usr/bin/env zsh
 # purge vars/functions
 
-unset -f isemacs
+# unset -f emacs_acquaint

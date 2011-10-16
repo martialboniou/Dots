@@ -1,5 +1,19 @@
 # ---[ Environment ]---------------------------------------------------
-export EDITOR=vi
+() {
+  local -a editors
+  local editor
+  editors=(
+    "vemacs" # emacs with vimpulse (Vim emulation)
+    "vim"
+    "nvi"
+    )
+    for editor in $editors; do
+      (( $+commands[$editor[(w)1]] )) && {
+        export EDITOR=$editor
+        break
+      }
+    done
+  }
 # Unicode Locale
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8

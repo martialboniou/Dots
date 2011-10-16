@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Fri Oct 14 14:30:13 2011 (+0200)
+;; Last-Updated: Sat Oct 15 20:51:20 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 1954
+;;     Update #: 1960
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -42,6 +42,10 @@
 ;;
 
 ;;; *MOOD*
+;;
+;; create *vim-now*/*dvorak-now* to force new vim/dvorak options
+;; remove .emacs.d/data/.launched to reset vim/dvorak options at startup
+;;
 (defvar *i-am-an-emacsen-dev* t
   "If true, elisp helpers will be loaded.")
 (defvar *i-am-a-vim-user* t
@@ -341,8 +345,10 @@ ROOT                        => ROOT"
       '(progn (setq undo-no-redo t)))))
 
 ;;; MODAL EDITING & COLOR-THEME WITH PARENTHESES' SUPPORT
-(if *i-am-a-vim-user*
-    (conf-load "vim-everywhere") ; vimpulse (incl. parens' matching) + colorscheme
+(if (not (null *i-am-a-vim-user*))
+    (progn
+      (message "checked")
+      (conf-load "vim-everywhere")) ; vimpulse (incl. parens' matching) + colorscheme
   (progn
     (require 'mic-paren)         ; faces for (mis)matching parentheses
     (color-theme-initialize)

@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Mon Oct 10 18:43:05 2011 (+0200)
+;; Last-Updated: Sun Oct 16 00:07:26 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 81
+;;     Update #: 94
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -84,6 +84,25 @@
                                     (directory-file-name
                                      (file-name-directory wl-lib)))))))) ; used in `confs/mail.el'
 
+;;; UTILITIES
+(unless (fboundp 'conf-locate)
+    (defun conf-locate (conf) (let ((path (mapcar '(lambda (x) (concat (file-name-as-directory mars/local-root-dir) x)) mars/local-conf-path))) (locate-library conf nil path))))
+(unless (fboundp 'conf-load)
+  (defun conf-load (conf)               ; useful in non `*EMACS/NORMAL-STARTUP*' context
+                                        ; eg: when loading a specific configuration file
+                                        ;     by external call
+    (let ((found (conf-locate conf)))
+      (when found
+        (load-file found)))))           ; normally bound when `USER-INIT-FILE' is loaded
+(defmacro mars/force-options (&rest conses)
+  "Initialize CDR from the value of CAR if CAR is bound.
+`CONSES' is one or many CONS of variables."
+  `(progn
+     ,@(mapcar (lambda (x)
+                 `(when (boundp ',(car x))
+                    (setq ,(cdr x) ,(car x))))
+               conses)))
+
 ;;; FIRST TIME
 (unless (boundp '*i-am-a-vim-user*)     ; TODO: choose a definitive place for those vars
   (defvar *i-am-a-vim-user* t))
@@ -94,7 +113,7 @@
                            (file-name-as-directory mars/personal-data)
                            ".launched"))))
   (if (file-exists-p first-file)
-      (load-file first-file)
+    (load-file first-file)
     (progn
       ;; if you changes the `.emacs' defvar by hand, the `.launched' won't change your setting
       (unless (y-or-n-p "Would you like to type in a Vim-like environment? ")
@@ -109,6 +128,9 @@
               (insert "(if (eq *i-am-a-vim-user* t) (setq *i-am-a-vim-user* nil))"))
           (unless *i-am-a-dvorak-typist*
               (insert "(if (eq *i-am-a-dvorak-typist* t) (setq *i-am-a-dvorak-typist* nil))")))))))
+;; force vim/dvorak options via special vars
+(mars/force-options (*vim-now* . *i-am-a-vim-user*)
+                    (*dvorak-now* . *i-am-a-dvorak-typist*))
 
 ;;; GLOBAL SYSTEM CUSTOMIZATION
 ;; general behavior/convention (`custom-file' being specific to a system)
@@ -189,7 +211,6 @@ named FUEL must be found in the `misc/fuel' subdirectory.")
                          (symbol-name system-type) ".el"))
     (error nil)))
 
-(message "okok")
 ;;; LOAD `USER-INIT-FILE' IF EXTERNAL CALL
 (setq *emacs/normal-startup t)
 (unless (boundp '*emacs/normal-startup*)

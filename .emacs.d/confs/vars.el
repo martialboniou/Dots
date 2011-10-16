@@ -107,13 +107,13 @@
 (unless (boundp '*i-am-a-vim-user*)     ; TODO: choose a definitive place for those vars
   (defvar *i-am-a-vim-user* t))
 (unless (boundp '*i-am-a-dvorak-typist*)
-  (defvar *i-am-a-dvorak-typist*))      ; used iff loaded in <confs> context
+  (defvar *i-am-a-dvorak-typist* t))    ; used iff loaded in <confs> context
 (let ((first-file (expand-file-name
                    (concat (file-name-as-directory mars/local-root-dir)
                            (file-name-as-directory mars/personal-data)
                            ".launched"))))
   (if (file-exists-p first-file)
-    (load-file first-file)
+      (load-file first-file)
     (progn
       ;; if you changes the `.emacs' defvar by hand, the `.launched' won't change your setting
       (unless (y-or-n-p "Would you like to type in a Vim-like environment? ")
@@ -122,12 +122,13 @@
         (setq *i-am-a-dvorak-typist* nil))
       (with-temp-file
           first-file
-        (insert ";; launched\n")
         (progn
-          (unless *i-am-a-vim-user*
-              (insert "(if (eq *i-am-a-vim-user* t) (setq *i-am-a-vim-user* nil))"))
-          (unless *i-am-a-dvorak-typist*
-              (insert "(if (eq *i-am-a-dvorak-typist* t) (setq *i-am-a-dvorak-typist* nil))")))))))
+          (insert (concat
+                   ";; launched\n"
+                   (unless *i-am-a-vim-user*
+                       "(if (eq *i-am-a-vim-user* t) (setq *i-am-a-vim-user* nil))\n")
+                   (unless *i-am-a-dvorak-typist*
+                       "(if (eq *i-am-a-dvorak-typist* t) (setq *i-am-a-dvorak-typist* nil))\n"))))))))
 ;; force vim/dvorak options via special vars
 (mars/force-options (*vim-now* . *i-am-a-vim-user*)
                     (*dvorak-now* . *i-am-a-dvorak-typist*))
@@ -181,7 +182,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 (defvar cpp-include-path nil "Additional include path for C++ programs")
 
 ;;; PROGRAM NAMES
-(defvar mars/haskell-program-name "/usr/bin/ghci"
+(defvar mars/haskell-program-name "ghci"
   "Haskell interpreter fullname.")
 (custom-set-variables
  '(tramp-default-method "ssh"))

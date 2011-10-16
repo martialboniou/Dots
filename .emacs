@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Sat Oct 15 20:51:20 2011 (+0200)
+;; Last-Updated: Sun Oct 16 20:45:16 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 1960
+;;     Update #: 1963
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -417,7 +417,8 @@ ROOT                        => ROOT"
 ;;; CEDET is loaded from `SAFE-AUTOLOADS-LOAD' if `LOADDEFS' is inside the `mars/site-lisp-path', from `UPDATE-AUTOLOADS-IN-PACKAGE-AREA' otherwise or previously if `*i-am-a-common-lisp-advocate*'
 
 ;;; SERVER
-(when *emacs/normal-startup* (start-named-server "mars"))
+(when *emacs/normal-startup* (start-named-server user-login-name)) ; TODO: non normal-startup should create a server name based on the loader (eg. emacs-mail should start 'mail' server)
+                                        ; TODO: create gnome/osx scripts to manage org-remember/org-capture by sending to the best server contextually
 
 ;;; GLOBAL KEYS (see <confs>/shortcuts.el for additionnal keys)
 (bind-keys

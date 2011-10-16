@@ -12,9 +12,9 @@ chpwd
 # keep the zdirdump file from growing too long (250 entries seems ok)
 tmp_timestamp=$(date | awk '{print $4}')
 #[[ ! -d ~/.zsh ]] && mkdir -p ~/.zsh
-command touch $ZDOTDIR/zdirdump
-command cp $ZDOTDIR/zdirdump /tmp/$tmp_timestamp.zdirdump
-command tail -n 250 /tmp/$tmp_timestamp.zdirdump >| $ZDOTDIR/zdirdump
+command touch $ZDOTDIR/cache/zdirdump
+command cp $ZDOTDIR/cache/zdirdump /tmp/$tmp_timestamp.zdirdump
+command tail -n 250 /tmp/$tmp_timestamp.zdirdump >| $ZDOTDIR/cache/zdirdump
 command rm -f /tmp/$tmp_timestamp.zdirdump
 
 # ---[ GUI ]-----------------------------------------------------------

@@ -1,19 +1,19 @@
 # ---[ Environment ]---------------------------------------------------
 () {
-  local -a editors
-  local editor
-  editors=(
-    "vemacs" # emacs with vimpulse (Vim emulation)
-    "vim"
-    "nvi"
+    local -a editors
+    local editor
+    editors=(
+        "$EMACSCLIENT --socket-name=$EMACSNAMESERVER --alternate-editor=vemacs" # vemacs = emacs w/ vimpulse (Vim emu)
+        "vim"
+        "nvi"
     )
     for editor in $editors; do
-      (( $+commands[$editor[(w)1]] )) && {
-        export EDITOR=$editor
-        break
-      }
+        (( $+commands[$editor[(w)1]] )) && {
+            export EDITOR=$editor
+            break
+        }
     done
-  }
+}
 # Unicode Locale
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8

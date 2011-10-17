@@ -20,5 +20,5 @@ if [[ -d "${EMACSEN_SPATH:=${HOME}/.emacs.d/scripts}" ]]; then
     alias -- \#$ALIAS_SCRIPT="$EMACSCLIENT --socket-name=$EMACSNAMESERVER --eval \"(progn (raise-frame (selected-frame))`cat ${scpt}.el`)\" 2>/dev/null || $EMACS -l $scpt"
     end
 fi
-alias emacsclient='$EMACSCLIENT --socket-name=$EMACSNAMESERVER'
+alias emacsclient="$EMACSCLIENT --socket-name=$EMACSNAMESERVER --alternate-editor=vemacs"
 alias \#='emacsclient'

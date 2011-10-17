@@ -1,15 +1,20 @@
 # ---[ Environment ]---------------------------------------------------
+EMACSNAMESERVER=$USERNAME
 () {
     local -a editors
-    local editor
+    local editor 
+    # vemacs = emacs w/ vimpulse (Vim emu)
     editors=(
-        "$EMACSCLIENT --socket-name=$EMACSNAMESERVER --alternate-editor=vemacs" # vemacs = emacs w/ vimpulse (Vim emu)
+        "emacsclient --socket-name=$EMACSNAMESERVER --alternate-editor=vemacs"
         "vim"
         "nvi"
+        "vi"
+        "nano"
     )
-    for editor in $editors; do
+    for editor in ${editors[@]}; do
         (( $+commands[$editor[(w)1]] )) && {
-            export EDITOR=$editor
+            EDITOR=$editor
+            VISUAL=$editor
             break
         }
     done

@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Sun Oct 16 00:07:26 2011 (+0200)
+;; Last-Updated: Mon Oct 17 14:47:48 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 94
+;;     Update #: 96
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -62,7 +62,7 @@
 (defvar mars/site-lisp-path (list "lisp")) ; subdirs are loaded in 'load-path too (FIXME: need reboot .emacs if Custom)
 (defvar wl/pases-install nil "True if Wanderlust is a PASES package.")
 (defvar wl-resource-rep nil "Wanderlust resource repository.")
-(if wl/pases-install
+(when wl/pases-install
     (let ((pases-source-dir (expand-file-name
                              (concat
                               (file-name-as-directory "~")
@@ -76,13 +76,7 @@
           (when wl-name-list
             (setq wl-resource-rep (concat pases-source-dir
                                           (file-name-as-directory
-                                           (car (last wl-name-list)))))))))
-  (let ((wl-lib (locate-library "wl")))
-    (unless (null wl-lib)
-            (setq wl-resource-rep (expand-file-name
-                                   (file-name-directory
-                                    (directory-file-name
-                                     (file-name-directory wl-lib)))))))) ; used in `confs/mail.el'
+                                           (car (last wl-name-list))))))))))
 
 ;;; UTILITIES
 (unless (fboundp 'conf-locate)

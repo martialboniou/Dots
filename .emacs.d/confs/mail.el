@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Apr 26 14:39:08 2011 (+0200)
+;; Last-Updated: Mon Oct 17 14:49:20 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 74
+;;     Update #: 77
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -66,6 +66,13 @@
       (let ((default-wl-fldr (concat folder-directory "default.folders")))
         (when (file-exists-p default-wl-fldr)
           (setq wl-folders-file (convert-standard-filename default-wl-fldr))))))
+  (when (null wl-resource-rep)          ; handmade install case (neither PASES nor ELPA)
+    (let ((wl-lib (locate-library "wl")))
+      (unless (null wl-lib)
+        (setq wl-resource-rep (expand-file-name
+                               (file-name-directory
+                                (directory-file-name
+                                 (file-name-directory wl-lib))))))))
     (when (and (not (null wl-resource-rep))
                (file-exists-p wl-resource-rep))
       (setq wl-icon-directory (expand-file-name

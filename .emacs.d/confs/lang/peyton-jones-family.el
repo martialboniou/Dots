@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:40:26 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Oct  6 18:37:24 2011 (+0200)
+;; Last-Updated: Tue Oct 18 16:42:50 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 34
+;;     Update #: 35
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -55,31 +55,31 @@
 
 ;;; SHEN MODE
 (add-to-list 'auto-mode-alist '("\\.shen\\'" . shen-mode))
-(eval-after-load "inf-shen"
-  '(progn
-     (defun check-balanced-parens (start end)
-       "Check if parentheses in the region are balanced. Signals a 
-scan-error if not." 
-       (save-restriction 
-         (save-excursion 
-           (let ((deactivate-mark nil)) 
-             (condition-case c 
-                 (progn 
-                   (narrow-to-region start end) 
-                   (goto-char (point-min))
-                   (while (/= 0 (- (point)
-                                   (forward-list)))) 
-                   t)
-               (scan-error (signal 'scan-error '("Region parentheses not balanced."))))))))
-     (defadvice shen-eval-region (around shen-secure-eval (start end &optional and-go) activate)
-       (interactive "r\nP")
-       (when (condition-case err
-                 (progn
-                   (check-balanced-parens start end)
-                   t)      
-               (error
-                (y-or-n-p (format "%s Eval anyway ?" (error-message-string err)))))
-         ad-do-it))))
+;; (eval-after-load "inf-shen"
+;;   '(progn
+;;      (defun check-balanced-parens (start end)
+;;        "Check if parentheses in the region are balanced. Signals a 
+;; scan-error if not." 
+;;        (save-restriction 
+;;          (save-excursion 
+;;            (let ((deactivate-mark nil)) 
+;;              (condition-case c 
+;;                  (progn 
+;;                    (narrow-to-region start end) 
+;;                    (goto-char (point-min))
+;;                    (while (/= 0 (- (point)
+;;                                    (forward-list)))) 
+;;                    t)
+;;                (scan-error (signal 'scan-error '("Region parentheses not balanced."))))))))
+;;      (defadvice shen-eval-region (around shen-secure-eval (start end &optional and-go) activate)
+;;        (interactive "r\nP")
+;;        (when (condition-case err
+;;                  (progn
+;;                    (check-balanced-parens start end)
+;;                    t)      
+;;                (error
+;;                 (y-or-n-p (format "%s Eval anyway ?" (error-message-string err)))))
+;;          ad-do-it))))
 
 (provide 'peyton-jones-family)
 

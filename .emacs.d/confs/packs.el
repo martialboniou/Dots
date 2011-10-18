@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Tue Oct 11 18:59:09 2011 (+0200)
+;; Last-Updated: Tue Oct 18 16:41:17 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 309
+;;     Update #: 310
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -101,7 +101,8 @@
                                                           (install . "emacs-compile-directory; emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\" themes"))) ; FIXME: not in path so error in `themes' (not important!)
                                     (darcsum           . ((get . "darcs get --lazy http://joyful.com/repos/darcsum")
                                                           (install . "emacs-compile-directory")))
-                                    (shen-mode         . ((get . "git clone git://github.com/eschulte/shen-mode.git")))
+                                    (shen-mode         . ((get . "git clone git://github.com/eschulte/shen-mode.git")
+                                                          (install . "emacs-compile-directory")))
                                     (remember          . ((get . "git clone git://repo.or.cz/remember-el.git remember")
                                                           (install . "make")))
                                     (rinari            . ((get . "git clone git://github.com/eschulte/rinari.git; cd rinari; git submodule init; git submodule update; cd ..") ; FIXME: no compilation yet!

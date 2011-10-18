@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Sun Oct 16 20:45:16 2011 (+0200)
+;; Last-Updated: Tue Oct 18 17:01:05 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 1963
+;;     Update #: 1964
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -734,7 +734,10 @@ the should-be-forbidden C-z.")
 (defun desktop-in-use-p ()
   (and (file-exists-p the-desktop-file) (file-exists-p the-desktop-lock)))
 (defun autosave-desktop ()
-  (when (desktop-in-use-p) (desktop-save-in-desktop-dir)))
+  (when (desktop-in-use-p) (lambda ()   ; desktop-save-in-desktop-dir w/o alert
+                             (if desktop-dirname
+                                 (desktop-save desktop-dirname)
+                               (call-interactively 'desktop-save)))))
 (defadvice desktop-owner (after pry-from-cold-dead-hands activate)
   "Don't allow dead emacsen to own the desktop file."
   (when (not (emacs-process-p ad-return-value))

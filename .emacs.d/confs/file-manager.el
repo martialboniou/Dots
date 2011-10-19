@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou
 ;; Created: Sat Feb 19 11:17:32 2011 (+0100)
 ;; Version: 0.8.1
-;; Last-Updated: Mon Mar 14 18:11:12 2011 (+0100)
+;; Last-Updated: Wed Oct 19 22:25:07 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 65
+;;     Update #: 83
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -60,21 +60,45 @@
      (setq dired-listing-switches "-alh"
            auto-mode-alist (cons '("[^/]\\.dired$" . dired-virtual-mode)
                                  auto-mode-alist))
-     (require 'dired-details)
-     (dired-details-install)            ; show/hide (type ")" to show)
-     ;; (require 'dired-details+)       ; no need in this setting
-     (setq dired-details-hidden-string "")
-     (require 'dired+)                  ; colors + bonus
-     (require 'wdired)                  ; editable (type `r' to rename [default was `e'])
-     (require 'wdired-extension)        ; rect-mark + wdired-format-filename
-     (when (boundp 'viper-emacs-state-mode-list)
-       ;; the following line manages the viper/wdired clash
-       ;; (add-to-list 'viper-emacs-state-mode-list 'dired-mode)
-       ;; the following line forces the not-recommended vi nagivation over dired commands
-       (setq mars/dired-vi-purist-map (make-sparse-keymap))
-       (viper-modify-major-mode 'dired-mode 'emacs-state mars/dired-vi-purist-map)
-       (define-key mars/dired-vi-purist-map "k" 'viper-previous-line)
-       (define-key mars/dired-vi-purist-map "l" 'viper-forward-char))))
+     (defun dired-apply-function (function) ; mapped on '<C-d> d'
+       "Run FUNCTION on marked files."
+       (interactive "aApply on marked files: ")
+       (mapc function (dired-get-marked-files)))
+     (defun dired-do-command (command)  ; mapped on '<C-d> <C-d>'
+       "Run COMMAND on marked files. Any files not already open will be opened.
+After this command has been run, any buffers it's modified will remain
+open and unsaved. -- matt curtis (with enhancements by <hondana@gmx.com>")
+       (interactive "CRun on marked files M-x ")
+       (let ((keep (y-or-n-p "Keep files in unsaved buffers? ")))
+         (save-window-excursion
+           (mapc #'(lambda (filename)
+                     (find-file filename)
+                     (call-interactively command)
+                     (when save-and-quit
+                       (unless keep
+                         (save-buffer)
+                         (kill-buffer))))
+                 (dired-get-marked-files))))
+       (define-prefix-command 'dired-do-map)
+       (define-key dired-mode-map "\C-d" 'dired-do-map)
+       (define-key dired-do-map   "\C-d" 'dired-do-command)
+       (define-key dired-do-map   "d"    'dired-apply-function)
+       ;; (require 'dired-aux)               ; attributes and goodies (autoloaded)
+       (require 'dired-details)
+       (dired-details-install)            ; show/hide (type ")" to show)
+       ;; (require 'dired-details+)       ; no need in this setting
+       (setq dired-details-hidden-string "")
+       (require 'dired+)                  ; colors + bonus
+       (require 'wdired)                  ; editable (type `r' to rename [default was `e'])
+       (require 'wdired-extension)        ; rect-mark + wdired-format-filename
+       (when (boundp 'viper-emacs-state-mode-list)
+         ;; the following line manages the viper/wdired clash
+         ;; (add-to-list 'viper-emacs-state-mode-list 'dired-mode)
+         ;; the following line forces the not-recommended vi nagivation over dired commands
+         (setq mars/dired-vi-purist-map (make-sparse-keymap))
+         (viper-modify-major-mode 'dired-mode 'emacs-state mars/dired-vi-purist-map)
+         (define-key mars/dired-vi-purist-map "k" 'viper-previous-line)
+         (define-key mars/dired-vi-purist-map "l" 'viper-forward-char))))
 
 ;;; WDIRED
 (eval-after-load "wdired"

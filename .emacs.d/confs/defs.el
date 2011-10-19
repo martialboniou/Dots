@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Fri Oct 14 14:15:17 2011 (+0200)
+;; Last-Updated: Wed Oct 19 14:36:58 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 55
+;;     Update #: 57
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -446,12 +446,13 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
   (require 'server)
   (setq server-name name)
   (setq mk-server-socket-file (concat server-socket-dir "/" name))
-  (unless (file-exists-p mk-server-socket-file)
-    (server-start)
-    (add-hook 'kill-emacs-hook
-              (lambda ()
-                (when (file-exists-p mk-server-socket-file)
-                  (delete-file mk-server-socket-file))))))
+  (when (file-exists-p mk-server-socket-file)
+    (delete-file mk-server-socket-file)) ; TODO: check server is alive instead of crushing the previous one
+  (server-start)
+  (add-hook 'kill-emacs-hook
+            (lambda ()
+              (when (file-exists-p mk-server-socket-file)
+                (delete-file mk-server-socket-file)))))
 
 (defun add-hook-once (hook function &optional append local)
   "Same as `add-hook', but FUN is only run once.

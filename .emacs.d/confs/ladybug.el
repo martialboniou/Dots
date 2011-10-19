@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 26 00:15:15 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Apr 26 13:38:43 2011 (+0200)
+;; Last-Updated: Wed Oct 19 21:03:16 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 10
+;;     Update #: 14
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -151,6 +151,15 @@
 ;; (vimpulse-define-key 'my-anything-minibuffer-mode 'vi-state "gg" 'anything-beginning-of-buffer)
 ;; (vimpulse-define-key 'my-anything-minibuffer-mode 'vi-state "G" 'anything-end-of-buffer)
 ;; (vimpulse-define-key 'my-anything-minibuffer-mode 'vi-state "/" 'anything-isearch)
+
+;; (eval-after-load "highlight-parentheses"
+;;   '(progn
+;;      (when (assoc 'highlight-parentheses-mode minor-mode-alist)
+;;        (setcdr (assoc 'highlight-parentheses-mode minor-mode-alist) '(""))) ; IMPORTANT: don't display name in mode-line
+;;      (setq autopair-handle-action-fns
+;;            (list 'autopair-default-handle-action
+;;                  '(lambda (action pair pos-before)
+;;                     (hl-paren-color-update))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ladybug.el ends here

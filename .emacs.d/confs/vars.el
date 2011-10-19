@@ -187,6 +187,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
                ssl-program-arguments '("-p" service host)))
 (defvar w3m-program-name "w3m"
   "The current program name of ye goo' olde W3M.")
+(setq w3m-command w3m-program-name)     ; required by `anything-config'
 (defvar factorcode-source-rep "~/Dynamics/factor/src/factor"
   "The up-to-date factor source repository. The Emacs environment
 named FUEL must be found in the `misc/fuel' subdirectory.")

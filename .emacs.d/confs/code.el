@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Oct  3 14:50:21 2011 (+0200)
+;; Last-Updated: Wed Oct 19 20:44:22 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 338
+;;     Update #: 344
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -405,21 +405,15 @@ Move point to the beginning of the line, and run the normal hook
          (read-kbd-macro paredit-backward-delete-key) nil))
      (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
      ;; vimpulse case
-     ;; (when vimpulse-version
-     ;;   (require 'paredit-viper-compat)
-     ;;   (paredit-viper-compat))
-     ;; (define-key paredit-mode-map [?\)] 'paredit-close-parenthesis)
-     ;; (define-key paredit-mode-map [(meta ?\))]
-     ;;   'paredit-close-parenthesis-and-newline)
-     ))
-(defun test-four () ;;eval-after-load "highlight-parentheses"
-  '(progn
-     (when (assoc 'highlight-parentheses-mode minor-mode-alist)
-       (setcdr (assoc 'highlight-parentheses-mode minor-mode-alist) '(""))) ; IMPORTANT: don't display name in mode-line
-     (setq autopair-handle-action-fns
-           (list 'autopair-default-handle-action
-                 '(lambda (action pair pos-before)
-                    (hl-paren-color-update))))))
+     (eval-after-load "viper"
+       '(progn
+          (require 'paredit-viper-compat)
+          (paredit-viper-compat)
+          (define-key paredit-mode-map [?\)] 'paredit-close-parenthesis)
+          (define-key paredit-mode-map [(meta ?\))]
+            'paredit-close-parenthesis-and-newline)
+          (paredit-viper-add-local-keys 'insert-state
+                                        '(("\C-w" . paredit-backward-kill-word)))))))
 
 ;; ELDOC
 (mapc '(lambda (x)
@@ -545,7 +539,7 @@ Then save the file as \"my-file.dot\" and run
   (require 'wiki-wiki)                  ; for markup languages as mediawiki or markdown
   ;; (require 'church-inspired)            ; for lisp (including scheme)
   ;; (require 'marseille)                  ; for logic and expert programming (including prolog)
-  (require 'peyton-jones-family)        ; for ML family and lambdaassociates (better place than 'CHURCH-INSPIRED or 'MARSEILLE)
+  (require 'peyton-jones-family)        ; for ML family and shenlanguage.org (better place than 'CHURCH-INSPIRED or 'MARSEILLE)
   (require 'web-programming)            ; for web languages (nxhtml/espresso)
   ;; (require 'python-357)                 ; for python
 )

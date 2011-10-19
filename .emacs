@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Tue Oct 18 17:01:05 2011 (+0200)
+;; Last-Updated: Wed Oct 19 13:59:39 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 1964
+;;     Update #: 1979
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -49,9 +49,11 @@
 (defvar *i-am-an-emacsen-dev* t
   "If true, elisp helpers will be loaded.")
 (defvar *i-am-a-vim-user* t
-  "If true, Emacs will be Vimpyrized. (ViViVi, the beast)")
+  "If true, Emacs will be Vimpyrized. (ViViVi, the beast.)
+Set the boolean *vim-now* to shortcut this variable.")
 (defvar *i-am-a-dvorak-typist* t
-  "If true, additional Dvorak-friendly keybindings.")
+  "If true, additional Dvorak-friendly keybindings.
+Set the boolean *dvorak-now* to shortcut this variable.")
 (defvar *i-am-a-common-lisp-advocate* t
   "If true, require CL emacs extension (eg. EIEIO).")
 (defvar *i-can-do-yubitsume-now* t
@@ -300,7 +302,11 @@ ROOT                        => ROOT"
            (safe-autoloads-load mars/loaddefs)))
       mars/site-lisp-path)
 (setq renew-autoloads-at-startup nil)   ; reset to prevent slow reloading
-(add-hook 'kill-emacs-hook 'update-autoloads-in-package-area)
+(defun update-autoloads-on-kill ()
+ "Update autoloads on kill iff emacs boots correctly."
+ (when (boundp '*emacs/boot-without-error*)
+  (update-autoloads-in-package-area)))
+(add-hook 'kill-emacs-hook 'update-autoloads-on-kill)
 
 ;;; HANDMADE AUTOLOADS
 (mars/autoload '(("unbound"           describe-unbound-keys) ; display unbound keys ([F1-b] to display all bindings)
@@ -427,7 +433,6 @@ ROOT                        => ROOT"
    "C-x f"     ido-find-file ; may be called from `ido-switch-buffer' (doing C-x C-b C-f) [but use [(jxjf)] in `sticky-control']
    "C-h"       delete-backward-char ; C-w as 'DELETE-BACKWARD-WORD in Vi emu
    "C-x C-h"   help-command ; use F1 for contextual help / C-h and C-w are used as in ASCII
-   "C-\\"      esc-map      ; if ESC- is needed
    "C-="       shell-command
    "M-n"       new-frame                ; XXX check if no issue
    "M-<f2>"    apply-macro-to-region-lines ; use F3/F4 for kmacro start/end
@@ -454,6 +459,9 @@ ROOT                        => ROOT"
                                         ;            anything-browse-code map on [<f7><f7>] too
    "C-<f10>"   tmm-menubar              ; key-controlled menu (`<f10>' is default but awkward on OSX/Gnome) IMPORTANT: remember this for `no-window-system' session
 ))
+;; C-\ as <meta> everywhere (except anywhere `viper-mode' rewrites it)
+(fset 'new-meta-prefix (copy-keymap 'ESC-prefix))
+(bind-key "C-\\" 'new-meta-prefix)
 
 ;; C-w should be used for 'backward-word-delete so there should be
 ;; another way to do cut/copy/paste:
@@ -805,3 +813,6 @@ the should-be-forbidden C-z.")
                              (concat "Emacs loaded in "
                                      (number-to-string load-time) "s"))))
 (put 'narrow-to-region 'disabled nil)
+
+;; flag boot w/o error
+(defvar *emacs/boot-without-error*)

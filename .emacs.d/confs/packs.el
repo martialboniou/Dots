@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Tue Oct 18 16:41:17 2011 (+0200)
+;; Last-Updated: Wed Oct 19 18:02:18 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 310
+;;     Update #: 312
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -67,6 +67,9 @@
                                     (emms         . ((get . "git clone git://github.com/martialboniou/emms.git")
                                                      (install . "make; make emms-print-metadata")
                                                      (nosearch . ("bin" "doc" "src"))))
+                                    (anything-config . ((get . "git clone git://repo.or.cz/anything-config.git")
+                                                        (install . "make")
+                                                        (nosearch . ("developer-tools" "doc" "extensions"))))
                                     (undo-tree    . ((get . "git clone http://www.dr-qubit.org/git/undo-tree.git")
                                                      (install . "emacs-compile-directory") ; do it from emacs
                                                      ))
@@ -133,7 +136,8 @@
                                                            (nosearch . "tests")))
                                     (semi               . ((get . "git clone git://github.com/wanderlust/semi.git")
                                                            (install . "make LISPDIR=..")))
-                                    (wanderlust         . ((get . "git clone git://github.com/wanderlust/wanderlust.git")
+                                    (wanderlust         . ((get     . "cvs -d :pserver:anonymous@cvs.m17n.org:/cvs/root checkout wanderlust")
+;; (get . "git clone git://github.com/wanderlust/wanderlust.git") ; is out of sync and induces error on emacs 24
                                                            (install . "echo \"(setq load-path (append (list \\\"$PWD/../apel\\\" \\\"$PWD/../flim\\\" \\\"$PWD/../semi\\\") load-path))(setq wl-install-utils t)\" > WL-CFG;make") ; let wl, elmo & utils *uninstalled*
                                                            (nosearch . ("doc" "etc" "samples" "tests"))))
                                     (org-mode           . ((get . "git clone git://orgmode.org/org-mode.git")

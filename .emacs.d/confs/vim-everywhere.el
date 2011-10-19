@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.3.1
-;; Last-Updated: Sun Oct 16 16:55:48 2011 (+0200)
+;; Last-Updated: Wed Oct 19 21:47:28 2011 (+0200)
 ;;           By:
-;;     Update #: 238
+;;     Update #: 244
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -88,8 +88,17 @@
 (eval-after-load "viper"
   '(progn
      ;; 1- vimpulse
-     ;; (setq vimpulse-enhanced-paren-matching nil)
      (require 'vimpulse)
+     (eval-after-load "vimpulse"
+       '(progn
+          ;; add C-w outside vimpulse (eg. C-w C-w -> other-window)
+          (fset 'vimpulse-like-window-map (copy-keymap vimpulse-window-map))
+          (eval-after-load "dired"
+            '(progn
+               (define-key dired-mode-map "\C-w" 'vimpulse-like-window-map)))
+          (eval-after-load "ibuffer"
+            '(progn
+               (define-key ibuffer-mode-map "\C-w" 'vimpulse-like-window-map)))))
      ;; 2- parenface to add a default color to parentheses as Vim does
      (if (locate-library "hl-line+")
          (global-hl-line-mode)

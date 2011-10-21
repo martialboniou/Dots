@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
 ;; Version:
-;; Last-Updated: Sat Mar 26 17:31:51 2011 (+0100)
+;; Last-Updated: Fri Oct 21 14:03:46 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 105
+;;     Update #: 106
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -78,8 +78,9 @@
                                         ; on a full system (*= yasnippet
                                         ; and your personal expansions).
   '(progn
-     (when vimpulse-version
-       (defalias 'vimpulse-abbrev-expand-before 'hippie-expand)) ; in order to use C-p thru Vim emulation
+     (eval-after-load "vimpulse"
+       '(progn
+          (defalias 'vimpulse-abbrev-expand-before 'hippie-expand))) ; in order to use C-p thru Vim emulation
      (setq hippie-expand-try-functions-list
            '(try-expand-all-abbrevs
              try-expand-dabbrev

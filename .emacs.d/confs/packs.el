@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Wed Oct 19 18:02:18 2011 (+0200)
+;; Last-Updated: Thu Oct 20 20:50:17 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 312
+;;     Update #: 315
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -69,7 +69,7 @@
                                                      (nosearch . ("bin" "doc" "src"))))
                                     (anything-config . ((get . "git clone git://repo.or.cz/anything-config.git")
                                                         (install . "make")
-                                                        (nosearch . ("developer-tools" "doc" "extensions"))))
+                                                        (nosearch . ("developer-tools" "doc"))))
                                     (undo-tree    . ((get . "git clone http://www.dr-qubit.org/git/undo-tree.git")
                                                      (install . "emacs-compile-directory") ; do it from emacs
                                                      ))
@@ -155,6 +155,8 @@
                                     (auctex-11.86       . ((get . "curl -L http://ftp.gnu.org/gnu/auctex/auctex-11.86.tar.gz | tar zx")
                                                            ;; TODO: (install . "emacs -Q -eval \"\" ;./configure --with-lispdir=. --with-texmf-dir=/usr/local/texlive/texmf-local;make")
                                                            (nosearch . ("doc" "images" "preview" "style"))))
+                                    ;; (xwl-elisp          . ((get     . "git clone git://github.com/xwl/xwl-elisp.git")
+                                    ;;                        (install . "make byte-compile"))) ; TODO: http://xwl.appspot.com/ (william xu) / include smart-operator
                                     ))             ; TODO: verify sig on get ?
 (defun trim-string (string)
   "Remove white spaces in beginning and end of STRING. --xah"

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Oct 19 20:44:22 2011 (+0200)
+;; Last-Updated: Fri Oct 21 16:05:53 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 344
+;;     Update #: 389
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -17,7 +17,7 @@
 ;;
 ;;; Commentary: header2 + auto-insert (skeleton) / hideshow + hideshowvis /
 ;;              cedet & ecb-autoloads / paredit + highlight-parentheses /
-;;              eldoc / cheat / simple-call-tree / `lang'
+;;              eldoc / comint / cheat / simple-call-tree / `lang'
 ;;
 ;;
 ;;; Ideas: CEDET: https://github.com/alexott/emacs-configs/blob/master/rc/emacs-rc-cedet.el
@@ -152,6 +152,7 @@
                                 emacs-lisp-mode
                                 lisp-mode
                                 scheme-mode
+                                shen-mode
                                 qi-mode
                                 clojure-mode
                                 ruby-mode    ; rinari ?
@@ -380,40 +381,43 @@ Move point to the beginning of the line, and run the normal hook
       (ecb-activate))))
 
 ;; PAREDIT + HIGHLIGHT-PARENTHESES
-(mapc '(lambda (x)
-         (add-hook x
-                   (lambda ()
-                     (paredit-mode +1)
-                     (highlight-parentheses-mode t))))
+(mapc #'(lambda (x)
+          (add-hook x
+                    '(lambda ()
+                       (paredit-mode +1)
+                       (highlight-parentheses-mode t))))
       '(emacs-lisp-mode-hook lisp-mode-hook lisp-interaction-mode-hook
                              clojure-mode-hook scheme-mode-hook qi-mode-hook shen-mode-hook
                              slime-repl-mode-hook inferior-lisp-mode-hook inferior-qi-mode-hook))
 (eval-after-load "paredit"
   '(progn
-     (when (assoc 'paredit-mode minor-mode-alist)
-       (setcdr (assoc 'paredit-mode minor-mode-alist) '(" PE"))) ; `PE' in mode-line (short name for `Paredit')
+     ;; delete case
+     (define-key paredit-mode-map [(kp-delete)] 'paredit-forward-delete)
+     (define-key paredit-mode-map [(control kp-delete)] 'paredit-forward-kill-word)
+     (define-key paredit-mode-map [(control backspace)] 'paredit-backward-kill-word)
+     ;; slime case
+     (defun override-slime-repl-bindings-with-paredit ()
+       (define-key slime-repl-mode-map
+         (read-kbd-macro paredit-backward-delete-key) nil))
+     (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
+     ;; viper case
+     (eval-after-load "vimpulse"
+       '(progn
+          (paredit-viper-compat)         ; NOTE: use the version provided
+          (eval-after-load "paredit-viper-compat"
+            '(progn
+               (define-key paredit-mode-map [?\)] 'paredit-close-parenthesis)
+               (define-key paredit-mode-map [(meta ?\))]
+                 'paredit-close-parenthesis-and-newline)
+               (paredit-viper-add-local-keys 'insert-state
+                                             '(("\C-w" . paredit-backward-kill-word)))))))
      ;; IMPORTANT: free arrow bindings (`windmove' may use them)
      (define-key paredit-mode-map (kbd "C-<left>")    nil) ; use C-S-) instead
      (define-key paredit-mode-map (kbd "C-<right>")   nil)
      (define-key paredit-mode-map (kbd "M-<left>")    nil)
      (define-key paredit-mode-map (kbd "M-<right>")   nil)
      (define-key paredit-mode-map (kbd "C-M-<left>")  nil)
-     (define-key paredit-mode-map (kbd "C-M-<right>") nil)
-     ;; slime case
-     (defun override-slime-repl-bindings-with-paredit ()
-       (define-key slime-repl-mode-map
-         (read-kbd-macro paredit-backward-delete-key) nil))
-     (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
-     ;; vimpulse case
-     (eval-after-load "viper"
-       '(progn
-          (require 'paredit-viper-compat)
-          (paredit-viper-compat)
-          (define-key paredit-mode-map [?\)] 'paredit-close-parenthesis)
-          (define-key paredit-mode-map [(meta ?\))]
-            'paredit-close-parenthesis-and-newline)
-          (paredit-viper-add-local-keys 'insert-state
-                                        '(("\C-w" . paredit-backward-kill-word)))))))
+     (define-key paredit-mode-map (kbd "C-M-<right>") nil)))
 
 ;; ELDOC
 (mapc '(lambda (x)
@@ -421,6 +425,14 @@ Move point to the beginning of the line, and run the normal hook
       '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
 ;; (require 'c-eldoc)
 ;; (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
+
+;; COMINT
+(eval-after-load "comint"
+  '(progn
+     (define-key comint-mode-map (kbd "M-<up>") 'comint-next-input)
+     (define-key comint-mode-map (kbd "M-<down>") 'comint-previous-input)
+     (define-key comint-mode-map [down] 'comint-next-matching-input-from-input)
+     (define-key comint-mode-map [up] 'comint-previous-matching-input-from-input)))
 
 ;; CHEAT
 (eval-after-load "anything"
@@ -540,8 +552,8 @@ Then save the file as \"my-file.dot\" and run
   ;; (require 'church-inspired)            ; for lisp (including scheme)
   ;; (require 'marseille)                  ; for logic and expert programming (including prolog)
   (require 'peyton-jones-family)        ; for ML family and shenlanguage.org (better place than 'CHURCH-INSPIRED or 'MARSEILLE)
-  (require 'web-programming)            ; for web languages (nxhtml/espresso)
-  ;; (require 'python-357)                 ; for python
+  ;;(require 'web-programming)            ; for web languages (nxhtml/espresso)
+  (require 'python-357)                 ; for python
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

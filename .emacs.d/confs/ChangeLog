@@ -1,3 +1,7 @@
+2011-10-20  Martial Boniou  <Martial.Boniou@gmx.com>
+
+	* lang/python-357.el (python-mode-hook): add smart-operator from https://github.com/xwl/xwl-elisp
+
 2011-05-06  Martial Boniou  <Martial.Boniou@gmx.com>
 
 	* media.el (locate-library): introduce emms-stream-info processes fix

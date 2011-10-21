@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Oct 11 10:54:42 2011 (+0200)
+;; Last-Updated: Fri Oct 21 16:36:59 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 49
+;;     Update #: 82
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -17,7 +17,8 @@
 ;; 
 ;;; Commentary: Pretty (pp-c-l) + encodings switiching + format on save
 ;;              helpers + delete-trailing-whitespace + style + image
-;;              support (iimage) + flyspell
+;;              support (iimage) + flyspell + alias-minor-modes +
+;;              pretty-lambda
 ;; 
 ;; formats by Martial (2010-2011)
 ;;
@@ -205,6 +206,23 @@ Otherwise the update regexps won't match."
     (let ((lang (ring-ref lang-ring -1)))
       (ring-insert lang-ring lang)
       (ispell-change-dictionary lang))))
+
+;;; ALIAS-MINOR-MODES
+(alias-minor-modes
+ '(undo-tree UT
+   abbrev    Ab
+   paredit   PE))
+
+;;; PRETTY-LAMBDA
+;; replace lambda -> λ
+(add-hook 'python-mode-hook
+             '(lambda () (pretty-lambda-mode 1)))
+
+;; (mars/add-hook-from-list (python-mode-hook
+;;                           lisp-mode
+;;                           emacs-lisp-mode
+;;                           scheme-mode) (lambda nil (pretty-lambda-mode 1)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; formats.el ends here

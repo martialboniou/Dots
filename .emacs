@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Wed Oct 19 13:59:39 2011 (+0200)
+;; Last-Updated: Fri Oct 21 14:11:34 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 1979
+;;     Update #: 1993
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -309,27 +309,28 @@ ROOT                        => ROOT"
 (add-hook 'kill-emacs-hook 'update-autoloads-on-kill)
 
 ;;; HANDMADE AUTOLOADS
-(mars/autoload '(("unbound"           describe-unbound-keys) ; display unbound keys ([F1-b] to display all bindings)
-                 ("tiling"            tiling-cycle tiling-master) ; tiling window manager
-                 ("buffer-move"       buf-move-down buf-move-up buf-move-left buf-move-right) ; quick move for buffers
-                 ("iswitchb"          iswitchb-minibuffer-setup)
-                 ("sunrise-commander" sunrise sr-virtual-mode)
-                 ("anything"          anything anything-config)
-                 ("header2"           auto-make-header auto-update-file-header)
-                 ("psvn"              psvn)
-                 ("hippie-exp"        hippie-expand he-init-string he-substitute-string)
-                 ("calc-ext"          calc-do-calc-eval)
-                 ("hexview-mode"      hexview-find-file)
-                 ("simple-call-tree"  simple-call-tree-analyze simple-call-tree-alist)
-                 ("inf-shen"          shen-mode) ; loading shen-mode too
-                 ("pymacs"            pymacs-apply pymacs-call pymacs-eval pymacs-exec pymacs-load)
-                 ("markdown-mode"     markdown-mode)
-                 ("yaml-mode"         yaml-mode)
-                 ("newsticker"        newsticker-start newsticker-show-news)
-                 ("wl-mailto"         wl-mailto-compose-message-from-mailto-url)
-                 ("emms-source-file"  emms-dired emms-add-directory-tree emms-add-directory emms-add-file)
-                 ("emms"              emms-playlist-buffer-list emms)
-                 ("emms-streams"      emms-streams emms-stream-init)))
+(mars/autoload '(("unbound"                   describe-unbound-keys) ; display unbound keys ([F1-b] to display all bindings)
+                 ("tiling"                    tiling-cycle tiling-master) ; tiling window manager
+                 ("buffer-move"               buf-move-down buf-move-up buf-move-left buf-move-right) ; quick move for buffers
+                 ("iswitchb"                  iswitchb-minibuffer-setup)
+                 ("sunrise-commander"         sunrise sr-virtual-mode)
+                 ("anything"                  anything anything-config)
+                 ("anything-show-completion"  use-anything-show-completion)
+                 ("header2"                   auto-make-header auto-update-file-header)
+                 ("psvn"                      psvn)
+                 ("hippie-exp"                hippie-expand he-init-string he-substitute-string)
+                 ("calc-ext"                  calc-do-calc-eval)
+                 ("hexview-mode"              hexview-find-file)
+                 ("simple-call-tree"          simple-call-tree-analyze simple-call-tree-alist)
+                 ("inf-shen"                  shen-mode) ; loading shen-mode too
+                 ("pymacs"                    pymacs-apply pymacs-call pymacs-eval pymacs-exec pymacs-load)
+                 ("markdown-mode"             markdown-mode)
+                 ("yaml-mode"                 yaml-mode)
+                 ("newsticker"                newsticker-start newsticker-show-news)
+                 ("wl-mailto"                 wl-mailto-compose-message-from-mailto-url)
+                 ("emms-source-file"          emms-dired emms-add-directory-tree emms-add-directory emms-add-file)
+                 ("emms"                      emms-playlist-buffer-list emms)
+                 ("emms-streams"              emms-streams emms-stream-init)))
 (when window-system
   (mars/autoload
    '(("hideshowvis"     hideshowvis-enable hideshowvis-minor-mode))))
@@ -340,11 +341,10 @@ ROOT                        => ROOT"
 ;; - defs = functions/macros to start with
 (conf-load "defs")
 ;; - delete keys' behavior
-(bind-keys
- '("<kp-delete>" delete-char))
+(bind-key "<kp-delete>" 'delete-char)
 ;; - undo-tree | redo+ (both `vimpulse' compatible)
 (if (locate-library "undo-tree")
-    (require 'undo-tree)                ; display tree by using C-x u
+    (require 'undo-tree)              ; display tree by using C-x u
   (progn
     (require 'redo+)
     (eval-after-load "redo"

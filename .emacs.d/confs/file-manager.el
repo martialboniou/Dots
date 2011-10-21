@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou
 ;; Created: Sat Feb 19 11:17:32 2011 (+0100)
 ;; Version: 0.8.1
-;; Last-Updated: Wed Oct 19 22:25:07 2011 (+0200)
+;; Last-Updated: Thu Oct 20 10:56:07 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 83
+;;     Update #: 84
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -67,18 +67,17 @@
      (defun dired-do-command (command)  ; mapped on '<C-d> <C-d>'
        "Run COMMAND on marked files. Any files not already open will be opened.
 After this command has been run, any buffers it's modified will remain
-open and unsaved. -- matt curtis (with enhancements by <hondana@gmx.com>")
+open and unsaved. -- matt curtis (with enhancements by <hondana@gmx.com>"
        (interactive "CRun on marked files M-x ")
        (let ((keep (y-or-n-p "Keep files in unsaved buffers? ")))
          (save-window-excursion
            (mapc #'(lambda (filename)
                      (find-file filename)
                      (call-interactively command)
-                     (when save-and-quit
-                       (unless keep
-                         (save-buffer)
-                         (kill-buffer))))
-                 (dired-get-marked-files))))
+                     (unless keep
+                       (save-buffer)
+                       (kill-buffer)))
+                 (dired-get-marked-files)))))
        (define-prefix-command 'dired-do-map)
        (define-key dired-mode-map "\C-d" 'dired-do-map)
        (define-key dired-do-map   "\C-d" 'dired-do-command)

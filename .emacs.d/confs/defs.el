@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Wed Oct 19 14:36:58 2011 (+0200)
+;; Last-Updated: Fri Oct 21 16:23:09 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 57
+;;     Update #: 62
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -85,12 +85,12 @@
                  `(add-hook (quote ,hk) (function ,arg)))
                funs)))
 
-(defmacro mars/add-hook-from-list (hk fun) ;; FIXME: should a add-hook too
+(defmacro mars/add-hook-from-list (hk fun)
   "Create hooker (mars/add-hook-to-list '(hk1 hk2 hk3) fun)"
   `(progn
      ,@(mapcar (lambda (arg)
-                 `(add-hook (quote ,arg) (function ,fun)))
-               (eval hk))))
+                 `(add-hook (quote ,arg) #',fun))
+               hk)))
 
 (defun mars/generate-mode-hook-list (list)
   "Create a quoted list of hooks"

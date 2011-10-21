@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Fri Oct 21 14:11:34 2011 (+0200)
+;; Last-Updated: Fri Oct 21 23:12:28 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 1993
+;;     Update #: 2007
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -43,8 +43,8 @@
 
 ;;; *MOOD*
 ;;
-;; create *vim-now*/*dvorak-now* to force new vim/dvorak options
-;; remove .emacs.d/data/.launched to reset vim/dvorak options at startup
+;; create *vim-now*/*dvorak-now*/*term-now* to force new vim/dvorak/term options
+;; remove .emacs.d/data/.launched to reset vim/dvorak/term options at startup
 ;;
 (defvar *i-am-an-emacsen-dev* t
   "If true, elisp helpers will be loaded.")
@@ -54,6 +54,11 @@ Set the boolean *vim-now* to shortcut this variable.")
 (defvar *i-am-a-dvorak-typist* t
   "If true, additional Dvorak-friendly keybindings.
 Set the boolean *dvorak-now* to shortcut this variable.")
+(defvar *i-am-a-terminator* t
+  "If true, C-h and C-w will be used as in Un*x terminal.
+Unless `*i-am-a-dvorak-typist*', `CUA' is activated in this
+case to support additional cut-paste strategy (ie to replace
+C-w. Set the boolean *term-now* to shortcut this variable.")
 (defvar *i-am-a-common-lisp-advocate* t
   "If true, require CL emacs extension (eg. EIEIO).")
 (defvar *i-can-do-yubitsume-now* t
@@ -431,9 +436,8 @@ ROOT                        => ROOT"
  '("C-x C-f"   ido-recentf-file-name-history          ; IMPORTANT: C-x C-f is not `find-file' anymore (C-f to switch to `ido-find-file' only works from `ido-buffer-internal' and `ido-file-internal' derivatives.) [but use [(jxf)] in `sticky-control'] 
    "C-x F"     ido-recentf
    "C-x f"     ido-find-file ; may be called from `ido-switch-buffer' (doing C-x C-b C-f) [but use [(jxjf)] in `sticky-control']
-   "C-h"       delete-backward-char ; C-w as 'DELETE-BACKWARD-WORD in Vi emu
-   "C-x C-h"   help-command ; use F1 for contextual help / C-h and C-w are used as in ASCII
    "C-="       shell-command
+   
    "M-n"       new-frame                ; XXX check if no issue
    "M-<f2>"    apply-macro-to-region-lines ; use F3/F4 for kmacro start/end
    "C-c o"     anything-occur              ; or simply occur ?
@@ -462,25 +466,30 @@ ROOT                        => ROOT"
 ;; C-\ as <meta> everywhere (except anywhere `viper-mode' rewrites it)
 (fset 'new-meta-prefix (copy-keymap 'ESC-prefix))
 (bind-key "C-\\" 'new-meta-prefix)
+(when *i-am-a-terminator*
+  (bind-keys
+   '("C-x C-h"   help-command ; use F1 for contextual help / C-h being rebind
+     "C-h"       delete-backward-char
+     "C-w"       backward-kill-word)))    ; C-w as 'DELETE-BACKWARD-WORD in Vi emu
 
-;; C-w should be used for 'backward-word-delete so there should be
+;; C-w may be used for 'backward-word-delete so there should be
 ;; another way to do cut/copy/paste:
 ;; 1) Vi commands (d/y/p) for Vim user
 ;; 2) special C-; (;/'/a) for Dvorak typist (including Vim user)
-;; 3) standard commands (x/v/c) for Qwerty typist (including Vim user)
+;; 3) standard commands (x/v/c) for Qwerty typist & "terminator" (including Vim user)
 (if *i-am-a-dvorak-typist*
     (bind-keys                          ; Sun help keys' order
      '("C-; C-'" copy-region-as-kill
        "C-; C-a" yank
        "C-; C-;" kill-region))
-  (progn
-    (cua-mode t)                    ; C-c/C-x got timeout in order
-                                    ; to make combinations to work
-    (eval-after-load "cua-mode"
-      '(progn
-         (setq cua-auto-tabify-rectangles nil)
-         (transient-mark-mode 1)
-         (setq cua-keep-region-after-copy t))))) ; MS Windows behavior
+  (when *i-am-a-terminator*
+    (cua-mode t)))                      ; C-c/C-x got timeout in order
+                                        ; to make combinations to work
+(eval-after-load "cua-mode"
+  '(progn
+     (setq cua-auto-tabify-rectangles nil)
+     (transient-mark-mode 1)
+     (setq cua-keep-region-after-copy t))) ; MS Windows behavior
 (global-unset-key (kbd "C-z"))      ; ELSCREEN or other packages may use it
 (global-unset-key (kbd "C-x C-z"))  ; reserved for viper-mode
 ;; sticky-control when required

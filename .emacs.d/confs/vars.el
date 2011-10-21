@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Mon Oct 17 14:47:48 2011 (+0200)
+;; Last-Updated: Fri Oct 21 20:14:41 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 96
+;;     Update #: 100
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -102,6 +102,8 @@
   (defvar *i-am-a-vim-user* t))
 (unless (boundp '*i-am-a-dvorak-typist*)
   (defvar *i-am-a-dvorak-typist* t))    ; used iff loaded in <confs> context
+(unless (boundp '*i-am-a-terminator*)
+  (defvar *i-am-a-terminator* t))
 (let ((first-file (expand-file-name
                    (concat (file-name-as-directory mars/local-root-dir)
                            (file-name-as-directory mars/personal-data)
@@ -114,18 +116,23 @@
         (setq *i-am-a-vim-user* nil))
       (unless (y-or-n-p "Do you type with a Dvorak keyboard? ")
         (setq *i-am-a-dvorak-typist* nil))
+      (unless (y-or-n-p "C-h & C-w for deletion [new cut-paste]? ")
+        (setq *i-am-a-terminator* nil))
       (with-temp-file
           first-file
         (progn
           (insert (concat
                    ";; launched\n"
                    (unless *i-am-a-vim-user*
-                       "(if (eq *i-am-a-vim-user* t) (setq *i-am-a-vim-user* nil))\n")
+                       "(when (eq *i-am-a-vim-user* t) (setq *i-am-a-vim-user* nil))\n")
                    (unless *i-am-a-dvorak-typist*
-                       "(if (eq *i-am-a-dvorak-typist* t) (setq *i-am-a-dvorak-typist* nil))\n"))))))))
-;; force vim/dvorak options via special vars
-(mars/force-options (*vim-now* . *i-am-a-vim-user*)
-                    (*dvorak-now* . *i-am-a-dvorak-typist*))
+                     "(when (eq *i-am-a-dvorak-typist* t) (setq *i-am-a-dvorak-typist* nil))\n")
+                   (unless *i-am-a-terminator*
+                     "(when (eq *i-am-a-terminator* t) (setq *i-am-a-terminator* nil))\n"))))))))
+;; force vim/dvorak/term options via special vars
+(mars/force-options (*vim-now*    . *i-am-a-vim-user*)
+                    (*dvorak-now* . *i-am-a-dvorak-typist*)
+                    (*term-now*   . *i-am-a-terminator*))
 
 ;;; GLOBAL SYSTEM CUSTOMIZATION
 ;; general behavior/convention (`custom-file' being specific to a system)

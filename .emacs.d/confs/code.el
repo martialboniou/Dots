@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri Oct 21 16:05:53 2011 (+0200)
+;; Last-Updated: Fri Oct 21 23:53:24 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 389
+;;     Update #: 398
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -392,6 +392,9 @@ Move point to the beginning of the line, and run the normal hook
 (eval-after-load "paredit"
   '(progn
      ;; delete case
+     (when *i-am-a-terminator*
+       (define-key paredit-mode-map (kbd "C-h") 'paredit-backward-delete)
+       (define-key paredit-mode-map (kbd "C-w") 'paredit-backward-kill-word))
      (define-key paredit-mode-map [(kp-delete)] 'paredit-forward-delete)
      (define-key paredit-mode-map [(control kp-delete)] 'paredit-forward-kill-word)
      (define-key paredit-mode-map [(control backspace)] 'paredit-backward-kill-word)
@@ -409,8 +412,10 @@ Move point to the beginning of the line, and run the normal hook
                (define-key paredit-mode-map [?\)] 'paredit-close-parenthesis)
                (define-key paredit-mode-map [(meta ?\))]
                  'paredit-close-parenthesis-and-newline)
-               (paredit-viper-add-local-keys 'insert-state
-                                             '(("\C-w" . paredit-backward-kill-word)))))))
+               (when *i-am-a-terminator*
+                (paredit-viper-add-local-keys 'insert-state
+                                              '(("\C-h" . paredit-backward-delete)
+                                                ("\C-w" . paredit-backward-kill-word))))))))
      ;; IMPORTANT: free arrow bindings (`windmove' may use them)
      (define-key paredit-mode-map (kbd "C-<left>")    nil) ; use C-S-) instead
      (define-key paredit-mode-map (kbd "C-<right>")   nil)

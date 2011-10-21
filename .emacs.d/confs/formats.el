@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri Oct 21 16:36:59 2011 (+0200)
+;; Last-Updated: Sat Oct 22 00:00:17 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 82
+;;     Update #: 86
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -215,14 +215,8 @@ Otherwise the update regexps won't match."
 
 ;;; PRETTY-LAMBDA
 ;; replace lambda -> λ
-(add-hook 'python-mode-hook
-             '(lambda () (pretty-lambda-mode 1)))
-
-;; (mars/add-hook-from-list (python-mode-hook
-;;                           lisp-mode
-;;                           emacs-lisp-mode
-;;                           scheme-mode) (lambda nil (pretty-lambda-mode 1)))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; formats.el ends here
+(setq pretty-lambda-auto-modes '(lisp-mode
+                                 scheme-mode
+                                 emacs-lisp-mode
+                                 python-mode))
+(pretty-lambda-for-modes)

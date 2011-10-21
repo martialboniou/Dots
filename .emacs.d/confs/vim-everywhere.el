@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.3.1
-;; Last-Updated: Wed Oct 19 21:47:28 2011 (+0200)
+;; Last-Updated: Fri Oct 21 23:43:58 2011 (+0200)
 ;;           By:
-;;     Update #: 244
+;;     Update #: 260
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -185,8 +185,12 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
                                  '(("\\(ERROR:\\|XXX\\|OBSOLETE\\)"
                                     1 font-lock-warning-face prepend)))))
 
-     ;; 6- additional keyboard bindings (some from http://stackoverflow.com/users/2797/sebastien-roccaserra)
-     (define-key viper-vi-global-user-map [(delete)] 'delete-char)
+     ;; 6- additional keyboard bindings
+     (define-key viper-vi-global-user-map [(kp-delete)] 'viper-forward-char)
+     (define-key viper-insert-basic-map [(kp-delete)] 'viper-delete-char)
+     (define-key viper-vi-global-user-map [(control backspace)] 'viper-backward-word)
+     (define-key viper-insert-basic-map [(control backspace)] 'viper-delete-backward-word)
+     ;; idea: http://stackoverflow.com/users/2797/sebastien-roccaserra
      (define-key viper-vi-global-user-map "/"        'isearch-forward-regexp)
      (define-key viper-vi-global-user-map "?"        'isearch-backward-regexp)
      (define-key viper-vi-global-user-map "\C-wh"    'windmove-left)
@@ -210,6 +214,10 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
      (push '("only"  (delete-other-windows)) ex-token-alist)
      (push '("close" (delete-window))        ex-token-alist)
      (define-key viper-vi-global-user-map " d" 'viper-kill-buffer)
+     (when *i-am-a-terminator*
+       ;; (global-unset-key "\C-h")
+       (define-key viper-vi-global-user-map "\C-h" 'viper-backward-char)
+       (define-key viper-insert-global-user-map "\C-h" 'viper-delete-backward-char))
 
      ;; 7- colorize <> modes
      (setq viper-vi-state-id

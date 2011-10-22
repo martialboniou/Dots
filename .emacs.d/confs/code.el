@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri Oct 21 23:53:24 2011 (+0200)
+;; Last-Updated: Sat Oct 22 16:39:26 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 398
+;;     Update #: 435
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -392,37 +392,48 @@ Move point to the beginning of the line, and run the normal hook
 (eval-after-load "paredit"
   '(progn
      ;; delete case
-     (when *i-am-a-terminator*
-       (define-key paredit-mode-map (kbd "C-h") 'paredit-backward-delete)
-       (define-key paredit-mode-map (kbd "C-w") 'paredit-backward-kill-word))
      (define-key paredit-mode-map [(kp-delete)] 'paredit-forward-delete)
      (define-key paredit-mode-map [(control kp-delete)] 'paredit-forward-kill-word)
      (define-key paredit-mode-map [(control backspace)] 'paredit-backward-kill-word)
-     ;; slime case
-     (defun override-slime-repl-bindings-with-paredit ()
-       (define-key slime-repl-mode-map
-         (read-kbd-macro paredit-backward-delete-key) nil))
-     (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
+     ;; term case
+     (when *i-am-a-terminator*
+       (define-key paredit-mode-map (kbd "C-h") 'paredit-backward-delete)
+       (define-key paredit-mode-map (kbd "C-w") 'paredit-backward-kill-word))
+     ;; close parenthesis case
+     (define-key paredit-mode-map [?\)] 'paredit-close-parenthesis)
+     (define-key paredit-mode-map [(meta ?\))]
+       'paredit-close-parenthesis-and-newline)
      ;; viper case
      (eval-after-load "vimpulse"
        '(progn
-          (paredit-viper-compat)         ; NOTE: use the version provided
-          (eval-after-load "paredit-viper-compat"
-            '(progn
-               (define-key paredit-mode-map [?\)] 'paredit-close-parenthesis)
-               (define-key paredit-mode-map [(meta ?\))]
-                 'paredit-close-parenthesis-and-newline)
-               (when *i-am-a-terminator*
-                (paredit-viper-add-local-keys 'insert-state
-                                              '(("\C-h" . paredit-backward-delete)
-                                                ("\C-w" . paredit-backward-kill-word))))))))
-     ;; IMPORTANT: free arrow bindings (`windmove' may use them)
+          ;; NOTE: working `PAREDIT-VIPER-COMPAT' provided
+          (add-hook 'paredit-mode-hook
+                    '(lambda ()
+                       (progn
+                         (paredit-viper-compat)
+                         ;; TODO: create macro to build term & close parens' cases
+                         ;; keys for normal and viper cases
+                         (when *i-am-a-terminator*
+                           (paredit-viper-add-local-keys
+                            'insert-state
+                            '(("\C-h" . paredit-backward-delete)
+                              ("\C-w" . paredit-backward-kill-word))))
+                         (paredit-viper-add-local-keys
+                          'insert-state
+                          '(([?\)] . paredit-close-parenthesis)
+                            ([(meta ?\))] . paredit-close-parenthesis-and-newline))))))))
+     ;; windmove case
      (define-key paredit-mode-map (kbd "C-<left>")    nil) ; use C-S-) instead
      (define-key paredit-mode-map (kbd "C-<right>")   nil)
      (define-key paredit-mode-map (kbd "M-<left>")    nil)
      (define-key paredit-mode-map (kbd "M-<right>")   nil)
      (define-key paredit-mode-map (kbd "C-M-<left>")  nil)
-     (define-key paredit-mode-map (kbd "C-M-<right>") nil)))
+     (define-key paredit-mode-map (kbd "C-M-<right>") nil)
+     ;; slime case
+     (defun override-slime-repl-bindings-with-paredit ()
+       (define-key slime-repl-mode-map
+         (read-kbd-macro paredit-backward-delete-key) nil))
+     (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)))
 
 ;; ELDOC
 (mapc '(lambda (x)

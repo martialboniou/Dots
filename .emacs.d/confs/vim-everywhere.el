@@ -5,10 +5,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
-;; Version: 0.3.1
-;; Last-Updated: Fri Oct 21 23:43:58 2011 (+0200)
+;; Version: 0.4
+;; Last-Updated: Sat Oct 22 14:21:56 2011 (+0200)
 ;;           By:
-;;     Update #: 260
+;;     Update #: 262
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -91,6 +91,7 @@
      (require 'vimpulse)
      (eval-after-load "vimpulse"
        '(progn
+          (define-key viper-vi-global-user-map [(control kp-delete)] nil)
           ;; add C-w outside vimpulse (eg. C-w C-w -> other-window)
           (fset 'vimpulse-like-window-map (copy-keymap vimpulse-window-map))
           (eval-after-load "dired"

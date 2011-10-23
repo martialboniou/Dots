@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Thu Oct 20 20:50:17 2011 (+0200)
+;; Last-Updated: Sun Oct 23 14:56:21 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 315
+;;     Update #: 317
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -82,6 +82,10 @@
                                                      (nosearch . ("doc" "en" "ext" "ja" "sample"))))
                                     (haskellmode-emacs . ((get . "darcs get http://code.haskell.org/haskellmode-emacs")
                                                           (install . "make"))) ; TODO: compile
+                                    (git-emacs     . ((get . "git clone git://github.com/tsgates/git-emacs.git")
+                                                      (install . "make")
+                                                      (nosearch . "docs")
+                                                      (noauto . ".")))
                                     (magit         . ((get . "git clone git://github.com/philjackson/magit.git")
                                                       (install . "./configure; make")))
                                     (markdown-mode . ((get . "git clone git://jblevins.org/git/markdown-mode.git")

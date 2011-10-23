@@ -6,16 +6,16 @@
 ;; Maintainer: 
 ;; Created: Sat Mar 12 21:26:30 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sat Mar 12 22:15:01 2011 (+0100)
+;; Last-Updated: Sun Oct 23 15:13:52 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 2
+;;     Update #: 9
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: 
+;;; Commentary: git-emacs / magit (unused)
 ;; 
 ;; 
 ;; 
@@ -45,9 +45,16 @@
 ;; 
 ;;; Code:
 
-
-
-
+(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
+
+;;; GIT-EMACS
+(add-to-list 'load-path "/Users/mars/.emacs.d/lisp/git-emacs")
+(load-library "git-emacs-autoloads")
+
+;;; MAGIT
+;; BEWARE: *impossible* to manage huge projects
+;; `MAGIT' is installed but unused if you need it, run
+;; interactively (magit-status) to autoload the whole bundle
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; version.el ends here

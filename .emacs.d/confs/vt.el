@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 13:14:51 2011 (+0100)
 ;; Version:
-;; Last-Updated: Sat Mar 12 18:59:01 2011 (+0100)
+;; Last-Updated: Sun Oct 23 17:31:54 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 12
+;;     Update #: 14
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -81,14 +81,9 @@
                  ))
        (add-to-list 'term-bind-key-alist bind))))
 ;; (setq system-uses-terminfo nil) ; if problem with $TERM
-(global-set-key (kbd "C-c t")
-                '(lambda ()
-                   (interactive)
-                   (term shell-file-name)))
 
 ;;; SH FILES
 (add-to-list 'auto-mode-alist '("\\.[zk]sh$" . sh-mode))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; vt.el ends here

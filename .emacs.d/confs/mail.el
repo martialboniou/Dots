@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Oct 17 14:49:20 2011 (+0200)
+;; Last-Updated: Sun Oct 23 17:28:51 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 77
+;;     Update #: 78
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -339,6 +339,11 @@
   (wl-draft (list (cons 'To "")))
   (run-hooks 'wl-mail-setup-hook)
   (mail-position-on-field "To"))
+
+(defun mars/wl ()
+  "Open Wanderlust in another frame."
+  (interactive)
+  (wl-other-frame))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; mail.el ends here

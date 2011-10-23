@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Fri Oct 21 16:23:09 2011 (+0200)
+;; Last-Updated: Sun Oct 23 17:26:56 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 62
+;;     Update #: 64
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -825,12 +825,17 @@ which is not affected by suffix optional argument."
                      root
                      post))
 
-;; eshell
+;; terms
 (defun eshell/clear ()
-  "clear the eshell buffer."
+  "Clear the eshell buffer."
   (interactive)
   (let ((inhibit-read-only t))
     (erase-buffer)))
+
+(defun default-term ()
+  "Launch the default shell in a *terminal* buffer."
+  (interactive)
+  (term shell-file-name))
 
 ;; lennart-borgman libraries' loaders
 (defun nxhtml-loader ()

@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Fri Oct 14 13:52:11 2011 (+0200)
+;; Last-Updated: Sun Oct 23 17:31:38 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 95
+;;     Update #: 101
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -127,7 +127,7 @@
   ("window-manager" . mars/toggle-single-window)
   ("media"          . (mars/safe-emms-start-stop mars/emms-any-streams))
   ("gtd"            . (make-remember-frame mars/today-calendar mars/unscheduled-tasks))
-  ("mail"           . mars/draft-email)
+  ("mail"           . (mars/draft-email mars/wl))
   ("crypto"         . mars/hexedit))
 (defun-dummy nil undo-kill-buffer ibuffer cycle-buffer cycle-buffer-backward cycle-ispell-languages)
 
@@ -201,6 +201,11 @@
 (bind-keys
  '("C-c C-r" make-remember-frame
    "C-c r"   make-remember-frame))
+;; Utils
+
+(bind-keys
+ '("C-c t" default-terminal
+   "C-c w" mars/wl))                    ; 'WL-OTHER-FRAME but ensure the `confs/mail' load
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; shortcuts.el ends here

@@ -28,6 +28,7 @@ Ensure you installed the following packages via `homebrew`/`macports` on OS X or
 * `gnutls-cli`
 
 On most systems, you should have:
+
 * `sed`
 * `awk`
 * `make`
@@ -46,11 +47,15 @@ To install `haskell`, I don't recommend you to install the `ghc` package and try
 Now you can install:
 
 * *Bazaar* installer via `python` manager:
+    
     $ easy_install bzr
+
 * `darcs` distributed RCS via `cabal`, the `haskell` package manager:
-    $ cabal update
-    $ cabal install darcs
+
+    $ cabal update; cabal install darcs
+
 * OPTIONAL: `chit`, as small reference card to keep an eye on your favorite cheatsheets, via `rubygem`:
+
     $ gem install chit
 
 ### Mac OS X tip
@@ -69,8 +74,10 @@ You will need *MSYS* and/or *MinGW* and the following program:
 
 * install [mingw-get-inst](http://sourceforge.net/projects/mingw/files/Automated%20MinGW%20Installer/mingw-get-inst/). By default, the installer provides you with `bash`, `gcc`, `sed`, `awk` and a lot of UN*X tools like `tar`:
 * open a *MinGW Shell* terminal and type:
+
     $ mingw-get update
     $ mingw-get install msys-system-builder msys-unzip msys-cvs msys-gmp msys-wget msys-openssl
+
 * OPTIONAL: you may install `msys-man`, `msys-flex`, `msys-patch` too;
 * ensure `bash` is available in *Command Prompt* (*ie* `cmd.exe`);
 * install [ruby](http://rubyforge.org/projects/rubyinstaller/) (`rvm` doesn't seem to work on Windows even if you got `bash` installed);
@@ -91,7 +98,7 @@ To install `python`, this is the recommended way:
 You can now install `bzr` via `easy_install`:
     $ easy_install bzr
 
-After the `haskell` installation, you should get the `cabal` package manager. You should use it to build the patch-based RCS named `darcs`. You may follow the `darcs` wiki way <http://wiki.darcs.net/BuildingUnderWindows>, by  installing  [OpenSSL (32-bit)](http://www.slproweb.com/products/Win32OpenSSL.html) (not the *Light* version), executing on the *MinGW Shell* command line:
+After the `haskell` installation, you should get the `cabal` package manager. You should use it to build the patch-based RCS named `darcs`. You may follow the `darcs` wiki's instructions  <http://wiki.darcs.net/BuildingUnderWindows>, by  installing  [OpenSSL (32-bit)](http://www.slproweb.com/products/Win32OpenSSL.html) (not the *Light* version), executing on the *MinGW Shell* command line:
     $ cd /c/OpenSSL-Win32/lib/MinGW
     $ cp libeay32.a libcrypto.a
     $ cp ssleay32.a libssl.a

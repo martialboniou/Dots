@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 23 15:15:40 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: Fri Oct 14 14:29:25 2011 (+0200)
+;; Last-Updated: Sat Oct 22 21:05:19 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 91
+;;     Update #: 92
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -78,7 +78,7 @@
         kiwon/last-window-configuration-file (cachize "last-window-configuration")
         desktop-dir data-cache
         desktop-base-file-name "desktop"
-        desktop-base-lock-name (concat "." desktop-base-file-name ".lock")
+        desktop-base-lock-name (concat (if (memq system-type '(ms-dos windows-nt cygwin)) "_" ".") desktop-base-file-name ".lock") ; TODO: add a fun in defs named `prefix-hidden-file'
         ido-save-directory-list-file (cachize "ido-last")
         recentf-save-file (cachize "recentf")
         anything-c-adaptive-history-file (cachize "anything-c-adaptive-history")

@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Sat Oct 22 23:25:05 2011 (+0200)
+;; Last-Updated: Sun Oct 23 17:42:38 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 2036
+;;     Update #: 2038
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -295,22 +295,22 @@ ROOT                        => ROOT"
 ;;; GENERATE AUTOLOADS (fetch your 'SITE-LISP 's LOADDEFS or create it)
 ;; FIXME: work for one site-lisp dir for instance!!
 (mapc #'(lambda (x)
-         (let ((mars/loaddefs
-                (concat
-                 (file-name-as-directory mars/local-root-dir)
-                 (file-name-as-directory x) "loaddefs.el")))
-           (unless (and (file-exists-p mars/loaddefs)
-                        (not renew-autoloads-at-startup)) ; force to renew in some case even if `loaddefs' exists
-             (load "update-auto-loads")
-             (update-autoloads-in-package-area)) ; adds 'update-auto-loads autoloads in loaddefs too
+          (let ((mars/loaddefs
+                 (concat
+                  (file-name-as-directory mars/local-root-dir)
+                  (file-name-as-directory x) "loaddefs.el")))
+            (unless (and (file-exists-p mars/loaddefs)
+                         (not renew-autoloads-at-startup)) ; force to renew in some case even if `loaddefs' exists
+              (load "update-auto-loads")
+              (update-autoloads-in-package-area)) ; adds 'update-auto-loads autoloads in loaddefs too
                                         ; updates CEDET autoloads for CEDET directories
-           (safe-autoloads-load mars/loaddefs)))
+            (safe-autoloads-load mars/loaddefs)))
       mars/site-lisp-path)
 (setq renew-autoloads-at-startup nil)   ; reset to prevent slow reloading
 (defun update-autoloads-on-kill ()
- "Update autoloads on kill iff emacs boots correctly."
- (when (boundp '*emacs/boot-without-error*)
-  (update-autoloads-in-package-area)))
+  "Update autoloads on kill iff emacs boots correctly."
+  (when (boundp '*emacs/boot-without-error*)
+    (update-autoloads-in-package-area)))
 (add-hook 'kill-emacs-hook 'update-autoloads-on-kill)
 
 ;;; HANDMADE AUTOLOADS
@@ -388,7 +388,7 @@ ROOT                        => ROOT"
           'kiwon/save-window-configuration)
 (add-hook 'desktop-after-read-hook
           'kiwon/restore-window-configuration)  ; save/restore the last window
-                                                ; configuration with `DESKTOP'
+                                        ; configuration with `DESKTOP'
 ;; desktop + autosave + session + backup files: see eof
 
 ;;; BUFFERS
@@ -431,11 +431,11 @@ ROOT                        => ROOT"
 
 ;;; GLOBAL KEYS (see <confs>/shortcuts.el for additionnal keys)
 (bind-keys
- '("C-x C-f"   ido-recentf-file-name-history          ; IMPORTANT: C-x C-f is not `find-file' anymore (C-f to switch to `ido-find-file' only works from `ido-buffer-internal' and `ido-file-internal' derivatives.) [but use [(jxf)] in `sticky-control'] 
+ '("C-x C-f"   ido-recentf-file-name-history          ; IMPORTANT: C-x C-f is not `find-file' anymore (C-f to switch to `ido-find-file' only works from `ido-buffer-internal' and `ido-file-internal' derivatives.) [but use [(jxf)] in `sticky-control']
    "C-x F"     ido-recentf
    "C-x f"     ido-find-file ; may be called from `ido-switch-buffer' (doing C-x C-b C-f) [but use [(jxjf)] in `sticky-control']
    "C-="       shell-command
-   
+
    "M-n"       new-frame                ; XXX check if no issue
    "M-<f2>"    apply-macro-to-region-lines ; use F3/F4 for kmacro start/end
    "C-c o"     anything-occur              ; or simply occur ?
@@ -460,7 +460,7 @@ ROOT                        => ROOT"
    "C-c C-9"   anything-imenu           ; IMPORTANT: useful for fast code navigation (w/o `ecb' fancies)
                                         ;            anything-browse-code map on [<f7><f7>] too
    "C-<f10>"   tmm-menubar              ; key-controlled menu (`<f10>' is default but awkward on OSX/Gnome) IMPORTANT: remember this for `no-window-system' session
-))
+   ))
 ;; C-\ as <meta> everywhere (except anywhere `viper-mode' rewrites it)
 (fset 'new-meta-prefix (copy-keymap 'ESC-prefix))
 (bind-key "C-\\" 'new-meta-prefix)
@@ -703,11 +703,11 @@ the should-be-forbidden C-z.")
 ;; desktop & autosave & session & backup files -> one place (like vim/backup)
 ;; - desktop directories
 (unless desktop-dir
- (setq desktop-dir (expand-file-name 
-                    (concat
-                     (file-name-as-directory mars/local-root-dir)
-                     (file-name-as-directory mars/personal-data)
-                     "desktop"))))
+  (setq desktop-dir (expand-file-name
+                     (concat
+                      (file-name-as-directory mars/local-root-dir)
+                      (file-name-as-directory mars/personal-data)
+                      "desktop"))))
 (unless (file-exists-p desktop-dir)
   (make-directory desktop-dir t))
 (setq desktop-path (list desktop-dir)

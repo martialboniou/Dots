@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Sun Oct 23 17:31:38 2011 (+0200)
+;; Last-Updated: Sun Oct 23 17:48:17 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 101
+;;     Update #: 102
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -204,7 +204,7 @@
 ;; Utils
 
 (bind-keys
- '("C-c t" default-terminal
+ '("C-c t" default-term
    "C-c w" mars/wl))                    ; 'WL-OTHER-FRAME but ensure the `confs/mail' load
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

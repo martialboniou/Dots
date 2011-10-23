@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 23 15:15:40 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: Sat Oct 22 21:05:19 2011 (+0200)
+;; Last-Updated: Sun Oct 23 19:19:36 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 92
+;;     Update #: 94
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -66,6 +66,7 @@
         (unless (file-exists-p newdir)
           (make-directory newdir t))))
     '("cache/semanticdb"
+      "cache/bookmark"
       "cache/newsticker/cache"
       "cache/newsticker/images"
       "cache/newsticker/groups"
@@ -82,6 +83,9 @@
         ido-save-directory-list-file (cachize "ido-last")
         recentf-save-file (cachize "recentf")
         anything-c-adaptive-history-file (cachize "anything-c-adaptive-history")
+        bookmark-default-file (cachize "bookmark/emacs.bmk")
+        bmkp-bmenu-commands-file (cachize "bookmark/bmenu-commands.el")
+        bmkp-bmenu-state-file (cachize "bookmark/bmenu-state.el")
         newsticker-cache-filename (cachize "newsticker/cache")
         newsticker-imagecache-dirname (cachize "newsticker/images")
         newsticker-groups-filename (cachize "newsticker/groups")

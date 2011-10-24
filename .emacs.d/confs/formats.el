@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sat Oct 22 00:00:17 2011 (+0200)
+;; Last-Updated: Sun Oct 23 21:47:55 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 86
+;;     Update #: 87
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -211,6 +211,7 @@ Otherwise the update regexps won't match."
 (alias-minor-modes
  '(undo-tree UT
    abbrev    Ab
+   autopair  Pr
    paredit   PE))
 
 ;;; PRETTY-LAMBDA

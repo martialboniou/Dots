@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Mar 12 21:26:30 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sun Oct 23 15:13:52 2011 (+0200)
+;; Last-Updated: Sun Oct 23 19:50:22 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 9
+;;     Update #: 10
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -48,7 +48,6 @@
 (unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
 
 ;;; GIT-EMACS
-(add-to-list 'load-path "/Users/mars/.emacs.d/lisp/git-emacs")
 (load-library "git-emacs-autoloads")
 
 ;;; MAGIT

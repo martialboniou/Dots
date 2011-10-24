@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Sun Oct 23 14:56:21 2011 (+0200)
+;; Last-Updated: Mon Oct 24 10:33:07 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 317
+;;     Update #: 321
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -63,6 +63,9 @@
   "A package tree to get / install / tag additional packages in `mars/site-lisp-path'")
 (setq mars/site-lisp-package-tree '((vimpulse     . ((get . "git clone git://gitorious.org/vimpulse/vimpulse")
                                                      (install . "make")))
+                                    (autopair       . ((get . "svn checkout http://autopair.googlecode.com/svn/trunk/ autopair")
+                                                       (install . "emacs-compile-directory")))
+                                    (auto-pair-plus . ((get . "git clone git://github.com/emacsmirror/auto-pair-plus.git")))
                                     ;; emms main branch on git://git.sv.gnu.org/emms.git
                                     (emms         . ((get . "git clone git://github.com/martialboniou/emms.git")
                                                      (install . "make; make emms-print-metadata")
@@ -119,6 +122,9 @@
                                     (python-mode        . ((get . "curl -L http://launchpad.net/python-mode/trunk/5.2.0/+download/python-mode-5.2.0.tgz | tar zx")
                                                            (install . "emacs-compile-directory .")
                                                            (nosearch . "website")))
+                                    (pylookup           . ((get . "git clone git://github.com/tsgates/pylookup.git") ; TODO: Issue 10 to merge for Python 2
+                                                           (install . "emacs-compile-directory")
+                                                           (nosearch . "python-2.7.1-docs-html"))) ; wtf this archive here / need a fork?
                                     (Pymacs             . ((get . "git clone git://github.com/pinard/Pymacs.git")
                                                            (install . "make install") ; install Pymacs.egg in your python site-packges TODO: may require `eshell' for root install and su/sudo
                                                            (nosearch . ("build" "contrib" "Pymacs" "temp" "tests"))))

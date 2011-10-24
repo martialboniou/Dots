@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Sun Oct 23 17:42:38 2011 (+0200)
+;; Last-Updated: Mon Oct 24 10:38:06 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 2038
+;;     Update #: 2040
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -321,6 +321,7 @@ ROOT                        => ROOT"
                  ("sunrise-commander"         sunrise sr-virtual-mode)
                  ("anything"                  anything anything-config)
                  ("anything-show-completion"  use-anything-show-completion)
+                 ("autopair"                  autopair-mode)
                  ("header2"                   auto-make-header auto-update-file-header)
                  ("psvn"                      psvn)
                  ("hippie-exp"                hippie-expand he-init-string he-substitute-string)

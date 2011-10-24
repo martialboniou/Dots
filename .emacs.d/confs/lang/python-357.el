@@ -6,16 +6,16 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 23:42:52 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri Oct 21 16:14:00 2011 (+0200)
+;; Last-Updated: Mon Oct 24 10:40:54 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 41
+;;     Update #: 54
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: Python-mode + Pymacs (+ Rope) + pyflakes
+;;; Commentary: python-mode + pylookup [ + Pymacs (+ Rope) + pyflakes ]
 ;; 
 ;; 
 ;; 
@@ -45,7 +45,9 @@
 ;; 
 ;;; Code:
 
-;;; PYTHON
+;;; PYTHON-MODE
+;; WARNING: this mode has *no* python-mode-map / you must use hook for
+;; key bindings too (py-mode-map is for python.el provided by GNU Emacs)
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 (eval-after-load "python-mode"
@@ -62,8 +64,26 @@
                                         '(length initial-pattern))))))
 (add-hook 'python-mode-hook
           #'(lambda ()
-              (smart-operator-mode-on)))  ; `pretty-lambda' in `confs/formats'
-
+              (smart-operator-mode-on)  ; `pretty-lambda' in `confs/formats'
+              ;; NOTE: autopairs' enhancements in `confs/code'
+              ))
+
+;;; PYLOOKUP
+(setq pylookup-dir
+      (condition-case nil
+          (file-name-directory (locate-library "pylookup"))
+        (error nil)))
+(unless (null pylookup-dir)
+  (let ((py-py (concat pylookup-dir "pylookup.py"))
+        (py-db (concat pylookup-dir "pylookup.db")))
+    (setq pylookup-program
+           (and (file-exists-p py-py) py-py))
+    (setq pylookup-db-file
+          (and (file-exists-p py-db) py-db))))
+;; <C-c h> to display python lookup in python-mode buffer
+(add-hook 'python-mode-hook #'(lambda ()
+                                (local-set-key "\C-ch" 'pylookup-lookup)))
+
 ;; PYMACS + ROPE TODO: eval-after-load'ing correctly
 ;; (eval-after-load "python-mode"
 ;;   '(progn
@@ -130,7 +150,7 @@
 ;;           (define-key py-mode-map "\t" 'ryan-python-tab)
 
 ;;           )) ))
-
+
 ;; ;; FLYMAKE
 ;; (add-hook 'python-mode-hook '(lambda () (flymake-mode-on)))
 ;; (eval-after-load "flymake"

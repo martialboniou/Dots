@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sat Oct 22 16:39:26 2011 (+0200)
+;; Last-Updated: Mon Oct 24 10:58:23 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 435
+;;     Update #: 453
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -16,8 +16,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Commentary: header2 + auto-insert (skeleton) / hideshow + hideshowvis /
-;;              cedet & ecb-autoloads / paredit + highlight-parentheses /
-;;              eldoc / comint / cheat / simple-call-tree / `lang'
+;;              cedet & ecb-autoloads / auto-pair-edit / paredit +
+;;              highlight-parentheses / eldoc / comint / cheat /
+;;              simple-call-tree / `lang'
 ;;
 ;;
 ;;; Ideas: CEDET: https://github.com/alexott/emacs-configs/blob/master/rc/emacs-rc-cedet.el
@@ -380,7 +381,48 @@ Move point to the beginning of the line, and run the normal hook
     (when (y-or-n-p "Start ecb? ")
       (ecb-activate))))
 
-;; PAREDIT + HIGHLIGHT-PARENTHESES
+;;; AUTO-PAIR-PLUS
+(defvar autopair-modes '(python-mode    ; python-mode's autopairs support is extended
+                                        ; to work with single and triple quotes
+                         ruby-mode scala-mode erlang-mode
+                         latex-mode
+                         ;; ruby-mode   ; WARNING: clash with ruby-electric
+                         c-mode c++-mode-hook objc-mode))
+(dolist (mode autopair-modes)
+  (add-hook (intern (concat (symbol-name mode) "-hook")) #'(lambda () (autopair-mode 1))))
+(eval-after-load "autopair"
+  '(progn
+     ;; python case
+     (add-hook 'python-mode-mode
+               #'(lambda ()
+                   (push '(?' . ?')
+                         (getf autopair-extra-pairs :code))
+                   (setq autopair-handle-action-fns
+                         (list #'autopair-default-handle-action
+                               #'autopair-python-triple-quote-action))))
+     ;; c++ case
+     (add-hook 'c++-mode-hook 
+               #'(lambda ()
+                   (push ?{
+                         (getf autopair-dont-pair :comment))
+                   (push '(?< . ?>)
+                         (getf autopair-extra-pairs :code))))
+     ;; latex case
+     (add-hook 'latex-mode-hook
+               #'(lambda ()
+                   (set (make-local-variable 'autopair-handle-action-fns)
+                        (list #'autopair-default-handle-action
+                              #'autopair-latex-mode-paired-delimiter-action))))
+     ;; emacs-lisp case (WARNING: unused)
+     (add-hook 'emacs-lisp-mode-hook
+               #'(lambda ()
+                   (push '(?` . ?')
+                         (getf autopair-extra-pairs :comment))
+                   (push '(?` . ?')
+                         (getf autopair-extra-pairs :string))))
+     (require 'auto-pair+)))
+
+;;; PAREDIT + HIGHLIGHT-PARENTHESES
 (mapc #'(lambda (x)
           (add-hook x
                     '(lambda ()
@@ -391,6 +433,13 @@ Move point to the beginning of the line, and run the normal hook
                              slime-repl-mode-hook inferior-lisp-mode-hook inferior-qi-mode-hook))
 (eval-after-load "paredit"
   '(progn
+     ;; autopair case (ie deactivate AUTOPAIR when PAREDIT is turned on)
+     (defadvice paredit-mode (around disable-autopairs-around (arg) activate)
+       "Disable autopairs mode if paredit-mode is turned on. -- tim-c-harper@emacswiki"
+       ad-do-it
+       (if (null ad-return-value)
+           (autopair-mode 1)
+         (autopair-mode 0)))
      ;; delete case
      (define-key paredit-mode-map [(kp-delete)] 'paredit-forward-delete)
      (define-key paredit-mode-map [(control kp-delete)] 'paredit-forward-kill-word)
@@ -435,14 +484,14 @@ Move point to the beginning of the line, and run the normal hook
          (read-kbd-macro paredit-backward-delete-key) nil))
      (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)))
 
-;; ELDOC
+;;; ELDOC
 (mapc '(lambda (x)
          (add-hook x' turn-on-eldoc-mode)) ; document emacs-lisp code
       '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
 ;; (require 'c-eldoc)
 ;; (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
 
-;; COMINT
+;;; COMINT
 (eval-after-load "comint"
   '(progn
      (define-key comint-mode-map (kbd "M-<up>") 'comint-next-input)
@@ -450,7 +499,7 @@ Move point to the beginning of the line, and run the normal hook
      (define-key comint-mode-map [down] 'comint-next-matching-input-from-input)
      (define-key comint-mode-map [up] 'comint-previous-matching-input-from-input)))
 
-;; CHEAT
+;;; CHEAT
 (eval-after-load "anything"
   '(progn
      (when (executable-find "cheat")    ; gem install cheat

@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 13:14:51 2011 (+0100)
 ;; Version:
-;; Last-Updated: Sun Oct 23 19:28:41 2011 (+0200)
+;; Last-Updated: Mon Oct 24 19:25:47 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 15
+;;     Update #: 16
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -83,7 +83,7 @@
 ;; (setq system-uses-terminfo nil) ; if problem with $TERM
 
 ;;; SHELL MODE
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(add-hook 'shell-mode-hook #'ansi-color-for-comint-mode-on)
 
 ;;; SH FILES
 (add-to-list 'auto-mode-alist '("\\.[zk]sh$" . sh-mode))

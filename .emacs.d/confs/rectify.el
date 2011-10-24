@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
 ;; Version:
-;; Last-Updated: Fri Oct 21 14:03:46 2011 (+0200)
+;; Last-Updated: Mon Oct 24 19:00:06 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 106
+;;     Update #: 107
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -48,7 +48,7 @@
 ;;; FLYMAKE
 (eval-after-load "flymake"
   '(progn
-     ;; (add-hook 'find-file-hook 'flymake-find-file-hook)
+     ;; (add-hook 'find-file-hook #'flymake-find-file-hook)
      ;; php case TODO: move to web-programming
      (eval-after-load "nxhtml"
        '(progn
@@ -67,7 +67,7 @@
                            '(,x flymake-php-init)))
                        extensions)))
           (add-php-flymake-masks "\\.php$" "\\.module$" "\\.install$" "\\.inc$" "\\.engine$")))
-;;     (add-hook 'php-mode-hook (lambda () (flymake-mode 1)))
+;;     (add-lambda-hook 'php-mode-hook (flymake-mode 1))
 ;;     (define-key php-mode-map '[C-S-h] 'flymake-goto-prev-error)
 ;;     (define-key php-mode-map '[C-S-l] 'flymake-goto-prev-error)
 ))
@@ -262,18 +262,18 @@
           (setq hippie-expand-try-functions-list
                 (cons 'yas/hippie-try-expand hippie-expand-try-functions-list))))
      ;; special case
-     ;; - org-mode
+     ;; - org-mode 7+
      (eval-after-load "org"
        '(progn
           (defun mars/yas-in-org ()
             (define-key org-mode-map (kbd "C-.") 'yas/expand)) ; IMPORTANT: if <tab> is ``locked''
           (defun yas/org-very-safe-expand ()
             (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
-          (add-hook 'org-mode-hook (lambda () ; org-mode 7+ case
-                                     (make-variable-buffer-local 'yas/trigger-key)
-                                     (setq yas/trigger-key [tab])
-                                     (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-                                     (define-key yas/keymap [tab] 'yas/next-field)))))
+          (add-lambda-hook 'org-mode-hook 
+            (make-variable-buffer-local 'yas/trigger-key)
+            (setq yas/trigger-key [tab])
+            (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+            (define-key yas/keymap [tab] 'yas/next-field))))
      ;; - ruby
      (eval-after-load "ruby"         ; FIXME: search if ruby is ok (maybe rinari/rhtml here)
        '(progn

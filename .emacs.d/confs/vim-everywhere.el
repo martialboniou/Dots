@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Sat Oct 22 14:21:56 2011 (+0200)
+;; Last-Updated: Mon Oct 24 19:47:26 2011 (+0200)
 ;;           By:
-;;     Update #: 262
+;;     Update #: 265
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -108,7 +108,6 @@
          (setq hl-line-face 'hl-line)))
      (color-theme-initialize)
      (require 'parenface)
-     ;; (dolist (mode '(c-mode cpp-mode java-mode html-mode-hook css-mode-hook emacs-lisp-mode lisp-mode)) (add-hook mode (parenface-add-support
 
      ;; 3- nothing to add (mis)match parentheses (vimpulse uses 'show-parens
      ;;    so there's no need to add 'mic-paren)
@@ -155,27 +154,29 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
                      emacs-lisp-mode
                      lisp-interaction-mode
                      scheme-mode
+                     shen-mode
+                     qi-mode
                      c-mode
                      cc-mode
+                     js-mode
                      espresso-mode
+                     shell-script-mode
                      ruby-mode
-                     java-mode
                      python-mode
-                     ruby-mode
+                     php-mode
+                     java-mode
                      cperl-mode
                      howm-mode
                      org-mode
                      haskell-mode
-                     qi-mode
-                     shen-mode
                      smalltalk-mode
                      factor-mode
-                     js2-mode
                      erlang-mode
                      caml-mode
                      clojure-mode))     ; TODO: mix in code.el
        (progn
-         (add-hook (intern (concat (symbol-name mode) "-hook")) 'font-lock-fontify-numbers)
+         (add-hook (intern (concat (symbol-name mode) "-hook"))
+                   #'font-lock-fontify-numbers)
          (font-lock-add-keywords mode
                                  '(("\\(FIXME:\\|TODO:\\)"
                                     1 font-lock-builtin-face prepend))) ; FIXME: builtin here b/c todo is too grayish in `Wombat256mod'

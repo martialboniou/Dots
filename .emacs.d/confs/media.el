@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Jan 19 20:16:06 2008
 ;; Version:
-;; Last-Updated: Fri May  6 18:58:42 2011 (+0200)
+;; Last-Updated: Mon Oct 24 18:57:57 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 88
+;;     Update #: 89
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -100,7 +100,7 @@
          (emms-lyrics 1)
          (emms-playing-time 1)
          (add-to-list 'emms-info-functions 'emms-info-cueinfo)
-         (add-hook 'emms-player-started-hook 'emms-last-played-update-current))
+         (add-hook 'emms-player-started-hook #'emms-last-played-update-current))
 
        ;; load
        (emms-devel)                            ; emms-smart-browse on <F2>

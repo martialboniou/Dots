@@ -8,7 +8,7 @@
 ;; Version:
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 40
+;;     Update #: 44
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -68,16 +68,14 @@ This can be 0 for immediate, or a floating point value.")
            safe-local-variable-values '((after-save-hook archive-done-tasks))
            org-todo-keywords
            '((sequence "TODO(t)" "STARTED(s@/!)" "WAITING(w@/!)" "DELEGATED(e@/!)" "APPT(a@!)" "|" "DONE(d!)" "DEFERRED(f)" "CANCELLED(c@)")))
-     (add-hook 'org-mode-hook
-               (lambda ()
-                 (setq truncate-lines nil))) ; turn on soft wrapping mode for org mode
+     (add-lambda-hook 'org-mode-hook
+       (setq truncate-lines nil)) ; turn on soft wrapping mode for org mode
      ;; original C-n/C-p behavior kept
-     (add-hook 'org-agenda-mode-hook
-               (lambda ()
-                 (define-key org-agenda-mode-map "\C-n" 'next-line)
-                 (define-key org-agenda-keymap "\C-n" 'next-line)
-                 (define-key org-agenda-mode-map "\C-p" 'previous-line)
-                 (define-key org-agenda-keymap "\C-p" 'previous-line)))
+     (add-lambda-hook 'org-agenda-mode-hook
+       (define-key org-agenda-mode-map "\C-n" 'next-line)
+       (define-key org-agenda-keymap "\C-n" 'next-line)
+       (define-key org-agenda-mode-map "\C-p" 'previous-line)
+       (define-key org-agenda-keymap "\C-p" 'previous-line))
      ;; auto archiving
      (defun wiegley/org-archive-done-tasks ()
        (interactive)
@@ -107,14 +105,9 @@ This can be 0 for immediate, or a floating point value.")
 ;; viper compatibility
 (if (boundp 'viper-version)
     (define-key viper-vi-global-user-map "C-c /" 'org-sparse-tree))
-;; windmove compatibility OBSOLETE
-;; (add-hook 'org-shiftup-final-hook    'windmove-up)
-;; (add-hook 'org-shiftleft-final-hook  'windmove-left)
-;; (add-hook 'org-shiftdown-final-hook  'windmove-down)
-;; (add-hook 'org-shiftright-final-hook 'windmove-right)
 ;; remember
 (org-remember-insinuate)
-(add-hook 'remember-mode-hook 'org-remember-apply-template)
+(add-hook 'remember-mode-hook #'org-remember-apply-template)
 (custom-set-variables
  '(org-directory *notes-dir*)
  '(org-default-notes-file (concat org-directory "/Notes.org"))
@@ -173,8 +166,7 @@ This can be 0 for immediate, or a floating point value.")
        (if (equal "remember" (frame-parameter nil 'name))
            (delete-frame)))
      ;; single window
-     (add-hook 'remember-mode-hook
-               'delete-other-windows)))
+     (add-hook 'remember-mode-hook #'delete-other-windows)))
 
 (defun make-remember-frame ()
   "Create a new frame and run org-remember."

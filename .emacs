@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Mon Oct 24 10:38:06 2011 (+0200)
+;; Last-Updated: Mon Oct 24 19:59:42 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 2040
+;;     Update #: 2047
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -311,7 +311,7 @@ ROOT                        => ROOT"
   "Update autoloads on kill iff emacs boots correctly."
   (when (boundp '*emacs/boot-without-error*)
     (update-autoloads-in-package-area)))
-(add-hook 'kill-emacs-hook 'update-autoloads-on-kill)
+(add-hook 'kill-emacs-hook #'update-autoloads-on-kill)
 
 ;;; HANDMADE AUTOLOADS
 (mars/autoload '(("unbound"                   describe-unbound-keys) ; display unbound keys ([F1-b] to display all bindings)
@@ -386,10 +386,10 @@ ROOT                        => ROOT"
       '(Info-mode 'dired-mode))
 ;; hooks
 (add-hook 'desktop-save-hook
-          'kiwon/save-window-configuration)
+          #'kiwon/save-window-configuration)
 (add-hook 'desktop-after-read-hook
-          'kiwon/restore-window-configuration)  ; save/restore the last window
-                                        ; configuration with `DESKTOP'
+          #'kiwon/restore-window-configuration)  ; save/restore the last window
+                                                 ; configuration with `DESKTOP'
 ;; desktop + autosave + session + backup files: see eof
 
 ;;; BUFFERS
@@ -618,7 +618,7 @@ the should-be-forbidden C-z.")
              (list 'define-key map (list 'kbd '"C-c C-f") ''ido-recentf-file-name-history)
              (list 'define-key map (list 'kbd '"C-c F") ''ido-recentf)
              (list 'define-key map (list 'kbd '"C-c C-m") ''make-directory)))
-     ;; (add-hook 'emacs-startup-hook (mars/recentf/override-keys global-map))
+     ;; (add-lambda-hook 'emacs-startup-hook (mars/recentf/override-keys global-map))
      ))
 
 ;;; CONFIGURATION
@@ -665,37 +665,36 @@ the should-be-forbidden C-z.")
                       "ladybug"))))) ; emacs as a fast hacking tool (temporary bugfixes inside)
 
   (mapc
-   (lambda (x)
-     (conf-load x))
+   #'(lambda (x)
+       (conf-load x))
    confs-to-load))
 
 ;; special init
 ;; - eshell path built from 'exec-path (which is set in Customize file)
-(add-hook 'eshell-mode-hook
-          '(lambda ()
-             (setenv "PATH" (mapconcat (lambda (dir) (or dir ".")) exec-path path-separator))
-             (setq eshell-path-env (getenv "PATH"))))
+(add-lambda-hook 'eshell-mode-hook
+  (setenv "PATH" (mapconcat (lambda (dir) (or dir ".")) exec-path path-separator))
+  (setq eshell-path-env (getenv "PATH")))
 
 ;; bytecompile .emacs and files in `conf-path' on change
 (when (functionp 'byte-compile-user-init-file)
   (defun mars/byte-compile-user-init-hook ()
     (when (equal buffer-file-name user-init-file)
-      (add-hook 'after-save-hook 'byte-compile-user-init-file t t)))
-  (add-hook 'emacs-lisp-mode-hook 'mars/byte-compile-user-init-hook))
+      (add-hook 'after-save-hook #'byte-compile-user-init-file t t)))
+  (add-hook 'emacs-lisp-mode-hook #'mars/byte-compile-user-init-hook))
 ;; (when (functionp 'byte-compile-emacs-config)
 ;;  (defun mars/byte-compile-emacs-config-hook ()
 ;;    (when (member (file-name-directory buffer-file-name)
-;;                  (mapcar '(lambda (x)
+;;                  (mapcar #'(lambda (x)
 ;;                             (expand-file-name
 ;;                              (file-name-as-directory
 ;;                               (concat (file-name-as-directory mars/local-root-dir) x))))
 ;;                          mars/local-conf-path))
-;;      (add-hook 'after-save-hook 'byte-compile-emacs-config t t)))
-;;  (add-hook 'emacs-lisp-mode-hook 'mars/byte-compile-emacs-config-hook))
+;;      (add-hook 'after-save-hook #'byte-compile-emacs-config t t)))
+;;  (add-hook 'emacs-lisp-mode-hook #'mars/byte-compile-emacs-config-hook))
 
 ;; restore windows archiver at startup
 (add-hook 'emacs-startup-hook
-          'mars-windows-archiver-load-in-session)
+          #'mars-windows-archiver-load-in-session)
 
 ;; minibuffer histories
 (when *emacs/normal-startup*
@@ -750,18 +749,17 @@ the should-be-forbidden C-z.")
                                desktop-base-lock-name))
 (defun desktop-in-use-p ()
   (and (file-exists-p the-desktop-file) (file-exists-p the-desktop-lock)))
-(defun autosave-desktop ()
-  (when (desktop-in-use-p) (lambda ()   ; desktop-save-in-desktop-dir w/o alert
-                             (if desktop-dirname
-                                 (desktop-save desktop-dirname)
-                               (call-interactively 'desktop-save)))))
 (defadvice desktop-owner (after pry-from-cold-dead-hands activate)
   "Don't allow dead emacsen to own the desktop file."
   (when (not (emacs-process-p ad-return-value))
     (setq ad-return-value nil)))
 ;; - desktop autosave
 (when *emacs/normal-startup*
-  (add-hook 'auto-save-hook 'autosave-desktop))
+  (add-lambda-hook 'auto-save-hook
+    (when (desktop-in-use-p)            ; desktop-save-in-desktop-dir w/o alert
+      (if desktop-dirname
+          (desktop-save desktop-dirname)
+        (call-interactively #'desktop-save)))))
 ;; - unset temporary directory names
 (setq autosave-dir nil
       session-dir nil

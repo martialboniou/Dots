@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Oct 24 10:58:23 2011 (+0200)
+;; Last-Updated: Mon Oct 24 17:51:01 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 453
+;;     Update #: 468
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -67,8 +67,7 @@
 
 ;;; HEADER2 + AUTO-INSERT
 (add-hook 'write-file-functions 'auto-update-file-header)
-(add-hook 'emacs-lisp-hook 'auto-make-header)
-(add-hook 'c-mode-common-hook 'auto-make-header)
+(mars/add-hooks '(c-mode-common-hook emacs-lisp-hook) 'auto-make-header)
 (defun mars/create-header2-if-none (&optional update-me)
   "Creates a header if none. Updates header if UPDATE-ME is T."
   (interactive "P")
@@ -261,9 +260,9 @@ Move point to the beginning of the line, and run the normal hook
        (local-set-key "\C-cq" 'semantic-ia-show-doc)
        (local-set-key "\C-cs" 'semantic-ia-show-summary)
        (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle))
-     (mapc '(lambda (x)
-              (add-hook x 'alexott/cedet-hook))
-           '(c-mode-common-hook lisp-mode-hook emacs-lisp-mode-hook scheme-mode-hook erlang-mode-hook))
+     (mars/add-hooks (cons 'c-mode-common-hook 
+                           (mars/generate-mode-hook-list '(lisp emacs-lisp scheme erlang)))
+                     #'alexott/cedet-hook)
      ;; c-mode bindings [eassist]
      (defun alexott/c-mode-cedet-hook ()
        ;; (local-set-key "." 'semantic-complete-self-insert)
@@ -274,7 +273,7 @@ Move point to the beginning of the line, and run the normal hook
        (local-set-key "\C-c\C-r" 'semantic-symref))
      (add-hook 'c-mode-common-hook 'alexott/c-mode-cedet-hook)
      ;; hook & customs
-     (add-hook 'semantic-init-hooks '(lambda () (imenu-add-to-menubar "TAGS"))) ; FIXME: BUG??
+     (add-lambda-hook 'semantic-init-hooks (imenu-add-to-menubar "TAGS")) ; FIXME: ? BUG
      (custom-set-variables
       '(semantic-idle-scheduler-idle-time 3)
       '(semantic-self-insert-show-completion-function (lambda () (semantic-ia-complete-symbol-menu (point))))
@@ -365,8 +364,7 @@ Move point to the beginning of the line, and run the normal hook
            ad-do-it
            (when ecb-active
              (append-to-file "(ecb-activate)" nil kiwon/last-window-configuration-file)))))
-     (add-hook 'kill-emacs-hook '(lambda ()
-                                   (kiwon/save-window-configuration t)) 'append)))
+     (add-hook 'kill-emacs-hook '(lambda () (kiwon/save-window-configuration t)) 'append)))
 (defun mars/toggle-ecb ()
   (interactive)
   (if (ecb-activated)
@@ -382,55 +380,51 @@ Move point to the beginning of the line, and run the normal hook
       (ecb-activate))))
 
 ;;; AUTO-PAIR-PLUS
-(defvar autopair-modes '(python-mode    ; python-mode's autopairs support is extended
-                                        ; to work with single and triple quotes
-                         ruby-mode scala-mode erlang-mode
-                         latex-mode
-                         ;; ruby-mode   ; WARNING: clash with ruby-electric
-                         c-mode c++-mode-hook objc-mode))
-(dolist (mode autopair-modes)
-  (add-hook (intern (concat (symbol-name mode) "-hook")) #'(lambda () (autopair-mode 1))))
+(defvar autopair-hooks (cons 'c-common-hook
+                             (mars/generate-mode-hook-list
+                              '(python    ; python-mode's autopairs support is extended
+                                          ; to work with single and triple quotes
+                                scala erlang
+                                ;; ruby   ; WARNING: clash with ruby-electric
+                                latex))))
+(mars/add-hooks autopair-hooks #'(lambda () (autopair-mode 1)))
 (eval-after-load "autopair"
   '(progn
      ;; python case
-     (add-hook 'python-mode-mode
-               #'(lambda ()
-                   (push '(?' . ?')
-                         (getf autopair-extra-pairs :code))
-                   (setq autopair-handle-action-fns
-                         (list #'autopair-default-handle-action
-                               #'autopair-python-triple-quote-action))))
+     (add-lambda-hook 'python-mode-mode
+       (push '(?' . ?') (getf autopair-extra-pairs :code))
+       (setq autopair-handle-action-fns
+             (list #'autopair-default-handle-action
+                   #'autopair-python-triple-quote-action)))
      ;; c++ case
-     (add-hook 'c++-mode-hook 
-               #'(lambda ()
-                   (push ?{
-                         (getf autopair-dont-pair :comment))
-                   (push '(?< . ?>)
-                         (getf autopair-extra-pairs :code))))
+     (add-lambda-hook
+         'c++-mode-hook 
+       (push ?{ (getf autopair-dont-pair :comment))
+       (push '(?< . ?>) (getf autopair-extra-pairs :code)))
      ;; latex case
-     (add-hook 'latex-mode-hook
-               #'(lambda ()
-                   (set (make-local-variable 'autopair-handle-action-fns)
-                        (list #'autopair-default-handle-action
-                              #'autopair-latex-mode-paired-delimiter-action))))
+     (add-lambda-hook 'latex-mode-hook
+       (set (make-local-variable 'autopair-handle-action-fns)
+            (list #'autopair-default-handle-action
+                  #'autopair-latex-mode-paired-delimiter-action)))
      ;; emacs-lisp case (WARNING: unused)
-     (add-hook 'emacs-lisp-mode-hook
-               #'(lambda ()
-                   (push '(?` . ?')
-                         (getf autopair-extra-pairs :comment))
-                   (push '(?` . ?')
-                         (getf autopair-extra-pairs :string))))
+     (add-lambda-hook 'emacs-lisp-mode-hook
+       (push '(?` . ?') (getf autopair-extra-pairs :comment))
+       (push '(?` . ?') (getf autopair-extra-pairs :string)))
      (require 'auto-pair+)))
 
 ;;; PAREDIT + HIGHLIGHT-PARENTHESES
-(mapc #'(lambda (x)
-          (add-hook x
-                    '(lambda ()
-                       (paredit-mode +1)
-                       (highlight-parentheses-mode t))))
-      '(emacs-lisp-mode-hook lisp-mode-hook lisp-interaction-mode-hook
-                             clojure-mode-hook scheme-mode-hook qi-mode-hook shen-mode-hook
-                             slime-repl-mode-hook inferior-lisp-mode-hook inferior-qi-mode-hook))
+(add-lambda-hook '(lisp-mode-hook
+                   emacs-lisp-mode-hook
+                   lisp-interaction-mode-hook
+                   clojure-mode-hook
+                   scheme-mode-hook
+                   shen-mode-hook
+                   qi-mode-hook
+                   slime-repl-mode-hook
+                   inferior-lisp-mode-hook
+                   inferior-qi-mode-hook)
+  (paredit-mode +1)
+  (highlight-parentheses-mode t))
 (eval-after-load "paredit"
   '(progn
      ;; autopair case (ie deactivate AUTOPAIR when PAREDIT is turned on)
@@ -456,21 +450,19 @@ Move point to the beginning of the line, and run the normal hook
      (eval-after-load "vimpulse"
        '(progn
           ;; NOTE: working `PAREDIT-VIPER-COMPAT' provided
-          (add-hook 'paredit-mode-hook
-                    '(lambda ()
-                       (progn
-                         (paredit-viper-compat)
-                         ;; TODO: create macro to build term & close parens' cases
-                         ;; keys for normal and viper cases
-                         (when *i-am-a-terminator*
-                           (paredit-viper-add-local-keys
-                            'insert-state
-                            '(("\C-h" . paredit-backward-delete)
-                              ("\C-w" . paredit-backward-kill-word))))
-                         (paredit-viper-add-local-keys
-                          'insert-state
-                          '(([?\)] . paredit-close-parenthesis)
-                            ([(meta ?\))] . paredit-close-parenthesis-and-newline))))))))
+          (add-lambda-hook 'paredit-mode-hook
+            (paredit-viper-compat)
+            ;; TODO: create macro to build term & close parens' cases
+            ;; keys for normal and viper cases
+            (when *i-am-a-terminator*
+              (paredit-viper-add-local-keys
+               'insert-state
+               '(("\C-h" . paredit-backward-delete)
+                 ("\C-w" . paredit-backward-kill-word))))
+            (paredit-viper-add-local-keys
+             'insert-state
+             '(([?\)] . paredit-close-parenthesis)
+               ([(meta ?\))] . paredit-close-parenthesis-and-newline))))))
      ;; windmove case
      (define-key paredit-mode-map (kbd "C-<left>")    nil) ; use C-S-) instead
      (define-key paredit-mode-map (kbd "C-<right>")   nil)
@@ -485,11 +477,9 @@ Move point to the beginning of the line, and run the normal hook
      (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)))
 
 ;;; ELDOC
-(mapc '(lambda (x)
-         (add-hook x' turn-on-eldoc-mode)) ; document emacs-lisp code
-      '(emacs-lisp-mode-hook lisp-interaction-mode-hook ielm-mode-hook))
-;; (require 'c-eldoc)
-;; (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
+(mars/add-hooks (mars/generate-mode-hook-list
+                 '(emacs-lisp lisp-interactive ielm)) #'turn-on-eldoc-mode)
+;; TODO: ? (require 'c-eldoc)(add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
 
 ;;; COMINT
 (eval-after-load "comint"

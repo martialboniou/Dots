@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Mon Oct 24 16:18:49 2011 (+0200)
+;; Last-Updated: Mon Oct 24 20:03:59 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 87
+;;     Update #: 96
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -77,14 +77,6 @@
 
 ;;; ESSENTIAL UTILITIES
 ;;;
-
-(defmacro mars/add-hook (hook &rest funs) ; NOTE: may be deprecated soon
-  "Add some FUNS to one HOOK: (mars/add-hook my-hk my-fun1 my-fun2)."
-  `(progn
-     ,@(mapc (lambda (arg)
-                 `(add-hook (quote ,hook) (function ,arg)))
-               funs)))
-
 (defun mars/generate-mode-hook-list (modes)
   "Create a quoted list of hooks."
   (mapcar (lambda (arg)
@@ -94,7 +86,7 @@
 (defmacro add-lambda-hook (hook &rest body)
   "Add LAMBDA to function to bind to one or many HOOKs. -- mina86@github"
   (declare (indent 1))
-  (if (and (listp hook) (eq (car hook) 'quote)) (listp (cadr hook))
+  (if (and (listp hook) (eq (car hook) 'quote) (listp (cadr hook)))
       (let ((func (make-symbol "func")))
         `(let
           ((,func (lambda () ,@body)))
@@ -104,8 +96,8 @@
 
 (defun mars/add-hooks (hooks fun)
   "Attach one FUN to many HOOKS: (mars/add-hook-to-list '(my-hk1 my-hk2 my-hk3) my-fun)."
-  (mapc (lambda (mode-hook)
-          (add-hook mode-hook fun))
+  (mapc #'(lambda (mode-hook)
+            (add-hook mode-hook fun))
         hooks))
 
 (defun dont-kill-emacs ()
@@ -459,10 +451,9 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
   (when (file-exists-p mk-server-socket-file)
     (delete-file mk-server-socket-file)) ; TODO: check server is alive instead of crushing the previous one
   (server-start)
-  (add-hook 'kill-emacs-hook
-            (lambda ()
-              (when (file-exists-p mk-server-socket-file)
-                (delete-file mk-server-socket-file)))))
+  (add-lambda-hook 'kill-emacs-hook
+    (when (file-exists-p mk-server-socket-file)
+      (delete-file mk-server-socket-file))))
 
 (defun add-hook-once (hook function &optional append local)
   "Same as `add-hook', but FUN is only run once.
@@ -843,8 +834,9 @@ which is not affected by suffix optional argument."
     (erase-buffer)))
 
 (defun default-term ()
-  "Launch the default shell in a *terminal* buffer."
+  "Launch the default shell in a *terminal* buffer of a new frame."
   (interactive)
+  (select-frame (make-frame))
   (term shell-file-name))
 
 ;; lennart-borgman libraries' loaders

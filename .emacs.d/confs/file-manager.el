@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou
 ;; Created: Sat Feb 19 11:17:32 2011 (+0100)
 ;; Version: 0.8.1
-;; Last-Updated: Thu Oct 20 10:56:07 2011 (+0200)
+;; Last-Updated: Mon Oct 24 18:38:30 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 84
+;;     Update #: 85
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -49,11 +49,10 @@
 
 ;;; DIRED / DIRED-DETAILS / DIRED-EXTENSION
 ;; dired-x [guessing shell commands + dired commands for `non-dired' buffers]
-(add-hook 'dired-load-hook
-          (function (lambda ()
-                      (setq dired-dwim-target t) ; easier copies in dir mode
-                      (require 'dired-x)
-                      (define-key dired-mode-map [(control shift r)] 'dired-rar-add-files))))
+(add-lambda-hook 'dired-load-hook
+  (setq dired-dwim-target t)            ; easier copies in dir mode
+  (require 'dired-x)
+  (define-key dired-mode-map [(control shift r)] 'dired-rar-add-files))
 ;; dired-details(+) [show/hide] & dired+ [colors + bonus] & wdired(-extension) [editable]
 (eval-after-load "dired"
   '(progn

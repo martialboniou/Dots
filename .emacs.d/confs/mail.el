@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sun Oct 23 17:28:51 2011 (+0200)
+;; Last-Updated: Mon Oct 24 18:53:49 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 78
+;;     Update #: 81
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -153,34 +153,33 @@
      (let ((biff-states '(wl-modeline-biff-status
                           wl-modeline-biff-state-on
                           wl-modeline-biff-state-off))))
-     (add-hook 'wl-init-hook
-               '(lambda ()
-                   (let ((biff-states '(wl-modeline-biff-status
-                          wl-modeline-biff-state-on
-                          wl-modeline-biff-state-off)))
-                     (unless (member biff-states global-mode-string)
-                       (setq global-mode-string
-                             (cons biff-states
-                                   (cons " " global-mode-string)))))))
-     (add-hook 'wl-exit-hook '(lambda ()
-                                (unless (fboundp 'position)
-                                  (require 'cl))
-                                (let ((biff-states '(wl-modeline-biff-status
-                                                     wl-modeline-biff-state-on
-                                                     wl-modeline-biff-state-off))
-                                      (pending global-mode-string)
-                                      stop (pos 0))
-                                  (while (and (null stop) pending)
-                                    (if (equal (car pending) biff-states)
-                                        (progn
-                                          (setq stop t)
-                                          ;; remove biff and the post-interval
-                                          ;; using CDDR and SETF side-effect
-                                          (if (> pos 0)
-                                              (setf (nthcdr pos global-mode-string) (cddr (nthcdr pos global-mode-string)))
-                                            (setq global-mode-string (cddr global-mode-string))))
-                                      (incf pos))
-                                    (setq pending (cdr pending))))))
+     (add-lambda-hook 'wl-init-hook
+       (let ((biff-states '(wl-modeline-biff-status
+                            wl-modeline-biff-state-on
+                            wl-modeline-biff-state-off)))
+         (unless (member biff-states global-mode-string)
+           (setq global-mode-string
+                 (cons biff-states
+                       (cons " " global-mode-string))))))
+     (add-lambda-hook 'wl-exit-hook
+       (unless (fboundp 'position)
+         (require 'cl))
+       (let ((biff-states '(wl-modeline-biff-status
+                            wl-modeline-biff-state-on
+                            wl-modeline-biff-state-off))
+             (pending global-mode-string)
+             stop (pos 0))
+         (while (and (null stop) pending)
+           (if (equal (car pending) biff-states)
+               (progn
+                 (setq stop t)
+                 ;; remove biff and the post-interval
+                 ;; using CDDR and SETF side-effect
+                 (if (> pos 0)
+                     (setf (nthcdr pos global-mode-string) (cddr (nthcdr pos global-mode-string)))
+                   (setq global-mode-string (cddr global-mode-string))))
+             (incf pos))
+           (setq pending (cdr pending)))))
      ;; MIME-VIEW
      (eval-after-load "mime-view"
        '(progn
@@ -191,10 +190,10 @@
              (type . application)(subtype . pdf)
              (method . my-mime-save-content-find-file)))
           ;; IMPORTANT: hack needed not to truncate lines in MIME-VIEW          
-          (add-hook 'mime-view-mode-hook 'no-line-wrap-this-buffer) ; defined in <confs/defs.el>
-          (add-hook 'wl-message-redisplay-hook 'no-line-wrap-this-buffer-internal)))
+          (add-hook 'mime-view-mode-hook #'no-line-wrap-this-buffer) ; defined in <confs/defs.el>
+          (add-hook 'wl-message-redisplay-hook #'no-line-wrap-this-buffer-internal)))
      ;; BBDB
-     (remove-hook 'wl-message-redisplay-hook 'bbdb-wl-get-update-record) ; FIXME: temporary to avoid annoying mismatch bugs; fix ASAP
+     (remove-hook 'wl-message-redisplay-hook #'bbdb-wl-get-update-record) ; FIXME: temporary to avoid annoying mismatch bugs
      (define-key wl-draft-mode-map "\t" 'bbdb-complete-name) ; now TAB => BBDB
      (setq bbdb-use-pop-up t
            bbdb-electric-p t             ; be disposable with SPC
@@ -220,11 +219,11 @@
                                           file-coding-system-alist)
            bbdb/mail-auto-create-p 'bbdb-ignore-some-messages-hook
            bbdb-ignore-some-messages-alist '(("From" . "no.?reply\\|DAEMON\\|daemon\\|facebookmail\\|twitter")))
-     (add-hook 'bbdb-notice-hook 'bbdb-auto-notes-hook)
-     (add-hook 'wl-mail-setup-hook 'bbdb-insinuate-sendmail)
+     (add-hook 'bbdb-notice-hook #'bbdb-auto-notes-hook)
+     (add-hook 'wl-mail-setup-hook #'bbdb-insinuate-sendmail)
      ;; citation (see signature in confs/init/wl if any)
      ;; (mars/autoload '(("mu-cite" mu-cite-original)))
-     ;; (add-hook 'mail-citation-hook 'mu-cite-original)
+     ;; (add-hook 'mail-citation-hook #'mu-cite-original)
      ;; vCard case
      (load "ch6-bbdb-import-csv-buffer") ; Outlook vCard conversion
      (require 'bbdb-vcard-import) ; vCard import + the 2 following funs
@@ -307,9 +306,8 @@
      ;; (require 'mu-cite)
      
      ;; mailcrypt // thanks to <http://box.matto.nl/wanderlustgpg.html>
-     (require 'mailcrypt)
-     (add-hook 'wl-summary-mode-hook 'mc-install-read-mode)
-     (add-hook 'wl-mail-setup-hook 'mc-install-write-mode)
+     (add-hook 'wl-summary-mode-hook #'mc-install-read-mode)
+     (add-hook 'wl-mail-setup-hook #'mc-install-write-mode)
      (defun mc-wl-verify-signature ()
        (interactive)
        (save-window-excursion
@@ -330,8 +328,7 @@
                                   (sign    . mc-sign-message))
                    (wl-summary-mode (decrypt . mc-wl-decrypt-message)
                                     (verify  . mc-wl-verify-signature))))
-                 mc-modes-alist))))
-     ))
+                 mc-modes-alist))))))
 
 (defun mars/draft-email ()
   "Open an email draft on the default Wanderlust posting user."

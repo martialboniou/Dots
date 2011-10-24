@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 23:42:52 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Oct 24 10:40:54 2011 (+0200)
+;; Last-Updated: Mon Oct 24 11:48:36 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 54
+;;     Update #: 61
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -52,21 +52,33 @@
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
 (eval-after-load "python-mode"
   '(progn
-     (custom-set-variables
-      '(py-indent-offset 4)            ; PEP 8
-      '(indent-tabs-mode nil))
-     (define-key py-mode-map (kbd "RET") 'newline-and-indent)
-     (when (executable-find "ipython")
-       (require 'ipython))
-     (eval-after-load "ipython"
-       '(progn
-          (use-anything-show-completion 'anything-ipython-complete
-                                        '(length initial-pattern))))))
-(add-hook 'python-mode-hook
-          #'(lambda ()
-              (smart-operator-mode-on)  ; `pretty-lambda' in `confs/formats'
-              ;; NOTE: autopairs' enhancements in `confs/code'
-              ))
+     (unless (fboundp 'flet)
+       (require 'cl))
+     (flet ((py-msg-advise (app) (message (format "python-357: missing application to complete python support:\n\teasy_install %s" (prin1-to-string app)))))
+         (custom-set-variables
+          '(py-indent-offset 4)            ; PEP 8 commandment
+          '(indent-tabs-mode nil))
+       (define-key py-mode-map (kbd "RET") 'newline-and-indent)
+       ;; ipython
+       (if (executable-find "ipython")
+           (require 'ipython)
+         (py-msg-advise 'ipython))
+       (eval-after-load "ipython"
+         '(progn
+            (use-anything-show-completion 'anything-ipython-complete
+                                          '(length initial-pattern))))
+       ;; pep8
+       (unless (executable-find "pep8")
+         (py-msg-advise 'pep8))
+       ;; pylint
+       (unless (executable-find "pylint")
+         (py-msg-advise 'pylint)))
+     ;; hook
+     (add-hook 'python-mode-hook
+               #'(lambda ()
+                   (smart-operator-mode-on)  ; `pretty-lambda' in `confs/formats'
+                   ;; NOTE: autopairs' enhancements in `confs/code'
+                   ))))
 
 ;;; PYLOOKUP
 (setq pylookup-dir

@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Sun Oct 23 17:26:56 2011 (+0200)
+;; Last-Updated: Mon Oct 24 16:18:49 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 64
+;;     Update #: 87
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -78,28 +78,38 @@
 ;;; ESSENTIAL UTILITIES
 ;;;
 
-(defmacro mars/add-hook (hk &rest funs)
-  "Create hooker (mars/add-hook my-hk my-fun1 my-fun2)"
+(defmacro mars/add-hook (hook &rest funs) ; NOTE: may be deprecated soon
+  "Add some FUNS to one HOOK: (mars/add-hook my-hk my-fun1 my-fun2)."
   `(progn
-     ,@(mapcar (lambda (arg)
-                 `(add-hook (quote ,hk) (function ,arg)))
+     ,@(mapc (lambda (arg)
+                 `(add-hook (quote ,hook) (function ,arg)))
                funs)))
 
-(defmacro mars/add-hook-from-list (hk fun)
-  "Create hooker (mars/add-hook-to-list '(hk1 hk2 hk3) fun)"
-  `(progn
-     ,@(mapcar (lambda (arg)
-                 `(add-hook (quote ,arg) #',fun))
-               hk)))
-
-(defun mars/generate-mode-hook-list (list)
-  "Create a quoted list of hooks"
+(defun mars/generate-mode-hook-list (modes)
+  "Create a quoted list of hooks."
   (mapcar (lambda (arg)
-            (make-symbol (concat (symbol-name arg) "-mode-hook")))
-          list))
+            (intern (concat (symbol-name arg) "-mode-hook")))
+          modes))
+
+(defmacro add-lambda-hook (hook &rest body)
+  "Add LAMBDA to function to bind to one or many HOOKs. -- mina86@github"
+  (declare (indent 1))
+  (if (and (listp hook) (eq (car hook) 'quote)) (listp (cadr hook))
+      (let ((func (make-symbol "func")))
+        `(let
+          ((,func (lambda () ,@body)))
+          . ,(mapcar (lambda (h) `(add-hook (quote ,h) ,func))
+                     (cadr hook))))
+    `(add-hook ,hook (function (lambda () ,@body)))))
+
+(defun mars/add-hooks (hooks fun)
+  "Attach one FUN to many HOOKS: (mars/add-hook-to-list '(my-hk1 my-hk2 my-hk3) my-fun)."
+  (mapc (lambda (mode-hook)
+          (add-hook mode-hook fun))
+        hooks))
 
 (defun dont-kill-emacs ()
-  "Disallow emacs to kill on the dangerous C-x C-c command"
+  "Disallow emacs to kill on the dangerous C-x C-c command."
   (interactive)
   (error (substitute-command-keys "To exit emacs: \\[kill-emacs]")))
 

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Oct 24 17:51:01 2011 (+0200)
+;; Last-Updated: Tue Oct 25 13:36:14 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 468
+;;     Update #: 469
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -391,14 +391,13 @@ Move point to the beginning of the line, and run the normal hook
 (eval-after-load "autopair"
   '(progn
      ;; python case
-     (add-lambda-hook 'python-mode-mode
+     (add-lambda-hook 'python-mode-hook
        (push '(?' . ?') (getf autopair-extra-pairs :code))
        (setq autopair-handle-action-fns
              (list #'autopair-default-handle-action
                    #'autopair-python-triple-quote-action)))
      ;; c++ case
-     (add-lambda-hook
-         'c++-mode-hook 
+     (add-lambda-hook 'c++-mode-hook 
        (push ?{ (getf autopair-dont-pair :comment))
        (push '(?< . ?>) (getf autopair-extra-pairs :code)))
      ;; latex case

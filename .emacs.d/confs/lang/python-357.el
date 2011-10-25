@@ -6,16 +6,16 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 23:42:52 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Oct 24 11:48:36 2011 (+0200)
+;; Last-Updated: Wed Oct 26 00:09:55 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 61
+;;     Update #: 123
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: python-mode + pylookup [ + Pymacs (+ Rope) + pyflakes ]
+;;; Commentary: fgallina-python + pylookup [ + Pymacs (+ Rope) + pyflakes ]
 ;; 
 ;; 
 ;; 
@@ -45,40 +45,55 @@
 ;; 
 ;;; Code:
 
-;;; PYTHON-MODE
-;; WARNING: this mode has *no* python-mode-map / you must use hook for
-;; key bindings too (py-mode-map is for python.el provided by GNU Emacs)
-(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-(add-to-list 'interpreter-mode-alist '("python" . python-mode))
-(eval-after-load "python-mode"
+;;; GALLINA-PYTHON - NON GNU VERSION
+;; `python-mode' is better than `python' but `wisent-python' from SEMANTIC
+;; is hardcoded for `python' => fgallina@github mixed the best of both worlds
+(eval-after-load "python"
   '(progn
+     ;; ensure python-mode-map exists
+     (unless (boundp 'python-mode-map)
+       (message "python-357: Warning, you're probably using the GNU version of `python' mode (not recommended).")
+       (defvar python-mode-map (copy-keymap py-mode-map)))
+     ;; customize according to installed EGGs' binaries
      (unless (fboundp 'flet)
        (require 'cl))
-     (flet ((py-msg-advise (app) (message (format "python-357: missing application to complete python support:\n\teasy_install %s" (prin1-to-string app)))))
-         (custom-set-variables
-          '(py-indent-offset 4)            ; PEP 8 commandment
-          '(indent-tabs-mode nil))
-       (define-key py-mode-map (kbd "RET") 'newline-and-indent)
-       ;; ipython
+     (flet ((py-msg-advise (app) (message (format "python-357: missing application to complete python support:\n\tpip install %s" (prin1-to-string app)))))
+       (custom-set-variables
+        '(indent-tabs-mode nil))
+       (define-key python-mode-map (kbd "RET") 'newline-and-indent)
+       ;; ipython - interactive python toolkit
        (if (executable-find "ipython")
-           (require 'ipython)
-         (py-msg-advise 'ipython))
+           ;; (require 'ipython) ; for old python-mode
+           (py-msg-advise 'ipython))
        (eval-after-load "ipython"
          '(progn
-            (use-anything-show-completion 'anything-ipython-complete
+            (use-anything-show-completion #'anything-ipython-complete
                                           '(length initial-pattern))))
-       ;; pep8
+       ;; pep8 - style checker
        (unless (executable-find "pep8")
          (py-msg-advise 'pep8))
-       ;; pylint
+       ;; pylint - code static checker
        (unless (executable-find "pylint")
-         (py-msg-advise 'pylint)))
+         (py-msg-advise 'pylint))
+       ;; ipdb - ipython-enabled debugger
+       (unless (executable-find "ipdb")
+         (py-msg-advise 'ipdb))
+       (unless (executable-find "rope")
+         (py-msg-advise 'rope))
+       (unless (executable-find "ropemode")
+         (py-msg-advise 'ropemode))
+       ;; reimport - full featured reload
+       )
      ;; hook
-     (add-hook 'python-mode-hook
-               #'(lambda ()
-                   (smart-operator-mode-on)  ; `pretty-lambda' in `confs/formats'
-                   ;; NOTE: autopairs' enhancements in `confs/code'
-                   ))))
+     (add-lambda-hook 'python-mode-hook
+       (smart-operator-mode-on)
+       ;; PRETTY-LAMBDA set up in `confs/formats'
+       ;; AUTOPAIR's enhancements written in `confs/code'
+       (setq imenu-create-index-function 'python-imenu-create-index)
+       (add-lambda-hook 'local-write-file-hooks
+         (save-excursion
+           ;; HEADER2 case managed in `confs/formats'
+           (delete-trailing-whitespace))))))
 
 ;;; PYLOOKUP
 (setq pylookup-dir
@@ -89,15 +104,20 @@
   (let ((py-py (concat pylookup-dir "pylookup.py"))
         (py-db (concat pylookup-dir "pylookup.db")))
     (setq pylookup-program
-           (and (file-exists-p py-py) py-py))
+          (and (file-exists-p py-py) py-py))
     (setq pylookup-db-file
           (and (file-exists-p py-db) py-db))))
-;; <C-c h> to display python lookup in python-mode buffer
-(add-hook 'python-mode-hook #'(lambda ()
-                                (local-set-key "\C-ch" 'pylookup-lookup)))
+;; <C-c h> to display python lookup in python buffer
+(eval-after-load "python"
+  '(progn
+     (define-key python-mode-map "\C-ch" 'pylookup-lookup)))
 
 ;; PYMACS + ROPE TODO: eval-after-load'ing correctly
-;; (eval-after-load "python-mode"
+
+;; TRY
+;; (pymacs-load "ropemacs" "rope-")
+
+;; (eval-after-load "python"
 ;;   '(progn
 ;;      (pymacs-load "ropemacs" "rope-")
 ;;      (setq ropemacs-enable-autoimport t)
@@ -142,14 +162,13 @@
 ;;                       (setcdr (nthcdr (1- ac-limit) cand) nil))
 ;;                   (setq candidates (append candidates cand))))
 ;;               (delete-dups candidates)))
-;;           (add-hook 'python-mode-hook
-;;                     (lambda ()
-;;                       (auto-complete-mode 1)
-;;                       (set (make-local-variable 'ac-sources)
-;;                            (append ac-sources '(ac-source-rope) '(ac-source-yasnippet)))
-;;                       (set (make-local-variable 'ac-find-function) 'ac-python-find)
-;;                       (set (make-local-variable 'ac-candidate-function) 'ac-python-candidate)
-;;                       (set (make-local-variable 'ac-auto-start) nil)))
+;;           (add-lambda-hook 'python-mode-hook
+;;             (auto-complete-mode 1)
+;;             (set (make-local-variable 'ac-sources)
+;;                  (append ac-sources '(ac-source-rope) '(ac-source-yasnippet)))
+;;             (set (make-local-variable 'ac-find-function) 'ac-python-find)
+;;             (set (make-local-variable 'ac-candidate-function) 'ac-python-candidate)
+;;             (set (make-local-variable 'ac-auto-start) nil))
 ;;           ;;Ryan's python specific tab completion
 ;;           (defun ryan-python-tab ()
 ;;             (interactive)
@@ -159,12 +178,12 @@
 ;;             (set (make-local-variable 'ac-auto-start) t))
 ;;           (defadvice ac-cleanup (after advice-turn-off-auto-start activate)
 ;;             (set (make-local-variable 'ac-auto-start) nil))
-;;           (define-key py-mode-map "\t" 'ryan-python-tab)
+;;           (define-key python-mode-map "\t" 'ryan-python-tab)
 
 ;;           )) ))
 
-;; ;; FLYMAKE
-;; (add-hook 'python-mode-hook '(lambda () (flymake-mode-on)))
+;; ;; FLYMAKE ;; TODO: > `confs/code'
+;; (add-lambda-hook 'python-mode-hook (flymake-mode-on))
 ;; (eval-after-load "flymake"
 ;;   (when (load "flymake" t)
 ;;     (defun flymake-pyflakes-init ()
@@ -195,4 +214,3 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; python-357.el ends here
-

@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Mon Oct 24 19:59:42 2011 (+0200)
+;; Last-Updated: Tue Oct 25 15:22:25 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 2047
+;;     Update #: 2048
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -580,8 +580,8 @@ the should-be-forbidden C-z.")
 (recentf-mode 1)
 (eval-after-load "recentf"
   '(progn
-     (setq recentf-max-saved-items 1000
-           recentf-max-menu-items 60
+     (setq recentf-max-saved-items 50
+           recentf-max-menu-items 30
            recentf-keep '(file-remote-p file-readable-p))
      ;; open recent files according to history of mini-buffer (incl. files search
      ;; and management) or according to the list of recently loaded ones.

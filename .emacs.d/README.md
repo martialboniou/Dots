@@ -22,7 +22,7 @@ Ensure you installed the following packages via `homebrew`/`macports` on OS X or
 * `autoconf`
 * `curl`
 * `python 2.x (should be 2.7+)`
-* `setuptools` (to get python manager named `easy_install`)
+* `pip` or at least `setuptools` (to get python simple egg installer named `easy_install`)
 * `mplayer`
 * `wget` (used by `newsticker`)
 * `gnutls-cli`
@@ -46,9 +46,9 @@ To install `haskell`, I don't recommend you to install the `ghc` package and try
 
 Now you can install:
 
-* *Bazaar* installer via `python` manager:
+* *Bazaar* and *Mercurial* (`hg` command) via `python` manager:
     
-    $ easy_install bzr
+    $ pip install bzr; pip install mercurial
 
 * `darcs` distributed RCS via `cabal`, the `haskell` package manager:
 
@@ -70,7 +70,7 @@ Windows users
 -------------
 
 You will need *MSYS* and/or *MinGW* and the following program:
-``touch`, bash`, `tar`, `gzip`, `autoconf`, `make`, `svn`, `git`, `cvs`, `darcs`, `curl`, `wget`, `rake`/`ruby`, `python` and its setup tool in order to use `easy_install`. You should install *Haskell plateform* (useful to get `darcs` via `cabal`, the Haskell package manager), `bzr`, `mplayer` (to use `emms`) and/or `mpd`. For an easy installation, please, follow these instructions:
+``touch`, bash`, `tar`, `gzip`, `autoconf`, `make`, `svn`, `git`, `cvs`, `darcs`, `curl`, `wget`, `rake`/`ruby`, `python` (including `pip` or `easy_install`). You should install *Haskell plateform* (useful to get `darcs` via `cabal`, the Haskell package manager), `bzr`, `hg`, `mplayer` (to use `emms`) and/or `mpd`. For an easy installation, please, follow these instructions:
 
 * install [mingw-get-inst](http://sourceforge.net/projects/mingw/files/Automated%20MinGW%20Installer/mingw-get-inst/). By default, the installer provides you with `bash`, `gcc`, `sed`, `awk` and a lot of UN*X tools like `tar`:
 * open a *MinGW Shell* terminal and type:
@@ -94,9 +94,12 @@ To install `python`, this is the recommended way:
 * add `C:\Python2X` to your local or global `%PATH%`;
 * fetch the [setuptools](http://pypi.python.org/pypi/setuptools#downloads) for `win32` for the **Py Version** matching your `python` version number in 2.X;
 * add `C:\Python2X\Lib\site-packages\setuptools` to your local or global `%PATH%`.
+* (optional but recommended) `git clone git://github.com/pypa/pip.git`
 
-You can now install `bzr` via `easy_install`:
+You can now install `bzr` and `hg` (*mercurial* egg) via `easy_install` (or `pip`; in this case, replace `easy_install` by `pip install` in the following command line):
+
     $ easy_install bzr
+    $ easy_install mercurial
 
 After the `haskell` installation, you should get the `cabal` package manager. You should use it to build the patch-based RCS named `darcs`. You may follow the `darcs` wiki's instructions  <http://wiki.darcs.net/BuildingUnderWindows>, by  installing  [OpenSSL (32-bit)](http://www.slproweb.com/products/Win32OpenSSL.html) (not the *Light* version), executing on the *MinGW Shell* command line:
     $ cd /c/OpenSSL-Win32/lib/MinGW

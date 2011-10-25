@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Mon Oct 24 10:33:07 2011 (+0200)
+;; Last-Updated: Wed Oct 26 00:07:07 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 321
+;;     Update #: 333
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -55,8 +55,9 @@
 ;; IMPORTANT: required programs are:
 ;; - bash, touch; 
 ;; - make, autoconf, rake (need ruby; `rvm' must be installed on Un*k-like);
-;; - curl, cvs, svn, bzr, git, darcs, easy_install (via python/setuptools);
-;; - tar, gzip, unzip
+;; - curl, cvs, svn, git, darcs (best installed with `cabal' coming with haskell-platform);
+;; - hg/mercurial, bzr (both best installed with python egg manager `pip' (or `easy_install' via setuptools));
+;; - tar, gzip, unzip.
 ;; Windows users, install mingw/msys/gnuwin and complete installation with ruby/gem, python/setuptools/bzr and haskell/cabal/darcs:
 ;; NOTE: try el-get to replace pases and all this
 (defvar mars/site-lisp-package-tree nil
@@ -119,15 +120,23 @@
                                                           (nosearch . ("doc" "test" "util/jump/test" "util/test"))
                                                           ))
                                     ;; TODO: fetch all the Python/Rope install process
-                                    (python-mode        . ((get . "curl -L http://launchpad.net/python-mode/trunk/5.2.0/+download/python-mode-5.2.0.tgz | tar zx")
-                                                           (install . "emacs-compile-directory .")
-                                                           (nosearch . "website")))
+                                    ;; WARNING: `python-mode' is *not* compatible with `wisent-python' in SEMANTIC => use gallina-python.el (provided here)
+                                    ;; (python-mode        . ((get . "curl -L http://launchpad.net/python-mode/trunk/5.2.0/+download/python-mode-5.2.0.tgz | tar zx")
+                                    ;;                        (install . "emacs-compile-directory .")
+                                    ;;                        (nosearch . "website")))
+                                    ;; WARNING: python.el is installable but `generate-file-autoloads' function complains about the naming form
+                                    ;; (python.el          . ((get . "git clone git://github.com/fgallina/python.el")
+                                    ;;                        (install . "emacs-compile-directory")))
                                     (pylookup           . ((get . "git clone git://github.com/tsgates/pylookup.git") ; TODO: Issue 10 to merge for Python 2
                                                            (install . "emacs-compile-directory")
                                                            (nosearch . "python-2.7.1-docs-html"))) ; wtf this archive here / need a fork?
-                                    (Pymacs             . ((get . "git clone git://github.com/pinard/Pymacs.git")
-                                                           (install . "make install") ; install Pymacs.egg in your python site-packges TODO: may require `eshell' for root install and su/sudo
-                                                           (nosearch . ("build" "contrib" "Pymacs" "temp" "tests"))))
+                                    (Pymacs             . ((get . "git clone git://github.com/pinard/Pymacs.Git")
+                                                           (install . "make install; emacs-compile-directory") ; install Pymacs.egg in your python site-packges TODO: may require `eshell' for root install and su/sudo
+                                                           (alert . "You may install PYMACS python part by running:\n\tpip install Pymacs\n\nThen don't forget to install rope and ropemode using pip (or easy_install)")
+                                                           (nosearch . ("build" "contrib" "Pymacs" "tests"))))
+                                    (ropemacs           . ((get . "hg clone https://bitbucket.org/agr/ropemacs")
+                                                           (install . "python setup.py install")
+                                                           ))
                                     (bbdb               . ((get . "cvs -d \":pserver:anonymous:@bbdb.cvs.sourceforge.net:/cvsroot/bbdb\" checkout bbdb")
                                                            (install . "autoconf;./configure;cd lisp;make autoloadsc;cd ..; make") ; soon DEPRECATED / IMPORTANT: problem in configure on Windows: `emacs' path with spaces
                                                            (nosearch . ("autom4te.cache" "bits/bbdb-filters/doc" "html" "tex" "texinfo" "utils"))))
@@ -147,7 +156,7 @@
                                     (semi               . ((get . "git clone git://github.com/wanderlust/semi.git")
                                                            (install . "make LISPDIR=..")))
                                     (wanderlust         . ((get     . "cvs -d :pserver:anonymous@cvs.m17n.org:/cvs/root checkout wanderlust")
-;; (get . "git clone git://github.com/wanderlust/wanderlust.git") ; is out of sync and induces error on emacs 24
+                                                           ;; (get . "git clone git://github.com/wanderlust/wanderlust.git") ; is out of sync and induces error on emacs 24
                                                            (install . "echo \"(setq load-path (append (list \\\"$PWD/../apel\\\" \\\"$PWD/../flim\\\" \\\"$PWD/../semi\\\") load-path))(setq wl-install-utils t)\" > WL-CFG;make") ; let wl, elmo & utils *uninstalled*
                                                            (nosearch . ("doc" "etc" "samples" "tests"))))
                                     (org-mode           . ((get . "git clone git://orgmode.org/org-mode.git")

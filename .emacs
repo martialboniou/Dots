@@ -359,7 +359,6 @@ ROOT                        => ROOT"
 ;;; MODAL EDITING & COLOR-THEME WITH PARENTHESES' SUPPORT
 (if (not (null *i-am-a-vim-user*))
     (progn
-      (message "checked")
       (conf-load "vim-everywhere")) ; vimpulse (incl. parens' matching) + colorscheme
   (progn
     (require 'mic-paren)         ; faces for (mis)matching parentheses

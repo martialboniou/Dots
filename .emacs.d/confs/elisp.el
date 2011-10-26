@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 10:19:49 2011 (+0100)
 ;; Version:
-;; Last-Updated: Thu Oct  6 21:15:21 2011 (+0200)
+;; Last-Updated: Wed Oct 26 10:26:46 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 26
+;;     Update #: 27
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -192,7 +192,8 @@ in `util/ourcomments-util' of the `nxhtml' package."
 
 ;;; UNIT TESTS
 ;;
-(ert2-loader)                           ; ensure to load lennart-borgman
+;; (ert2-loader)
+                                        ; ensure to load lennart-borgman
                                         ; tools included in NXHTML library
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

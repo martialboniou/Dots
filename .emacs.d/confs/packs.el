@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Wed Oct 26 00:07:07 2011 (+0200)
+;; Last-Updated: Wed Oct 26 10:46:02 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 333
+;;     Update #: 335
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -162,6 +162,9 @@
                                     (org-mode           . ((get . "git clone git://orgmode.org/org-mode.git")
                                                            (install . "make; emacs-compile-directory contrib/lisp") ; compile contrib too
                                                            (nosearch . ("BUGFIXING" "EXPERIMENTAL" "UTILITIES" "contrib/babel" "contrib/doc" "contrib/odt" "contrib/scripts" "doc" "testing"))))
+                                    (multi-web-mode     . ((get . "git clone git://github.com/fgallina/multi-web-mode.git")
+                                                           (install . "emacs-compile-directory")))
+                                    ;; TODO: nxhtml may be not used anymore (installer will be maintained to use `ert2' in `confs/elisp' and configuration will be available if required)
                                     (nxhtml             . ((get . "bzr branch lp:nxhtml")
                                                            ;; the following version is not fully compatible with 23 due to deprecated face + a bug I found about remove-hooking Viper in `util/mumamo'
                                                            ;; (get . "curl http://ourcomments.org/Emacs/DL/elisp/nxhtml/zip/nxhtml-2.08-100425.zip > _nxhtml.zip; unzip _nxhtml.zip; rm _nxhtml.zip") ; `unzip' is not pipe-friendly

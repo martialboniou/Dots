@@ -6,16 +6,16 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 21:14:44 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Oct  6 21:10:14 2011 (+0200)
+;; Last-Updated: Wed Oct 26 11:16:36 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 8
+;;     Update #: 24
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: Nxhtml & MuMaMo / Espresso (JavaScript)
+;;; Commentary: mweb / js / nxhtml (WARNING: unused)
 ;; 
 ;; 
 ;; 
@@ -45,52 +45,39 @@
 ;; 
 ;;; Code:
 
+(defvar nxhtml-env nil)
 
-;;; NXHTML
-(nxhtml-loader)                         ; defined in DEFS
-
-  ;; PHP/CSS/HTML/JavaScript
-  ;; (autoload 'nxhtml-mumamo-mode "~/.emacs.d/packages/nxhtml/autostart.el" nil t)
-  ;; (setq mumamo-chunk-coloring 'submode-colored)
-  ;; (setq nxhtml-skip-welcome t)
-  ;; (setq rng-nxml-auto-validate-flag nil)
-  ;; (add-to-list 'auto-mode-alist '("\\.\\(ctp\\|xml\\|htm\\|html\\|xslt\\|pt\\|zcm\\|xsl\\|rhtml\\|php\\|inc\\)\\'" . nxhtml-mumamo))
-
-  ;; (defvar hexcolour-keywords
-  ;;   '(("#[abcdef[:digit:]]\\{6\\}"
-  ;;      (0 (put-text-property
-  ;;          (match-beginning 0)
-  ;;          (match-end 0)
-  ;;          'face (list :background
-  ;;                      (match-string-no-properties 0)))))))
-  ;; (defun hexcolour-add-to-font-lock ()
-  ;;   (font-lock-add-keywords nil hexcolour-keywords))
-  ;; (add-hook 'css-mode-hook 'hexcolour-add-to-font-lock)
-  ;; (remove-hook 'css-mode-hook 'hexcolour-add-to-font-lock)
-
-;;; auto-complete and snippets
- ;;  (setq my-snippets-root "~/.emacs.d/packages/yasnippet/")
-;;   (setq my-yasnippet-directory-root "~/.emacs.d/data/Snippets/")
-;;   (require 'yasnippet)
-;;   (setq yas/trigger-key (kbd "S-SPC"))
-;;   (yas/initialize)
-;;   (add-hook 'yas/minor-mode-on-hook
-;;             '(lambda ()
-;;                (define-key yas/minor-mode-map yas/trigger-key 'yas/expand)))
-;;   (setq yas/root-directory (list
-;;                             (concat my-snippets-root "snippets")
-;;                             (concat my-snippets-root "yasnippets-rails/rails-snippets")))
-;;   (when (boundp 'my-yasnippet-directory-root) ; martial's snippets (03-2009)
-;;     (add-to-list 'yas/root-directory my-yasnippet-directory-root)) ; main directory
-;;   (mapc 'yas/load-directory yas/root-directory) ; don't use #'yas/load-directory
-;;   (setq yas/global-mode t)
-;; ;  (require 'auto-complete-yasnippet)
-;;   )
-;; (define-key c-mode-base-map [f7] 'c-reformat-buffer)
-
-;;; ESPRESSO
-(add-to-list 'auto-mode-alist '("\\.js$"    . espresso-mode))
-(add-to-list 'auto-mode-alist '("\\.json$"  . espresso-mode))
+;; MWEB
+(unless nxhtml-env
+  (load-library "mweb-example-config"))
+
+;;; JS (was ESPRESSO)
+(unless (or (> emacs-major-version 23)
+            (and (= emacs-major-version 23)
+                 (> emacs-minor-version 1)))
+  (add-to-list 'auto-mode-alist '("\\.js$"    . espresso-mode))
+  (add-to-list 'auto-mode-alist '("\\.json$"  . espresso-mode)))
+
+;;; NXHTML - not recommended
+(when nxhtml-env
+  (nxhtml-loader))                      ; defined in `confs/defs'
+(autoload 'nxhtml-mumamo-mode "~/.emacs.d/packages/nxhtml/autostart.el" nil t)
+(eval-after-load "nxhtml-mumamo-mode"
+  '(progn
+     (setq mumamo-chunk-coloring 'submode-colored)
+     (setq nxhtml-skip-welcome t)
+     (setq rng-nxml-auto-validate-flag nil)
+     (add-to-list 'auto-mode-alist '("\\.\\(ctp\\|xml\\|htm\\|html\\|xslt\\|pt\\|zcm\\|xsl\\|rhtml\\|php\\|inc\\)\\'" . nxhtml-mumamo))
+     (defvar hexcolour-keywords
+       '(("#[abcdef[:digit:]]\\{6\\}"
+          (0 (put-text-property
+              (match-beginning 0)
+              (match-end 0)
+              'face (list :background
+                          (match-string-no-properties 0)))))))
+     (defun hexcolour-add-to-font-lock ()
+       (font-lock-add-keywords nil hexcolour-keywords))
+     (add-hook 'css-mode-hook 'hexcolour-add-to-font-lock)))
 
 (provide 'web-programming)
 

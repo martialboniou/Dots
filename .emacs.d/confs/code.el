@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Oct 25 13:36:14 2011 (+0200)
+;; Last-Updated: Wed Oct 26 11:00:12 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 469
+;;     Update #: 470
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -606,7 +606,7 @@ Then save the file as \"my-file.dot\" and run
   ;; (require 'church-inspired)            ; for lisp (including scheme)
   ;; (require 'marseille)                  ; for logic and expert programming (including prolog)
   (require 'peyton-jones-family)        ; for ML family and shenlanguage.org (better place than 'CHURCH-INSPIRED or 'MARSEILLE)
-  ;;(require 'web-programming)            ; for web languages (nxhtml/espresso)
+  (require 'web-programming)            ; for web languages (mweb or nxhtml)
   (require 'python-357)                 ; for python
 )
 

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 21:14:44 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Oct 26 18:48:41 2011 (+0200)
+;; Last-Updated: Wed Oct 26 21:47:50 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 30
+;;     Update #: 38
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -48,8 +48,8 @@
 (defvar nxhtml-env nil)
 
 ;; MWEB
-;; (unless nxhtml-env
-;;   (load-library "mweb-example-config"))
+(unless nxhtml-env
+  (load-library "mweb-example-config"))
 
 ;;; JS (was ESPRESSO)
 (unless (or (> emacs-major-version 23)
@@ -59,6 +59,10 @@
   (add-to-list 'auto-mode-alist '("\\.json$"  . espresso-mode)))
 
 ;;; PHP
+(dolist (php-exts '("\\.php[s34]?\\'"
+                    "\\.phtml\\'"
+                    "\\.inc\\'"))
+  (add-to-list 'auto-mode-alist (cons php-exts 'php-mode)))
 ;; provided php-mode 1.5.0 or Nxhtml version if enabled
 (eval-after-load "php-mode"
   '(progn

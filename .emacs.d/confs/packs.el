@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Wed Oct 26 14:53:50 2011 (+0200)
+;; Last-Updated: Wed Oct 26 22:24:02 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 336
+;;     Update #: 337
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -74,6 +74,8 @@
                                     (anything-config . ((get . "git clone git://repo.or.cz/anything-config.git")
                                                         (install . "make")
                                                         (nosearch . ("developer-tools" "doc"))))
+                                    ;; (viper-in-more-modes . ((get . "git clone git://gitorious.org/viper-in-more-modes/viper-in-more-modes.git")
+                                    ;;                         (install . "emacs-compile-directory")))
                                     (undo-tree    . ((get . "git clone http://www.dr-qubit.org/git/undo-tree.git")
                                                      (install . "emacs-compile-directory") ; do it from emacs
                                                      ))

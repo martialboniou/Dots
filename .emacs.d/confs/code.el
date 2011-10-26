@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Oct 26 11:00:12 2011 (+0200)
+;; Last-Updated: Wed Oct 26 21:06:08 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 470
+;;     Update #: 473
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -384,7 +384,7 @@ Move point to the beginning of the line, and run the normal hook
                              (mars/generate-mode-hook-list
                               '(python    ; python-mode's autopairs support is extended
                                           ; to work with single and triple quotes
-                                scala erlang
+                                php scala erlang
                                 ;; ruby   ; WARNING: clash with ruby-electric
                                 latex))))
 (mars/add-hooks autopair-hooks #'(lambda () (autopair-mode 1)))

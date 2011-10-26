@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Oct 24 16:23:34 2011 (+0200)
+;; Last-Updated: Wed Oct 26 18:03:26 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 106
+;;     Update #: 110
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -219,8 +219,9 @@ Otherwise the update regexps won't match."
 (alias-minor-modes
  '(undo-tree UT
    abbrev    Ab
-   autopair  Pr
-   paredit   PE))
+   autopair  AP
+   paredit   PE
+   flymake   FM))
 
 ;;; PRETTY-LAMBDA
 ;; replace LAMBDA -> λ

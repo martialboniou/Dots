@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
 ;; Version:
-;; Last-Updated: Mon Oct 24 19:00:06 2011 (+0200)
+;; Last-Updated: Wed Oct 26 19:43:22 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 107
+;;     Update #: 129
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -46,31 +46,46 @@
 (unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
 
 ;;; FLYMAKE
+(mars/add-hooks '(emacs-lisp-mode-hook
+                  php-mode-hook
+                  python-mode-hook)
+                #'(lambda () (when buffer-file-name (flymake-mode 1))))
 (eval-after-load "flymake"
   '(progn
-     ;; (add-hook 'find-file-hook #'flymake-find-file-hook)
-     ;; php case TODO: move to web-programming
-     (eval-after-load "nxhtml"
-       '(progn
-          (defun flymake-php-init ()
-            "Use php to check the syntax of the current file."
-            (let* ((temp (flymake-init-create-temp-buffer-copy 'flymake-create-temp-inplace))
-                   (local (file-relative-name temp (file-name-directory buffer-file-name))))
-              (list "php" (list "-f" local "-l"))))
-          (add-to-list 'flymake-err-line-patterns
-                       '("\\(Parse\\|Fatal\\) error: +\\(.*?\\) in \\(.*?\\) on line \\([0-9]+\\)$" 3 4 nil 2))
-          (defmacro add-php-flymake-masks (&rest extensions)
-            `(progn
-               ,@(mapcar (lambda (x)
-                         `(add-to-list
-                           'flymake-allowed-file-name-masks
-                           '(,x flymake-php-init)))
-                       extensions)))
-          (add-php-flymake-masks "\\.php$" "\\.module$" "\\.install$" "\\.inc$" "\\.engine$")))
-;;     (add-lambda-hook 'php-mode-hook (flymake-mode 1))
-;;     (define-key php-mode-map '[C-S-h] 'flymake-goto-prev-error)
-;;     (define-key php-mode-map '[C-S-l] 'flymake-goto-prev-error)
-))
+     (add-hook 'find-file-hook #'flymake-find-file-hook)
+     (bind-keys
+      '("M-h" 'flymake-goto-prev-error
+        "M-l" 'flymake-goto-next-error))
+     ;; show help
+     (defun my-flymake-show-help ()
+       (when (get-char-property (point) 'flymake-overlay)
+         (let ((help (get-char-property (point) 'help-echo)))
+           (when help (message (format "%s" help))))))
+     (add-hook 'post-command-hook 'my-flymake-show-help)
+     ;; elisp case
+     (defun flymake-elisp-init ()
+       (unless (string-match "^ " (buffer-name))
+         (let* ((temp-file   (flymake-init-create-temp-buffer-copy
+                              'flymake-create-temp-inplace))
+                (local-file  (file-relative-name
+                              temp-file
+                              (file-name-directory buffer-file-name))))
+           (list
+            (expand-file-name invocation-name invocation-directory)
+            (list
+             "-Q" "--batch" "--eval"
+             (prin1-to-string
+              '(dolist (file command-line-args-left)
+                (with-temp-buffer
+                  (insert-file-contents file)
+                  (condition-case data
+                      (scan-sexps (point-min) (point-max))
+                    (scan-error
+                     (goto-char(nth 2 data))
+                     (princ (format "%s:%s: error: Unmatched bracket or quote\n"
+                                    file (line-number-at-pos))))))))
+             local-file)))))
+     (push '("\\.el$" flymake-elisp-init) flymake-allowed-file-name-masks)))
 
 ;;; HIPPIE-EXPAND
 (eval-after-load "hippie-exp"           ; should be bound to C-p and use

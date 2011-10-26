@@ -6,16 +6,16 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 23:42:52 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Oct 26 00:09:55 2011 (+0200)
+;; Last-Updated: Wed Oct 26 17:56:54 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 123
+;;     Update #: 131
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: fgallina-python + pylookup [ + Pymacs (+ Rope) + pyflakes ]
+;;; Commentary: fgallina-python & pyflakes / pylookup [ / Pymacs + Rope ]
 ;; 
 ;; 
 ;; 
@@ -54,35 +54,48 @@
      (unless (boundp 'python-mode-map)
        (message "python-357: Warning, you're probably using the GNU version of `python' mode (not recommended).")
        (defvar python-mode-map (copy-keymap py-mode-map)))
+     ;; indent
+     (custom-set-variables '(indent-tabs-mode nil))
+;;     (define-key python-mode-map (kbd "RET") 'newline-and-indent)
      ;; customize according to installed EGGs' binaries
      (unless (fboundp 'flet)
        (require 'cl))
+     ;; inform flymake about pyflakes
+      (eval-after-load "flymake"
+       '(progn
+          (when (executable-find "pyflakes")
+            (defun flymake-pyflakes-init ()
+              (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                                 'flymake-create-temp-inplace))
+                     (local-file (file-relative-name temp-file
+                                                     (file-name-directory buffer-file-name))))
+                (list "pyflakes" (list local-file))))
+            (add-to-list 'flymake-allowed-file-name-masks
+                         '("\\.py\\'" flymake-pyflakes-init))))) ; this hook-function should be set in `confs/rectify'
      (flet ((py-msg-advise (app) (message (format "python-357: missing application to complete python support:\n\tpip install %s" (prin1-to-string app)))))
-       (custom-set-variables
-        '(indent-tabs-mode nil))
-       (define-key python-mode-map (kbd "RET") 'newline-and-indent)
+       
        ;; ipython - interactive python toolkit
-       (if (executable-find "ipython")
-           ;; (require 'ipython) ; for old python-mode
-           (py-msg-advise 'ipython))
+       ;; (if (executable-find "ipython")
+       ;;     ;; (require 'ipython) ; for old python-mode
+       ;;     (py-msg-advise 'ipython))
        (eval-after-load "ipython"
          '(progn
             (use-anything-show-completion #'anything-ipython-complete
                                           '(length initial-pattern))))
        ;; pep8 - style checker
-       (unless (executable-find "pep8")
-         (py-msg-advise 'pep8))
-       ;; pylint - code static checker
-       (unless (executable-find "pylint")
-         (py-msg-advise 'pylint))
-       ;; ipdb - ipython-enabled debugger
-       (unless (executable-find "ipdb")
-         (py-msg-advise 'ipdb))
-       (unless (executable-find "rope")
-         (py-msg-advise 'rope))
-       (unless (executable-find "ropemode")
-         (py-msg-advise 'ropemode))
-       ;; reimport - full featured reload
+       ;; (unless (executable-find "pep8")
+       ;;   (py-msg-advise 'pep8))
+       ;; ;; pylint - code static checker
+       ;; (unless (executable-find "pylint")
+       ;;   (py-msg-advise 'pylint))
+       ;; ;; ipdb - ipython-enabled debugger
+       ;; (unless (executable-find "ipdb")
+       ;;   (py-msg-advise 'ipdb))
+       ;; (unless (executable-find "rope")
+       ;;   (py-msg-advise 'rope))
+       ;; (unless (executable-find "ropemode")
+       ;;   (py-msg-advise 'ropemode))
+       ;; ;; reimport - full featured reload
        )
      ;; hook
      (add-lambda-hook 'python-mode-hook
@@ -181,20 +194,6 @@
 ;;           (define-key python-mode-map "\t" 'ryan-python-tab)
 
 ;;           )) ))
-
-;; ;; FLYMAKE ;; TODO: > `confs/code'
-;; (add-lambda-hook 'python-mode-hook (flymake-mode-on))
-;; (eval-after-load "flymake"
-;;   (when (load "flymake" t)
-;;     (defun flymake-pyflakes-init ()
-;;       (let* ((temp-file (flymake-init-create-temp-buffer-copy
-;;                          'flymake-create-temp-inplace))
-;;              (local-file (file-relative-name
-;;                           temp-file
-;;                           (file-name-directory buffer-file-name))))
-;;         (list "pyflakes" (list local-file))))
-;;     (add-to-list 'flymake-allowed-file-name-masks
-;;                  '("\\.py\\'" flymake-pyflakes-init))))
 
 (provide 'python-357)
 

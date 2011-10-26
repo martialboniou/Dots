@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Wed Oct 26 10:46:02 2011 (+0200)
+;; Last-Updated: Wed Oct 26 14:53:50 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 335
+;;     Update #: 336
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -130,8 +130,8 @@
                                     (pylookup           . ((get . "git clone git://github.com/tsgates/pylookup.git") ; TODO: Issue 10 to merge for Python 2
                                                            (install . "emacs-compile-directory")
                                                            (nosearch . "python-2.7.1-docs-html"))) ; wtf this archive here / need a fork?
-                                    (Pymacs             . ((get . "git clone git://github.com/pinard/Pymacs.Git")
-                                                           (install . "make install; emacs-compile-directory") ; install Pymacs.egg in your python site-packges TODO: may require `eshell' for root install and su/sudo
+                                    (Pymacs             . ((get . "git clone git://github.com/pinard/Pymacs.git")
+                                                           (install . "make; emacs-compile-directory") ; install Pymacs.egg in your python site-packges TODO: may require `eshell' for root install and su/sudo
                                                            (alert . "You may install PYMACS python part by running:\n\tpip install Pymacs\n\nThen don't forget to install rope and ropemode using pip (or easy_install)")
                                                            (nosearch . ("build" "contrib" "Pymacs" "tests"))))
                                     (ropemacs           . ((get . "hg clone https://bitbucket.org/agr/ropemacs")

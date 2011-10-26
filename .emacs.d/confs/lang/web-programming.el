@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 21:14:44 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Oct 26 11:16:36 2011 (+0200)
+;; Last-Updated: Wed Oct 26 18:48:41 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 24
+;;     Update #: 30
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -48,8 +48,8 @@
 (defvar nxhtml-env nil)
 
 ;; MWEB
-(unless nxhtml-env
-  (load-library "mweb-example-config"))
+;; (unless nxhtml-env
+;;   (load-library "mweb-example-config"))
 
 ;;; JS (was ESPRESSO)
 (unless (or (> emacs-major-version 23)
@@ -57,6 +57,28 @@
                  (> emacs-minor-version 1)))
   (add-to-list 'auto-mode-alist '("\\.js$"    . espresso-mode))
   (add-to-list 'auto-mode-alist '("\\.json$"  . espresso-mode)))
+
+;;; PHP
+;; provided php-mode 1.5.0 or Nxhtml version if enabled
+(eval-after-load "php-mode"
+  '(progn
+     (eval-after-load "flymake"
+       '(progn
+          (defun flymake-php-init ()
+            "Use php to check the syntax of the current file. -- sacha chua"
+            (let* ((temp (flymake-init-create-temp-buffer-copy 'flymake-create-temp-inplace))
+                   (local (file-relative-name temp (file-name-directory buffer-file-name))))
+              (list "php" (list "-f" local "-l"))))
+          (add-to-list 'flymake-err-line-patterns
+                       '("\\(Parse\\|Fatal\\) error: +\\(.*?\\) in \\(.*?\\) on line \\([0-9]+\\)$" 3 4 nil 2))
+          (defmacro add-php-flymake-masks (&rest extensions)
+            `(progn
+               ,@(mapcar (lambda (x)
+                           `(add-to-list
+                             'flymake-allowed-file-name-masks
+                             '(,x flymake-php-init)))
+                         extensions)))
+          (add-php-flymake-masks "\\.php$" "\\.module$" "\\.install$" "\\.inc$" "\\.engine$")))))
 
 ;;; NXHTML - not recommended
 (when nxhtml-env

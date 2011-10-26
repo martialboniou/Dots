@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Tue Oct 25 15:22:25 2011 (+0200)
+;; Last-Updated: Wed Oct 26 19:42:47 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 2048
+;;     Update #: 2049
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map

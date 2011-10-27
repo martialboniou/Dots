@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Mon Oct 24 20:03:59 2011 (+0200)
+;; Last-Updated: Thu Oct 27 11:35:41 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 96
+;;     Update #: 97
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -836,8 +836,15 @@ which is not affected by suffix optional argument."
 (defun default-term ()
   "Launch the default shell in a *terminal* buffer of a new frame."
   (interactive)
-  (select-frame (make-frame))
-  (term shell-file-name))
+  (let* ((buf (get-buffer "*terminal*"))
+         (win (when buf (get-buffer-window buf t))))
+    (if win
+        (progn
+          (raise-frame (window-frame win))
+          (select-window win))
+      (progn
+       (select-frame (make-frame))
+       (term shell-file-name)))))
 
 ;; lennart-borgman libraries' loaders
 (defun nxhtml-loader ()

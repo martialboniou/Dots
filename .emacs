@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 3.0
-;; Last-Updated: Wed Oct 26 19:42:47 2011 (+0200)
+;; Last-Updated: Thu Oct 27 13:57:36 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 2049
+;;     Update #: 2054
 ;; URL: hondana.net/private/emacs-lisp
 ;; Keywords:
 ;; Compatibility: C-\ is linked to Esc-map
@@ -435,7 +435,6 @@ ROOT                        => ROOT"
    "C-x F"     ido-recentf
    "C-x f"     ido-find-file ; may be called from `ido-switch-buffer' (doing C-x C-b C-f) [but use [(jxjf)] in `sticky-control']
    "C-="       shell-command
-
    "M-n"       new-frame                ; XXX check if no issue
    "M-<f2>"    apply-macro-to-region-lines ; use F3/F4 for kmacro start/end
    "C-c o"     anything-occur              ; or simply occur ?
@@ -675,7 +674,7 @@ the should-be-forbidden C-z.")
   (setq eshell-path-env (getenv "PATH")))
 
 ;; bytecompile .emacs and files in `conf-path' on change
-(when (functionp 'byte-compile-user-init-file)
+(when (functionp #'byte-compile-user-init-file)
   (defun mars/byte-compile-user-init-hook ()
     (when (equal buffer-file-name user-init-file)
       (add-hook 'after-save-hook #'byte-compile-user-init-file t t)))
@@ -821,3 +820,8 @@ the should-be-forbidden C-z.")
 
 ;; flag boot w/o error
 (defvar *emacs/boot-without-error*)
+
+;; compile eventually
+(unless (or (file-exists-p (concat user-init-file ".elc")) 
+            (null (functionp #'byte-compile-user-init-file)))
+  (byte-compile-file user-init-file))

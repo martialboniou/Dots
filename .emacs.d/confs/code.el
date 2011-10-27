@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Oct 26 21:06:08 2011 (+0200)
+;; Last-Updated: Thu Oct 27 10:50:19 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 473
+;;     Update #: 474
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -406,9 +406,9 @@ Move point to the beginning of the line, and run the normal hook
             (list #'autopair-default-handle-action
                   #'autopair-latex-mode-paired-delimiter-action)))
      ;; emacs-lisp case (WARNING: unused)
-     (add-lambda-hook 'emacs-lisp-mode-hook
-       (push '(?` . ?') (getf autopair-extra-pairs :comment))
-       (push '(?` . ?') (getf autopair-extra-pairs :string)))
+     ;; (add-lambda-hook 'emacs-lisp-mode-hook
+     ;;   (push '(?` . ?') (getf autopair-extra-pairs :comment))
+     ;;   (push '(?` . ?') (getf autopair-extra-pairs :string)))
      (require 'auto-pair+)))
 
 ;;; PAREDIT + HIGHLIGHT-PARENTHESES

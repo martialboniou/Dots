@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Mon Oct 24 19:47:26 2011 (+0200)
+;; Last-Updated: Thu Oct 27 12:05:57 2011 (+0200)
 ;;           By:
-;;     Update #: 265
+;;     Update #: 269
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -113,7 +113,7 @@
      ;;    so there's no need to add 'mic-paren)
 
      ;; 4- line numbering
-     (require 'linum-settings)
+     (require 'linum-settings)          ; WARNING: multi-web-mode tags' mode must be linum-ed
 
      ;; 5- colorize numbers, todos & warnings
      (defface font-lock-number-face

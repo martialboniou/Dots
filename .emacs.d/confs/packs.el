@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Wed Oct 26 22:24:02 2011 (+0200)
+;; Last-Updated: Thu Oct 27 14:12:22 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 337
+;;     Update #: 338
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -164,7 +164,7 @@
                                     (org-mode           . ((get . "git clone git://orgmode.org/org-mode.git")
                                                            (install . "make; emacs-compile-directory contrib/lisp") ; compile contrib too
                                                            (nosearch . ("BUGFIXING" "EXPERIMENTAL" "UTILITIES" "contrib/babel" "contrib/doc" "contrib/odt" "contrib/scripts" "doc" "testing"))))
-                                    (multi-web-mode     . ((get . "git clone git://github.com/fgallina/multi-web-mode.git")
+                                    (multi-web-mode     . ((get . "git clone git://github.com/martialboniou/multi-web-mode.git")
                                                            (install . "emacs-compile-directory")))
                                     ;; TODO: nxhtml may be not used anymore (installer will be maintained to use `ert2' in `confs/elisp' and configuration will be available if required)
                                     (nxhtml             . ((get . "bzr branch lp:nxhtml")

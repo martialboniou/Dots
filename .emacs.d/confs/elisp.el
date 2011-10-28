@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 10:19:49 2011 (+0100)
 ;; Version:
-;; Last-Updated: Wed Oct 26 10:26:46 2011 (+0200)
+;; Last-Updated: Fri Oct 28 12:35:44 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 27
+;;     Update #: 29
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -195,6 +195,15 @@ in `util/ourcomments-util' of the `nxhtml' package."
 ;; (ert2-loader)
                                         ; ensure to load lennart-borgman
                                         ; tools included in NXHTML library
+(add-hook 'emacs-lisp-mode-hook
+          #'(lambda ()
+              (font-lock-add-keywords
+               nil
+               '(("(\\(\\<ert-deftest\\)\\>\\s *\\(\\sw+\\)?"
+                  (1 font-lock-keyword-face nil t)
+                  (2 font-lock-function-name-face nil t))))))
+(put 'ert-deftest 'lisp-indent-function 'defun)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; elisp.el ends here

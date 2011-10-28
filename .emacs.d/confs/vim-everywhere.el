@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Thu Oct 27 12:05:57 2011 (+0200)
+;; Last-Updated: Fri Oct 28 17:02:48 2011 (+0200)
 ;;           By:
-;;     Update #: 269
+;;     Update #: 274
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -81,7 +81,7 @@
     (let ((default-conf (conf-locate "default.viper")))
       (when default-conf
         (setq viper-custom-file-name (convert-standard-filename default-conf))))))
-(setq viper-toggle-key "\C-x\C-z" ; no more C-z ('minimize' then works on Mac)
+(setq viper-toggle-key "\C-x\C-z" ; no more C-z -- 'minimize' then works on Mac
       viper-mode t)
 (require 'viper)
 
@@ -92,7 +92,7 @@
      (eval-after-load "vimpulse"
        '(progn
           (define-key viper-vi-global-user-map [(control kp-delete)] nil)
-          ;; add C-w outside vimpulse (eg. C-w C-w -> other-window)
+          ;; add C-w outside vimpulse -- eg. C-w C-w -> other-window
           (fset 'vimpulse-like-window-map (copy-keymap vimpulse-window-map))
           (eval-after-load "dired"
             '(progn
@@ -109,8 +109,8 @@
      (color-theme-initialize)
      (require 'parenface)
 
-     ;; 3- nothing to add (mis)match parentheses (vimpulse uses 'show-parens
-     ;;    so there's no need to add 'mic-paren)
+     ;; 3- nothing to add (mis)match parentheses -- vimpulse uses 'show-parens
+     ;;    so there's no need to add 'mic-paren
 
      ;; 4- line numbering
      (require 'linum-settings)          ; WARNING: multi-web-mode tags' mode must be linum-ed
@@ -181,7 +181,7 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
                                  '(("\\(FIXME:\\|TODO:\\)"
                                     1 font-lock-builtin-face prepend))) ; FIXME: builtin here b/c todo is too grayish in `Wombat256mod'
          (font-lock-add-keywords mode
-                                 '(("\\(IMPORTANT:\\|WARNING:\\|NOTE:\\|DEPRECATED\\)"
+                                 '(("\\(IMPORTANT:\\|WARNING:\\|NOTE:\\|UNTESTED\\|DEPRECATED\\)"
                                     1 font-lock-notify-face prepend)))
          (font-lock-add-keywords mode
                                  '(("\\(ERROR:\\|XXX\\|OBSOLETE\\)"
@@ -217,7 +217,7 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
      (push '("close" (delete-window))        ex-token-alist)
      (define-key viper-vi-global-user-map " d" 'viper-kill-buffer)
      (when *i-am-a-terminator*
-       ;; (global-unset-key "\C-h")
+       ;; global-unset-key "\C-h"
        (define-key viper-vi-global-user-map "\C-h" 'viper-backward-char)
        (define-key viper-insert-global-user-map "\C-h" 'viper-delete-backward-char))
 
@@ -232,7 +232,7 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
      (setq viper-emacs-state-id (concat (propertize "<E>" 'face 'hi-red-b) " "))
      (put 'viper-mode-string 'risky-local-variable t)
 
-     ;; choose a theme according to your Vim setup (~/.vimrc by default)
+     ;; choose a theme according to your Vim setup -- ~/.vimrc by default
      (defvar *color-theme-header* "color-theme-vim-"
        "The string to add as a color-theme prefix.")
 

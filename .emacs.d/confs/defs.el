@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Thu Oct 27 11:35:41 2011 (+0200)
+;; Last-Updated: Fri Oct 28 17:08:52 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 97
+;;     Update #: 114
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -68,7 +68,7 @@
 
 (unless (boundp 'mars/eternal-buffer-list)
     (setq mars/eternal-buffer-list '("*scratch*")))
-;;(if (and (boundp 'mars/local-root-dir) (boundp 'mars/local-conf-path))
+;;(if (and (boundp 'mars/local-root-dir) (boundp 'mars/local-conf-path)))
 (setq *emacs/init-path* (cond ((and (boundp 'mars/local-root-dir)
                     (boundp 'mars/local-conf-path))
                    (mapcar '(lambda (x) (concat (file-name-as-directory mars/local-root-dir) x))
@@ -100,7 +100,7 @@
             (add-hook mode-hook fun))
         hooks))
 
-(defun dont-kill-emacs ()
+(defun dont-kill-emacs ()               ; UNTESTED
   "Disallow emacs to kill on the dangerous C-x C-c command."
   (interactive)
   (error (substitute-command-keys "To exit emacs: \\[kill-emacs]")))
@@ -114,7 +114,7 @@
         (delete-file byte-init-file))
       (byte-compile-file user-init-file))))
 
-(defun smart-tab ()
+(defun smart-tab ()                     ; UNTESTED
   "This smart tab is minibuffer compliant: it acts as usual in
 the minibuffer. Else, if mark is active, indents region. Else if
 point is at the end of a symbol, expands it. Else indents the
@@ -130,7 +130,7 @@ current line."
           (hippie-expand nil)
         (indent-for-tab-command)))))
 
-(defun indent-or-expand (arg)
+(defun indent-or-expand (arg)           ; UNTESTED
   "Either indent according to mode, or expand the word preceding point."
   (interactive "*P")
   (if (and
@@ -139,7 +139,7 @@ current line."
       (dabbrev-expand arg)
       (indent-according-to-mode)))
 
-(defun name-conf-file (name)            ; OBSOLETE
+(defun name-conf-file (name)            ; UNTESTED & OBSOLETE
   "Generates a complete name for a configuration file according to the `Emacs' version."
   (let ((root-filename (concat "~/.emacs-" name))
         (subdir        "~/.emacs.d/")
@@ -157,7 +157,7 @@ current line."
       (concat x-subdir name))
      (t root-filename))))
 
-(defmacro defun-dummy (configuration-case &rest source-funs)
+(defmacro defun-dummy (configuration-case &rest source-funs) ; UNTESTED
   "Creates dummy functions if not bound and associates a possible
 file to load it. Useful for keybindings referring to functions without
 autoloads (generally non site-lisp files like `configuration' files
@@ -178,7 +178,7 @@ file; display a message otherwise."
                     `(unless (fboundp ',x) (defun ,x () (interactive) (message "%s: function missing." ,(symbol-name x)))))
                 source-funs))))
 
-(defun crazycode/indent-and-complete ()
+(defun crazycode/indent-and-complete () ; UNTESTED
   "Indent line and Complete if point is at end of left a leave word."
   (interactive)
   (cond
@@ -190,16 +190,34 @@ file; display a message otherwise."
   ;; always indent line
   (indent-for-tab-command)) ; for example, for Ruby indent issues
 
-(defun my-tab-expansion-switcher ()
+(defun my-tab-expansion-switcher ()     ; UNTESTED
   (local-set-key [tab] 'indent-or-expand))
 
-(defun mars/kill-this-buffer ()
+(defun mars/kill-this-buffer ()         ; UNTESTED
     "Kill the current buffer now"
     (interactive)
     ;; issue with 'frame-live and eternal buffers managed
     (if (member (buffer-name (current-buffer)) mars/eternal-buffer-list)
         (bury-buffer)
         (kill-buffer (current-buffer))))
+
+(defun first-line-of-buffer ()
+  "Return as a string the first line in the current buffer."
+  (save-excursion
+    (goto-char (point-min))
+    (end-of-line)
+    (buffer-substring (point-min) (point))))
+
+(defun count-buffers (&optional display-anyway)
+  "Display or return the number of buffers."
+  (interactive)
+  (let
+      (
+       (buf-count (length (buffer-list)))
+       )
+    (if (or (interactive-p) display-anyway)
+        (message "%d buffers in this Emacs" buf-count))
+    buf-count))
 
 (defun kill-all-dired-buffers ()
   "Kill all dired buffers."
@@ -227,16 +245,15 @@ file; display a message otherwise."
       (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
 
 ;;; 'previous-line invokes a new line when we reached the top of the buffer
-(defadvice previous-line (before next-line-at-end)
+(defadvice previous-line (before next-line-at-end activate) ; UNTESTED
   "Insert an empty line when moving up from the top line."
   (when (and next-line-add-newlines (= arg 1)
              (save-excursion (beginning-of-line) (bobp)))
     (beginning-of-line)
     (newline)))
-(ad-activate 'previous-line)
 
 ;;; NOTIFIERS
-(defun display-external-pop-up (title msg &optional icon sound)
+(defun display-external-pop-up (title msg &optional icon sound) ; UNTESTED
   "Show a popup if we're on X, or echo it otherwise; TITLE is the title
 of the message, MSG is the context. Optionally, you can provide an ICON and
 a sound to be played.
@@ -253,7 +270,7 @@ a sound to be played.
                                  (if icon (concat "-i " icon) "")
                                  " '" title "' '" msg "'"))
         (message (concat title ": " msg))))))
-(defun output-to-growl (msg)
+(defun output-to-growl (msg)            ; UNTESTED
   (let ((fname (make-temp-file "/tmp/growlXXXXXX")))
     (with-temp-file fname
       (let ((coding-system-for-write 'utf-16))
@@ -261,12 +278,11 @@ a sound to be played.
                         (osd-text-to-utf-16-hex msg))))
       (shell-command (format "osascript %s" fname)))
     (delete-file fname)))
-(defun osd-text-to-utf-16-hex (text)
+(defun osd-text-to-utf-16-hex (text)    ; UNTESTED
   (let* ((utext (encode-coding-string text 'utf-16))
          (ltext (string-to-list utext)))
     (apply #'concat
            (mapcar (lambda (x) (format "%02x" x)) ltext))))
-;; (output-to-growl "toto")
 
 ;;; MISCELLANEOUS UTILITIES
 ;;;
@@ -274,7 +290,7 @@ a sound to be played.
 (defun listify (l)
   (if (listp l) l (list l)))
 
-(defun make-file-executable-if-script ()
+(defun make-file-executable-if-script () ; UNTESTED
   "Make file executable according to umask if not already executable.
 If file already has any execute bits set at all, do not change existing
 file modes."
@@ -291,7 +307,7 @@ file modes."
              (set-file-modes (buffer-file-name)
                              (logior current-mode add-mode))))))
 
-(defun byte-compile-emacs-config ()     ; FIXME: should work for confs
+(defun byte-compile-emacs-config ()     ; UNTESTED (FIXME: should work for confs)
   "Byte compile the current file, when saved, if the file is part of
 the personal Emacs Lisp configuration directory."
   (let ((current-file (buffer-file-name)))
@@ -307,7 +323,7 @@ the personal Emacs Lisp configuration directory."
                      (string-match "\\.el\\'" current-file))
             (byte-compile-file current-file)))))))
 
-(defun byte-recompile-home ()
+(defun byte-recompile-home ()           ; UNTESTED
   (interactive)
   (let ((path (listify mars/local-conf-path)))
     (mapcar '(lambda (x) (progn
@@ -317,7 +333,7 @@ the personal Emacs Lisp configuration directory."
                              (file-name-as-directory mars/local-root-dir) x))))
             path)))
 
-(defun swap-windows ()
+(defun swap-windows ()                  ; UNUSED
  "If you have 2 windows, it swaps them."
  (interactive)
  (cond ((not (= (count-windows) 2))

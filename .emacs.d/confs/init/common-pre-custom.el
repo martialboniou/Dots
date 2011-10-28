@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 23 15:15:40 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: Sun Oct 23 19:19:36 2011 (+0200)
+;; Last-Updated: Fri Oct 28 10:43:02 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 94
+;;     Update #: 95
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -107,6 +107,7 @@
 ;;; GENERAL BEHAVIOR
 (setq standard-indent 4
       tab-width 4
+      dired-use-ls-dired nil
       autosave-interval 50
       undo-limit 50000
       auto-compression-mode t

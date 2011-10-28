@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Fri Oct 28 17:08:52 2011 (+0200)
+;; Last-Updated: Fri Oct 28 19:34:33 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 114
+;;     Update #: 118
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -350,7 +350,7 @@ the personal Emacs Lisp configuration directory."
           (set-window-start w1 s2)
           (set-window-start w2 s1)))))
 
-(defun rename-file-and-buffer (new-name)
+(defun rename-file-and-buffer (new-name) ; UNTESTED
   "Renames both current buffer and file it's visiting to NEW-NAME."
   (interactive "sNew name: ")
   (let ((name (buffer-name))
@@ -365,7 +365,7 @@ the personal Emacs Lisp configuration directory."
             (set-visited-file-name new-name)
             (set-buffer-modified-p nil))))))
 
-(defun move-buffer-file (dir)
+(defun move-buffer-file (dir)           ; UNTESTED
   "Moves both current buffer and file it's visiting to DIR."
   (interactive "DNew directory: ")
   (let* ((name (buffer-name))
@@ -373,7 +373,7 @@ the personal Emacs Lisp configuration directory."
           (dir
              (if (string-match dir "\\(?:/\\|\\\\)$")
                        (substring dir 0 -1) dir))
-          (newname (concat dir "/" name)))
+          (newname (concat (file-name-as-directory dir) name)))
 
     (if (not filename)
         (message "Buffer '%s' is not visiting a file!" name)

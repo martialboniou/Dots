@@ -127,47 +127,86 @@
                    (buffer-name (window-buffer w))))
           (vsort-window-list (selected-frame))))
 
-(defun three-windows-context (body)
-  (unwind-protect
-      (progn
-        (mapc #'(lambda (x)
-                  (generate-new-buffer (symbol-name x)))
-              '(foo bar baz))        
-        (switch-to-buffer "foo")
-        (delete-other-windows)
-        (mapc #'(lambda (x)
-                  (split-window-above-each-other)
-                  (switch-to-buffer (symbol-name x)))
-              '(bar baz))               ; windows are (BAZ BAR FOO)        
-        (funcall body))
-    (mapc #'(lambda (x) (safe-kill-buffer (symbol-name x)))
-          '(foo bar baz))
-    (delete-other-windows)))
+(defun generate-foo-list (&optional num symbol-flag)
+  "Generates a list of *foo*. NUM defines the size and
+SYMBOL-FLAG whether it's a list of strings or symbols."
+  (unless (and (integerp num)
+               (> num 0))
+    (setq num 1))
+  (let (list)
+    (while (> num 0)
+      (add-to-list 
+       'list 
+       (cond ((= num 1) (if symbol-flag 'foo "foo"))
+             ((= num 2) (if symbol-flag 'bar "bar"))
+             ((= num 3) (if symbol-flag 'baz "baz"))
+             (t  (let ((quux (concat "q" (make-string (- num 3) ?u) "ux")))
+                   (if symbol-flag (intern quux) quux)))))
+      (setq num (1- num)))
+    list))
+
+(defun windows-context (num body)
+  "create NUM split windows, executes the BODY lambda and destroy buffers
+by restoring single window frame."
+  (let ((foos (reverse (generate-foo-list num))))
+    (unwind-protect
+        (progn
+          (mapc #'(lambda (x)
+                    (generate-new-buffer x))
+                foos)        
+          (switch-to-buffer (car foos))
+          (delete-other-windows)
+          (mapc #'(lambda (x)
+                    (split-window-above-each-other)
+                    (switch-to-buffer x))
+                (cdr foos))               ; hsplitted windows contains FOO, BAR, BAZ,..
+          (funcall body))
+      (mapc #'(lambda (x) (safe-kill-buffer x))
+            foos)
+      (delete-other-windows))))
 
 (ert-deftest transpose-buffers-complete-test ()
-  (three-windows-context
+  (windows-context
+   3                                    ; 3 panes FOO / BAR / BAZ (focused on FOO)
    #'(lambda ()
        (transpose-buffers 1)
-       (should (equal (window-buffer-name) '("bar" "baz" "foo"))) ; invert windows
-       (should (equal (buffer-name
-                       (window-buffer
-                        (selected-window))) "baz")) ; stay in the same buffer
-       (transpose-buffers 1)
        (should (equal (window-buffer-name) '("bar" "foo" "baz"))) ; invert windows
-       (should (equal (buffer-name
-                       (window-buffer
-                        (selected-window))) "baz")) ; stay in the same buffer
+       (should (eq (intern
+                    (buffer-name
+                     (window-buffer
+                      (selected-window)))) 'foo)) ; stay in the same buffer
+       (transpose-buffers 1)
+       (should (equal (window-buffer-name) '("bar" "baz" "foo"))) ; invert windows
+       (should (eq (intern
+                    (buffer-name
+                     (window-buffer
+                      (selected-window)))) 'foo)) ; stay in the same buffer
        (select-window (previous-window))
        (transpose-buffers -1)
-       (should (equal (window-buffer-name) '("foo" "bar" "baz"))) ; revert windows from 'FOO
-       (should (equal (buffer-name
-                       (window-buffer
-                        (selected-window))) "foo")))))
+       (should (equal (window-buffer-name) '("baz" "bar" "foo"))) ; revert windows from 'FOO
+       (should (eq (intern
+                    (buffer-name
+                     (window-buffer
+                      (selected-window)))) 'baz))))) ; gone to the previous window
 
 (ert-deftest listify-simple-test ()
   (should (equal (listify 'var) '(var)))
   (should (equal (listify 1) '(1)))
   (should (equal (listify '(var)) '(var))))
+
+(ert-deftest swap-windows-simple-test ()
+  (windows-context
+   2                                    ; 2 panes FOO / BAR (focused on FOO)
+   #'(lambda ()
+       (swap-windows)
+       (should (equal (window-buffer-name) '("bar" "foo")))
+       (should (eq (intern
+                    (buffer-name
+                     (window-buffer
+                      (selected-window)))) 'bar)))))
+
+;; (ert-deftest the-the-simple-test ()
+;;   )
 
 ;;; TEST RUNNER
 (ert-run-tests-batch-and-exit)

@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Fri Oct 28 19:34:33 2011 (+0200)
+;; Last-Updated: Sat Oct 29 12:59:51 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 118
+;;     Update #: 150
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -394,7 +394,7 @@ the personal Emacs Lisp configuration directory."
   (if (re-search-forward
        "\\b\\([^@ \n\t]+\\)[ \n\t]+\\1\\b" nil 'move)
       (message "Found duplicated word.")
-      (message "End of buffer")))
+    (message "End of buffer")))
 
 (unless (fboundp 'trim-string)      ; defined in `confs/packs' TODO: merge
   (defun trim-string (string)
@@ -402,7 +402,7 @@ the personal Emacs Lisp configuration directory."
 White space here is any of: space, tab, emacs newline (line feed, ASCII 10). --xah"
     (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))))
 
-(defun to-unix-eol (fpath)
+(defun to-unix-eol (fpath)              ; UNTESTED
   "Change file's line ending to unix convention."
   (let (mybuffer)
     (setq mybuffer (find-file fpath))
@@ -410,18 +410,18 @@ White space here is any of: space, tab, emacs newline (line feed, ASCII 10). --x
     (save-buffer)
     (kill-buffer mybuffer)))
 
-(defun execvp (&rest args)
+(defun execvp (&rest args)              ; UNTESTED
   "Simulate C's execvp() function.
 Quote each argument separately, join with spaces and call shell-command-to-string to run in a shell."
   (let ((cmd (mapconcat 'shell-quote-argument args " ")))
     (shell-command-to-string cmd)))
 
-(defun dired-2unix-marked-files ()
+(defun dired-2unix-marked-files ()      ; UNTESTED
   "Change to unix line ending for marked (or next arg) files."
   (interactive)
   (mapc 'to-unix-eol (dired-get-marked-files)))
 
-(defun emacs-process-p (pid)
+(defun emacs-process-p (pid)            ; UNTESTED
   "If pid is the process ID of an emacs process, return t, else nil.
 Also returns nil if pid is nil."
   (when pid
@@ -457,7 +457,7 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
       (setq current-directory-list (cdr current-directory-list)))
     el-files-list))
 
-(defun start-named-server (name)
+(defun start-named-server (name)        ; UNTESTED
   "Start a server named 'name' - ensure only one server of that
 `NAME' is running"
   (interactive "sServer Name: ")
@@ -471,7 +471,7 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
     (when (file-exists-p mk-server-socket-file)
       (delete-file mk-server-socket-file))))
 
-(defun add-hook-once (hook function &optional append local)
+(defun add-hook-once (hook function &optional append local) ; UNTESTED
   "Same as `add-hook', but FUN is only run once.
    Also contrary to `add-hook', this is not idempotent."
   ;; FIXME: need to check if `function' was already added to the hook.
@@ -496,7 +496,7 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
   (interactive)
   (mars/title-as-markdown-title 45))    ; (string-to-char "-")
 
-(defun mars/underline-with-char (char)
+(defun mars/underline-with-char (char)  ; UNTESTED (but TESTED w/ mars/title-as-markdown-title)
   (interactive (list (read-from-minibuffer "Char: ")))
   (when (= 0 (length char))
     (error "Need a character"))
@@ -508,18 +508,20 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
 ;;; __+ ('+' is shifted equal) for '=' first level header and ___
 ;;; ('_' is shifted minus) for '-' second level header]
 (defun mars/title-as-markdown-title (char)
-  (save-excursion
-    (goto-char (point-at-eol))
-    (backward-delete-char-hungry 1)       ; delete trailing space between the eol and the last word
-    (insert "\n"
-            (make-string (- (point-at-eol)
-                            (point-at-bol))
-                         char)))
-  (forward-line)                           ; go to our new underline like on Vim (use vimpulse's 'o' or emacsen's 'Ctrl-e Enter' to open new line below)
-)
+  (end-of-line)
+  (insert " ")                          ; needed to prevent backward-delete-char-hungry not to be too hungry FIXME: replace those two lines
+  (backward-delete-char-hungry 1)       ; delete trailing space between the eol and the last word
+  
+  (insert "\n"
+          (make-string (- (point-at-eol)
+                          (point-at-bol))
+                       char))
+  (forward-line)
+  (unless (bolp) (newline))
+  (unless (eolp) (newline)))        ; TODO: add trailing lines elimination & new space if needed
 
 ;;; delete trailing whitespace backward and forward
-(defun backward-delete-char-hungry (arg &optional killp)
+(defun backward-delete-char-hungry (arg &optional killp) ; UNTESTED
       "*Delete characters backward in \"hungry\" mode.
     See the documentation of `backward-delete-char-untabify' and `backward-delete-char-untabify-method' for details."
       (interactive "*p\nP")
@@ -885,4 +887,3 @@ which is not affected by suffix optional argument."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; defs.el ends here
-

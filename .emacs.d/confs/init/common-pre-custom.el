@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 23 15:15:40 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: Fri Oct 28 10:43:02 2011 (+0200)
+;; Last-Updated: Fri Oct 28 19:58:28 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 95
+;;     Update #: 96
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -101,6 +101,7 @@
                   (user-login-name)
                   ".bbdb")
         elmo-msgdb-directory "~/.emacs.d/data/elmo"
+        wl-temporary-file-directory (expand-file-name "~/Downloads")
         eshell-directory-name (file-name-as-directory (cachize "eshell")) ; may need a final `slash'
         emms-cache-file (cachize "emms-cache")))))
 

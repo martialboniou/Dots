@@ -165,6 +165,9 @@ by restoring single window frame."
             foos)
       (delete-other-windows))))
 
+(defun window-context (body)
+  (windows-context 1 body))
+
 (ert-deftest transpose-buffers-complete-test ()
   (windows-context
    3                                    ; 3 panes FOO / BAR / BAZ (focused on FOO)
@@ -205,8 +208,116 @@ by restoring single window frame."
                      (window-buffer
                       (selected-window)))) 'bar)))))
 
-;; (ert-deftest the-the-simple-test ()
-;;   )
+(ert-deftest the-the-simple-test ()
+  (window-context
+   #'(lambda ()
+       (insert "My tailor is rich. Your flowers are are beautiful.")
+       (newline)
+       (insert "Grasp all, lose all.")
+       (newline)
+       (insert "He who's afraid of leaves, Must not come into a a wood")
+       (goto-char (point-min))
+       (trap-messages #'the-the)
+       (should (= (point) 40))
+       (trap-messages #'the-the)
+       (should (= (point) 122))
+       (trap-messages #'the-the)
+       (should (= (point) (point-max))) ; eof
+       (trap-messages #'the-the)
+       (should (= (point) (point-max)))))) ; don't move
+
+(ert-deftest trim-string ()
+  (should (string= (trim-string "  that's all folks!\n \t ") "that's all folks!"))
+  (should (string= (trim-string "\n  \n\t\n\t  that's all folks!\n \t ") "that's all folks!"))
+  (should (string= (trim-string "that's all folks!") "that's all folks!"))
+  (should (string= (trim-string "  that\t's all \nfolks!\n \t ") "that\t's all \nfolks!")))
+
+(if (file-exists-p "tests/vendor/README")
+    (progn
+      (ert-deftest elisp-files-in-below-directory-posix-test ()
+        (should
+         (equal
+          (sort (elisp-files-in-below-directory "tests/vendor") #'string<)
+          (mapcar
+           #'(lambda (file)
+               (concat (file-name-as-directory (expand-file-name "."))
+                       (file-name-as-directory "tests/vendor") file))
+           '("file0.el" "pack1/file1.el" "pack1/third-party/file2.el"
+             "pack2/file3.el" "pack2/file4.el" "pack2/file5.el"))))))
+  (message "You must run this test with a Bourne shell script from the root directory to test."))
+
+(defun mars/markdown-text-zone-context (longline test)
+  "If LONGLINE is T, add trailing whitespace to the title."
+  (insert "My Title From Hell")
+  (when (eq longline 'longline)
+    (insert "      \t\t      "))
+  (newline)
+  (insert "My story began...")
+  (funcall test))
+
+(defun mars/markdown-test-template (buffer-or-name type &optional char)
+  #'(lambda ()
+      (with-current-buffer buffer-or-name
+                (goto-char (+ (random 10) (point-min))) ; random position on the first line
+                ;; make header
+                (unless char
+                  (set 'char ?*))
+                (cond ((eq type 'first) (mars/markdown-header-first))
+                      ((eq type 'second) (mars/markdown-header-second))
+                      (t (mars/title-as-markdown-title char)))
+                (mars/markdown-header-first) ; make title
+                (should (string= (buffer-substring (point) (point-at-eol))
+                                 "My story began...")) ; check we're on the first paragraph
+                (forward-line -2)       ; jump the blank line
+                (should (string= (buffer-substring (point-at-bol) (point-at-eol))
+                                 (make-string 18
+                                              (cond
+                                               ((eq type 'first) ?=)
+                                               ((eq type 'second) ?-)
+                                               (t char))))) ; check the underlining
+                (forward-line -1)       ; go back to the first line
+                (should (string= (buffer-substring (point-at-bol) (point-at-eol))
+                                 "My Title From Hell"))) ; check trailing space if any
+      ))
+
+(ert-deftest mars/markdown-header-complete-test ()
+  (window-context
+   #'(lambda ()
+       (let ((buf (car (generate-foo-list))))
+         (mapc #'(lambda (longline-case)   ; check consistent title & title w/ trailing spaces
+                   (with-current-buffer buf
+                     (mars/markdown-text-zone-context
+                      longline-case
+                      #'(lambda ()  
+                          (mars/markdown-test-template
+                           buf 'first)
+                          (mars/markdown-test-template
+                           buf 'second)
+                          (mars/markdown-test-template
+                           buf 'otherwise ?~)))))
+               '(normal longline))))))
+
+;; TODO: test backward-delete-char-hungry ASAP
+
+(ert-deftest delete-horizontal-space-forward ()
+  (window-context
+   #'(lambda ()
+       (insert " \t Delete all spaces and tabs after point. \t     \t  \nA new line just for fun!  \t  ")
+       (point-min)
+       (goto-char (point-at-eol))
+       (goto-char (re-search-backward "\\."))
+       (goto-char (1+ (point)))
+       (delete-horizontal-space-forward)
+       (should (string=
+                (buffer-substring (point-min) (point-at-eol))
+                " \t Delete all spaces and tabs after point."))
+       (forward-line 1)
+       (goto-char (point-at-bol))
+       (should (string=
+                (buffer-substring (point) (point-at-eol))
+                "A new line just for fun!  \t  ")))))
+
+(delete-horizontal-space-forward)
 
 ;;; TEST RUNNER
 (ert-run-tests-batch-and-exit)

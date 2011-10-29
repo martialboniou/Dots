@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.9.2
-;; Last-Updated: Sat Oct 29 12:59:51 2011 (+0200)
+;; Last-Updated: Sat Oct 29 17:28:48 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 150
+;;     Update #: 171
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -534,19 +534,27 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
       (delete-region (point) (progn (skip-chars-forward " \t") (point))))
 
 ;;; whack whitespace until the next word
-(defun whack-whitespace (arg)
-      "Delete all white space from point to the next word.  With prefix ARG delete across newlines as well.  The only danger in this is that you don't have to actually be at the end of a word to make it work.  It skips over to the next whitespace and then whacks it all to the next word."
-      (interactive "P")
-      (let ((regexp (if arg "[ \t\n]+" "[ \t]+")))
-        (re-search-forward regexp nil t)
-        (replace-match "" nil nil)))
+(defun whack-whitespace (&optional arg)
+  "Delete all white space from point to the next word.  With prefix ARG delete across newlines as well.  The only danger in this is that you don't have to actually be at the end of a word to make it work.  It skips over to the next whitespace and then whacks it all to the next word."
+  (interactive "P")
+  (unless (eobp)
+    (if arg
+        (progn
+          (re-search-forward "[ \t\n]+" nil t)
+          (replace-match " " nil nil)
+          ;; gone to far ?
+          (when (eobp)
+            (delete-backward-char 1)))
+      (progn
+        (re-search-forward "[ \t]+" nil t)
+        (replace-match "" nil nil)))))
 
 ;;; no line wrap this buffer (for special buffer like MIME-VIEW)
-(defun no-line-wrap-this-buffer-internal ()
+(defun no-line-wrap-this-buffer-internal () ; UNTESTED
   (make-local-variable 'truncate-partial-width-windows)
   (setq truncate-partial-width-windows nil)
   (setq truncate-lines nil))
-(defun no-line-wrap-this-buffer ()
+(defun no-line-wrap-this-buffer ()      ; UNTESTED
   (lexical-let ((buf (current-buffer)))
     (add-hook-once                      ; defined here
      'post-command-hook
@@ -556,7 +564,7 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
              (no-line-wrap-this-buffer-internal)))))))
 
 ;;; fix amazon URL
-(defun fix-amazon-url ()
+(defun fix-amazon-url ()                ; UNTESTED
   "Minimizes the Amazon URL under the point.  You can paste an Amazon
 URL out of your browser, put the cursor in it somewhere, and invoke
 this method to convert it."
@@ -569,7 +577,7 @@ this method to convert it."
                 (match-string 1)
                 (match-string 3)))))
 
-(defun fix-google-search-url ()
+(defun fix-google-search-url ()         ; UNTESTED
   "Minimizes a Google search URL under the point."
   (interactive)
   (and (search-backward-regexp "http://www\\.google\\.[a-z]\\{2,3\\}/search" (point-at-bol) t)
@@ -579,14 +587,14 @@ this method to convert it."
         (concat "http://www.google.com/search?"
                 (match-string 1)))))
 
-(defun compile-adjust-variable ()
+(defun compile-adjust-variable ()       ; UNTESTED
   (unless (file-exists-p "Makefile")
     (set (make-local-variable 'compile-command)
          (let ((file (file-name-nondirectory buffer-file-name)))
            (concat "gcc -O2 -Wall -o " (file-name-sans-extension file)
                    " " file)))))
 
-(defmacro define-hash-region (name hash-type)
+(defmacro define-hash-region (name hash-type) ; UNTESTED
   `(defun ,name (start end)
      (interactive "r")
      (save-excursion
@@ -598,10 +606,10 @@ this method to convert it."
 ;; (define-hash-region md5-region md5)
 
 ;; From http://www.tbray.org/ongoing/When/200x/2003/09/27/UniEmacs
-(defun one-quote () "" (interactive) (insert ?'))
-(defvar sq-state 'nil "In single-quotes?")
-(defvar dq-state 'nil "In double quotes?")
-(defun insert-special (c)
+(defun one-quote () "" (interactive) (insert ?')) ; UNTESTED
+(defvar sq-state 'nil "In single-quotes?") ; UNTESTED
+(defvar dq-state 'nil "In double quotes?") ; UNTESTED
+(defun insert-special (c)               ; UNTESTED
   "Insert special characters, like so:
    s => open/close single quotes
    d => open/close double quotes
@@ -644,7 +652,7 @@ this method to convert it."
    ((= c ?-) (ucs-insert #x2014))
    ((= c ?.) (ucs-insert #xb7))))
 
-(defun fix-and-indent ()
+(defun fix-and-indent ()                ; UNTESTED
   "Clean up the code"
   (interactive)
   (delete-trailing-whitespace)
@@ -652,16 +660,16 @@ this method to convert it."
   (untabify (point-min) (point-max)))
 
 ;; scroll one line at a time
-(defun scroll-one-line-up (&optional arg)
+(defun scroll-one-line-up (&optional arg) ; UNTESTED
   "Scroll the selected window up (forward in the text) one line (or N lines)."
   (interactive "p")
   (scroll-up (or arg 1)))
-(defun scroll-one-line-down (&optional arg)
+(defun scroll-one-line-down (&optional arg) ; UNTESTED
   "Scroll the selected window down (backward in the text) one line (or N)."
   (interactive "p")
   (scroll-down (or arg 1)))
 
-(defun fix-code-region (from to)
+(defun fix-code-region (from to)        ; UNTESTED
   "Indent by 4 spaces the selected code region for blog."
   (interactive
    (list (region-beginning) (region-end)))
@@ -673,7 +681,7 @@ this method to convert it."
   (indent-to-column 4))
 
 ;; From http://sami.samhuri.net/2007/6/23/emacs-for-textmate-junkies
-(defun wrap-region (left right beg end)
+(defun wrap-region (left right beg end) ; UNTESTED
   "Wrap the region in arbitrary text, LEFT goes to the left and
 RIGHT goes to the right."
   (save-excursion
@@ -682,7 +690,7 @@ RIGHT goes to the right."
     (goto-char (+ end (length left)))
     (insert right)))
 
-(defun wrap-region-with-tag (tag beg end)
+(defun wrap-region-with-tag (tag beg end) ; UNTESTED
   "Wrap the region in the given HTML/XML tag using `wrap-region'. If any
 attributes are specified then they are only included in the opening tag."
   (interactive "*sTag (including attributes): \nr")
@@ -693,13 +701,13 @@ attributes are specified then they are only included in the opening tag."
         (wrap-region (concat "<" tag-name ">") right beg end)
       (wrap-region (concat "<" tag ">") right beg end))))
 
-(defun wrap-region-with-tag-or-insert ()
+(defun wrap-region-with-tag-or-insert () ; UNTESTED
   (interactive)
   (if (and mark-active transient-mark-mode)
       (call-interactively 'wrap-region-with-tag)
     (insert "<")))
 
-(defun wrap-region-or-insert (left right)
+(defun wrap-region-or-insert (left right) ; UNTESTED
   "Wrap the region with `wrap-region' if an active region is
 marked, otherwise insert LEFT at point."
   (interactive)
@@ -707,7 +715,7 @@ marked, otherwise insert LEFT at point."
       (wrap-region left right (region-beginning) (region-end))
     (insert left)))
 
-(defmacro wrap-region-with (left &optional right)
+(defmacro wrap-region-with (left &optional right) ; UNTESTED
   "Returns a function which, when called, will interactively
 wrap-region-or-insert using left and right."
   (if right
@@ -723,7 +731,7 @@ wrap-region-or-insert using left and right."
 ;;; in comp.emacs
 ;;; show and hide comments in program code.
 ;; TODO: test it
-(defun overlay-comments(beg end attrs)
+(defun overlay-comments(beg end attrs)  ; UNTESTED
   (save-excursion
     (goto-char beg)
     (let (state comment-start comment-end overlay)
@@ -740,13 +748,13 @@ wrap-region-or-insert using left and right."
                 (overlay-put overlay (car attr) (cdr attr)))
               attrs)))))
 
-(defun hide-comments()
+(defun hide-comments()                  ; UNTESTED
   (interactive)
   (overlay-comments (point-min)
                     (point-max)
                     '((category . comment) (invisible . comment))))
 
-(defun show-comments()
+(defun show-comments()                  ; UNTESTED
   (interactive)
   (dolist (ov (overlays-in (point-min) (point-max)))
     (if (eq (overlay-get ov 'category) 'comment)
@@ -779,7 +787,7 @@ wrap-region-or-insert using left and right."
           (delete-char 1)
           (move-to-column previous-column)))))
 
-(defun remove-control-m ()
+(defun remove-control-m ()              ; UNTESTED
   "Remove ^M at end of line in the whole buffer."
   (interactive)
   (save-match-data
@@ -791,7 +799,7 @@ wrap-region-or-insert using left and right."
           (replace-match "" nil nil))
         (message (format "%d ^M removed from buffer." remove-count))))))
 
-(defun toggle-narrow()
+(defun toggle-narrow()                  ; UNTESTED
   "Narrow to region, iff region is marked, otherwise widen"
   (interactive)
   (if mark-active
@@ -799,7 +807,7 @@ wrap-region-or-insert using left and right."
     (widen)))                           ; may replace C-x n n / C-x n w
 
 ;; Copyright (C) 1997, 1998 Thien-Thi Nguyen
-(defun another-line ()
+(defun another-line ()                  ; UNTESTED
   "Copy line, preserving cursor column, and increment any numbers found.
 This should probably be generalized in the future."
   (interactive)
@@ -816,14 +824,14 @@ This should probably be generalized in the future."
     (insert line "\n")
     (move-to-column col)))
 
-(defun get-posix-username ()
+(defun get-posix-username ()            ; UNTESTED
   "May be use instead of 'USER-LOGIN-NAME if security is needed."
   (let ((me (execvp "whoami")))
     (if (stringp me)
         (replace-regexp-in-string "\n" "" me)
       nil)))
 
-(defun mars/valid-string (clause basename substitute &optional prefix suffix)
+(defun mars/valid-string (clause basename substitute &optional prefix suffix) ; UNTESTED
   "Returns a string if the clause on it is true. Or returns the substitute
 which is not affected by suffix optional argument."
   (let ((alternate (if prefix (concat prefix substitute) substitute)))
@@ -837,7 +845,7 @@ which is not affected by suffix optional argument."
             alternate))
       alternate)))
 
-(defun mars/username-file-if-any (root post default)
+(defun mars/username-file-if-any (root post default) ; UNTESTED
   (mars/valid-string 'file-exists-p
                      (user-login-name)
                      default
@@ -845,13 +853,13 @@ which is not affected by suffix optional argument."
                      post))
 
 ;; terms
-(defun eshell/clear ()
+(defun eshell/clear ()                  ; UNTESTED
   "Clear the eshell buffer."
   (interactive)
   (let ((inhibit-read-only t))
     (erase-buffer)))
 
-(defun default-term ()
+(defun default-term ()                  ; UNTESTED
   "Launch the default shell in a *terminal* buffer of a new frame."
   (interactive)
   (let* ((buf (get-buffer "*terminal*"))
@@ -865,7 +873,7 @@ which is not affected by suffix optional argument."
        (term shell-file-name)))))
 
 ;; lennart-borgman libraries' loaders
-(defun nxhtml-loader ()
+(defun nxhtml-loader ()                 ; UNTESTED & UNUSED
   "load NXHTML library and all lennart-borgman libraries (including Unit Test additions named ERT2)"
   (unless (fboundp 'nxhtml-list-loaded-features)
     (let ((name       "nxhtml")
@@ -878,12 +886,14 @@ which is not affected by suffix optional argument."
 (defalias 'ert2-loader 'nxhtml-loader)
 
 ;; toggle-transparency
-(defun toggle-transparency ()
+(defun toggle-transparency ()           ; UNTESTED
   (interactive)
   (let ((opa (if (/=  (or (cadr (frame-parameter nil 'alpha)) 100) 100)
                  '(100 100)
                '(97 92))))
     (modify-all-frames-parameters (list (cons 'alpha opa)))))
+
+(provide 'defs)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; defs.el ends here

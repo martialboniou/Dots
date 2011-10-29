@@ -8,7 +8,7 @@
   (add-to-list 'default-frame-alist '(height . 48) '(width . 48)))
 
 ;;; FILE
-(load "defs")
+(require 'defs)
 
 ;;; UNIT TEST
 ;;
@@ -24,6 +24,16 @@
   (condition-case nil
       (funcall function)
     (error nil)))
+(defun safe-word-search-forward (word &optional test-name)
+  (condition-case err
+      (progn
+        (word-search-forward word)
+        t)
+    (error (progn
+             (message
+              "%s: bad formed sentence - %s not tested"
+              err (or test-name
+                      "a function were "))))))
 (defun safe-kill-buffer (buffer-name)
   (when (get-buffer buffer-name)
     (kill-buffer buffer-name)))
@@ -299,7 +309,7 @@ by restoring single window frame."
 
 ;; TODO: test backward-delete-char-hungry ASAP
 
-(ert-deftest delete-horizontal-space-forward ()
+(ert-deftest delete-horizontal-space-forward-simple-test ()
   (window-context
    #'(lambda ()
        (insert " \t Delete all spaces and tabs after point. \t     \t  \nA new line just for fun!  \t  ")
@@ -317,7 +327,60 @@ by restoring single window frame."
                 (buffer-substring (point) (point-at-eol))
                 "A new line just for fun!  \t  ")))))
 
-(delete-horizontal-space-forward)
+(defun whack-whitespace-template (test)
+  (window-context
+   #'(lambda ()
+       (insert "Delete all white \t \n  spaces.")
+       (goto-char (point-min))
+       (let ((changed (safe-word-search-forward "white"))
+             (buf (car (generate-foo-list))))
+         (when changed
+           (funcall test))))))
+
+(ert-deftest whack-whitespace-cr-case-test ()
+  (whack-whitespace-template
+   #'(lambda ()  
+       (whack-whitespace t)       ; normal case
+       (should (string=
+                (buffer-substring (point-min) (point-max))
+                "Delete all white spaces.")) ; normal case
+       (goto-char (point-max))
+       (should (string=
+                (buffer-substring (point-min) (point-max))
+                "Delete all white spaces.")) ; eob case 1
+       (insert "\n\n\n")
+       (goto-char (point-min))
+       (goto-char (re-search-forward "\\."))
+       (whack-whitespace t)
+       (should (string=
+                (buffer-substring (point-min) (point-max))
+                "Delete all white spaces."))))) ; eob case 2
+
+(ert-deftest whack-whitespace-flat-case-test ()
+  (whack-whitespace-template
+   #'(lambda ()
+       (whack-whitespace)
+       (should (string=
+                (buffer-substring (point-min) (point))
+                "Delete all white")))))
+
+(ert-deftest nuke-line-simple-test ()
+  (window-context
+   #'(lambda ()
+       (insert "This is my line 1.") (newline)
+       (insert "This is my line 2.") (newline)
+       (insert "This is my line 3.")
+       (goto-char (point-min))
+       (forward-line 1)                 ; second line to be removed
+       (let ((pos (+ (point) (random 10))))
+         (goto-char pos)
+         (nuke-line)
+         (should (string=
+                  (buffer-substring (point-min) (point-max))
+                  "This is my line 1.\nThis is my line 3."))
+         ;; check we're on the same column/line
+         (should (= (point) pos))))))
+
 
 ;;; TEST RUNNER
 (ert-run-tests-batch-and-exit)

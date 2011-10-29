@@ -337,7 +337,7 @@ ROOT                        => ROOT"
                  ("newsticker"                newsticker-start newsticker-show-news)
                  ("wl-mailto"                 wl-mailto-compose-message-from-mailto-url)
                  ("emms-source-file"          emms-dired emms-add-directory-tree emms-add-directory emms-add-file)
-                 ("emms"                      emms-playlist-buffer-list emms)
+                 ("emms"                      emms-history-load emms-playlist-buffer-list emms)
                  ("emms-streams"              emms-streams emms-stream-init)))
 (when window-system
   (mars/autoload

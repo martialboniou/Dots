@@ -46,7 +46,7 @@ A lot of work is needed to enhance the portability but some snippets may be usef
 * `remember`
 * `semantic` (from `cedet`)
 * `wanderlust`
-* `wdired` (an *editable* `dired`; some wrappers in `confs` for `viper`/`vimpulse` case)
+* `wdired` (an *editable* `dired`; some wrappers in `lisp` for `viper`/`vimpulse` case)
 * `anything`
 * `ibuffer` (a `dired` for buffers)
 * `yasnippet`
@@ -69,16 +69,16 @@ Some packages may also be useful in order to help this configuration to work fin
 * recently open files;
 * all files and directory in the current.
 
-See `.emacs.d/confs/shortcuts.el` for good ideas of bindings especially for buffer/window/frame navigation using tiling/cycling (thing about larswm or [Xmonad](http://xmonad.org/tour.html)) or for `<f5>`-`<f8>` keys (`<f5><f5>` toggle the current frame from multiple buffers to a single view on the current buffer via `revive.el`).
+See `.emacs.d/lisp/shortcuts.el` for good ideas of bindings especially for buffer/window/frame navigation using tiling/cycling (thing about larswm or [Xmonad](http://xmonad.org/tour.html)) or for `<f5>`-`<f8>` keys (`<f5><f5>` toggle the current frame from multiple buffers to a single view on the current buffer via `revive.el`).
 
 The current version should match **24.0** and need a major 23 if possible. (I recommend to use an `emacs` 23.2 or more because some radical changes where made in the byte-code after `emacs` 23.1.)
 
-Read `.emacs.d/confs/vars.el` to configure your path. Remember this! By default, `.emacs` makes Emacs to:
+Read `.emacs.d/lisp/vars.el` to configure your path. Remember this! By default, `.emacs` makes Emacs to:
 
-1. support UTF-8 (`.emacs.d/confs/formats.el` to switch to another encoding) / remove eye candies (no toolbar / no scrollbar);
-2. create `load-path` (all files and *subdirs* from `.emacs.d/lisp`);
-3. load uninstalled packages via scripts in `confs/packs.el`;
-4. generate `autoloads` at the root of `.emacs.d/lisp` (loading `cedet` if there's extended autoloads for `eieio` classes and methods);
+1. support UTF-8 (`.emacs.d/lisp/formats.el` to switch to another encoding) / remove eye candies (no toolbar / no scrollbar);
+2. create `load-path` (all files and *subdirs* from `.emacs.d/vendor`);
+3. load uninstalled packages via scripts in `lisp/packs.el`;
+4. generate `autoloads` at the root of `.emacs.d/vendor` (loading `cedet` if there's extended autoloads for `eieio` classes and methods);
 5. add handmade autoloads if needed;
 6. configure general behavior:
   * buffers and `ido` (**BEWARE**: `C-x C-b` to switch buffers, `C-x C-f` to find file in history, `C-x f` to find file normally),
@@ -88,7 +88,7 @@ Read `.emacs.d/confs/vars.el` to configure your path. Remember this! By default,
 
 Here, `require` is often avoided because automagically generated `autoload`s and `eval-after-load` is over-used. (That's why Emacs should start quickly. Don't worry if your first startup is slow: Emacs will fetch additional packages like `nxhtml`, a newest `cedet` or `wanderlust` in order to work ultimately.)
 
-`.emacs.d/confs/vim-everywhere` is a bit special and hard to understand. It is here to:
+`.emacs.d/lisp/vim-everywhere` is a bit special and hard to understand. It is here to:
 
 * load `viper` and `vimpulse`
 * extend the fringe to display line numbering

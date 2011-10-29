@@ -45,8 +45,9 @@
 ;;
 ;;; Code:
 
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
-
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'town-portal)
+
 ;;; CPT
 (require 'ps-ccrypt)                    ; ccrypt 1.9 needed
 
@@ -73,6 +74,8 @@
                  (not (with-temp-buffer (condition-case nil (cd file) (error nil))))))
         (hexview-find-file file)
       (call-interactively 'hexview-find-file))))
+
+(provide 'crypto)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; crypto.el ends here

@@ -46,27 +46,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
-(unless (fboundp 'conf-locate)
-  (defun conf-locate (conf) (let ((path (mapcar #'(lambda (x) (concat (file-name-as-directory mars/local-root-dir) x)) mars/local-conf-path))) (locate-library conf nil path))))
-(unless (fboundp 'mars/add-to-load-path)
-  (let ((local-site-lisp-path (mapcar #'(lambda (x) (concat (file-name-as-directory mars/local-root-dir)
-                                                           (file-name-as-directory x))) mars/site-lisp-path)))
-    (setq load-path (append local-site-lisp-path load-path))
-    (dolist (local-site-lisp local-site-lisp-path)
-      (mapc #'(lambda (x)
-                (let ((found-dirs (directory-files local-site-lisp t (symbol-name x))))
-                  (when found-dirs
-                    (mapc #'(lambda (found-dir)
-                              (save-excursion
-                                (condition-case nil
-                                    (progn
-                                      (cd found-dir)
-                                      (push (expand-file-name found-dir) load-path))
-                                  (error nil))))
-                          found-dirs))))
-            '(color-theme vimpulse))))
-  (load-library "color-theme-autoloads"))
+
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'defs)
+
+;; (unless (fboundp 'mars/add-to-load-path)
+;;   (let ((local-site-lisp-path (mapcar #'(lambda (x) (concat (file-name-as-directory mars/local-root-dir)
+;;                                                            (file-name-as-directory x))) mars/site-lisp-path)))
+;;     (setq load-path (append local-site-lisp-path load-path))
+;;     (dolist (local-site-lisp local-site-lisp-path)
+;;       (mapc #'(lambda (x)
+;;                 (let ((found-dirs (directory-files local-site-lisp t (symbol-name x))))
+;;                   (when found-dirs
+;;                     (mapc #'(lambda (found-dir)
+;;                               (save-excursion
+;;                                 (condition-case nil
+;;                                     (progn
+;;                                       (cd found-dir)
+;;                                       (push (expand-file-name found-dir) load-path))
+;;                                   (error nil))))
+;;                           found-dirs))))
+;;             '(color-theme vimpulse))))
+;;   (load-library "color-theme-autoloads"))
 
 ;;; PREAMBULE
 (defvar viper-custom-file-name nil
@@ -497,6 +498,8 @@ TODO: case of '''colorscheme' this'' where this is
 ;; - some keybindings
 ;; remember:
 ;; C-w = Window manipulation in normal modes; a kind of `DELETE-BACKWARD-WORD' elsewhere
+
+(provide 'vim-everywhere)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; vim-everywhere.el ends here

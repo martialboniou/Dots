@@ -5,7 +5,7 @@
 ;; Author: Martial Boniou
 ;; Maintainer:
 ;; Created: Wed Feb 23 10:19:49 2011 (+0100)
-;; Version:
+;; Version: 
 ;; Last-Updated: Fri Oct 28 12:35:44 2011 (+0200)
 ;;           By: Martial Boniou
 ;;     Update #: 29
@@ -46,8 +46,10 @@
 ;;
 ;;; Code:
 
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
-
+(add-to-list 'load-path (expand-file-name load-file-name))
+(require 'code)
+
+;;; ELISP
 (defun elisp-disassemble (function)
   (interactive (list (function-called-at-point)))
   (disassemble function))
@@ -204,6 +206,7 @@ in `util/ourcomments-util' of the `nxhtml' package."
                   (2 font-lock-function-name-face nil t))))))
 (put 'ert-deftest 'lisp-indent-function 'defun)
 
+(provide 'elisp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; elisp.el ends here

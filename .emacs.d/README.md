@@ -4,10 +4,11 @@ Installation
 All users
 ---------
 
-As packages will be fetched on the Internet then installed and configured, you only need to byte-compile the ~/.emacs.d/lisp directory and the available subdirectories by hand. **First, add the shell script** `emacs-compile-directory` **to your shell path** (and probably also `emacs-compile-file`). This file is used by the script running in `$HOME/.emacs.d/confs/packs.el` to install missing packages *(for instance)*. To get good performance with byte-compilation, type the following command in any virtual terminal running *Bourne-compatible* shell like `bash` or `zsh`:
+As packages will be fetched on the Internet then installed and configured, you only need to byte-compile the ~/.emacs.d/vendor directory and the available subdirectories by hand. **First, add the shell script** `emacs-compile-directory` **to your shell path** (and probably also `emacs-compile-file`). This file is used by the script running in `$HOME/.emacs.d/lisp/packs.el` to install missing packages *(for instance)*. To get good performance with byte-compilation, type the following command in any virtual terminal running *Bourne-compatible* shell like `bash` or `zsh`:
 
-    $ emacs-compile-directory ~/.emacs.d/lisp
-    $ emacs-compile-directory ~/.emacs.d/lisp/bookmark-plus
+    $ cd ~/.emacs.d/vendor/third-party
+    $ emacs-compile-directory
+    $ emacs-compile-directory bookmark-plus
 
 You don't need to do this before running your emacs for the first time.
 
@@ -130,7 +131,7 @@ sessions. **Four important places** are:
   `<emacs-name>-<emacs-major-version>-<system-type>.el`. For example, on
   Mac OS X, you may find a `gnuemacs-23-darwin.el`. This file is
   managed by `Customize`. **Don't edit it. Use `M-x customize` instead**;
-* `.emacs.d/confs/init/` directory used for special advanced setup for
+* `.emacs.d/lisp/init/` directory used for special advanced setup for
   `viper-mode` and `wanderlust` (a great IMAP-based MUA). If you want
   to create your own `wanderlust` setting, start by copying the
   `default.wl.el` to `<username>.wl.el` where `<username>` is your
@@ -141,7 +142,7 @@ sessions. **Four important places** are:
   good enough. **IMPORTANT: if you don't like Vi modal edition, you
   may deactivate **`viper-mode`** by setting **`*i-am-a-vim-user*`
   **variable defined in** `.emacs` **to **`nil` in `.emacs` or in your
-  `.emacs.d/confs/vars.el` after the *FIRST TIME* part (you may
+  `.emacs.d/lisp/vars.el` after the *FIRST TIME* part (you may
   destroy the `.emacs.d/data/.launched` file too);
 * `.emacs.d/data/sys/` directory containing the
   `vars-<system-name>-<system-type>.el` files. You may create such a
@@ -149,7 +150,7 @@ sessions. **Four important places** are:
   `setq-default` in the case of a specific machine and its operating
   system; those variables not being specific enough to be set in
   `Customize` and bound to a special hardware/OS not to be the same as
-  in the `.emacs.d/confs/init/common-pre-custom.el`.
+  in the `.emacs.d/lisp/init/common-pre-custom.el`.
 * `.emacs.d/data/wl/` directory containing the *folder* definition
   used by the current `wanderlust` configuration. The files should
   match `<username>.folders`; you may copy `default.folders` to create

@@ -45,8 +45,9 @@
 ;;
 ;;; Code:
 
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
-
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'defs)
+
 ;;; MACROS
 (defmacro partition-on-predicate (predicate list)
   "Creates a list of two lists. According to the predicate, the first one
@@ -206,6 +207,8 @@
 (bind-keys
  '("C-c t" default-term
    "C-c w" mars/wl))                    ; 'WL-OTHER-FRAME but ensure the `confs/mail' load
+
+(provide 'shortcuts)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; shortcuts.el ends here

@@ -53,7 +53,8 @@
 ;;
 ;;; Code:
 
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'formats)
 
 ;;; LANGUAGES' CONFIGURATION PATH
 (defvar lang-rep (condition-case nil (expand-file-name
@@ -609,6 +610,8 @@ Then save the file as \"my-file.dot\" and run
   (require 'web-programming)            ; for web languages (mweb or nxhtml)
   (require 'python-357)                 ; for python
 )
+
+(provide 'code)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; code.el ends here

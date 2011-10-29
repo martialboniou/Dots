@@ -45,9 +45,9 @@
 ;;
 ;;; Code:
 
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'town-portal)
 
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
-
 ;;; MULTI-TERM
 (eval-after-load "multi-term"
   '(progn
@@ -87,6 +87,8 @@
 
 ;;; SH FILES
 (add-to-list 'auto-mode-alist '("\\.[zk]sh$" . sh-mode))
+
+(provide 'vt)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; vt.el ends here

@@ -46,7 +46,8 @@
 ;;
 ;;; Code:
 
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'defs)
 
 (when (fboundp 'winner-mode)
   (winner-mode 1))
@@ -182,6 +183,8 @@ When prefix arg is given,  \"same size\" is same width."
   (xterm-mouse-mode t)
   ;; mouse wheel support
   (require 'mwheel-term))
+
+(provide 'window-manager)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; window-manager.el ends here

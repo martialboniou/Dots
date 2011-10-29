@@ -43,8 +43,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
-
+
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'code)
+
 ;;; FLYMAKE
 (mars/add-hooks '(emacs-lisp-mode-hook
                   php-mode-hook
@@ -326,6 +328,8 @@
        '((candidates . (lambda () (all-completions ac-prefix (ac-semantic-candidate ac-prefix)))))
        "Source for semantic.")
      (setq ac-sources (cons 'ac-source-semantic ac-sources))))
+
+(provide 'rectify)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; rectify.el ends here

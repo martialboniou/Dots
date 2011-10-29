@@ -45,6 +45,9 @@
 ;; 
 ;;; Code:
 
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'elisp)
+
 ;;; http://www.emacswiki.org/emacs/DrewsElispLibraries
 ;; > [new:MartialBoniou:2011-02-25 22:49 UTC]
 ;; > Hi Drew. I notice a bug in my emacs: Gnu Emacs 23.2.92.1. The 'switch-to-buffer in autofit-frame.el (used by dired-details+) is blocked when I switch from some buffers (for example, from Customize, if I quit I get a 'buffer is nil' message. I did this:
@@ -160,6 +163,8 @@
 ;;            (list 'autopair-default-handle-action
 ;;                  '(lambda (action pair pos-before)
 ;;                     (hl-paren-color-update))))))
+
+(provide 'ladybug)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; ladybug.el ends here

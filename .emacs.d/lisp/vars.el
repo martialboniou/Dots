@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Fri Oct 21 20:14:41 2011 (+0200)
+;; Last-Updated: Sat Oct 29 19:52:26 2011 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 100
+;;     Update #: 101
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -45,12 +45,16 @@
 ;;
 ;;; Code:
 
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'defs)				; check this or 'TOWN-PORTAL
+
 ;;; CONVENTIONS
 ;; a `path' is a list of relative or absolute directories
 ;; a `dir'  is a relative directory
 ;; a `rep'  is an absolute directory
 
 ;;; GLOBAL PATH
+
 (defvar mars/local-root-dir (if (boundp 'user-emacs-directory) user-emacs-directory "~/.emacs.d"))
 (defvar mars/temporary-dir (file-name-as-directory "/tmp"))
 
@@ -58,8 +62,8 @@
 (defvar mars/personal-data "data")
 
 ;;; DIRECTORIES
-(defvar mars/local-conf-path (list "confs" "confs/init"))
-(defvar mars/site-lisp-path (list "lisp")) ; subdirs are loaded in 'load-path too (FIXME: need reboot .emacs if Custom)
+(defvar mars/local-conf-path (list "lisp"))
+(defvar mars/site-lisp-path (list "vendor")) ; subdirs are loaded in 'load-path too
 (defvar wl/pases-install nil "True if Wanderlust is a PASES package.")
 (defvar wl-resource-rep nil "Wanderlust resource repository.")
 (when wl/pases-install
@@ -67,7 +71,7 @@
                              (concat
                               (file-name-as-directory "~")
                               (file-name-as-directory ".pases.d"))))) ; or (locate-library "wl") if standard install
-      (when (file-exists-p pases-source-dir) ; IMPORTANT: if `pases' is installed with `confs/packs.el', reboot Emacs
+      (when (file-exists-p pases-source-dir) ; IMPORTANT: if `pases' is installed with `lisp/packs.el', reboot Emacs
         (unless (fboundp 'remove-if)
           (require 'cl))
         (let ((wl-name-list (remove-if (lambda (x)
@@ -101,7 +105,7 @@
 (unless (boundp '*i-am-a-vim-user*)     ; TODO: choose a definitive place for those vars
   (defvar *i-am-a-vim-user* t))
 (unless (boundp '*i-am-a-dvorak-typist*)
-  (defvar *i-am-a-dvorak-typist* t))    ; used iff loaded in <confs> context
+  (defvar *i-am-a-dvorak-typist* t))    ; used iff loaded in <lisp> context
 (unless (boundp '*i-am-a-terminator*)
   (defvar *i-am-a-terminator* t))
 (let ((first-file (expand-file-name
@@ -213,20 +217,8 @@ named FUEL must be found in the `misc/fuel' subdirectory.")
                          (downcase system-name) "-"
                          (symbol-name system-type) ".el"))
     (error nil)))
-
-;;; LOAD `USER-INIT-FILE' IF EXTERNAL CALL
-(setq *emacs/normal-startup t)
-(unless (boundp '*emacs/normal-startup*)
-  (defvar *emacs/normal-startup* nil))
-(when (and (not *emacs/normal-startup*) (not user-init-file))
-  (let ((msg "init file post-load error: %s"))
-    (condition-case err
-        (load "~/.emacs")
-      (error (progn
-               (message (format msg err))
-               (condition-case err
-                   (load "~/_emacs")
-                 (error (message (format (concat msg " no candidate found: ") err)))))))))
+
+(provide 'vars)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; vars.el ends here

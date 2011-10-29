@@ -46,7 +46,10 @@
 ;; 
 ;;; Code:
 
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
+;; packs loading is forbidden if not correctly called (from .emacs or configuration file)
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'noaccess)
+(require 'defs)
 
 ;;; POPULATE SITE-LISP
 ;; - check if required subdirs are present in `mars/site-lisp-path'
@@ -455,6 +458,8 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
 ;;        (if (file-exists-p p)
 ;;           (safe-autoloads-load p)))
 
+
+(provide 'packs)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; packs.el ends here

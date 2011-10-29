@@ -44,9 +44,9 @@
 ;;
 ;;; Code:
 
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'defs)
 
-
 ;;; DIRED / DIRED-DETAILS / DIRED-EXTENSION
 ;; dired-x [guessing shell commands + dired commands for `non-dired' buffers]
 (add-lambda-hook 'dired-load-hook
@@ -159,6 +159,8 @@ open and unsaved. -- matt curtis (with enhancements by <hondana@gmx.com>"
                                 (cons cache dired-details-internal-overlay-list))))))
                  dired-subdir-alist)))
        (setq dired-details-state 'hidden))))
+
+(provide 'file-manager)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; file-manager.el ends here

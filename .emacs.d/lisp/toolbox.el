@@ -1,21 +1,21 @@
-;;; version.el --- 
+;;; toolbox.el --- 
 ;; 
-;; Filename: version.el
+;; Filename: toolbox.el
 ;; Description: 
 ;; Author: Martial Boniou
 ;; Maintainer: 
-;; Created: Sat Mar 12 21:26:30 2011 (+0100)
+;; Created: Mon Mar 14 20:02:00 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sun Oct 23 19:50:22 2011 (+0200)
+;; Last-Updated: Wed Mar 23 12:47:45 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 10
+;;     Update #: 7
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: git-emacs / magit (unused)
+;;; Commentary: keats /
 ;; 
 ;; 
 ;; 
@@ -45,15 +45,18 @@
 ;; 
 ;;; Code:
 
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
-
-;;; GIT-EMACS
-(load-library "git-emacs-autoloads")
-
-;;; MAGIT
-;; BEWARE: *impossible* to manage huge projects
-;; `MAGIT' is installed but unused if you need it, run
-;; interactively (magit-status) to autoload the whole bundle
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'town-portal)
+
+;;; KEATS
+(require 'keats)
+(require 'keats-interactive)
+(custom-set-variables '(keats-file (expand-file-name
+                                    (concat (file-name-as-directory mars/local-root-dir)
+                                            (file-name-as-directory mars/personal-data)
+                                            "cheatsheets"))))
+
+(provide 'toolbox)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; version.el ends here
+;;; toolbox.el ends here

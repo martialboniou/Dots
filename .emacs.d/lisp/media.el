@@ -51,8 +51,9 @@
 ;;
 ;;; Code:
 
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
-
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'www)
+
 ;;; * MPG123 *
 ;; (autoload 'mpg123 "mpg123" "A Front-end to mpg123/ogg123" t)
 
@@ -258,6 +259,8 @@
                    (condition-case nil
                        (emms-pause)
                      (error (emms)))))))))))))
+
+(provide 'media)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; media.el ends here

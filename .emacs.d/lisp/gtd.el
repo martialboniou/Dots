@@ -44,8 +44,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
-
+
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'defs)
+
 ;;; ORG MODE
 ;; (from 'Using Org Mode as a Day Planner' by John Wiegley)
 (defvar *notes-dir* (concat (file-name-as-directory
@@ -201,6 +203,8 @@ This can be 0 for immediate, or a floating point value.")
   (let ((org-agenda-skip-function (lambda () (org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "<[^\n]+>")))
         (org-agenda-overriding-header "Unscheduled TODO entries: "))
     (org-todo-list t)))
+
+(provide 'gtd)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; gtd.el ends here

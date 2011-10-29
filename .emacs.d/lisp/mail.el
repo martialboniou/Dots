@@ -45,8 +45,10 @@
 ;; 
 ;;; Code:
 
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
-
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'www)
+(require 'gtd)
+
 ;; TODO: REPLACE #'BBDB-VCARD-IMPORT BY #'trebb/BBDB-VCARD
 (let* ((init-file-name (concat user-login-name ".wl"))
        (init (or (conf-locate init-file-name)
@@ -341,6 +343,8 @@
   "Open Wanderlust in another frame."
   (interactive)
   (wl-other-frame))
+
+(provide 'mail)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; mail.el ends here

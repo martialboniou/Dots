@@ -45,8 +45,9 @@
 ;;
 ;;; Code:
 
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
-
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'town-portal)
+
 ;;; W3M
 (eval-after-load "w3m"
   '(progn
@@ -69,6 +70,7 @@
         newsticker-retrieval-method (quote extern)
         newsticker-wget-arguments (quote ("-q" "-O" "-" "--user-agent" "testing"))))
 
+(provide 'www)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; www.el ends here

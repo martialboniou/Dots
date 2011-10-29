@@ -51,13 +51,9 @@
 ;; 
 ;;; Code:
 
-(unless (boundp 'mars/local-root-dir) (condition-case nil (load (concat (file-name-directory load-file-name) "vars")) (error "Unable to get custom variables")))
-
-;;; PRETTY
-;; pretty control-l
-(require 'pp-c-l)
-(pretty-control-l-mode 1)
-
+(add-to-list 'load-path (file-name-directory load-file-name))
+(require 'defs)
+
 ;;; SWITCH ENCODINGS
 (setq *supported-encodings* '(utf-8 latin-1))
 
@@ -213,20 +209,8 @@ Otherwise the update regexps won't match."
     (let ((lang (ring-ref lang-ring -1)))
       (ring-insert lang-ring lang)
       (ispell-change-dictionary lang))))
-
-;;; ALIAS-MINOR-MODES
-;; shorten indicator in mode-line
-(alias-minor-modes
- '(undo-tree UT
-   abbrev    Ab
-   autopair  AP
-   paredit   PE
-   flymake   FM))
-
-;;; PRETTY-LAMBDA
-;; replace LAMBDA -> λ
-(setq pretty-lambda-auto-modes '(lisp-mode
-                                 scheme-mode
-                                 emacs-lisp-mode
-                                 python-mode))
-(pretty-lambda-for-modes)
+
+(require 'formats)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; formats.el ends here

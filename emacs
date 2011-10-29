@@ -5,7 +5,7 @@
 ;; Author: Martial Boniou
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
-;; Version: 3.0
+;; Version: 4.0a1
 ;; Last-Updated: Thu Oct 27 13:57:36 2011 (+0200)
 ;;           By: Martial Boniou
 ;;     Update #: 2054
@@ -40,6 +40,8 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
+
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 
 ;;; *MOOD*
 ;;
@@ -79,9 +81,8 @@ a frame.")
   "If `TRUE', load every configuration file. Used by `vars.el' .
 Actually Emacs may be loaded from this file too when called by
 another configuration file.")
-(when *emacs/normal-startup*
-  (load "~/.emacs.d/confs/vars"))       ; the only hardcoded path
-(defvar renew-autoloads-at-startup nil) ; (re-)create autoloads (eg. after a change in `confs/packs.el') FIXME: find a better process
+
+(defvar renew-autoloads-at-startup nil) ; (re-)create autoloads (eg. after a change in `lisp/packs.el') FIXME: find a better process
 (defvar the-desktop-file nil)           ; desktop
 (defvar the-desktop-lock nil)
 (defvar desktop-dir nil)
@@ -111,6 +112,8 @@ See the advised `delete-frame' at the end of this file as a use case.")
 (defvar emacs/breaktime-on-error 3
   "Time (in seconds) of the pause on error.")
 (defvar mars/fast-kill t)               ; (setq mars/fast-kill nil) to redo 'loaddefs on quit
+
+(require 'vars)
 
 ;;; *APPEARANCE*
 (defmacro if-bound-call (form &rest args)
@@ -155,7 +158,7 @@ a simple `custom.el'."
 (if (and (featurep 'ns) (eq window-system 'ns))
     (disable-eyecandies tool-bar-mode scroll-bar-mode) ; OS X reclaims its menus
   (disable-eyecandies menu-bar-mode tool-bar-mode scroll-bar-mode))
-;; - basic customization / see `confs/init/common-pre-custom' too
+;; - basic customization / see `lisp/init/common-pre-custom' too
 (custom-set-variables
  '(inihibit-startup-message t)
  '(custom-file (safe-build-custom-file "Customize"))
@@ -284,8 +287,7 @@ ROOT                        => ROOT"
 ;; FIXME: use subdirs.el in those two directories
 
 ;;; PACKAGE MANAGEMENT
-;; - check/install (use `pases' for up-to-date wl & org 7)
-(conf-load "packs")                     ; additional path + autoloads here
+(require "packs")                     ; additional path + autoloads here
 
 ;;; COMMON LISP EXTENSION
 (when *i-am-a-common-lisp-advocate*
@@ -345,7 +347,7 @@ ROOT                        => ROOT"
 ;; - auto-cache byte-compiled libraries
 ;; (safe-load "byte-code-cache")
 ;; - defs = functions/macros to start with
-(conf-load "defs")
+(require "defs")
 ;; - delete keys' behavior
 (bind-key "<kp-delete>" 'delete-char)
 ;; - undo-tree | redo+ (both `vimpulse' compatible)
@@ -359,7 +361,7 @@ ROOT                        => ROOT"
 ;;; MODAL EDITING & COLOR-THEME WITH PARENTHESES' SUPPORT
 (if (not (null *i-am-a-vim-user*))
     (progn
-      (conf-load "vim-everywhere")) ; vimpulse (incl. parens' matching) + colorscheme
+      (require "vim-everywhere")) 	; vimpulse (incl. parens' matching) + colorscheme
   (progn
     (require 'mic-paren)         ; faces for (mis)matching parentheses
     (color-theme-initialize)
@@ -429,7 +431,7 @@ ROOT                        => ROOT"
 (when *emacs/normal-startup* (start-named-server user-login-name)) ; TODO: non normal-startup should create a server name based on the loader (eg. emacs-mail should start 'mail' server)
                                         ; TODO: create gnome/osx scripts to manage org-remember/org-capture by sending to the best server contextually
 
-;;; GLOBAL KEYS (see <confs>/shortcuts.el for additionnal keys)
+;;; GLOBAL KEYS (see <lisp>/shortcuts.el for additionnal keys)
 (bind-keys
  '("C-x C-f"   ido-recentf-file-name-history          ; IMPORTANT: C-x C-f is not `find-file' anymore (C-f to switch to `ido-find-file' only works from `ido-buffer-internal' and `ido-file-internal' derivatives.) [but use [(jxf)] in `sticky-control']
    "C-x F"     ido-recentf
@@ -636,36 +638,22 @@ the should-be-forbidden C-z.")
         (if (not custom-buffer-modified)
             (Custom-buffer-done)))))
 
-;; confs' files
-(let ((confs-to-load '(
-                       "formats"        ; emacs as an universal typewriter (format + encodings)
-                       "window-manager" ; emacs as a window-manager
-                       "shortcuts"      ; emacs as a key commander
-                       )))
-  (when *emacs/normal-startup*
-    (setq confs-to-load
-          (append confs-to-load
-                  '(
-                    "crypto"       ; emacs as a secret agent
-                    "gtd"          ; emacs as an planner
-                    "www"          ; emacs as web browser / rss reader
-                    "mail"         ; emacs as a MUA
-                    "file-manager" ; emacs as a file-manager
-                    "code"         ; emacs as a coding tool
-                    "rectify"      ; emacs as a rectifier (error corrector/smart completion)
-                    "version"      ; emacs as a vc tool
-                    "vt"           ; emacs as a virtual terminal
-                    "media"        ; emacs as a multimedia player (after 'w3m iff needed)
-                    "toolbox"      ; emacs as a swiss army knife
-                    )
-                  (when *i-am-an-emacsen-dev*
-                    '("elisp"        ; emacs as an emacs-lisp development tool (helpers inside)
-                      "ladybug"))))) ; emacs as a fast hacking tool (temporary bugfixes inside)
+;; configuration
+(require 'formats)			; emacs as an universal typewriter (format + encodings)
+(require 'crypto)			; emacs as a secret agent
+(require 'window-manager)               ; emacs as a window-manager
+(require 'shortcuts)                    ; emacs as a key commander
 
-  (mapc
-   #'(lambda (x)
-       (conf-load x))
-   confs-to-load))
+(when *emacs/normal-startup*
+  (require 'mail)			; emacs as a MUA, a web browser, a syndicate and an organizer
+  (require 'file-manager)		; emacs as a file manager
+  (require 'rectify)			; emacs as a programming environment including smart code validation
+  (require 'version)			; emacs as a VC tool
+  (require 'vt)				; emacs as a virtual terminal
+  (require 'media)			; emacs as a multimedia player
+  (require 'toobox)			; emacs as a swiss army knife
+  (when *i-am-an-emacsen-dev*
+    (require 'ladybug)))		; emacs as an elisp developer tool
 
 ;; special init
 ;; - eshell path built from 'exec-path (which is set in Customize file)

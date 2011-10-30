@@ -45,6 +45,9 @@
 ;; 
 ;;; Code:
 
+(require 'code)
+(require 'www)
+
 (defvar nxhtml-env nil)
 
 ;; MWEB

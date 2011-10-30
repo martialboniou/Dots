@@ -47,7 +47,8 @@
 ;;; Code:
 
 (add-to-list 'load-path (file-name-directory load-file-name))
-(require 'defs)
+(require 'noaccess)
+(require 'register)
 
 (when (fboundp 'winner-mode)
   (winner-mode 1))

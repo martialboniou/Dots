@@ -49,7 +49,7 @@
 ;; packs loading is forbidden if not correctly called (from .emacs or configuration file)
 (add-to-list 'load-path (file-name-directory load-file-name))
 (require 'noaccess)
-(require 'defs)
+(require 'walker)
 
 ;;; POPULATE SITE-LISP
 ;; - check if required subdirs are present in `mars/site-lisp-path'
@@ -185,9 +185,7 @@
                                     ;; (xwl-elisp          . ((get     . "git clone git://github.com/xwl/xwl-elisp.git")
                                     ;;                        (install . "make byte-compile"))) ; TODO: http://xwl.appspot.com/ (william xu) / include smart-operator
                                     ))             ; TODO: verify sig on get ?
-(defun trim-string (string)
-  "Remove white spaces in beginning and end of STRING. --xah"
-  (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string)))
+
 (defun mars/check-command (command &optional commands)
   "Check if command as executable in the `EXEC-PATH'. Throw an error by showing the
 faulty COMMAND if COMMANDS is NIL or by listing all non-executable COMMAND and COMMANDS.
@@ -208,6 +206,7 @@ faulty COMMAND if COMMANDS is NIL or by listing all non-executable COMMAND and C
                                  (mapconcat 'identity renegades ", ") " and "))))
               (error (format error-sentence (concat rng-string command)))))
         (error (format error-sentence command))))))
+
 (defun mars/fetch-exec-in-command (command)
   "Fetch executables in a command. The executables are the list of all binary inside the shell
 commands except local binary.
@@ -223,6 +222,7 @@ commands except local binary.
                       (mapcar (lambda (x)
                                 (trim-string x))
                               (split-string command "[;&|]")))))) ; shell-command-separator-regexp
+
 (defun mars/execute-commands (sentence &optional additional-commands)
   "Execute sentence as a shell script after checking executables are in EXEC-PATH. Check
 `additional-commands' on error.
@@ -231,6 +231,7 @@ commands except local binary.
             (mars/check-command com additional-commands))
           (mars/fetch-exec-in-command sentence))
   (shell-command-to-string sentence))
+
 (defun mars/fetch-exec-in-package-tree (package-tree &optional phase-list)
   "Fetch executables in a package tree. PHASE-LIST is the assoc keys to get shell commands in
 a well-formed package tree. '(GET INSTALL) is the default PHASE-LIST. The executables are the
@@ -252,6 +253,7 @@ list of all binary inside the shell commands except local binary.
                (or phase-list (list 'get 'install))))
      package-tree)
     (delete-dups execs)))
+
 (defun mars/populate-site-lisp (&optional only-mark)
   "Check if a package exists. If no package found, fetch it, install it
 and add it and its subdirs to load-path. If `only-mark' then `renew-autoloads-at-startup'
@@ -333,6 +335,7 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
             (update-autoloads-in-package-area)
             (safe-autoloads-load mars/loaddefs)))
         (setq renew-autoloads-at-startup nil))))
+
 (defun mars/renew-site-lisp ()
   "Renew PATH and AUTOLOADS."
   (interactive)

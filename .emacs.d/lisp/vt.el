@@ -46,9 +46,10 @@
 ;;; Code:
 
 (add-to-list 'load-path (file-name-directory load-file-name))
-(require 'kernel)
+(require 'register)
 
 ;;; MULTI-TERM
+;;
 (eval-after-load "multi-term"
   '(progn
      (defun term-send-quote ()
@@ -83,9 +84,17 @@
 ;; (setq system-uses-terminfo nil) ; if problem with $TERM
 
 ;;; SHELL MODE
+;;
 (add-hook 'shell-mode-hook #'ansi-color-for-comint-mode-on)
 
+;;; ESHELL MODE
+;;
+(add-lambda-hook 'eshell-mode-hook
+  (setenv "PATH" (mapconcat (lambda (dir) (or dir ".")) exec-path path-separator))
+  (setq eshell-path-env (getenv "PATH")))
+
 ;;; SH FILES
+;;
 (add-to-list 'auto-mode-alist '("\\.[zk]sh$" . sh-mode))
 
 (provide 'vt)

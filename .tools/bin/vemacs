@@ -1,4 +1,3 @@
 #!/bin/sh
-emacs -q -nw -l ~/.emacs.d/boot/vemacs.el --eval "(eval-buffer)" $*
+emacs -q -nw -l ~/.emacs.d/lisp/vim-everywhere.el -eval "(switch-buffer \"*scratch*\")" $*
 # load emacs in Vim emulation (including Vimpulse/Viper)
-# tip: loading 'vars' yields a non-normal startup of the 'user-init-file' ie emacs loads w/o additional configuration files

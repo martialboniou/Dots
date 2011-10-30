@@ -45,6 +45,8 @@
 ;; 
 ;;; Code:
 
+(require 'code)
+
 ;;; GALLINA-PYTHON - NON GNU VERSION
 ;; `python-mode' is better than `python' but `wisent-python' from SEMANTIC
 ;; is hardcoded for `python' => fgallina@github mixed the best of both worlds

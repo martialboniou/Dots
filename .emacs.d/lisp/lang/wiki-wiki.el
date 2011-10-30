@@ -45,6 +45,8 @@
 ;; 
 ;;; Code:
 
+(require 'code)
+
 ;;; MARKDOWN
 (add-to-list 'auto-mode-alist '("\\.md\\'\\|\\.mkdn\\'\\|\\.markdown\\'" . markdown-mode))
 

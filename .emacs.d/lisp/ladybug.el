@@ -47,6 +47,7 @@
 
 (add-to-list 'load-path (file-name-directory load-file-name))
 (require 'elisp)
+(require 'kernel)
 
 ;;; http://www.emacswiki.org/emacs/DrewsElispLibraries
 ;; > [new:MartialBoniou:2011-02-25 22:49 UTC]

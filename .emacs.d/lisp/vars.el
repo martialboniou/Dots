@@ -45,69 +45,65 @@
 ;;
 ;;; Code:
 
-(add-to-list 'load-path (file-name-directory load-file-name))
-(require 'defs)				; check this or 'TOWN-PORTAL
+;;; *MOOD*
+;;
+;; create *vim-now*/*dvorak-now*/*term-now* to force new vim/dvorak/term options
+;; remove .emacs.d/data/.launched to reset vim/dvorak/term options at startup
+;;
+(defvar *i-am-a-vim-user* t
+  "If true, Emacs will be Vimpyrized. (ViViVi, the beast.)
+Set the boolean *vim-now* to shortcut this variable.")
+(defvar *i-am-a-dvorak-typist* t
+  "If true, additional Dvorak-friendly keybindings.
+Set the boolean *dvorak-now* to shortcut this variable.")
+(defvar *i-am-a-terminator* t
+  "If true, C-h and C-w will be used as in any Un*x terminal.
+Unless `*i-am-a-dvorak-typist*', `CUA' is activated in this
+case to support additional cut-paste strategy (ie to replace
+C-w as the usual 'cut' key binding).
+Set the boolean *term-now* to shortcut this variable.")
+(defvar *i-am-a-common-lisp-advocate* t
+  "If true, require CL emacs extension (eg. EIEIO).")
+(defvar *i-am-an-emacsen-dev* t
+  "If true, elisp helpers will be loaded.")
+(defvar *i-can-do-yubitsume-now* t
+  "If true, enable pinky-free helpers as STICKY-CONTROL.
+A `yubitsume' is a japanese apologies' ritual which generally
+consists in cutting off the portion of his left little finger
+above the top knuckle. In no-window-system mode, most of these
+helpers is active to work on most 70's designed VT where the
+Ctrl-Shift combination is unknown.")
+(defvar *i-like-shoji* t
+  "If true, enable transparency in window-system. Shoji are
+japanese window divider consisting of translucent paper over
+a frame.")
 
-;;; CONVENTIONS
+;;; GLOBAL PATH
+;;
 ;; a `path' is a list of relative or absolute directories
 ;; a `dir'  is a relative directory
 ;; a `rep'  is an absolute directory
-
-;;; GLOBAL PATH
-
+;;
+;; DIRECTORY
 (defvar mars/local-root-dir (if (boundp 'user-emacs-directory) user-emacs-directory "~/.emacs.d"))
 (defvar mars/temporary-dir (file-name-as-directory "/tmp"))
-
-;;; DIRECTORY NAME
+;; DIRECTORY NAME
 (defvar mars/personal-data "data")
-
-;;; DIRECTORIES
+;; DIRECTORIES
 (defvar mars/local-conf-path (list "lisp"))
 (defvar mars/site-lisp-path (list "vendor")) ; subdirs are loaded in 'load-path too
-(defvar wl/pases-install nil "True if Wanderlust is a PASES package.")
-(defvar wl-resource-rep nil "Wanderlust resource repository.")
-(when wl/pases-install
-    (let ((pases-source-dir (expand-file-name
-                             (concat
-                              (file-name-as-directory "~")
-                              (file-name-as-directory ".pases.d"))))) ; or (locate-library "wl") if standard install
-      (when (file-exists-p pases-source-dir) ; IMPORTANT: if `pases' is installed with `lisp/packs.el', reboot Emacs
-        (unless (fboundp 'remove-if)
-          (require 'cl))
-        (let ((wl-name-list (remove-if (lambda (x)
-                                         (string-match ".pases$" x))
-                                       (directory-files pases-source-dir nil "^wl"))))
-          (when wl-name-list
-            (setq wl-resource-rep (concat pases-source-dir
-                                          (file-name-as-directory
-                                           (car (last wl-name-list))))))))))
-
-;;; UTILITIES
-(unless (fboundp 'conf-locate)
-    (defun conf-locate (conf) (let ((path (mapcar '(lambda (x) (concat (file-name-as-directory mars/local-root-dir) x)) mars/local-conf-path))) (locate-library conf nil path))))
-(unless (fboundp 'conf-load)
-  (defun conf-load (conf)               ; useful in non `*EMACS/NORMAL-STARTUP*' context
-                                        ; eg: when loading a specific configuration file
-                                        ;     by external call
-    (let ((found (conf-locate conf)))
-      (when found
-        (load-file found)))))           ; normally bound when `USER-INIT-FILE' is loaded
-(defmacro mars/force-options (&rest conses)
-  "Initialize CDR from the value of CAR if CAR is bound.
-`CONSES' is one or many CONS of variables."
-  `(progn
-     ,@(mapcar (lambda (x)
-                 `(when (boundp ',(car x))
-                    (setq ,(cdr x) ,(car x))))
-               conses)))
+;;; TIMERS
+;;
+(defvar emacs-load-start (current-time))
+(defvar emacs/breaktime-on-error 3
+  "Time (in seconds) of the pause on error.")
+(defvar mars/fast-kill t)               ; (setq mars/fast-kill nil) to redo 'loaddefs on quit
+;;; MISC
+;;
+(defvar renew-autoloads-at-startup nil) ; (re-)create autoloads (eg. after a change in `lisp/packs.el') FIXME: find a better process
 
 ;;; FIRST TIME
-(unless (boundp '*i-am-a-vim-user*)     ; TODO: choose a definitive place for those vars
-  (defvar *i-am-a-vim-user* t))
-(unless (boundp '*i-am-a-dvorak-typist*)
-  (defvar *i-am-a-dvorak-typist* t))    ; used iff loaded in <lisp> context
-(unless (boundp '*i-am-a-terminator*)
-  (defvar *i-am-a-terminator* t))
+;;
 (let ((first-file (expand-file-name
                    (concat (file-name-as-directory mars/local-root-dir)
                            (file-name-as-directory mars/personal-data)
@@ -134,25 +130,14 @@
                    (unless *i-am-a-terminator*
                      "(when (eq *i-am-a-terminator* t) (setq *i-am-a-terminator* nil))\n"))))))))
 ;; force vim/dvorak/term options via special vars
-(mars/force-options (*vim-now*    . *i-am-a-vim-user*)
-                    (*dvorak-now* . *i-am-a-dvorak-typist*)
-                    (*term-now*   . *i-am-a-terminator*))
-
-;;; GLOBAL SYSTEM CUSTOMIZATION
-;; general behavior/convention (`custom-file' being specific to a system)
-(let ((common-pre-custom (expand-file-name
-                          (concat
-                           (file-name-directory load-file-name)
-                           (file-name-as-directory "init")
-                           "common-pre-custom"))))
-  (condition-case err
-      (load common-pre-custom)
-    (error
-     (message "vars: global system customization loading error: %s" err)
-     (sleep-for 3))))
-;; test with conf-locate / conf-load
+(eval-after-load "defs"
+  '(progn
+     (mars/force-options (*vim-now*    . *i-am-a-vim-user*)
+			 (*dvorak-now* . *i-am-a-dvorak-typist*)
+			 (*term-now*   . *i-am-a-terminator*))))
 
 ;;; MINGW/MSYS COMPATIBILITY
+;;
 (when (member system-type '(ms-dos windows-nt))
   (defvar mingw-executable-binary-suffixes
     '(".exe" ".com" ".bat" ".cmd" ".btm" ""))
@@ -183,10 +168,58 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
   (setq shell-file-name "bash"))
 
 ;;; DATA PATH
+;;
 (defvar c-include-path nil "Additional include path for C programs.")
 (defvar cpp-include-path nil "Additional include path for C++ programs")
+(let ((data-dir (concat (file-name-as-directory mars/local-root-dir)
+                        (file-name-as-directory mars/personal-data))))
+  (mapc (lambda (x) 
+          (let ((newdir (file-name-as-directory (concat (file-name-as-directory "~/.emacs.d/data") x))))
+        (unless (file-exists-p newdir)
+          (make-directory newdir t))))
+    '("cache/semanticdb"
+      "cache/bookmark"
+      "cache/newsticker/cache"
+      "cache/newsticker/images"
+      "cache/newsticker/groups"
+      "cache/eshell"
+      "Notes" "Insert" "BBDB" "elmo"))
+  (let ((data-cache (expand-file-name (file-name-as-directory "~/.emacs.d/data/cache"))))
+    (unless (fboundp 'flet) (require 'cl)) ; elisp obviously needs R*RS | CL standard
+    (flet ((cachize (file) (expand-file-name (concat (file-name-as-directory data-cache) file))))
+      (setq mars-windows-archiver-file (cachize "windows-archiver")
+        kiwon/last-window-configuration-file (cachize "last-window-configuration")
+        desktop-dir data-cache
+        desktop-base-file-name "desktop"
+        desktop-base-lock-name (concat (if (memq system-type '(ms-dos windows-nt cygwin)) "_" ".") desktop-base-file-name ".lock") ; TODO: add a fun in defs named `prefix-hidden-file'
+        ido-save-directory-list-file (cachize "ido-last")
+        recentf-save-file (cachize "recentf")
+        anything-c-adaptive-history-file (cachize "anything-c-adaptive-history")
+        bookmark-default-file (cachize "bookmark/emacs.bmk")
+        bmkp-bmenu-commands-file (cachize "bookmark/bmenu-commands.el")
+        bmkp-bmenu-state-file (cachize "bookmark/bmenu-state.el")
+        newsticker-cache-filename (cachize "newsticker/cache")
+        newsticker-imagecache-dirname (cachize "newsticker/images")
+        newsticker-groups-filename (cachize "newsticker/groups")
+        org-diary-agenda-file "~/.emacs.d/data/Notes/Diary.org"
+        savehist-file (cachize "history")
+        tramp-persistency-file-name (cachize "tramp")
+        ac-comphist-file (cachize "ac-comphist.dat")
+        semanticdb-default-save-directory (cachize "semanticdb")
+        ede-project-placeholder-cache-file (cachize "projects.ede")
+        ecb-tip-of-the-day-file (cachize "ecb-tip-of-day.el")
+        auto-insert-directory "~/.emacs.d/data/Insert"
+        bbdb-file (concat (file-name-as-directory "~/.emacs.d/data/BBDB")
+                  (user-login-name)
+                  ".bbdb")
+        elmo-msgdb-directory "~/.emacs.d/data/elmo"
+        wl-temporary-file-directory (expand-file-name "~/Downloads")
+        eshell-directory-name (file-name-as-directory (cachize "eshell")) ; may need a final `slash'
+        emms-cache-file (cachize "emms-cache")))))
+
 
 ;;; PROGRAM NAMES
+;;
 (defvar mars/haskell-program-name "ghci"
   "Haskell interpreter fullname.")
 (custom-set-variables
@@ -206,6 +239,7 @@ named FUEL must be found in the `misc/fuel' subdirectory.")
   "The default program for spell checking. May be set to NIL.")
 
 ;;; SPECIFICS (<data>/sys/vars-<hostname>.el or <data>/vars-<hostname>.el)
+;;
 (let ((sys-rep (concat (file-name-as-directory mars/local-root-dir)
                        (file-name-as-directory mars/personal-data)
                        (file-name-as-directory "sys"))))

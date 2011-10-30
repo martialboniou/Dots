@@ -46,9 +46,100 @@
 ;;; Code:
 
 (add-to-list 'load-path (file-name-directory load-file-name))
-(require 'defs)
+(require 'register)
 
-;;; MACROS
+;;; MAIN KEYS (see 'SHORTCUTS)
+;;
+(bind-keys
+ '("C-x C-f"   ido-recentf-file-name-history          ; IMPORTANT: C-x C-f is not `find-file' anymore (C-f to switch to `ido-find-file' only works from `ido-buffer-internal' and `ido-file-internal' derivatives.) [but use [(jxf)] in `sticky-control']
+   "C-x F"     ido-recentf
+   "C-x f"     ido-find-file ; may be called from `ido-switch-buffer' (doing C-x C-b C-f) [but use [(jxjf)] in `sticky-control']
+   "C-="       shell-command
+   "M-n"       new-frame                ; XXX check if no issue
+   "M-<f2>"    apply-macro-to-region-lines ; use F3/F4 for kmacro start/end
+   "C-c o"     anything-occur              ; or simply occur ?
+   ;; "M-:"       anything-eval-expression-with-eldoc ; a super evaluator
+   "C-:"       anything-M-x             ; C-S-; NOTE: may be smex if 'smex
+   "C-c l"     org-store-link ; [default]
+   "C-x C-b"   ido-switch-buffer        ; switch buffer on "C-x C-b" (faster than typing "C-x b") [but use [(jxb)] in `sticky-control']
+   "C-x b"     ibuffer                  ; nice buffer browser (a la `dired') [but use [(jxjb)] in `sticky-control']
+   "C-p"       hippie-expand            ; like Vim next-expansion key
+   "C-c _ w"   whitespace-mode
+   "C-c _ t"   whitespace-toggle-options
+   "C-c = w"   global-whitespace-mode
+   "C-c = t"   global-whitespace-toggle-options
+   "C-x 4 t"   transpose-buffers
+   "C-M-z"     toggle-transparency
+   "C-c C-m"   make-directory           ; or M-m in `ido'
+   "C-c C-0"   anything-mini            ; buffers (w/o `ibuffer' tags) & recentf (w/o `ido-recentf' completion)
+                                        ; See shortcuts.el: anything on [<f5><f8>] for fast navigation in:
+                                        ; - buffers (prefer `ido-switch-buffer' [C-x C-b] or `cycle-buffer' [<f5><f[4|6]>] for faster cycling)
+                                        ; - recentf (prefer `ido-recentf-file-name-history' [C-x C-f] for faster finding)
+                                        ; - files in `default-directory' (not present in `anything-mini')
+   "C-c C-9"   anything-imenu           ; IMPORTANT: useful for fast code navigation (w/o `ecb' fancies)
+                                        ;            anything-browse-code map on [<f7><f7>] too
+   "C-<f10>"   tmm-menubar              ; key-controlled menu (`<f10>' is default but awkward on OSX/Gnome) IMPORTANT: remember this for `no-window-system' session
+   ))
+;; C-\ as <meta> everywhere (except anywhere `viper-mode' rewrites it)
+(fset 'new-meta-prefix (copy-keymap 'ESC-prefix))
+(bind-key "C-\\" 'new-meta-prefix)
+(when *i-am-a-terminator*
+  (bind-keys
+   '("C-x C-h"   help-command ; use F1 for contextual help / C-h being rebind
+     "C-h"       delete-backward-char
+     "C-w"       backward-kill-word)))    ; C-w as 'DELETE-BACKWARD-WORD in Vi emu
+;; C-w may be used for 'backward-word-delete so there should be
+;; another way to do cut/copy/paste:
+;; 1) Vi commands (d/y/p) for Vim user
+;; 2) special C-; (;/'/a) for Dvorak typist (including Vim user)
+;; 3) standard commands (x/v/c) for Qwerty typist & "terminator" (including Vim user)
+(if *i-am-a-dvorak-typist*
+    (bind-keys                          ; Sun help keys' order
+     '("C-; C-'" copy-region-as-kill
+       "C-; C-a" yank
+       "C-; C-;" kill-region))
+  (when *i-am-a-terminator*
+    (cua-mode t)))                      ; C-c/C-x got timeout in order
+                                        ; to make combinations to work
+(eval-after-load "cua-mode"
+  '(progn
+     (setq cua-auto-tabify-rectangles nil)
+     (transient-mark-mode 1)
+     (setq cua-keep-region-after-copy t))) ; MS Windows behavior
+(global-unset-key (kbd "C-z"))      ; ELSCREEN or other packages may use it
+(global-unset-key (kbd "C-x C-z"))  ; reserved for viper-mode
+;; sticky-control when required
+(unless (and (not *i-can-do-yubitsume-now*) window-system)
+  (require 'sticky-control)
+  (setq sticky-control-timeout 0.3)
+  (eval-after-load "sticky-control"
+    '(progn
+       ;; - revert FIND-FILE and SWITCH-BUFFER actions
+       (setq sticky-control-shortcuts
+             (append
+              '("xf"  . 'ido-recentf-file-name-history)
+              '("xjf" . 'ido-find-file)
+              '("xb"  . 'ido-switch-buffer)
+              '("xjb" . 'ibuffer)
+              sticky-control-shortcuts))
+       ;; - dvorak copy/paste or CUA shortcuts
+       (if *i-am-a-dvorak-typist*
+           (setq sticky-control-shortcuts
+                 (cons '(59 . [(control \;)])
+                       sticky-control-shortcuts))
+         (setq sticky-control-shortcuts
+               (cons '(?v . "\C-v")     ; paste in CUA-mode
+                     sticky-control-shortcuts))))))
+;; smex case
+(eval-after-load "smex"
+  '(progn
+     (bind-keys
+      '("M-x" smex
+        "C-:" smex
+        "M-X" smex-major-mode-commands))))
+
+;;; UTILITY MACROS
+;;
 (defmacro partition-on-predicate (predicate list)
   "Creates a list of two lists. According to the predicate, the first one
    is the truth, the second one is the rejected members."
@@ -121,6 +212,7 @@
                                        (mars-windows-archiver-restore . next)))) ; restore which
 
 ;;; DUMMY FUNCTIONS
+;;
 ;; tell your functions unreachable via autoloads (generally defined in confs file
 ;; instead of <site-lisp> files). Use `fmakunbound' to test it.
 (defun-dummy t
@@ -132,7 +224,8 @@
   ("crypto"         . mars/hexedit))
 (defun-dummy nil undo-kill-buffer ibuffer cycle-buffer cycle-buffer-backward cycle-ispell-languages)
 
-;;; KEYBINDINGS
+;;; SPECIAL KEYS
+;;
 ;; <f5> + <f6> => toggle single window + cycle/(undo-)kill-buffer + windows configuration archiver
 (mars/build-ordered-function-keys "f5"
                                   (mars/toggle-single-window  . id)
@@ -203,7 +296,6 @@
  '("C-c C-r" make-remember-frame
    "C-c r"   make-remember-frame))
 ;; Utils
-
 (bind-keys
  '("C-c t" default-term
    "C-c w" mars/wl))                    ; 'WL-OTHER-FRAME but ensure the `confs/mail' load

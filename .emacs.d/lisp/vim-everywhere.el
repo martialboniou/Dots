@@ -48,7 +48,8 @@
 ;;; Code:
 
 (add-to-list 'load-path (file-name-directory load-file-name))
-(require 'defs)
+(defvar *vim-now* t)
+(require 'kernel)
 
 ;; (unless (fboundp 'mars/add-to-load-path)
 ;;   (let ((local-site-lisp-path (mapcar #'(lambda (x) (concat (file-name-as-directory mars/local-root-dir)

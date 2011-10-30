@@ -15,15 +15,14 @@
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: Pretty (pp-c-l) + encodings switiching + format on save
+;;; Commentary: utf-8 + encodings switiching + format on save
 ;;              helpers + delete-trailing-whitespace + style + image
-;;              support (iimage) + flyspell + alias-minor-modes +
-;;              pretty-lambda
+;;              support (iimage) + flyspell
 ;; 
 ;; formats by Martial (2010-2011)
 ;;
+;; utf-8 is default
 ;; iso-8859-1 support (when needed)
-;; 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -52,9 +51,21 @@
 ;;; Code:
 
 (add-to-list 'load-path (file-name-directory load-file-name))
-(require 'defs)
+(require 'register)
+
+;;; UTF-8
+;;
+(let ((encoding 'utf-8))
+  (setq locale-coding-system encoding)
+  (set-terminal-coding-system encoding)
+  (set-keyboard-coding-system encoding)
+  (set-selection-coding-system encoding)
+  (prefer-coding-system encoding)
+  (set-language-environment (symbol-name encoding)))
+
 
 ;;; SWITCH ENCODINGS
+;;
 (setq *supported-encodings* '(utf-8 latin-1))
 
 (defun mars/define-encodings (encoding)
@@ -103,6 +114,7 @@ remove whitespace and save the current buffer."
 (add-hook 'before-save-hook 'alexott/untabify-hook)
 
 ;;; DELETE TRAILING WHITESPACE
+;;
 (defalias 'dtw 'delete-trailing-whitespace)
 (defadvice delete-trailing-whitespace (after advising-deletion nil activate)
   "Advise trailing whitespace deletion."
@@ -125,6 +137,7 @@ Otherwise the update regexps won't match."
         (delete-region (point) (match-end 0))))))
 
 ;;; STYLE OBSOLETE
+;;
 (setq-default c-basic-offset 4)
 (setq c-default-style "linux")
 (defun mars/c-brace-and-indent-hook ()
@@ -172,6 +185,7 @@ Otherwise the update regexps won't match."
        (iimage-mode))))
 
 ;;; FLYSPELL
+;;
 (let ((spell-checker-name (or spelling-tool-name 'aspell)))
   ;; run FLYSPELL if `spell-checker-name' is the name of an executable
   (defvar spell-checker-text-hooks (mars/generate-mode-hook-list '(latex markdown))
@@ -210,7 +224,7 @@ Otherwise the update regexps won't match."
       (ring-insert lang-ring lang)
       (ispell-change-dictionary lang))))
 
-(require 'formats)
+(provide 'formats)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; formats.el ends here

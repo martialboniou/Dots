@@ -48,6 +48,7 @@
 (add-to-list 'load-path (file-name-directory load-file-name))
 (require 'www)
 (require 'gtd)
+(require 'kernel)
 
 ;; TODO: REPLACE #'BBDB-VCARD-IMPORT BY #'trebb/BBDB-VCARD
 (let* ((init-file-name (concat user-login-name ".wl"))

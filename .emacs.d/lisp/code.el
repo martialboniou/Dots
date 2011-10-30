@@ -55,6 +55,7 @@
 
 (add-to-list 'load-path (file-name-directory load-file-name))
 (require 'formats)
+(require 'kernel)
 
 ;;; LANGUAGES' CONFIGURATION PATH
 (defvar lang-rep (condition-case nil (expand-file-name

@@ -72,6 +72,16 @@
        (should (equal (car foo-mode-hook) '(lambda nil (message "baz"))))
        (should (equal (car foo-mode-hook) '(lambda nil (message "baz")))))))
 
+(ert-deftest mars/force-options-simple-test ()
+  (unwind-protect
+      (progn
+	(defvar *old-foo* 'bar)
+	(defvar *new-foo* 'foo)
+	(should (eq (mars/force-options (*new-foo* . *old-foo*)) 'foo))
+	(should (eq *old-foo* *new-foo*)))
+    (safe-unintern *old-foo*)
+    (safe-unintern *new-foo*)))
+
 (defun quux-fundamental-buffer-context (body)
   (unwind-protect
       (progn

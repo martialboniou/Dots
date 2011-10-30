@@ -45,6 +45,8 @@
 ;; 
 ;;; Code:
 
+(require 'code)
+
 ;;; GNU SMALLTALK
 (require 'smalltalk-mode-init)
 

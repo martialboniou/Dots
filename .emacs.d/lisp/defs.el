@@ -45,8 +45,8 @@
 ;;
 ;;; Code:
 
-;;; The Most Useful Interactive Funcs:
-;;;
+;;; The Most Useful Defines:
+;;
 ;;; /// TEXT \\\
 ;;; M-x show-trailing-whitespace : toggle spacing appearance
 ;;; M-x dired-2unix-marked-files : repair dired files to Unix encoding
@@ -55,11 +55,7 @@
 ;;; /// FILE/BUFFER \\\
 ;;; M-x rename-file-and-buffer : rename file/buffer
 ;;; M-x move-buffer-file : move file/buffer to another directory
-;;;
-;;; Changelog: 2010-04-22: introduce execvp function
-
-(add-to-list 'load-path (file-name-directory load-file-name))
-(require 'kernel)
+;;
 
 ;;; INITIALIZATIONS
 ;;
@@ -70,14 +66,23 @@
 (unless (boundp 'mars/eternal-buffer-list)
     (setq mars/eternal-buffer-list '("*scratch*")))
 ;;(if (and (boundp 'mars/local-root-dir) (boundp 'mars/local-conf-path)))
-(setq *emacs/init-path* (cond ((and (boundp 'mars/local-root-dir)
-                    (boundp 'mars/local-conf-path))
-                   (mapcar '(lambda (x) (concat (file-name-as-directory mars/local-root-dir) x))
-                       mars/local-conf-path))
-                  (t "~/.emacs.d/confs")))
+(setq *emacs/init-path* 
+      (cond ((and 
+	      (boundp 'mars/local-root-dir)
+	      (boundp 'mars/local-conf-path))
+	     (mapcar 
+	      #'(lambda (x) 
+		 (concat (file-name-as-directory mars/local-root-dir) x))
+	      mars/local-conf-path))
+	    (t "~/.emacs.d/lisp")))
 
 ;;; ESSENTIAL UTILITIES
 ;;;
+(defmacro if-bound-call (form &rest args) ; UNTESTED
+  "If `FORM' is bound as a function, call it with `ARGS'."
+  `(if (fboundp ',form)
+       (,form ,@args)))
+
 (defun mars/generate-mode-hook-list (modes)
   "Create a quoted list of hooks."
   (mapcar (lambda (arg)
@@ -100,6 +105,93 @@
   (mapc #'(lambda (mode-hook)
             (add-hook mode-hook fun))
         hooks))
+
+(defmacro mars/force-options (&rest conses)
+  "Initialize CDR from the value of CAR if CAR is bound.
+`CONSES' is one or many CONS of variables."
+  `(progn
+     ,@(mapcar (lambda (x)
+                 `(when (boundp ',(car x))
+                    (setq ,(cdr x) ,(car x))))
+               conses)))
+
+(defun safe-autoloads-load (loaddefs)	; UNTESTED
+  "Secure load a `loaddefs' file. Load additional libraries
+if special autoload format (eg: `cedet' autoloads)."
+  (condition-case err
+      (load loaddefs)
+    (error
+     (message "Cedet must be loaded to parse `%s' correctly: %s" loaddefs err)
+     (safe-load-cedet)
+     (load loaddefs))))
+
+(defun safe-load-cedet ()		; UNTESTED
+  "Load `cedet'. Be sure to not load the compiled common file."
+  (condition-case err
+      (load-file (concat
+                  (file-name-directory
+                   (locate-library "cedet")) "cedet.el"))
+    (error (message "error: cedet environment not loaded: %s" err))))
+
+(defun twb/autoload (library &rest functions) ; UNTESTED
+  "Autoload LIBRARY when one of the FUNCTIONS is invoked.
+twb#emacs at http://paste.lisp.org/display/43546,"
+  (when (locate-library library)
+    (mapc (lambda (y)
+            (autoload y library nil t))
+          functions)))
+
+(defun mergeable-to-path-p (dir)	; UNTESTED
+  "Checks if `DIR' is a visitable directory or link."
+  (and (file-exists-p dir)
+       (save-excursion
+         (let ((inspectable t))
+           (condition-case nil
+               (cd dir)
+             (error
+              (setq inspectable nil)))
+           inspectable))))
+
+(defun mars/add-to-load-path (root &optional &rest pathname) ; UNTESTED
+  "Add directories to `load-path' according the two following
+patterns:
+ROOT (LIST PATH1 PATH2 ...) => ROOT / PATH1 & ROOT / PATH2 & ...
+ROOT                        => ROOT"
+  (let ((path (if pathname
+                  (let ((r (file-name-as-directory root)))
+                    (mapcar (lambda (x)
+                              (expand-file-name (concat r x)))
+                            (flatten pathname)))
+                (list (expand-file-name root)))))
+    (mapc
+     (lambda (dir)
+       (when (and (mergeable-to-path-p dir)
+                  (not (file-exists-p (concat
+                                       (file-name-as-directory dir)
+                                       ".nosearch")))) ; test exclusion on `dir'
+         (let ((default-directory dir)
+               (orig-load-path load-path))
+           (setq load-path (list dir))
+           (normal-top-level-add-subdirs-to-load-path)
+           (nconc load-path orig-load-path)))) ; reverse path construct
+     path)))
+
+(defun mars/autoload (libraries-and-functions) ; UNTESTED
+  (mapc (lambda(x)
+          (apply 'twb/autoload x))
+        libraries-and-functions))
+
+(defmacro bind-key (key function)	; UNTESTED
+  `(global-set-key (read-kbd-macro ,key) ,function))
+
+(defun bind-keys (bindings)		; UNTESTED
+  "Map keys from a list."
+  (if (null (cdr bindings))
+      t
+    (let ((key (car bindings))
+          (function (cadr bindings)))
+      (bind-key key function)
+      (bind-keys (cddr bindings)))))
 
 (defun dont-kill-emacs ()               ; UNTESTED
   "Disallow emacs to kill on the dangerous C-x C-c command."
@@ -285,11 +377,97 @@ a sound to be played.
     (apply #'concat
            (mapcar (lambda (x) (format "%02x" x)) ltext))))
 
+;;; VARS DEPENDENT
+;;;
+(eval-after-load "vars"
+  '(progn
+     ;; - safe loaders
+     ;;
+     (defun safe-load (library)		; UNTESTED
+       "Secure load a library."
+       (condition-case err
+	   (load-library library)
+	 (error
+	  (progn
+	    (message "Failed to load %s: %s" library err)
+	    (sleep-for emacs/breaktime-on-error)))))
+
+     (defun conf-locate (conf)		; UNTESTED
+       "Locate a configuration file. Normally out of the `LOAD-PATH'."
+       (let ((path (mapcar #'(lambda (x) (concat (file-name-as-directory mars/local-root-dir) x)) mars/local-conf-path)))
+	 (locate-library conf nil path)))
+
+     (defun conf-load (conf)		; UNTESTED & SOON UNUSED
+       "Load a configuration file."
+       (let ((found (conf-locate conf)))
+	 (when found
+	   (load-file found))))      ; load compiled version if any
+
+     ;; - autoloads generator
+     ;;
+     (defun generate-loaddefs ()	; UNTESTED
+        "Fetch your 'SITE-LISP 's LOADDEFS or create it."
+	;; FIXME: work for one site-lisp dir for instance!!
+	(mapc #'(lambda (x)
+		  (let ((mars/loaddefs
+			 (concat
+			  (file-name-as-directory mars/local-root-dir)
+			  (file-name-as-directory x) "loaddefs.el")))
+		    (unless (and (file-exists-p mars/loaddefs)
+				 (not renew-autoloads-at-startup)) ; force to renew in some case even if `loaddefs' exists
+		      (load "update-auto-loads")
+		      (update-autoloads-in-package-area)) ; adds 'update-auto-loads autoloads in loaddefs too
+                                        ; updates CEDET autoloads for CEDET directories
+		    (safe-autoloads-load mars/loaddefs)))
+	      mars/site-lisp-path))
+
+     ;; - custom builder
+     ;;
+     (defun build-custom-file-name (subdirectory-in-data &optional general) ; UNTESTED
+       "A custom file for different emacsen and system version or `NIL' if
+none (and not makeable). If `GENERAL' is true, it will refer to or creates
+a simple `custom.el'."
+       (concat (file-name-as-directory mars/local-root-dir)
+	       (file-name-as-directory mars/personal-data)
+	       (file-name-as-directory subdirectory-in-data)
+	       (if general "custom.el"
+		 (concat (which-emacs-i-am)
+			 "-" (number-to-string emacs-major-version)
+			 "-" (replace-regexp-in-string "/" "-" (symbol-name system-type)) ".el"))))
+     
+     (defun safe-build-custom-file (subdirectory-in-data &optional general) ; UNTESTED
+       (let ((file (build-custom-file-name subdirectory-in-data general)))
+	 (if (file-exists-p file)
+	     file
+	   (let ((custom-dir (expand-file-name (file-name-directory file))))
+	     (if (file-exists-p custom-dir)
+		 file            ; path exists
+	       (let ((dirs-to-create (split-string custom-dir "/"))
+		     (path ""))
+		 (nbutlast dirs-to-create)
+		 (while dirs-to-create
+		   (setq path (concat path (pop dirs-to-create) "/"))
+		   (unless (file-exists-p path)
+		     (condition-case nil
+			 (make-directory path)
+		       (error
+			(setq dirs-to-create nil)))))
+		 (when (file-exists-p custom-dir)
+		   file)))))))))	; path created
+
+
 ;;; MISCELLANEOUS UTILITIES
 ;;;
-
 (defun listify (l)
   (if (listp l) l (list l)))
+
+(defun flatten (list)			; UNTESTED
+  (cond ((atom list) list)
+        ((listp (car list)) (append (flatten (car list)) (flatten (cdr list))))
+        (t (append (list (car list)) (flatten (cdr list))))))
+
+(defun which-emacs-i-am ()		; UNTESTED
+  (if (string-match "XEmacs\\|Lucid" emacs-version) "xemacs" "gnuemacs"))
 
 (defun make-file-executable-if-script () ; UNTESTED
   "Make file executable according to umask if not already executable.
@@ -333,6 +511,9 @@ the personal Emacs Lisp configuration directory."
                             (concat
                              (file-name-as-directory mars/local-root-dir) x))))
             path)))
+
+(defmacro disable-eyecandies (&rest modes) ; UNTESTED
+  `(progn ,@(mapcar #'(lambda (x) `(if-bound-call ,x -1)) modes)))
 
 (defun swap-windows ()                  ; UNUSED
  "If you have 2 windows, it swaps them."
@@ -397,11 +578,10 @@ the personal Emacs Lisp configuration directory."
       (message "Found duplicated word.")
     (message "End of buffer")))
 
-(unless (fboundp 'trim-string)      ; defined in `confs/packs' TODO: merge
-  (defun trim-string (string)
-    "Remove white spaces in beginning and ending of STRING.
+(defun trim-string (string)
+  "Remove white spaces in beginning and ending of STRING.
 White space here is any of: space, tab, emacs newline (line feed, ASCII 10). --xah"
-    (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string))))
+  (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string)))
 
 (defun to-unix-eol (fpath)              ; UNTESTED
   "Change file's line ending to unix convention."

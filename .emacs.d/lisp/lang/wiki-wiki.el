@@ -45,7 +45,7 @@
 ;; 
 ;;; Code:
 
-(require 'code)
+(require 'preamble)
 
 ;;; MARKDOWN
 (add-to-list 'auto-mode-alist '("\\.md\\'\\|\\.mkdn\\'\\|\\.markdown\\'" . markdown-mode))

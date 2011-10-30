@@ -45,7 +45,7 @@
 ;;; Code:
 
 (add-to-list 'load-path (file-name-directory load-file-name))
-(require 'register)
+(require 'adapter)
 
 ;;; DIRED / DIRED-DETAILS / DIRED-EXTENSION
 ;; dired-x [guessing shell commands + dired commands for `non-dired' buffers]

@@ -26,7 +26,7 @@
            (> emacs-major-version 23))
   (toggle-transparency))
 
-(eval-after-load "register"
+(eval-after-load "adapter"
   '(progn
      ;; PRETTY
      ;; pretty control-l

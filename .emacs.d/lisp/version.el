@@ -47,7 +47,7 @@
 
 (add-to-list 'load-path (file-name-directory load-file-name))
 (require 'noaccess)
-(require 'register)
+(require 'adapter)
 
 ;;; GIT-EMACS
 (load-library "git-emacs-autoloads")

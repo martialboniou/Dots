@@ -46,7 +46,7 @@
 ;;; Code:
 
 (add-to-list 'load-path (file-name-directory load-file-name))
-(require 'register)
+(require 'adapter)
 
 ;;; CPT
 (require 'ps-ccrypt)                    ; ccrypt 1.9 needed

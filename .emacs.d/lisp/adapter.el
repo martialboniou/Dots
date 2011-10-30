@@ -46,4 +46,4 @@
   (mars/autoload
    '(("hideshowvis"     hideshowvis-enable hideshowvis-minor-mode))))
 
-(provide 'register)
+(provide 'adapter)

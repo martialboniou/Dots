@@ -48,7 +48,7 @@
 
 (add-to-list 'load-path (file-name-directory load-file-name))
 (require 'noaccess)
-(require 'register)
+(require 'adapter)
 
 (when (fboundp 'winner-mode)
   (winner-mode 1))

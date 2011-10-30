@@ -48,7 +48,7 @@
 (add-to-list 'load-path (file-name-directory load-file-name))
 (require 'www)
 (require 'gtd)
-(require 'kernel)
+(require 'preamble)
 
 ;; TODO: REPLACE #'BBDB-VCARD-IMPORT BY #'trebb/BBDB-VCARD
 (let* ((init-file-name (concat user-login-name ".wl"))
@@ -69,7 +69,8 @@
       (let ((default-wl-fldr (concat folder-directory "default.folders")))
         (when (file-exists-p default-wl-fldr)
           (setq wl-folders-file (convert-standard-filename default-wl-fldr))))))
-  (when (null wl-resource-rep)          ; handmade install case (neither PASES nor ELPA)
+  (when (or (not (boundp 'wl-resource-rep))
+            (null wl-resource-rep))         ; handmade install case (neither PASES nor ELPA)
     (let ((wl-lib (locate-library "wl")))
       (unless (null wl-lib)
         (setq wl-resource-rep (expand-file-name

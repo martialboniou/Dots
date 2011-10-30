@@ -47,7 +47,7 @@
 
 (add-to-list 'load-path (file-name-directory load-file-name))
 (require 'crypto)
-(require 'kernel)
+(require 'preamble)
 
 ;;; ORG MODE
 ;; (from 'Using Org Mode as a Day Planner' by John Wiegley)

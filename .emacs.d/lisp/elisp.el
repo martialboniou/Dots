@@ -47,7 +47,7 @@
 ;;; Code:
 
 (add-to-list 'load-path (expand-file-name load-file-name))
-(require 'register)
+(require 'adapter)
 
 ;;; ELISP
 (defun elisp-disassemble (function)

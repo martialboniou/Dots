@@ -90,7 +90,7 @@ a frame.")
 ;; DIRECTORY NAME
 (defvar mars/personal-data "data")
 ;; DIRECTORIES
-(defvar mars/local-conf-path (list "lisp"))
+(defvar mars/local-conf-path (list "lisp" "lisp/init"))
 (defvar mars/site-lisp-path (list "vendor")) ; subdirs are loaded in 'load-path too
 ;;; TIMERS
 ;;

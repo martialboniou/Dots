@@ -3,13 +3,17 @@
 (unless (boundp '*emacs/normal-startup*)
   (defvar *emacs/normal-startup* nil))
 
+(provide 'booting)
+
 (require 'appearance)
+
 (require 'packs)
+
 (when *i-am-a-common-lisp-advocate*
   (unless (fboundp 'eieio-defclass)     ; `cedet' if no CLOS
     (safe-load-cedet)))
-(require 'register)
-(error "tada!")
+
+(require 'adapter)
 
 (require 'behave)
 
@@ -28,8 +32,8 @@
         (if (not custom-buffer-modified)
             (Custom-buffer-done)))))
 
-(require 'formats)			; emacs as an universal typewriter (format + encodings)
-(require 'crypto)			; emacs as a secret agent
+(require 'formats)			            ; emacs as an universal typewriter
+(require 'crypto)			            ; emacs as a secret agent
 (require 'window-manager)               ; emacs as a window-manager
 (require 'shortcuts)                    ; emacs as a key commander
 

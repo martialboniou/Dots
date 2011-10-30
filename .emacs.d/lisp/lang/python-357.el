@@ -45,7 +45,7 @@
 ;; 
 ;;; Code:
 
-(require 'code)
+(require 'preamble)
 
 ;;; GALLINA-PYTHON - NON GNU VERSION
 ;; `python-mode' is better than `python' but `wisent-python' from SEMANTIC

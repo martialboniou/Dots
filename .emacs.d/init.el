@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 4.0a1
-;; Last-Updated: Thu Oct 27 13:57:36 2011 (+0200)
+;; Last-Updated: Sun Oct 30 23:53:19 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 2054
+;;     Update #: 2055
 ;; URL: https://github.com/martialboniou/Dots.git
 ;; Keywords: .emacs, init
 ;; Compatibility: C-\ is linked to Esc-map
@@ -39,27 +39,33 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 
-(defvar *emacs/normal-startup* t)
+(add-to-list 'load-path (expand-file-name 
+                         (concat
+                          (file-name-as-directory
+                           (file-name-directory load-file-name)) "lisp")))
 
-(condition-case err
-    (require 'kernel)
-  (error 
-   (progn
-    (message "%s: you should add \"~/.emacs.d/lisp\" to EMACSLOADPATH" err)
-    (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
-    (require 'kernel))))
+(defvar *emacs/normal-startup* t)
+(require 'kernel)
+
+;; (condition-case err
+;;     (load-library "kernel")
+;;   (error 
+;;    (progn
+;;     (message "%s: you should add \"~/.emacs.d/lisp\" to EMACSLOADPATH" err)
+;;     (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
+;;     (load-library "kernel"))))
 
 ;;; SERVER
 ;;
 (start-named-server user-login-name)
 
-(require 'mail)			; emacs as a MUA, a web browser, a syndicate and an organizer
-(require 'file-manager)		; emacs as a file manager
-(require 'rectify)		; emacs as a programming environment including smart code validation
-(require 'version)		; emacs as a VC tool
-(require 'vt)			; emacs as a virtual terminal
-(require 'media)		; emacs as a multimedia player
-(require 'toobox)		; emacs as a swiss army knife
+(require 'mail)         ; emacs as a MUA, a web browser, a syndicate and an organizer
+(require 'file-manager)     ; emacs as a file manager
+(require 'rectify)      ; emacs as a programming environment including smart code validation
+(require 'version)      ; emacs as a VC tool
+(require 'vt)           ; emacs as a virtual terminal
+(require 'media)        ; emacs as a multimedia player
+(require 'toolbox)      ; emacs as a swiss army knife
 
 ;; minibuffer histories
 (when *emacs/normal-startup*

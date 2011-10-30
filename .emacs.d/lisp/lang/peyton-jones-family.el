@@ -45,7 +45,7 @@
 ;; 
 ;;; Code:
 
-(require 'code)
+(require 'preamble)
 
 ;;; HASKELL MODE
 (load "haskell-site-file")              ; haskell-mode autoloads

@@ -49,7 +49,7 @@
 
 (add-to-list 'load-path (file-name-directory load-file-name))
 (defvar *vim-now* t)
-(require 'kernel)
+(require 'preamble)
 
 ;; (unless (fboundp 'mars/add-to-load-path)
 ;;   (let ((local-site-lisp-path (mapcar #'(lambda (x) (concat (file-name-as-directory mars/local-root-dir)

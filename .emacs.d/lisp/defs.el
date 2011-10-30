@@ -5,7 +5,7 @@
 ;; Author: Martial Boniou
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
-;; Version: 0.9.2
+;; Version: 0.10
 ;; Last-Updated: Sat Oct 29 17:28:48 2011 (+0200)
 ;;           By: Martial Boniou
 ;;     Update #: 171
@@ -59,7 +59,7 @@
 ;;; Changelog: 2010-04-22: introduce execvp function
 
 (add-to-list 'load-path (file-name-directory load-file-name))
-(require 'town-portal)
+(require 'kernel)
 
 ;;; INITIALIZATIONS
 ;;

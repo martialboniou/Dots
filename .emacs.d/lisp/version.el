@@ -46,7 +46,7 @@
 ;;; Code:
 
 (add-to-list 'load-path (file-name-directory load-file-name))
-(require 'town-portal)
+(require 'kernel)
 
 ;;; GIT-EMACS
 (load-library "git-emacs-autoloads")

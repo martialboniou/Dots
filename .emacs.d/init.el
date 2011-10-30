@@ -1,6 +1,6 @@
-;;; .emacs
+;;; init.el
 ;;
-;; Filename: .emacs
+;; Filename: init.el
 ;; Description: fichier de configuration Emacs (cf. Compatibility)
 ;; Author: Martial Boniou
 ;; Maintainer: Martial Boniou (hondana.net/about)
@@ -9,8 +9,8 @@
 ;; Last-Updated: Thu Oct 27 13:57:36 2011 (+0200)
 ;;           By: Martial Boniou
 ;;     Update #: 2054
-;; URL: hondana.net/private/emacs-lisp
-;; Keywords:
+;; URL: https://github.com/martialboniou/Dots.git
+;; Keywords: .emacs, init
 ;; Compatibility: C-\ is linked to Esc-map
 ;;
 ;; Features that might be required by this library:
@@ -40,8 +40,6 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 
 ;;; *MOOD*
 ;;
@@ -113,7 +111,14 @@ See the advised `delete-frame' at the end of this file as a use case.")
   "Time (in seconds) of the pause on error.")
 (defvar mars/fast-kill t)               ; (setq mars/fast-kill nil) to redo 'loaddefs on quit
 
-(require 'vars)
+(condition-case err
+    (require 'vars)
+  (error 
+   (progn
+    (message "%s: you should add \"~/.emacs.d/lisp\" to EMACSLOADPATH" err)
+    (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
+    (require 'vars))))
+(error "tada!")
 
 ;;; *APPEARANCE*
 (defmacro if-bound-call (form &rest args)
@@ -813,3 +818,6 @@ the should-be-forbidden C-z.")
 (unless (or (file-exists-p (concat user-init-file ".elc")) 
             (null (functionp #'byte-compile-user-init-file)))
   (byte-compile-file user-init-file))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; init.el ends here

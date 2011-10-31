@@ -78,7 +78,7 @@ See the advised `delete-frame' at the end of this file as a use case.")
                                  (semantic-idle-scheduler-mode nil)))
 (mapc #'(lambda (x)
           (add-to-list 'desktop-modes-not-to-save x))
-      '(Info-mode 'dired-mode))
+      '(Info-mode dired-mode image-mode))
 ;; - window configuration case
 (add-hook 'desktop-save-hook
           #'kiwon/save-window-configuration)
@@ -140,7 +140,8 @@ See the advised `delete-frame' at the end of this file as a use case.")
 ;; - desktop autosave
 (when (featurep 'emacs-normal-startup)
   (add-lambda-hook 'auto-save-hook
-    (when (desktop-in-use-p)            ; desktop-save-in-desktop-dir w/o alert
+    (interactive)
+    (when (desktop-in-use-p)
       (if desktop-dirname
           (desktop-save desktop-dirname)
         (call-interactively #'desktop-save)))))

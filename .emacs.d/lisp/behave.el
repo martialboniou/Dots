@@ -34,7 +34,7 @@
 ;;; MODAL EDITING incl. COLOR-THEME & PARENS
 ;;
 (when *i-am-a-vim-user*
-  (require 'vim-everywhere))		; otherwise see 'APPEARANCE
+  (require 'vim-everywhere))        ; otherwise see 'APPEARANCE
 
 ;;; DESKTOP & AUTOSAVE & SESSION
 ;;
@@ -124,7 +124,7 @@ See the advised `delete-frame' at the end of this file as a use case.")
       auto-save-list-file-prefix (concat (file-name-as-directory session-dir) ".saves-")
       backup-directory-alist (list (cons "." backup-dir)))
 ;; - desktop load
-(when *emacs/normal-startup*
+(when (featurep 'emacs-normal-startup)
   (desktop-save-mode 1))
 (make-directory autosave-dir t)         ; be sure it exists
 (setq the-desktop-file (concat (file-name-as-directory desktop-dir)
@@ -138,7 +138,7 @@ See the advised `delete-frame' at the end of this file as a use case.")
   (when (not (emacs-process-p ad-return-value))
     (setq ad-return-value nil)))
 ;; - desktop autosave
-(when *emacs/normal-startup*
+(when (featurep 'emacs-normal-startup)
   (add-lambda-hook 'auto-save-hook
     (when (desktop-in-use-p)            ; desktop-save-in-desktop-dir w/o alert
       (if desktop-dirname
@@ -245,57 +245,60 @@ the should-be-forbidden C-z.")
      ;; ido case
      (eval-after-load "ido"
        '(progn
-	  ;; open recent files according to history of mini-buffer (incl. files search
-	  ;; and management) or according to the list of recently loaded ones.
-	  (defun ido-recentf-file-name-history ()
-	    "Find a file in the `file-name-history' using ido for completion. Written by Markus Gattol."
-	    (interactive)
-	    (let* ((all-files 
-		    (remove-duplicates
-		     (mapcar 'expand-file-name
-			     file-name-history) :test 'string=)) ; remove dups after expanding
-		   (file-assoc-list (mapcar (lambda (x) (cons (file-name-nondirectory x) x)) all-files))
-		   (filename-list (remove-duplicates (mapcar 'car file-assoc-list) :test 'string=))
-		   (ido-make-buffer-list-hook
-		    (lambda ()
-		      (setq ido-temp-list filename-list)))
-		   (filename (ido-read-buffer "File History: "))
-		   (result-list (delq nil (mapcar 
-					   (lambda (x) 
-					     (if (string= (car x) 
-							  filename) 
-						 (cdr x))) 
-					   file-assoc-list)))
-		   (result-length (length result-list)))
-	      (find-file
-	       (cond
-		((= result-length 0) filename)
-		((= result-length 1) (car result-list))
-		(t (let ((ido-make-buffer-list-hook
-			  (lambda () (setq ido-temp-list result-list))))
-		     (ido-read-buffer (format "%d matches:" result-length))))))))
-	  (defun ido-recentf ()
-	    "Use ido to select a recently opened file from the `recentf-list'. Written by xsteve."
-	    (interactive)
-	    (let ((home (expand-file-name (getenv "HOME"))))
-	      (find-file (ido-completing-read "Recent File: "
-					      (mapcar
-					       (lambda (path)
-						 (replace-regexp-in-string 
-						  home "~" path)) 
-					       recentf-list) nil t))))
-	  (defmacro mars/recentf/override-keys (map)
-	    "Force the keys overriding in some modes."
-	    (list 'lambda nil
-		  (list 'define-key map (list 'kbd '"C-c C-f") ''ido-recentf-file-name-history)
-		  (list 'define-key map (list 'kbd '"C-c F") ''ido-recentf)
-		  (list 'define-key map (list 'kbd '"C-c C-m") ''make-directory)))
-	  ;; (add-lambda-hook 'emacs-startup-hook (mars/recentf/override-keys global-map))
-	  ))))
+      ;; open recent files according to history of mini-buffer (incl. files search
+      ;; and management) or according to the list of recently loaded ones.
+      (defun ido-recentf-file-name-history ()
+        "Find a file in the `file-name-history' using ido for completion. Written by Markus Gattol."
+        (interactive)
+        (let* ((all-files 
+            (remove-duplicates
+             (mapcar 'expand-file-name
+                 file-name-history) :test 'string=)) ; remove dups after expanding
+           (file-assoc-list (mapcar (lambda (x) (cons (file-name-nondirectory x) x)) all-files))
+           (filename-list (remove-duplicates (mapcar 'car file-assoc-list) :test 'string=))
+           (ido-make-buffer-list-hook
+            (lambda ()
+              (setq ido-temp-list filename-list)))
+           (filename (ido-read-buffer "File History: "))
+           (result-list (delq nil (mapcar 
+                       (lambda (x) 
+                         (if (string= (car x) 
+                              filename) 
+                         (cdr x))) 
+                       file-assoc-list)))
+           (result-length (length result-list)))
+          (find-file
+           (cond
+        ((= result-length 0) filename)
+        ((= result-length 1) (car result-list))
+        (t (let ((ido-make-buffer-list-hook
+              (lambda () (setq ido-temp-list result-list))))
+             (ido-read-buffer (format "%d matches:" result-length))))))))
+      (defun ido-recentf ()
+        "Use ido to select a recently opened file from the `recentf-list'. Written by xsteve."
+        (interactive)
+        (let ((home (expand-file-name (getenv "HOME"))))
+          (find-file (ido-completing-read "Recent File: "
+                          (mapcar
+                           (lambda (path)
+                         (replace-regexp-in-string 
+                          home "~" path)) 
+                           recentf-list) nil t))))
+      (defmacro mars/recentf/override-keys (map)
+        "Force the keys overriding in some modes."
+        (list 'lambda nil
+          (list 'define-key map (list 'kbd '"C-c C-f") ''ido-recentf-file-name-history)
+          (list 'define-key map (list 'kbd '"C-c F") ''ido-recentf)
+          (list 'define-key map (list 'kbd '"C-c C-m") ''make-directory)))
+      ;; (add-lambda-hook 'emacs-startup-hook (mars/recentf/override-keys global-map))
+      ))))
 
 ;;; BOOKMARKS
 ;;
 (require 'bookmark+)
 
+;;; POSIX ENVIRONMENT
+(define-key special-event-map [sigusr2]
+  #'(lambda () (interactive) (kill-emacs)))
 
 (provide 'behave)

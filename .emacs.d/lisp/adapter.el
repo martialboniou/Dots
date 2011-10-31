@@ -9,7 +9,7 @@
 
 (defun update-autoloads-on-kill ()
   "Update autoloads on kill iff emacs boots correctly."
-  (when (boundp '*emacs/boot-without-error*)
+  (when (require 'kernel)
     (update-autoloads-in-package-area)))
 (add-hook 'kill-emacs-hook #'update-autoloads-on-kill)
 
@@ -17,7 +17,7 @@
 (mars/autoload '(("unbound"                   describe-unbound-keys)
                  ("tiling"                    tiling-cycle tiling-master)
                  ("buffer-move"               buf-move-down buf-move-up
-		                              buf-move-left buf-move-right)
+                                      buf-move-left buf-move-right)
                  ("iswitchb"                  iswitchb-minibuffer-setup)
                  ("sunrise-commander"         sunrise sr-virtual-mode)
                  ("anything"                  anything anything-config)
@@ -26,7 +26,7 @@
                  ("header2"                   auto-make-header auto-update-file-header)
                  ("psvn"                      psvn)
                  ("hippie-exp"                hippie-expand he-init-string 
-		                              he-substitute-string)
+                                      he-substitute-string)
                  ("calc-ext"                  calc-do-calc-eval)
                  ("hexview-mode"              hexview-find-file)
                  ("simple-call-tree"          simple-call-tree-analyze simple-call-tree-alist)
@@ -38,9 +38,9 @@
                  ("newsticker"                newsticker-start newsticker-show-news)
                  ("wl-mailto"                 wl-mailto-compose-message-from-mailto-url)
                  ("emms-source-file"          emms-dired emms-add-directory-tree 
-		                              emms-add-directory emms-add-file)
+                                      emms-add-directory emms-add-file)
                  ("emms"                      emms-history-load emms-playlist-buffer-list 
-		                              emms)
+                                      emms)
                  ("emms-streams"              emms-streams emms-stream-init)))
 (when window-system
   (mars/autoload

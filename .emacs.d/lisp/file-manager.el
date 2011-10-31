@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou
 ;; Created: Sat Feb 19 11:17:32 2011 (+0100)
 ;; Version: 0.8.1
-;; Last-Updated: Mon Oct 24 18:38:30 2011 (+0200)
+;; Last-Updated: Mon Oct 31 20:24:16 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 85
+;;     Update #: 91
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -89,14 +89,15 @@ open and unsaved. -- matt curtis (with enhancements by <hondana@gmx.com>"
        (require 'dired+)                  ; colors + bonus
        (require 'wdired)                  ; editable (type `r' to rename [default was `e'])
        (require 'wdired-extension)        ; rect-mark + wdired-format-filename
-       (when (boundp 'viper-emacs-state-mode-list)
-         ;; the following line manages the viper/wdired clash
-         ;; (add-to-list 'viper-emacs-state-mode-list 'dired-mode)
-         ;; the following line forces the not-recommended vi nagivation over dired commands
-         (setq mars/dired-vi-purist-map (make-sparse-keymap))
-         (viper-modify-major-mode 'dired-mode 'emacs-state mars/dired-vi-purist-map)
-         (define-key mars/dired-vi-purist-map "k" 'viper-previous-line)
-         (define-key mars/dired-vi-purist-map "l" 'viper-forward-char))))
+       ;; (when (boundp 'viper-emacs-state-mode-list)
+       ;;   ;; the following line manages the viper/wdired clash
+       ;;   ;; (add-to-list 'viper-emacs-state-mode-list 'dired-mode)
+       ;;   ;; the following line forces the not-recommended vi nagivation over dired commands
+       ;;   (setq mars/dired-vi-purist-map (make-sparse-keymap))
+       ;;   (viper-modify-major-mode 'dired-mode 'emacs-state mars/dired-vi-purist-map)
+       ;;   (define-key mars/dired-vi-purist-map "k" 'viper-previous-line)
+       ;;   (define-key mars/dired-vi-purist-map "l" 'viper-forward-char))
+))
 
 ;;; WDIRED
 (eval-after-load "wdired"

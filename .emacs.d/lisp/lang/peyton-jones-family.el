@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:40:26 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Oct 18 16:42:50 2011 (+0200)
+;; Last-Updated: Mon Oct 31 11:50:42 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 35
+;;     Update #: 36
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -45,7 +45,9 @@
 ;; 
 ;;; Code:
 
+(provide 'one-language-spoken)
 (require 'preamble)
+(unintern 'one-language-spoken)
 
 ;;; HASKELL MODE
 (load "haskell-site-file")              ; haskell-mode autoloads

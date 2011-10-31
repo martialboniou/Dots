@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Oct 27 10:50:19 2011 (+0200)
+;; Last-Updated: Mon Oct 31 13:19:50 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 474
+;;     Update #: 484
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -59,13 +59,12 @@
 (require 'preamble)
 
 ;;; LANGUAGES' CONFIGURATION PATH
-(defvar lang-rep (condition-case nil (expand-file-name
-                                      (concat
-                                       (file-name-directory load-file-name)
-                                       "lang"))
-                   (error (progn
-                            (message "code: unable to locate a lang directory")
-                            nil)))
+(defvar lang-rep
+  (condition-case nil
+      (expand-file-name
+       (concat (file-name-directory load-file-name)
+               "lang"))
+    (error (progn (message "code: unable to locate a lang directory") nil)))
   "Programming languages' configuration repository.")
 
 ;;; HEADER2 + AUTO-INSERT
@@ -323,6 +322,9 @@ Move point to the beginning of the line, and run the normal hook
            ecb-frame)))
 (eval-after-load "ecb"
   '(progn
+     (when (> emacs-major-version 23)
+       (setq ecb-version-check nil
+             stack-trace-on-error nil)) ; for unstable version
      (setq ecb-tip-of-the-day nil)
      (push '(ecb-minor-mode nil) desktop-minor-mode-table) ; compatibility with DESKTOP
      ;; ECB version of mars/toggle-single-window defined in <confs>/window-manager.el
@@ -604,16 +606,17 @@ Then save the file as \"my-file.dot\" and run
 ;;; LANGUAGES
 (when lang-rep
   (add-to-list 'load-path lang-rep)
-  (require 'pure-object)                ; for smalltalk / factor / io
-  (require 'wiki-wiki)                  ; for markup languages as mediawiki or markdown
-  ;; (require 'church-inspired)            ; for lisp (including scheme)
-  ;; (require 'marseille)                  ; for logic and expert programming (including prolog)
-  (require 'peyton-jones-family)        ; for ML family and shenlanguage.org (better place than 'CHURCH-INSPIRED or 'MARSEILLE)
-  (require 'web-programming)            ; for web languages (mweb or nxhtml)
-  (require 'python-357)                 ; for python
-)
+  (unless (featurep 'one-language-spoken)
+    (require 'pure-object)              ; for smalltalk / factor / io
+    (require 'wiki-wiki)                ; for markup languages as mediawiki or markdown
+    ;; (require 'church-inspired)          ; for lisp (including scheme)
+    ;; (require 'marseille)                ; for logic and expert programming (including prolog)
+    (require 'peyton-jones-family)      ; for ML family and shenlanguage.org
+    (require 'web-programming)          ; for web languages (mweb or nxhtml)
+    (require 'python-357)))             ; for python 2 / 3
 
 (provide 'code)
+(unintern 'programming)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; code.el ends here

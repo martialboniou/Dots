@@ -1,8 +1,5 @@
 ;; require this file in any configuration file to load `.emacs' in another mode
 
-(unless (boundp '*emacs/normal-startup*)
-  (defvar *emacs/normal-startup* nil))
-
 (provide 'booting)
 
 (require 'appearance)
@@ -32,14 +29,13 @@
         (if (not custom-buffer-modified)
             (Custom-buffer-done)))))
 
-(require 'formats)			            ; emacs as an universal typewriter
-(require 'crypto)			            ; emacs as a secret agent
+(require 'formats)                      ; emacs as an universal typewriter
+(require 'crypto)                       ; emacs as a secret agent
 (require 'window-manager)               ; emacs as a window-manager
 (require 'shortcuts)                    ; emacs as a key commander
 
 (when *i-am-an-emacsen-dev*
   (require 'ladybug))                   ; emacs as an elisp developer tool
-
 
 ;; bytecompile .emacs and files in `conf-path' on change
 (when (functionp #'byte-compile-user-init-file)
@@ -71,33 +67,35 @@
 
 ;; confirm deleting frame iff multiple windows or buffer property in `confirm-frame-action-buffer-alist'
 (defadvice delete-frame (around confirm-delete-frame
-				(&optional frame force) activate)
+                (&optional frame force) activate)
   (if (< (length (frame-list)) 2)
       (kill-emacs)
     (let ((windows (window-list frame)))
       (if (> (length windows) 1)
-	  (if (y-or-n-p (format "Multiple windows in this frame detected. Close anyway? ")) (progn ad-do-it) nil)
-	;; one window case
-	(let ((pending confirm-frame-action-buffer-alist)
-	      (buf (window-buffer (car windows)))
-	      found)
-	  (while (and (null found) pending)
-	    (let ((property (pop pending)))
-	      (when (member (with-current-buffer
-				buf
-			      (symbol-value (car property))) (cdr property))
-		(message (prin1-to-string property))
-		(setq found t))))
-	  (if (and found (not (y-or-n-p (format "Are you sure you want to delete this frame? "))))
-	      nil
-	    (progn ad-do-it)))))))
+      (if (y-or-n-p (format "Multiple windows in this frame detected. Close anyway? ")) (progn ad-do-it) nil)
+    ;; one window case
+    (let ((pending confirm-frame-action-buffer-alist)
+          (buf (window-buffer (car windows)))
+          found)
+      (while (and (null found) pending)
+        (let ((property (pop pending)))
+          (when (member (with-current-buffer
+                buf
+                  (symbol-value (car property))) (cdr property))
+        (message (prin1-to-string property))
+        (setq found t))))
+      (if (and found (not (y-or-n-p (format "Are you sure you want to delete this frame? "))))
+          nil
+        (progn ad-do-it)))))))
 
 ;; reload emacs
-(defun reload-emacs ()			; TODO: check it prolly might not work
-  (let ((memo *emacs/normal-startup*))
-    (setq *emacs/normal-startup* t)
+(defun reload-emacs ()          ; TODO: check it prolly might not work
+  (let ((memo (featurep 'emacs-normal-startup)))
+    (unless memo
+      (provide 'emacs-normal-startup))
     (load user-init-file)
-    (setq *emacs/normal-startup* memo)))
+    (unless memo
+      (unintern 'emacs-normal-startup))))
 
 ;; load time
 (let ((load-time (destructuring-bind (hi lo ms) (current-time)
@@ -110,28 +108,5 @@
                                      (number-to-string load-time) "s"))))
 (put 'narrow-to-region 'disabled nil)
 
-;; flag boot w/o error
-(defvar *emacs/boot-without-error*)
-
-;;; DEPRECATED
-;; (when (and (not *emacs/normal-startup*) (not user-init-file))
-;;   (let ((msg "init file post-load error: %s"))
-;;     (condition-case err
-;; 	(load "~/.emacs.d/init")
-;;       (error 
-;;        (progn
-;; 	 (message (format msg err))
-;; 	 (condition-case err
-;; 	     (load "~/.emacs")
-;; 	  (error
-;; 	   (progn
-;; 	     (message (format msg err))
-;; 	     (condition-case err
-;; 		 (load "~/_emacs")
-;;                  (error
-;; 		  (message (format
-;; 			    (concat msg
-;; 				    " no candidate found: ")
-;; 			    err))))))))))))
-
 (provide 'kernel)
+(unintern 'booting)

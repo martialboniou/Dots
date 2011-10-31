@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Mar  5 23:58:09 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri Apr  8 23:06:47 2011 (+0200)
+;; Last-Updated: Mon Oct 31 11:53:57 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 11
+;;     Update #: 12
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -45,7 +45,9 @@
 ;; 
 ;;; Code:
 
+(provide 'one-language-spoken)
 (require 'preamble)
+(unintern 'one-language-spoken)
 
 ;;; GNU SMALLTALK
 (require 'smalltalk-mode-init)

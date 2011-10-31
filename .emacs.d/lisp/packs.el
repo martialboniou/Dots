@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Thu Oct 27 14:12:22 2011 (+0200)
+;; Last-Updated: Mon Oct 31 16:58:21 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 338
+;;     Update #: 345
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -111,8 +111,6 @@
                                     (mu-cite-201006212322 . ((get . "curl http://www.jpl.org/elips/mu/snapshots/mu-cite-201006212322.tar.gz | tar zx")
                                                              ;; no compilation yet / need apel10.8/poem
                                                              ))
-                                    (newsticker-1.99 . ((get . "curl -L http://download.savannah.gnu.org/releases/newsticker/newsticker-1.99.tar.gz | tar zx")
-                                                        (install . "emacs-compile-directory")))
                                     (color-theme-6.6.0 . ((get . "curl -L http://download.savannah.gnu.org/releases/color-theme/color-theme-6.6.0.tar.gz | tar zx")
                                                           (install . "emacs-compile-directory; emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\" themes"))) ; FIXME: not in path so error in `themes' (not important!)
                                     (darcsum           . ((get . "darcs get --lazy http://joyful.com/repos/darcsum")
@@ -150,7 +148,7 @@
                                                            (nosearch . ("cogre/templates" "cogre/tests" "ede/templates" "semantic/doc" "semantic/tests" "srecode/templates" "testprojects" "www"))
                                                            (cedet . ".")))
                                     (ecb                . ((get . "cvs -z3 -d:pserver:anonymous@ecb.cvs.sourceforge.net:/cvsroot/ecb checkout -P ecb")
-                                                           (install . "make CEDET=`echo $PWD/../cedet`;make autoloads EBATCH=\"emacs -batch -no-site-file -eval \\\"(add-to-list 'load-path \\\\\\\".\\\\\\\")\\\"\"") ; FIXME: assume cedet is in the same directory / windows users should use GNU bash TODO: test it on Win32/64
+                                                           (install . "sed -i '' 's/\\\(load-path nil)\\\).*\\\(\\\" > ecb-compile-script\\\)/\\1(setq ecb-version-check nil)\\2/' Makefile;make CEDET=`echo $PWD/../cedet`;make autoloads EBATCH=\"emacs -batch -no-site-file -eval \\\"(add-to-list 'load-path \\\\\\\".\\\\\\\")\\\"\"") ; FIXME: assume cedet is in the same directory / windows users should use GNU bash / the first command disables compatibility check for CEDET; TODO: test it on Win32/64
                                                            (nosearch . ("ecb-images" "html"))
                                                            (noauto . ".")))
                                     (apel               . ((get . "git clone git://github.com/wanderlust/apel.git")

@@ -6,16 +6,18 @@
 ;; Maintainer:
 ;; Created: Sat Jan 19 20:16:06 2008
 ;; Version:
-;; Last-Updated: Mon Oct 24 18:57:57 2011 (+0200)
+;; Last-Updated: Mon Oct 31 19:33:51 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 89
+;;     Update #: 100
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Commentary: was emms-init.el initially
+;;; Commentary: image-mode + eimp + iimage + mpg123 + emms 3
+;;
+;;              was emms-init.el initially
 ;;              2010-03: use all in emms to get the browser
 ;;                       and display covers
 ;;
@@ -55,10 +57,76 @@
 (require 'www)
 (require 'preamble)
 
-;;; * MPG123 *
+;;; IMAGE-MODE
+;;
+(defun my-image-next-by-number ()
+  (interactive)
+  (let ((file-name (buffer-file-name))
+        base num suffix
+        num-width fmt)
+    (unless (string-match
+             "^\\(.*[^0-9-]\\)?\\(?:[0-9]+-\\)?\\([0-9]+\\)\\(\\.[^.]+\\)?$"
+             file-name)
+      (error "Improper file name"))
+    (setq base (match-string 1 file-name))
+    (setq num (match-string 2 file-name))
+    (setq suffix (match-string 3 file-name))
+    (setq num-width (length num))
+    (setq fmt (format "%%s%%0%dd%%s" num-width))
+    (setq num (1+ (string-to-number num)))
+    (setq file-name (format fmt base num suffix))
+    (unless (file-exists-p file-name)
+      (setq fmt (format "%%s%%0%dd-*%%s" num-width))
+      (setq file-name (format fmt base num suffix))
+      (setq file-name (file-expand-wildcards file-name))
+      (if file-name
+          (setq file-name (car file-name))
+        (error "No more files")))
+    (find-alternate-file file-name)))
+(defun my-image-scroll-up-or-next-by-number ()
+  (interactive)
+  (let* ((image (image-get-display-property))
+         (edges (window-inside-edges))
+         (win-height (- (nth 3 edges) (nth 1 edges)))
+         (img-height (ceiling (cdr (image-size image)))))
+    (if (< (+ win-height (window-vscroll nil t))
+           img-height)
+        (image-scroll-up)
+      (my-image-next-by-number))))
+(define-key image-mode-map (kbd "SPC")
+  'my-image-scroll-up-or-next-by-number)
+
+;;; EIMP
+;;
+(when (executable-find "mogrify")
+  (add-hook 'image-mode-hook 'eimp-mode))
+
+;;; IIMAGE
+;; TODO: test this
+(mapc '(lambda (x)
+         (add-hook x 'turn-on-iimage-mode))
+      '(Info-mode-hook texinfo-mode-hook wikipedia-mode)) ; info/wiki case
+(eval-after-load "org"             ; org-mode case
+  '(progn
+     (require 'iimage)
+     (add-to-list 'iimage-mode-image-regex-alist
+                  (cons (concat "\\[\\[file:\\(~?" iimage-mode-image-filename-regex
+                                "\\)\\]")  1))
+     (defun org-toggle-iimage-in-org ()
+       "Display images in your org file."
+       (interactive)
+       (if (face-underline-p 'org-link)
+           (set-face-underline-p 'org-link nil)
+         (set-face-underline-p 'org-link t))
+       (iimage-mode))))
+
+
+;;; MPG123
+;;
 ;; (autoload 'mpg123 "mpg123" "A Front-end to mpg123/ogg123" t)
 
-;;; * EMMS 3 *
+;;; EMMS 3
+;;
 (when (locate-library "emms")
   (setq emms-path (file-name-directory (locate-library "emms"))
     emms-bin-path (concat (file-name-as-directory emms-path) 
@@ -208,12 +276,6 @@
                                          "http://65.60.19.42:8130" 1 url)
                                         ("H4XED"
                                          "http://sc-01.h4xed.us:7080" 1 url)
-                                        ("DarkSoul7"
-                                         "http://www.darksoul7.com:8000" 1 url)
-                                        ("DjukRadio"
-                                         "http://pri.kts-af.net/redir/index.pls?esid=05e8df87734bc7bbd19e0ba0ce299491&url_no=1&client_id=7&uid=68efed4d03ec7e45fd3978262c107180&clicksrc=xml" 1 url)
-                                        ("Metal On: The Heavy"
-                                         "http://188.138.19.96:8260" 1 url)
                                         ("James Bond"
                                          "http://www.somafm.com/secretagent.pls" 1 streamlist)))))
   ;; Type M-x emms-add-all to add all music in your ~/Music directory.

@@ -5,10 +5,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
-;; Version: 4.0a1
-;; Last-Updated: Sun Oct 30 23:53:19 2011 (+0100)
+;; Version: 4.0a2
+;; Last-Updated: Mon Oct 31 12:03:55 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 2055
+;;     Update #: 2057
 ;; URL: https://github.com/martialboniou/Dots.git
 ;; Keywords: .emacs, init
 ;; Compatibility: C-\ is linked to Esc-map
@@ -44,7 +44,7 @@
                           (file-name-as-directory
                            (file-name-directory load-file-name)) "lisp")))
 
-(defvar *emacs/normal-startup* t)
+(provide 'emacs-normal-startup)
 (require 'kernel)
 
 ;; (condition-case err
@@ -68,8 +68,7 @@
 (require 'toolbox)      ; emacs as a swiss army knife
 
 ;; minibuffer histories
-(when *emacs/normal-startup*
-  (savehist-mode 1))
+(savehist-mode 1)
 
 ;; compile eventually
 ;; (unless (or (file-exists-p (concat user-init-file ".elc")) 

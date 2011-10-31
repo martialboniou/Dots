@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 23:42:52 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Oct 26 17:56:54 2011 (+0200)
+;; Last-Updated: Mon Oct 31 11:45:12 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 131
+;;     Update #: 135
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -44,8 +44,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Code:
-
+(provide 'one-language-spoken)
 (require 'preamble)
+(unintern 'one-language-spoken)
 
 ;;; GALLINA-PYTHON - NON GNU VERSION
 ;; `python-mode' is better than `python' but `wisent-python' from SEMANTIC

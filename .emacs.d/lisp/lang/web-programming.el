@@ -6,6 +6,53 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 21:14:44 2011 (+0100)
 ;; Version: 
+;; Last-Updated: Mon Oct 31 11:51:37 2011 (+0100)
+;;           By: Martial Boniou
+;;     Update #: 39
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Commentary: mweb / js / nxhtml (WARNING: unused)
+;; 
+;; 
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Change Log:
+;; 
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;; 
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;; 
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Code:
+
+;;; web-programming.el --- 
+;; 
+;; Filename: web-programming.el
+;; Description: Web Development
+;; Author: Martial Boniou
+;; Maintainer: 
+;; Created: Sun Mar  6 21:14:44 2011 (+0100)
+;; Version: 
 ;; Last-Updated: Wed Oct 26 21:47:50 2011 (+0200)
 ;;           By: Martial Boniou
 ;;     Update #: 38
@@ -45,8 +92,11 @@
 ;; 
 ;;; Code:
 
+
+(provide 'one-language-spoken)
 (require 'preamble)
 (require 'www)
+(unintern 'one-language-spoken)
 
 (defvar nxhtml-env nil)
 

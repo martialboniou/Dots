@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Oct 26 18:03:26 2011 (+0200)
+;; Last-Updated: Mon Oct 31 19:03:05 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 110
+;;     Update #: 112
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -16,8 +16,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Commentary: utf-8 + encodings switiching + format on save
-;;              helpers + delete-trailing-whitespace + style + image
-;;              support (iimage) + flyspell
+;;              helpers + delete-trailing-whitespace + style + flyspell
 ;; 
 ;; formats by Martial (2010-2011)
 ;;
@@ -162,27 +161,7 @@ Otherwise the update regexps won't match."
    (buffer-name))
   ;;(save-buffer)
 )
-
 ;; FIXME: (define-key c-mode-base-map [f7] 'c-reformat-buffer)
-
-;;; IMAGE SUPPORT
-;; iimage
-(mapc '(lambda (x)
-         (add-hook x 'turn-on-iimage-mode))
-      '(Info-mode-hook texinfo-mode-hook wikipedia-mode)) ; info/wiki case
-(eval-after-load "org"             ; org-mode case
-  '(progn
-     (require 'iimage)
-     (add-to-list 'iimage-mode-image-regex-alist
-                  (cons (concat "\\[\\[file:\\(~?" iimage-mode-image-filename-regex
-                                "\\)\\]")  1))
-     (defun org-toggle-iimage-in-org ()
-       "Display images in your org file."
-       (interactive)
-       (if (face-underline-p 'org-link)
-           (set-face-underline-p 'org-link nil)
-         (set-face-underline-p 'org-link t))
-       (iimage-mode))))
 
 ;;; FLYSPELL
 ;;

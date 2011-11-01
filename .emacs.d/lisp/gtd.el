@@ -8,7 +8,7 @@
 ;; Version:
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 44
+;;     Update #: 81
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -61,61 +61,44 @@
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (define-key mode-specific-map [?a] 'org-agenda)
 
+;; common setup
 (eval-after-load "org"
   '(progn
-     (defvar wiegley/org-archive-expiry-days 2
-       "The number of days after which a completed task should be auto-archived.
-This can be 0 for immediate, or a floating point value.")
-     ;; common setup
+     (require 'org-wiegley-ext)
+     (when *i-might-be-a-saiki-komon*
+       (defun display-organizer-at-startup ()
+         (call-interactively #'mars/two-days-calendar)))
      (setq org-log-done 'time
-           safe-local-variable-values '((after-save-hook archive-done-tasks))
-           org-todo-keywords
-           '((sequence "TODO(t)" "STARTED(s@/!)" "WAITING(w@/!)" "DELEGATED(e@/!)" "APPT(a@!)" "|" "DONE(d!)" "DEFERRED(f)" "CANCELLED(c@)")))
+           org-todo-keywords '((sequence "TODO(t)" "STARTED(s@/!)" "WAITING(w@/!)" "DELEGATED(e@/!)" "APPT(a@!)" "|" "DONE(d!)" "DEFERRED(f)" "CANCELLED(c@)")))
      (add-lambda-hook 'org-mode-hook
        (setq truncate-lines nil)) ; turn on soft wrapping mode for org mode
      ;; original C-n/C-p behavior kept
      (add-lambda-hook 'org-agenda-mode-hook
        (define-key org-agenda-mode-map "\C-n" 'next-line)
-       (define-key org-agenda-keymap "\C-n" 'next-line)
+       (define-key org-agenda-keymap   "\C-n" 'next-line)
        (define-key org-agenda-mode-map "\C-p" 'previous-line)
-       (define-key org-agenda-keymap "\C-p" 'previous-line))
-     ;; auto archiving
-     (defun wiegley/org-archive-done-tasks ()
-       (interactive)
-       (save-excursion
-         (goto-char (point-min))
-         (let ((done-regexp
-                (concat "\\* \\(" (regexp-opt org-done-keywords) "\\) "))
-               (state-regexp
-                (concat "- State \"\\(" (regexp-opt org-done-keywords)
-                        "\\)\"\\s-*\\[\\([^]\n]+\\)\\]")))
-           (while (re-search-forward done-regexp nil t)
-             (let ((end (save-excursion
-                          (outline-next-heading)
-                          (point)))
-                   begin)
-               (goto-char (line-beginning-position))
-               (setq begin (point))
-               (when (re-search-forward state-regexp end t)
-                 (let* ((time-string (match-string 2))
-                        (when-closed (org-parse-time-string time-string)))
-                   (if (>= (time-to-number-of-days
-                            (time-subtract (current-time)
-                                           (apply #'encode-time when-closed)))
-                           wiegley/org-archive-expiry-days)
-                       (org-archive-subtree)))))))))
-     (defalias 'archive-done-tasks 'wiegley/org-archive-done-tasks)))
-;; viper compatibility
+       (define-key org-agenda-keymap   "\C-p" 'previous-line))))
+
+;; auto archiving setup
+(eval-after-load "org-wiegley-ext"
+  '(progn
+     (setq org-my-archive-expiry-days 14)
+     (add-to-list 'safe-local-variable-values '(after-save-hook archive-done-tasks)))) ; add: -*- after-save-hook (archive-done-tasks) -*- in your Org files to archive automatically (ie. all DONE|DEFERRED|CANCELLED tasks go to the archive file if date exceeds 14 days)
+
+;; viper compatibility setup
 (if (boundp 'viper-version)
     (define-key viper-vi-global-user-map "C-c /" 'org-sparse-tree))
-;; remember
+
+;; agenda & remember setup
 (org-remember-insinuate)
 (add-hook 'remember-mode-hook #'org-remember-apply-template)
 (custom-set-variables
  '(org-directory *notes-dir*)
- '(org-default-notes-file (concat org-directory "/Notes.org"))
+ '(org-default-notes-file (concat
+                           (file-name-as-directory org-directory) "Notes.org"))
  '(org-agenda-files (mapcar (lambda (item)
-                              (concat org-directory "/" item ".org"))
+                              (concat
+                               (file-name-as-directory org-directory) item ".org"))
                             '("Todo")))
  '(org-agenda-ndays 7)
  '(org-deadline-warning-days 14)
@@ -150,13 +133,16 @@ This can be 0 for immediate, or a floating point value.")
                                         ; 105 => ?i
  '(remember-annotation-functions (quote (org-remember-annotation)))
  '(remember-handler-functions (quote (org-remember-handler))))
-;; capture
+
+;; capture setup
 (setq org-capture-templates
       '(("l"  "Link" entry
          (file+headline org-default-notes-file "Links to Read")
          "* %a\n %?\n %i")))
-;; use bookmarklet: javascript:location.href='org-protocol://capture//l/encodeURIComponent(location.href)+'/'encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection())
+;; use the following bookmarklet:
+;; javascript:location.href='org-protocol:/capture//l/encodeURIComponent(location.href)+'/'encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection())
 
+;; DELETE-FRAME w/o alert in remember case 
 (eval-after-load "remember"
   '(progn
      ;; http://metajack.im/2008/12/30/gtd-capture-with-emacs-orgmode
@@ -171,6 +157,7 @@ This can be 0 for immediate, or a floating point value.")
      ;; single window
      (add-hook 'remember-mode-hook #'delete-other-windows)))
 
+;; additional interactive for agenda & remember
 (defun make-remember-frame ()
   "Create a new frame and run org-remember."
   (interactive)
@@ -197,6 +184,11 @@ This can be 0 for immediate, or a floating point value.")
   "Open `org-agenda' on today."
   (interactive)
   (org-agenda-list nil nil 'day))
+
+(defun mars/two-days-calendar ()
+  "Open `org-agenda' on today & tomorrow."
+  (interactive)
+  (org-agenda-list nil nil 2))
 
 (defun mars/unscheduled-tasks ()
   "Open `org-agenda' on unscheduled tasks."

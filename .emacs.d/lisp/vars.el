@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Sat Oct 29 19:52:26 2011 (+0200)
+;; Last-Updated: Wed Nov  2 00:22:00 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 101
+;;     Update #: 108
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -63,20 +63,26 @@ case to support additional cut-paste strategy (ie to replace
 C-w as the usual 'cut' key binding).
 Set the boolean *term-now* to shortcut this variable.")
 (defvar *i-am-a-common-lisp-advocate* t
-  "If true, require CL emacs extension (eg. EIEIO).")
+  "If true, require CL extensions (eg. EIEIO). Highly
+recommended to boot CEDET faster.")
 (defvar *i-am-an-emacsen-dev* t
-  "If true, elisp helpers will be loaded.")
+  "If true, ELISP helpers will be loaded providing tools
+to easily visualize ELISP macro expansions.")
+(defvar *i-might-be-a-saiki-komon* t
+  "If true, display an organizer window at startup.
+A `saiki-komon' is a clan administrator inside gang
+organization. (See `gtd' file for usage.)")
 (defvar *i-can-do-yubitsume-now* t
   "If true, enable pinky-free helpers as STICKY-CONTROL.
 A `yubitsume' is a japanese apologies' ritual which generally
-consists in cutting off the portion of his left little finger
+consists in cutting off the portion of one's left little finger
 above the top knuckle. In no-window-system mode, most of these
-helpers is active to work on most 70's designed VT where the
+helpers is activated to work on most 70's designed VT where the
 Ctrl-Shift combination is unknown.")
 (defvar *i-like-shoji* t
-  "If true, enable transparency in window-system. Shoji are
-japanese window divider consisting of translucent paper over
-a frame.")
+  "If true, enable transparency in window-system mode. Shoji
+are a japanese window divider consisting of translucent paper
+over a frame.")
 
 ;;; GLOBAL PATH
 ;;
@@ -100,6 +106,8 @@ a frame.")
 (defvar mars/fast-kill t)               ; (setq mars/fast-kill nil) to redo 'loaddefs on quit
 ;;; MISC
 ;;
+(defvar auto-byte-compile nil
+  "If true, automatic byte-compile emacs lisp files on file saving.")
 (defvar renew-autoloads-at-startup nil) ; (re-)create autoloads (eg. after a change in `lisp/packs.el') FIXME: find a better process
 
 ;;; FIRST TIME
@@ -133,8 +141,8 @@ a frame.")
 (eval-after-load "defs"
   '(progn
      (mars/force-options (*vim-now*    . *i-am-a-vim-user*)
-			 (*dvorak-now* . *i-am-a-dvorak-typist*)
-			 (*term-now*   . *i-am-a-terminator*))))
+             (*dvorak-now* . *i-am-a-dvorak-typist*)
+             (*term-now*   . *i-am-a-terminator*))))
 
 ;;; MINGW/MSYS COMPATIBILITY
 ;;

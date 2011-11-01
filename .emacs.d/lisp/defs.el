@@ -1,3 +1,4 @@
+;;; -*- auto-byte-compile: t -*-
 ;;; defs.el ---
 ;;
 ;; Filename: defs.el
@@ -6,9 +7,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.10
-;; Last-Updated: Sat Oct 29 17:28:48 2011 (+0200)
+;; Last-Updated: Wed Nov  2 00:46:11 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 171
+;;     Update #: 191
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -68,13 +69,13 @@
 ;;(if (and (boundp 'mars/local-root-dir) (boundp 'mars/local-conf-path)))
 (setq *emacs/init-path* 
       (cond ((and 
-	      (boundp 'mars/local-root-dir)
-	      (boundp 'mars/local-conf-path))
-	     (mapcar 
-	      #'(lambda (x) 
-		 (concat (file-name-as-directory mars/local-root-dir) x))
-	      mars/local-conf-path))
-	    (t "~/.emacs.d/lisp")))
+          (boundp 'mars/local-root-dir)
+          (boundp 'mars/local-conf-path))
+         (mapcar 
+          #'(lambda (x) 
+         (concat (file-name-as-directory mars/local-root-dir) x))
+          mars/local-conf-path))
+        (t "~/.emacs.d/lisp")))
 
 ;;; ESSENTIAL UTILITIES
 ;;;
@@ -115,7 +116,7 @@
                     (setq ,(cdr x) ,(car x))))
                conses)))
 
-(defun safe-autoloads-load (loaddefs)	; UNTESTED
+(defun safe-autoloads-load (loaddefs)   ; UNTESTED
   "Secure load a `loaddefs' file. Load additional libraries
 if special autoload format (eg: `cedet' autoloads)."
   (condition-case err
@@ -125,7 +126,7 @@ if special autoload format (eg: `cedet' autoloads)."
      (safe-load-cedet)
      (load loaddefs))))
 
-(defun safe-load-cedet ()		; UNTESTED
+(defun safe-load-cedet ()       ; UNTESTED
   "Load `cedet'. Be sure to not load the compiled common file."
   (condition-case err
       (load-file (concat
@@ -141,7 +142,7 @@ twb#emacs at http://paste.lisp.org/display/43546,"
             (autoload y library nil t))
           functions)))
 
-(defun mergeable-to-path-p (dir)	; UNTESTED
+(defun mergeable-to-path-p (dir)    ; UNTESTED
   "Checks if `DIR' is a visitable directory or link."
   (and (file-exists-p dir)
        (save-excursion
@@ -181,10 +182,10 @@ ROOT                        => ROOT"
           (apply 'twb/autoload x))
         libraries-and-functions))
 
-(defmacro bind-key (key function)	; UNTESTED
+(defmacro bind-key (key function)   ; UNTESTED
   `(global-set-key (read-kbd-macro ,key) ,function))
 
-(defun bind-keys (bindings)		; UNTESTED
+(defun bind-keys (bindings)     ; UNTESTED
   "Map keys from a list."
   (if (null (cdr bindings))
       t
@@ -260,14 +261,14 @@ If `configuration-case' is T, try to load the file as a configuration
 file; display a message otherwise."
   (if configuration-case                ; FIXME: refactor it
       `(progn
-         ,@(mapcar '(lambda (x)
+         ,@(mapcar #'(lambda (x)
                       (setq z (listify (cdr x)))
                       `(progn
-                         ,@(mapcar '(lambda (y)
+                         ,@(mapcar #'(lambda (y)
                                       `(unless (fboundp ',y) (defun ,y () (interactive) (when (y-or-n-p ,(concat (symbol-name y) ": function missing. Load the configuration file `" (car x) "'? ")) (conf-load ,(car x)))))) z)))
                    source-funs))
     `(progn
-       ,@(mapcar '(lambda (x)
+       ,@(mapcar #'(lambda (x)
                     `(unless (fboundp ',x) (defun ,x () (interactive) (message "%s: function missing." ,(symbol-name x)))))
                 source-funs))))
 
@@ -308,7 +309,7 @@ file; display a message otherwise."
       (
        (buf-count (length (buffer-list)))
        )
-    (if (or (interactive-p) display-anyway)
+    (if (or (called-interactively-p 'any) display-anyway)
         (message "%d buffers in this Emacs" buf-count))
     buf-count))
 
@@ -383,43 +384,43 @@ a sound to be played.
   '(progn
      ;; - safe loaders
      ;;
-     (defun safe-load (library)		; UNTESTED
+     (defun safe-load (library)     ; UNTESTED
        "Secure load a library."
        (condition-case err
-	   (load-library library)
-	 (error
-	  (progn
-	    (message "Failed to load %s: %s" library err)
-	    (sleep-for emacs/breaktime-on-error)))))
+       (load-library library)
+     (error
+      (progn
+        (message "Failed to load %s: %s" library err)
+        (sleep-for emacs/breaktime-on-error)))))
 
-     (defun conf-locate (conf)		; UNTESTED
+     (defun conf-locate (conf)      ; UNTESTED
        "Locate a configuration file. Normally out of the `LOAD-PATH'."
        (let ((path (mapcar #'(lambda (x) (concat (file-name-as-directory mars/local-root-dir) x)) mars/local-conf-path)))
-	 (locate-library conf nil path)))
+     (locate-library conf nil path)))
 
-     (defun conf-load (conf)		; UNTESTED & SOON UNUSED
+     (defun conf-load (conf)        ; UNTESTED & SOON UNUSED
        "Load a configuration file."
        (let ((found (conf-locate conf)))
-	 (when found
-	   (load-file found))))      ; load compiled version if any
+     (when found
+       (load-file found))))      ; load compiled version if any
 
      ;; - autoloads generator
      ;;
-     (defun generate-loaddefs ()	; UNTESTED
+     (defun generate-loaddefs ()    ; UNTESTED
         "Fetch your 'SITE-LISP 's LOADDEFS or create it."
-	;; FIXME: work for one site-lisp dir for instance!!
-	(mapc #'(lambda (x)
-		  (let ((mars/loaddefs
-			 (concat
-			  (file-name-as-directory mars/local-root-dir)
-			  (file-name-as-directory x) "loaddefs.el")))
-		    (unless (and (file-exists-p mars/loaddefs)
-				 (not renew-autoloads-at-startup)) ; force to renew in some case even if `loaddefs' exists
-		      (load "update-auto-loads")
-		      (update-autoloads-in-package-area)) ; adds 'update-auto-loads autoloads in loaddefs too
+    ;; FIXME: work for one site-lisp dir for instance!!
+    (mapc #'(lambda (x)
+          (let ((mars/loaddefs
+             (concat
+              (file-name-as-directory mars/local-root-dir)
+              (file-name-as-directory x) "loaddefs.el")))
+            (unless (and (file-exists-p mars/loaddefs)
+                 (not renew-autoloads-at-startup)) ; force to renew in some case even if `loaddefs' exists
+              (load "update-auto-loads")
+              (update-autoloads-in-package-area)) ; adds 'update-auto-loads autoloads in loaddefs too
                                         ; updates CEDET autoloads for CEDET directories
-		    (safe-autoloads-load mars/loaddefs)))
-	      mars/site-lisp-path))
+            (safe-autoloads-load mars/loaddefs)))
+          mars/site-lisp-path))
 
      ;; - custom builder
      ;;
@@ -428,45 +429,61 @@ a sound to be played.
 none (and not makeable). If `GENERAL' is true, it will refer to or creates
 a simple `custom.el'."
        (concat (file-name-as-directory mars/local-root-dir)
-	       (file-name-as-directory mars/personal-data)
-	       (file-name-as-directory subdirectory-in-data)
-	       (if general "custom.el"
-		 (concat (which-emacs-i-am)
-			 "-" (number-to-string emacs-major-version)
-			 "-" (replace-regexp-in-string "/" "-" (symbol-name system-type)) ".el"))))
+           (file-name-as-directory mars/personal-data)
+           (file-name-as-directory subdirectory-in-data)
+           (if general "custom.el"
+         (concat (which-emacs-i-am)
+             "-" (number-to-string emacs-major-version)
+             "-" (replace-regexp-in-string "/" "-" (symbol-name system-type)) ".el"))))
      
      (defun safe-build-custom-file (subdirectory-in-data &optional general) ; UNTESTED
        (let ((file (build-custom-file-name subdirectory-in-data general)))
-	 (if (file-exists-p file)
-	     file
-	   (let ((custom-dir (expand-file-name (file-name-directory file))))
-	     (if (file-exists-p custom-dir)
-		 file            ; path exists
-	       (let ((dirs-to-create (split-string custom-dir "/"))
-		     (path ""))
-		 (nbutlast dirs-to-create)
-		 (while dirs-to-create
-		   (setq path (concat path (pop dirs-to-create) "/"))
-		   (unless (file-exists-p path)
-		     (condition-case nil
-			 (make-directory path)
-		       (error
-			(setq dirs-to-create nil)))))
-		 (when (file-exists-p custom-dir)
-		   file)))))))))	; path created
-
+     (if (file-exists-p file)
+         file
+       (let ((custom-dir (expand-file-name (file-name-directory file))))
+         (if (file-exists-p custom-dir)
+         file            ; path exists
+           (let ((dirs-to-create (split-string custom-dir "/"))
+             (path ""))
+         (nbutlast dirs-to-create)
+         (while dirs-to-create
+           (setq path (concat path (pop dirs-to-create) "/"))
+           (unless (file-exists-p path)
+             (condition-case nil
+             (make-directory path)
+               (error
+            (setq dirs-to-create nil)))))
+         (when (file-exists-p custom-dir)
+           file)))))))                  ; path created
+     
+     (defun auto-byte-compile-file-maybe () ; UNTESTED
+       (interactive)
+       (when (and auto-byte-compile 
+                  buffer-file-name)
+         ;; (eq (with-current-buffer (current-buffer) major-mode) 'emacs-lisp-mode)
+         (let ((byte-file
+                (concat buffer-file-name 
+                        (if (string-match 
+                             "\\.el\\(\\.gz\\)?\\'" buffer-file-name)
+                            "c" ".elc"))))
+           (unless (and (file-exists-p byte-file)
+                        (file-newer-than-file-p byte-file buffer-file-name))
+             (byte-compile-file buffer-file-name)))))
+     
+     (defun auto-byte-compile-save-hook () ; UNTESTED
+       (add-hook 'after-save-hook #'auto-byte-compile-file-maybe nil t))))
 
 ;;; MISCELLANEOUS UTILITIES
 ;;;
 (defun listify (l)
   (if (listp l) l (list l)))
 
-(defun flatten (list)			; UNTESTED
+(defun flatten (list)           ; UNTESTED
   (cond ((atom list) list)
         ((listp (car list)) (append (flatten (car list)) (flatten (cdr list))))
         (t (append (list (car list)) (flatten (cdr list))))))
 
-(defun which-emacs-i-am ()		; UNTESTED
+(defun which-emacs-i-am ()      ; UNTESTED
   (if (string-match "XEmacs\\|Lucid" emacs-version) "xemacs" "gnuemacs"))
 
 (defun make-file-executable-if-script () ; UNTESTED
@@ -492,7 +509,7 @@ the personal Emacs Lisp configuration directory."
   (let ((current-file (buffer-file-name)))
     (let ((config-path (listify mars/local-conf-path)))
       (dolist (config-dir
-               (mapcar '(lambda (x)
+               (mapcar #'(lambda (x)
                           (concat
                            (file-name-as-directory mars/local-root-dir)
                            x)) config-path))
@@ -505,7 +522,7 @@ the personal Emacs Lisp configuration directory."
 (defun byte-recompile-home ()           ; UNTESTED
   (interactive)
   (let ((path (listify mars/local-conf-path)))
-    (mapcar '(lambda (x) (progn
+    (mapcar #'(lambda (x) (progn
                            (message (prin1-to-string path))
                            (byte-recompile-directory
                             (concat

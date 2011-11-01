@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Sun Oct 23 17:48:17 2011 (+0200)
+;; Last-Updated: Tue Nov  1 11:53:24 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 102
+;;     Update #: 104
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -219,7 +219,7 @@
   ("code"           . (mars/save-n-purge-code mars/toggle-ecb))
   ("window-manager" . mars/toggle-single-window)
   ("media"          . (mars/safe-emms-start-stop mars/emms-any-streams))
-  ("gtd"            . (make-remember-frame mars/today-calendar mars/unscheduled-tasks))
+  ("gtd"            . (make-remember-frame mars/today-calendar mars/two-days-calendar mars/unscheduled-tasks))
   ("mail"           . (mars/draft-email mars/wl))
   ("crypto"         . mars/hexedit))
 (defun-dummy nil undo-kill-buffer ibuffer cycle-buffer cycle-buffer-backward cycle-ispell-languages)
@@ -248,7 +248,7 @@
 (global-unset-key [f8])
 (mars/build-ordered-function-keys "f8" mars/emms-any-streams
                                   (mars/draft-email          . "<f4>")
-                                  (mars/today-calendar       . "<f5>")
+                                  (mars/two-days-calendar    . "<f5>")
                                   (mars/unscheduled-tasks    . "<f6>")
                                   (make-remember-frame       . prev)
                                   (mars/safe-emms-start-stop . id)) ; used as a 'START/STOP switch

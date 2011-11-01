@@ -5,7 +5,7 @@ EMACSNAMESERVER=$USERNAME
     local editor 
     # vemacs = emacs w/ vimpulse (Vim emu)
     editors=(
-        "emacsclient --socket-name=$EMACSNAMESERVER --alternate-editor=vemacs"
+        "emacsclient --socket-name=$EMACSNAMESERVER --alternate-editor=vim" # replace vim by vemacs ASAP
         "vim"
         "nvi"
         "vi"
@@ -13,8 +13,9 @@ EMACSNAMESERVER=$USERNAME
     )
     for editor in ${editors[@]}; do
         (( $+commands[$editor[(w)1]] )) && {
-            EDITOR=$editor
-            VISUAL=$editor
+            export EDITOR="$editor"
+            export VISUAL="$editor"
+            export HOMEBREW_EDITOR="$editor"
             break
         }
     done

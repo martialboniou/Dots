@@ -1,3 +1,4 @@
+;; -*- auto-byte-compile: t -*-
 ;; require this file in any configuration file to load `.emacs' in another mode
 
 (provide 'booting)
@@ -37,7 +38,10 @@
 (when *i-am-an-emacsen-dev*
   (require 'ladybug))                   ; emacs as an elisp developer tool
 
-;; bytecompile .emacs and files in `conf-path' on change
+;; bytecompile via the locally defined `auto-byte-compile' boolean
+(put 'auto-byte-compile 'safe-local-variable #'booleanp)
+(add-hook 'emacs-lisp-mode-hook 'auto-byte-compile-save-hook)
+;; FIXME: deprecated code here
 (when (functionp #'byte-compile-user-init-file)
   (defun mars/byte-compile-user-init-hook ()
     (when (equal buffer-file-name user-init-file)
@@ -95,7 +99,7 @@
       (provide 'emacs-normal-startup))
     (load user-init-file)
     (unless memo
-      (unintern 'emacs-normal-startup))))
+      (unintern 'emacs-normal-startup obarray))))
 
 ;; load time
 (let ((load-time (destructuring-bind (hi lo ms) (current-time)
@@ -109,4 +113,4 @@
 (put 'narrow-to-region 'disabled nil)
 
 (provide 'kernel)
-(unintern 'booting)
+(unintern 'booting obarray)

@@ -1,3 +1,6 @@
 #!/bin/sh
-emacs -q -nw -l ~/.emacs.d/lisp/vim-everywhere.el -eval "(switch-buffer \"*scratch*\")" $*
+emacs -q -nw -eval "\
+(progn\
+  (require 'vim-everywhere)\
+  (switch-buffer \"*scratch*\"))" $*
 # load emacs in Vim emulation (including Vimpulse/Viper)

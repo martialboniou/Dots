@@ -125,6 +125,10 @@ See the advised `delete-frame' at the end of this file as a use case.")
       backup-directory-alist (list (cons "." backup-dir)))
 ;; - desktop load
 (when (featurep 'emacs-normal-startup)
+  (eval-after-load "gtd"
+    '(progn
+       (when (fboundp 'display-organizer-at-startup)
+         (add-hook 'desktop-after-read-hook #'display-organizer-at-startup))))
   (desktop-save-mode 1))
 (make-directory autosave-dir t)         ; be sure it exists
 (setq the-desktop-file (concat (file-name-as-directory desktop-dir)

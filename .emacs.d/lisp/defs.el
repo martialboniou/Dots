@@ -1,4 +1,3 @@
-;;; -*- auto-byte-compile: t -*-
 ;;; defs.el ---
 ;;
 ;; Filename: defs.el
@@ -7,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.10
-;; Last-Updated: Wed Nov  2 00:46:11 2011 (+0100)
+;; Last-Updated: Wed Nov  2 15:21:11 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 191
+;;     Update #: 221
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -62,7 +61,6 @@
 ;;
 (defvar *emacs/init-path* nil
   "Lisp files to compile.")
-;;(defvar calc-command-flags)
 
 (unless (boundp 'mars/eternal-buffer-list)
     (setq mars/eternal-buffer-list '("*scratch*")))
@@ -306,9 +304,7 @@ file; display a message otherwise."
   "Display or return the number of buffers."
   (interactive)
   (let
-      (
-       (buf-count (length (buffer-list)))
-       )
+      ((buf-count (length (buffer-list))))
     (if (or (called-interactively-p 'any) display-anyway)
         (message "%d buffers in this Emacs" buf-count))
     buf-count))
@@ -455,23 +451,49 @@ a simple `custom.el'."
             (setq dirs-to-create nil)))))
          (when (file-exists-p custom-dir)
            file)))))))                  ; path created
-     
+
+     ;; - byte compile
      (defun auto-byte-compile-file-maybe () ; UNTESTED
        (interactive)
        (when (and auto-byte-compile 
                   buffer-file-name)
-         ;; (eq (with-current-buffer (current-buffer) major-mode) 'emacs-lisp-mode)
-         (let ((byte-file
-                (concat buffer-file-name 
-                        (if (string-match 
-                             "\\.el\\(\\.gz\\)?\\'" buffer-file-name)
-                            "c" ".elc"))))
-           (unless (and (file-exists-p byte-file)
-                        (file-newer-than-file-p byte-file buffer-file-name))
-             (byte-compile-file buffer-file-name)))))
-     
+         (byte-recompile-file buffer-file-name nil 0)))
+
+     (defun byte-compile-new-files-maybe (one-or-more-files) ; UNTESTED
+       (interactive)                    ; add find-file entry here
+       (let ((files (listify one-or-more-files)))
+           (mapc
+            #'(lambda (file)
+                (when (file-exists-p file)
+                  (let ((byte-file (byte-compile-dest-file file)))
+                    ;; faster to check compiled file before getting
+                    ;; local variables then force byte-recompilation
+                    (when (or (not (file-exists-p byte-file))
+                              (and (file-exists-p byte-file)
+                                   (file-newer-than-file-p
+                                    byte-file buffer-file-name)))
+                      (when (with-temp-buffer 
+                              (insert-file-contents file t)
+                              (normal-mode t)
+                              (let ((definition (assoc 'auto-byte-compile 
+                                                       file-local-variables-alist)))
+                                (if definition
+                                    (cdr definition)
+                                  (progn
+                                    (message (prin1-to-string (hack-dir-local-variables)))
+                                    (hack-dir-local-variables))))) ; check dir locals too
+                        (byte-recompile-file file t 0)))))) ; force byte-recompile b/c checked
+            files)))
+
+     (defun byte-compile-new-files-in-directories-maybe (one-or-more-directories) ; UNTESTED
+       (interactive)
+       (let ((dirs (listify one-or-more-directories)))
+         (mapc #'(lambda (dir)
+                   (byte-compile-new-files-maybe (directory-files dir t "^[^.].*\\.el\\'")))
+               dirs)))
+
      (defun auto-byte-compile-save-hook () ; UNTESTED
-       (add-hook 'after-save-hook #'auto-byte-compile-file-maybe nil t))))
+       (add-hook 'after-save-hook #'auto-byte-compile-file-maybe t t))))
 
 ;;; MISCELLANEOUS UTILITIES
 ;;;
@@ -742,7 +764,7 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
           (replace-match " " nil nil)
           ;; gone to far ?
           (when (eobp)
-            (delete-backward-char 1)))
+            (call-interactively #'delete-backward-char 1)))
       (progn
         (re-search-forward "[ \t]+" nil t)
         (replace-match "" nil nil)))))

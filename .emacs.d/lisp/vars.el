@@ -1,3 +1,4 @@
+;; -*- auto-byte-compile: t -*-
 ;;; vars.el ---
 ;;
 ;; Filename: vars.el
@@ -6,9 +7,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Wed Nov  2 00:22:00 2011 (+0100)
+;; Last-Updated: Wed Nov  2 13:33:57 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 108
+;;     Update #: 109
 ;; URL:
 ;; Keywords:
 ;; Compatibility:

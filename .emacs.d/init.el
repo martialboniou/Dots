@@ -1,3 +1,4 @@
+;; -*- auto-byte-compile: t -*-
 ;;; init.el
 ;;
 ;; Filename: init.el

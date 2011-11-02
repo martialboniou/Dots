@@ -1,4 +1,3 @@
-;; -*- auto-byte-compile: t -*-
 ;; require this file in any configuration file to load `.emacs' in another mode
 
 (provide 'booting)
@@ -40,23 +39,19 @@
 
 ;; bytecompile via the locally defined `auto-byte-compile' boolean
 (put 'auto-byte-compile 'safe-local-variable #'booleanp)
-(add-hook 'emacs-lisp-mode-hook 'auto-byte-compile-save-hook)
-;; FIXME: deprecated code here
-(when (functionp #'byte-compile-user-init-file)
-  (defun mars/byte-compile-user-init-hook ()
-    (when (equal buffer-file-name user-init-file)
-      (add-hook 'after-save-hook #'byte-compile-user-init-file t t)))
-  (add-hook 'emacs-lisp-mode-hook #'mars/byte-compile-user-init-hook))
-;; (when (functionp 'byte-compile-emacs-config)
-;;  (defun mars/byte-compile-emacs-config-hook ()
-;;    (when (member (file-name-directory buffer-file-name)
-;;                  (mapcar #'(lambda (x)
-;;                             (expand-file-name
-;;                              (file-name-as-directory
-;;                               (concat (file-name-as-directory mars/local-root-dir) x))))
-;;                          mars/local-conf-path))
-;;      (add-hook 'after-save-hook #'byte-compile-emacs-config t t)))
-;;  (add-hook 'emacs-lisp-mode-hook #'mars/byte-compile-emacs-config-hook))
+;; --> on save for any file in emacs-lisp-mode having `auto-byte-compile' 
+;; sets to true in:
+;; 1- local variables defined in the heading/ending comments
+;; 2- `.dir-locals.el' file located at the root directory of the file
+(add-hook 'emacs-lisp-mode-hook #'auto-byte-compile-save-hook)
+;; --> on kill for all initial and configuration files
+(add-lambda-hook 'kill-emacs-hook
+  (byte-compile-new-files-in-directories-maybe
+   (mapcar #'(lambda (dir)
+               (concat (file-name-as-directory mars/local-root-dir) dir))
+           mars/local-conf-path))
+  (when user-init-file
+    (byte-compile-new-files-maybe user-init-file)))
 
 ;; restore windows archiver at startup
 (add-hook 'emacs-startup-hook

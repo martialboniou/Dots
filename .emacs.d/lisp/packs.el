@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Tue Nov  1 18:38:22 2011 (+0100)
+;; Last-Updated: Thu Nov  3 16:15:52 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 348
+;;     Update #: 402
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -194,11 +194,11 @@ faulty COMMAND if COMMANDS is NIL or by listing all non-executable COMMAND and C
     (let ((error-sentence "Please install %s on your machine"))
       (if commands
           (let (renegades)
-            (mapcar (lambda (exe)
+            (mapc #'(lambda (exe)
                       (condition-case err
                           (mars/check-command exe)
                         (error (push exe renegades))))
-                    (delete command (delete-dups commands)))
+                  (delete command (delete-dups commands)))
             (let ((rng-string (if (null renegades)
                                   ""
                                 (concat
@@ -206,29 +206,30 @@ faulty COMMAND if COMMANDS is NIL or by listing all non-executable COMMAND and C
               (error (format error-sentence (concat rng-string command)))))
         (error (format error-sentence command))))))
 
-(defun mars/fetch-exec-in-command (command)
+(defun mars/fetch-exec-in-command (command-line) ; TESTED
   "Fetch executables in a command. The executables are the list of all binary inside the shell
 commands except local binary.
 "
-  (delete-dups
-   (mapcar '(lambda (sent)
-              (car (split-string sent)))
-           (remove-if '(lambda (s) 
-                         (or (= 0 (length s))
-                             (not (null (string-match "^./" s)))))
-                                        ; remove empty strings and local binaries from the list
-                                        ; TODO: test using bash on windows to check whether slash is enough
-                      (mapcar (lambda (x)
-                                (trim-string x))
-                              (split-string command "[;&|]")))))) ; shell-command-separator-regexp
+  (let ((commands (mapcar #'(lambda (x) (trim-string x))
+                          (split-string command-line "[;&|]")))
+        non-local-commands)
+    (dolist (command commands)
+      (when (and (not (= 0 (length command)))
+                 (null (string-match "^./" command)))
+        (push command non-local-commands)))
+    (reverse
+     (delete-dups
+      (mapcar #'(lambda (sent)
+                  (car (split-string sent)))
+              non-local-commands))))) ; shell-command-separator-regexp
 
 (defun mars/execute-commands (sentence &optional additional-commands)
   "Execute sentence as a shell script after checking executables are in EXEC-PATH. Check
 `additional-commands' on error.
 "
-  (mapcar (lambda (com)
+  (mapc #'(lambda (com)
             (mars/check-command com additional-commands))
-          (mars/fetch-exec-in-command sentence))
+        (mars/fetch-exec-in-command sentence))
   (shell-command-to-string sentence))
 
 (defun mars/fetch-exec-in-package-tree (package-tree &optional phase-list)
@@ -236,20 +237,18 @@ commands except local binary.
 a well-formed package tree. '(GET INSTALL) is the default PHASE-LIST. The executables are the
 list of all binary inside the shell commands except local binary.
 "
-  (unless (fboundp 'remove-if)
-    (require 'cl))
   (let (execs)
-    (mapcar
-     (lambda (x)
-       (mapcar (lambda (zone)
-                 (let ((elt (cdr (assoc zone (cdr x)))))
-                   (when (and elt (stringp elt))
-                     (let ((bins (mars/fetch-exec-in-command elt)))
-                       (unless (null bins)
-                         (if execs
-                             (nconc execs bins)
-                           (setq execs bins)))))))
-               (or phase-list (list 'get 'install))))
+    (mapc
+     #'(lambda (x)
+         (mapcar #'(lambda (zone)
+                     (let ((elt (cdr (assoc zone (cdr x)))))
+                       (when (and elt (stringp elt))
+                         (let ((bins (mars/fetch-exec-in-command elt)))
+                           (unless (null bins)
+                             (if execs
+                                 (nconc execs bins)
+                               (setq execs bins)))))))
+                 (or phase-list (list 'get 'install))))
      package-tree)
     (delete-dups execs)))
 
@@ -300,16 +299,16 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
                                       (let ((tag-dirs (cdr tag-method)))
                                         (when (stringp tag-dirs)
                                           (setq tag-dirs (list tag-dirs)))
-                                        (mapc '(lambda (dir)
-                                                 (let ((dirname (concat (car site-lisp-path)
-                                                                        (file-name-as-directory (symbol-name (car x)))
-                                                                        (file-name-as-directory dir))))
-                                                   (when (file-directory-p dirname)
-                                                     (condition-case err
-                                                         (with-temp-file
-                                                             (concat dirname "." (symbol-name tag))
-                                                           nil)
-                                                       (error
+                                        (mapc #'(lambda (dir)
+                                                  (let ((dirname (concat (car site-lisp-path)
+                                                                         (file-name-as-directory (symbol-name (car x)))
+                                                                         (file-name-as-directory dir))))
+                                                    (when (file-directory-p dirname)
+                                                      (condition-case err
+                                                          (with-temp-file
+                                                              (concat dirname "." (symbol-name tag))
+                                                            nil)
+                                                        (error
                                                         (message "packs: unable to tag `%s' as %s: %s"
                                                                  dirname
                                                                  (symbol-name tag)
@@ -348,14 +347,16 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
 ;; nothing
 
 ;;; PASES
-;; no more
+;; no more used
+;;
 ;; Erik Hetzner's Pases (http://e6h.org/pases/)
-(defun pases/wl-org-install ()
-(unless (executable-find "unzip")     ; hang on unreachable `unzip'
-  (cond
-   ((eq system-type 'window-nt)
-    (error "IMPORTANT: Pases need unzip to be installed. Please go to `http://gnuwin32.sourceforge.net/packages/unzip.htm', install the convenient setup program and add `C:\\Program Files\\GnuWin32\\bin' or your GnuWin32 binary path in your path"))
-   (t (error "IMPORTANT: You need to install unzip and make it accessible to be able to use pases package manager"))))
+(defun pases/check-installable ()
+  (unless (executable-find "unzip")     ; hang on unreachable `unzip'
+    (cond
+     ((eq system-type 'window-nt)
+      (error "IMPORTANT: Pases need unzip to be installed. Please go to `http://gnuwin32.sourceforge.net/packages/unzip.htm', install the convenient setup program and add `C:\\Program Files\\GnuWin32\\bin' or your GnuWin32 binary path in your path"))
+     (t (error "IMPORTANT: You need to install unzip and make it accessible to be able to use pases package manager")))))
+
 (defun mars/pases:get-package (pkg-name url local-path)
   "Download a package named `name'."
   (let ((try-limit 2)                   ; retry if empty
@@ -369,97 +370,103 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
                     (eq 0 (nth 7 (file-attributes file))))) ; check empty file
       (incf count)
       (url-copy-file complete-url file t))))
+
 (defvar mars/pases:loader-file-name nil
   "Relative path of the `pases' file to load. It must be in one of the directories to load pases packages from as set in the variable `pases:packages-dirs'.")
-(let ((pases-name "pases")
-      (pases-version "0.2")
-      (dot ".") (hdot "~/.") (d ".d")
-      (wanderlust-package-list '("apel-10.8"
-                                 "flim-1.14.9_20100804"
-                                 "semi-1.14.6_20101024"
-                                 "wl-2.15.9"))
-      (org-package-list '("org-mode-7.5")))
-  (let ((pases-source-dir (expand-file-name (concat hdot pases-name d)))
-        (pases-dir (expand-file-name (concat hdot pases-name dot (which-emacs-i-am) dot
-                                             (number-to-string emacs-major-version) d))))
-    (setq mars/pases:loader-file-name (concat (file-name-as-directory
-                                               (concat pases-name "-" pases-version))
-                                              "pases-load"))
-    (if (file-exists-p pases-dir)
-        (progn
-          ;; faster startup = pases autoload
-          (add-to-list 'load-path pases-dir)
-          (mars/autoload '(("pases" pases:install-package pases:uninstall-package
-                            pases:disable-package pases:enable-package)
-                           ("wl" wl wl-other-frame)
-                           ("wl-draft" wl-draft wl-user-agent-compose))))
-      (let ((pases-file (expand-file-name (concat (file-name-as-directory pases-source-dir)
-                                                  mars/pases:loader-file-name))))
-        (condition-case nil
-            (load pases-file)
-          (error
-           (progn
-             ;; bootstrap if nothing to load
-             (message (format "packs: bootstrap pases"))
-             (let* ((pases-url (concat "http://launchpad.net/" pases-name "/trunk/" pases-version "/+download/"))
-                    (buffer (condition-case err (url-retrieve-synchronously
-                                                 (concat pases-url
-                                                         "pases-bootstrap.el"))
-                              (error (progn
-                                       (message (format "packs: %s" err))
-                                       nil)))))
-               (when buffer
-                 (save-excursion
-                   (set-buffer buffer)
-                   (goto-char (point-min))
-                   (re-search-forward "^$" nil 'move)
-                   (eval-region (point) (point-max))
-                   (kill-buffer (current-buffer)))))
-             ;; fetch and install essential packages after bootstraping
-             (if (not (fboundp 'pases:install-package))
-                 (error "packs: bootstraping error: no PASES:INSTALL-PACKAGE function")
-               (let ((pases-file-name (concat pases-name "-" pases-version dot pases-name)))
-                 (when (file-exists-p (expand-file-name
-                                       (concat (file-name-as-directory pases-source-dir)
-                                               pases-file-name)))
-                   (when (y-or-n-p
-                          (format "Would you like to reset the pases source directory? "))
-                     (delete-directory (expand-file-name pases-source-dir) t)))
-                 ;; fetch pases package and install it
-                 (mars/pases:get-package pases-file-name "launchpad.net/pases/trunk/0.2/+download"
-                                         (expand-file-name (file-name-as-directory pases-source-dir)))
-                 (pases:install-package (concat (file-name-as-directory pases-source-dir) pases-file-name)))
-               (let ((pases-packages-url (concat "e6h.org/" pases-name)))
-                 ;; fetch wanderlust & org 7 packages and install them
-                 (mapc
-                  (lambda (x)
-                    (mars/pases:get-package (concat x dot pases-name) pases-packages-url pases-source-dir)
-                    (pases:install-package (expand-file-name
-                                            (concat (file-name-as-directory pases-source-dir)
-                                                    x dot pases-name))))
-                  (append wanderlust-package-list org-package-list))
-                 ;; FIXME: remove *Compile-Log* window instead of other-windows
-                 (delete-other-windows)))))))))))
+
+(defun mars/pases:wl-org-install ()
+  (pases/check-installable)
+  (let ((pases-name "pases")
+        (pases-version "0.2")
+        (dot ".") (hdot "~/.") (d ".d")
+        (wanderlust-package-list '("apel-10.8"
+                                   "flim-1.14.9_20100804"
+                                   "semi-1.14.6_20101024"
+                                   "wl-2.15.9"))
+        (org-package-list '("org-mode-7.5")))
+    (let ((pases-source-dir (expand-file-name (concat hdot pases-name d)))
+          (pases-dir (expand-file-name (concat hdot pases-name dot (which-emacs-i-am) dot
+                                               (number-to-string emacs-major-version) d))))
+      (setq mars/pases:loader-file-name (concat (file-name-as-directory
+                                                 (concat pases-name "-" pases-version))
+                                                "pases-load"))
+      (if (file-exists-p pases-dir)
+          (progn
+            ;; faster startup = pases autoload
+            (add-to-list 'load-path pases-dir)
+            (mars/autoload '(("pases" pases:install-package pases:uninstall-package pases:disable-package pases:enable-package)
+                             ("wl" wl wl-other-frame)
+                             ("wl-draft" wl-draft wl-user-agent-compose))))
+        (let ((pases-file (expand-file-name (concat (file-name-as-directory pases-source-dir)
+                                                    mars/pases:loader-file-name))))
+          (condition-case nil
+              (load pases-file)
+            (error
+             (progn
+               ;; bootstrap if nothing to load
+               (message (format "packs: bootstrap pases"))
+               (let* ((pases-url (concat "http://launchpad.net/" pases-name "/trunk/" pases-version "/+download/"))
+                      (buffer (condition-case err (url-retrieve-synchronously
+                                                   (concat pases-url
+                                                           "pases-bootstrap.el"))
+                                (error (progn
+                                         (message (format "packs: %s" err))
+                                         nil)))))
+                 (when buffer
+                   (with-current-buffer
+                       buffer
+                     (goto-char (point-min))
+                     (re-search-forward "^$" nil 'move)
+                     (eval-region (point) (point-max))
+                     (kill-buffer (current-buffer)))))
+               ;; fetch and install essential packages after bootstraping
+               (if  (fboundp 'pases:install-package)
+                   (let ((pases-file-name (concat pases-name "-" pases-version dot pases-name)))
+                     (when (file-exists-p (expand-file-name
+                                           (concat (file-name-as-directory pases-source-dir)
+                                                   pases-file-name)))
+                       (when (y-or-n-p
+                              (format "Would you like to reset the pases source directory? "))
+                         (delete-directory (expand-file-name pases-source-dir) t)))
+                     ;; fetch pases package and install it
+                     (mars/pases:get-package pases-file-name "launchpad.net/pases/trunk/0.2/+download"
+                                             (expand-file-name (file-name-as-directory pases-source-dir)))
+                     (when (fboundp 'pases:install-package) ; TO COMPILE W/O WARNINGS
+                       (pases:install-package (concat (file-name-as-directory pases-source-dir) pases-file-name))))
+                 (error "packs: bootstraping error: no PASES:INSTALL-PACKAGE function"))
+                 (let ((pases-packages-url (concat "e6h.org/" pases-name)))
+                   ;; fetch wanderlust & org 7 packages and install them
+                   (mapc
+                    #'(lambda (x)
+                        (mars/pases:get-package (concat x dot pases-name) pases-packages-url pases-source-dir)
+                        (if (fboundp 'pases:install-package)
+                            (pases:install-package (expand-file-name
+                                                    (concat (file-name-as-directory pases-source-dir)
+                                                            x dot pases-name)))
+                          (error "packs: no PASES:INSTALL-PACKAGE function")))
+                    (append wanderlust-package-list org-package-list))
+                   ;; FIXME: remove *Compile-Log* window instead of other-windows
+                   (delete-other-windows))))))))))
+
 (defun mars/pases:reload ()
   "Reload pases. Find the loader file inside the `pases:package-dirs'."
   (interactive)
-  (let ((dirs pases:package-dirs)
+  (let ((dirs (when (and (boundp 'pases:package-dirs)
+                         (boundp 'mars/pases:loader-file-name))
+                pases:package-dirs))
         pending)
     (while (not (null dirs))
       (setq pending (pop dirs))
-      (let ((file-name (expand-file-name
-                        (concat (file-name-as-directory pending)
-                                mars/pases:loader-file-name))))
-        (when (locate-library file-name)
-          (setq dirs nil)
-          (load file-name))))))
+      (if (boundp 'mars/pases:loader-file-name)
+        (let ((file-name (expand-file-name
+                          (concat (file-name-as-directory pending)
+                                  mars/pases:loader-file-name))))
+          (when (locate-library file-name)
+            (setq dirs nil)
+            (load file-name)))
+        (error (format "mars/pases:loader-file-name is undefined"))))))
 
-;; TODO: rebuild `update-autoloads-in-package-area' to create/update loaddefs and `safe-autoloads-load' to load-file it in the case of a different `base' directory.
-;; (if pases-source-dir
-;;    (let ((f (concat (file-name-as-directory pases-source-dir) "loaddefs.el")))
-;;        (if (file-exists-p p)
-;;           (safe-autoloads-load p)))
-
+;; FIXME: rebuild `update-autoloads-in-package-area' to create/update loaddefs and `safe-autoloads-load' to load-file it in the case of a different `base' directory.
 
 (provide 'packs)
 

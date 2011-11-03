@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Oct 31 13:19:50 2011 (+0100)
+;; Last-Updated: Thu Nov  3 13:17:42 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 484
+;;     Update #: 493
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -319,7 +319,7 @@ Move point to the beginning of the line, and run the normal hook
 (defun ecb-activated-in-this-frame ()
   (and (ecb-activated)
        (eq (selected-frame)
-           ecb-frame)))
+           (when (boundp 'ecb-frame) ecb-frame))))
 (eval-after-load "ecb"
   '(progn
      (when (> emacs-major-version 23)
@@ -521,86 +521,13 @@ Move point to the beginning of the line, and run the normal hook
          (anything-other-buffer 'anything-c-source-cheat "*Anything cheat*")))))
 
 ;;; VISUALIZE CALL TREE
-(defun simple-call-tree-list-functions-and-callers ()
-  "List functions and callers in `simple-call-tree-alist'."
-  (interactive)
-  (let ((list (simple-call-tree-invert simple-call-tree-alist)))
-    (switch-to-buffer (get-buffer-create "*simple-call-tree*"))
-    (erase-buffer)
-    (dolist (entry list)
-      (let ((callers (mapconcat #'identity (cdr entry) ", ")))
-        (insert (car entry) " is called by "
-                (if (string= callers "")
-                    "no functions."
-                  callers)
-                ".\n")))))
-(defun simple-call-tree-list-callers-and-functions ()
-  "List callers and functions in `simple-call-tree-alist'."
-  (interactive)
-  (let ((list simple-call-tree-alist))
-    (switch-to-buffer (get-buffer-create "*simple-call-tree*"))
-    (erase-buffer)
-    (dolist (entry list)
-      (let ((functions (mapconcat #'identity (cdr entry) ", ")))
-        (insert (car entry) " calls "
-                (if (string= functions "")
-                    "no functions"
-                  functions)
-                ".\n")))))
-;; sct-dot
-(defun sct-dot ()
-  "Generate dot file for graphviz from `simple-call-tree-alist'.
-After calling `simple-call-tree-analyze', use `sct-dot' in an
-empty buffer via `(insert (sct-dot))'.
-Then save the file as \"my-file.dot\" and run
-\"dot -Tjpg /path/to/my-file.dot -o result.jpg\" from command line."
-  (concat "digraph G {\n" ;; default beginning of a dot file
-          (mapconcat 'identity ;; end each line with a ";"
-                     (mapcar
-                      (lambda (defun-list)
-                        "Called for each elemet (list) of `simple-call-tree-alist',
-                         create all the 'caller -> callee;' strings."
-                        (let ((caller (car defun-list))
-                              (callees (cdr defun-list)))
-                          (if (null callees)
-                              (concat "\"" caller "\"")
-                            (mapconcat (lambda (callee)
-                                         "Called with each callee, create 'caller -> callee' pairs."
-                                         (concat "\"" caller "\"" " -> " "\"" callee "\""))
-                                       callees
-                                       ";\n"))))
-                      simple-call-tree-alist)
-                     ";\n")
-          ";\n}"))
-;; TDDO: sct-graphviz (iff graphviz)
-(let ((graphviz-command (executable-find "dot")))
-  (when graphviz-command
-    (defvar sct-graphviz-dir (expand-file-name
-                              (concat
-                               (file-name-as-directory mars/local-root-dir)
-                               (file-name-as-directory mars/personal-data)
-                               (file-name-as-directory "Temporary")
-                               (file-name-as-directory "Graphviz"))))
-    (when (not (file-exists-p sct-graphviz-dir))
-      (if (y-or-n-p (format "code: Would you like to create a default directory to extend `simple-call-tree' function with visual capability? "))
-          (make-directory sct-graphviz-dir t)
-        (setq sct-graphviz-dir
-              (expand-file-name (file-name-as-directory (read-directory-name "Directory for simple call tree generated image: " nil nil t))))))
-    (defun sct-graphviz ()
-      (interactive)
-      (let ((tmp-file (make-temp-file (expand-file-name ".tmp" sct-graphviz-dir) nil ".dot"))
-            (viz-file (expand-file-name (concat sct-graphviz-dir (buffer-name (current-buffer)) ".png"))))
-        (with-temp-file tmp-file
-          (insert (sct-dot)))
-        (let ((cmd-return (execvp "dot" "-Tpng" tmp-file "-o" viz-file)))
-          (if (zerop (length cmd-return))
-              (let ((vct (get-buffer-create "*Visual Call Tree*")))
-                (with-current-buffer
-                    vct
-                  (insert-image viz-file))
-                (display-buffer vct))
-            (error "graphivz: error during external command: %s" cmd-return)))
-        (delete-file tmp-file)))))
+(setq sct-graphviz-dir (expand-file-name
+                        (concat
+                         (file-name-as-directory mars/local-root-dir)
+                         (file-name-as-directory mars/personal-data)
+                         (file-name-as-directory "Temporary") "Graphviz")))
+(defun mars/simple-call-tree-view ()
+  (sct-graphviz))
 ;;(car-safe "/Users/mars/.emacs.d/data/Temporary/Graphviz/code.el.png")
 
 ;;; LANGUAGES
@@ -616,7 +543,7 @@ Then save the file as \"my-file.dot\" and run
     (require 'python-357)))             ; for python 2 / 3
 
 (provide 'code)
-(unintern 'programming)
+(unintern 'programming obarray)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; code.el ends here

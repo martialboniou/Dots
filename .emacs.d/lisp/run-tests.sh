@@ -17,7 +17,9 @@ mkdir tests/vendor/pack3 # empty bag
 touch tests/vendor/file0.el
 
 # tests
+EMACSLOADPATH=.:$EMACSLOADPATH
 emacs -batch -l tests/test-defs.el
+emacs -batch -l tests/test-packs.el
 
 # tidy up
 rm tests/vendor/pack1/third-party/*.*

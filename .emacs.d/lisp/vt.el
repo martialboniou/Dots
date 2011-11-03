@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 13:14:51 2011 (+0100)
 ;; Version:
-;; Last-Updated: Mon Oct 24 19:25:47 2011 (+0200)
+;; Last-Updated: Thu Nov  3 16:20:54 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 16
+;;     Update #: 18
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -91,7 +91,8 @@
 ;;
 (add-lambda-hook 'eshell-mode-hook
   (setenv "PATH" (mapconcat (lambda (dir) (or dir ".")) exec-path path-separator))
-  (setq eshell-path-env (getenv "PATH")))
+  (when (boundp 'eshell-path-env)
+    (setq eshell-path-env (getenv "PATH"))))
 
 ;;; SH FILES
 ;;

@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.10
-;; Last-Updated: Wed Nov  2 15:21:11 2011 (+0100)
+;; Last-Updated: Thu Nov  3 11:44:12 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 221
+;;     Update #: 223
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -259,16 +259,22 @@ If `configuration-case' is T, try to load the file as a configuration
 file; display a message otherwise."
   (if configuration-case                ; FIXME: refactor it
       `(progn
-         ,@(mapcar #'(lambda (x)
-                      (setq z (listify (cdr x)))
-                      `(progn
-                         ,@(mapcar #'(lambda (y)
-                                      `(unless (fboundp ',y) (defun ,y () (interactive) (when (y-or-n-p ,(concat (symbol-name y) ": function missing. Load the configuration file `" (car x) "'? ")) (conf-load ,(car x)))))) z)))
-                   source-funs))
+         ,@(mapcar
+            #'(lambda (x)
+                (let ((z (listify (cdr x))))
+                  `(progn
+                     ,@(mapcar #'(lambda (y)
+                                   `(unless (fboundp ',y) (defun ,y () (interactive) (when (y-or-n-p ,(concat (symbol-name y) ": function missing. Load the configuration file `" (car x) "'? ")) (conf-load ,(car x)))))) z))))
+            source-funs))
     `(progn
-       ,@(mapcar #'(lambda (x)
-                    `(unless (fboundp ',x) (defun ,x () (interactive) (message "%s: function missing." ,(symbol-name x)))))
-                source-funs))))
+       ,@(mapcar
+          #'(lambda (x)
+              `(unless 
+                   (fboundp ',x)
+                 (defun ,x ()
+                   (interactive)
+                   (message "%s: function missing." ,(symbol-name x)))))
+          source-funs))))
 
 (defun crazycode/indent-and-complete () ; UNTESTED
   "Indent line and Complete if point is at end of left a leave word."

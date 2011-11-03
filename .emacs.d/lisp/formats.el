@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Oct 31 19:03:05 2011 (+0100)
+;; Last-Updated: Thu Nov  3 13:27:02 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 112
+;;     Update #: 114
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -147,20 +147,18 @@ Otherwise the update regexps won't match."
 (defun c-reformat-buffer()
   (interactive)
   (save-buffer)
-  (setq sh-indent-command (concat
-                           "indent -st -bad --blank-lines-after-procedures "
-                           "-bli0 -i4 -l79 -ncs -npcs -nut -npsl -fca "
-                           "-lc79 -fc1 -cli4 -bap -sob -ci4 -nlp "
-                           buffer-file-name))
-  (mark-whole-buffer)
-  (universal-argument)
-  (shell-command-on-region
-   (point-min)
-   (point-max)
-   sh-indent-command
-   (buffer-name))
-  ;;(save-buffer)
-)
+  (let ((sh-indent-command (concat
+                            "indent -st -bad --blank-lines-after-procedures "
+                            "-bli0 -i4 -l79 -ncs -npcs -nut -npsl -fca "
+                            "-lc79 -fc1 -cli4 -bap -sob -ci4 -nlp "
+                            buffer-file-name)))
+    (mark-whole-buffer)
+    (universal-argument)
+    (shell-command-on-region
+     (point-min)
+     (point-max)
+     sh-indent-command
+     (buffer-name))))
 ;; FIXME: (define-key c-mode-base-map [f7] 'c-reformat-buffer)
 
 ;;; FLYSPELL

@@ -8,7 +8,7 @@
 ;; Version:
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 81
+;;     Update #: 84
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -172,13 +172,13 @@
     (if buf
         (if (setq wind (get-buffer-window buf))
             (select-window wind)
-          (if (called-interactively-p)
+          (if (called-interactively-p 'any)
               (progn
                 (select-window (display-buffer buf t t))
                 (org-fit-window-to-buffer))
             (with-selected-window (display-buffer buf)
               (org-fit-window-to-buffer))))
-      (call-interactively 'org-agenda-list))))
+      (call-interactively #'org-agenda-list))))
 
 (defun mars/today-calendar ()
   "Open `org-agenda' on today."

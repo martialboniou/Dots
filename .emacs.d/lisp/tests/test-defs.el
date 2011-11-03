@@ -1,45 +1,6 @@
-;;; VARS
-(defvar mars/local-root-dir (if (boundp 'user-emacs-directory) user-emacs-directory "~/.emacs.d")) ; setting this variable avoids .emacs to be loaded from the file to test
-(add-to-list 'load-path (expand-file-name "."))
-(set 'message-log-max nil)              ; no *Messages* > faster
-(progn                                  ; set the frame size  wide enough to test windows
-                                        ; manipulation
-  (set-frame-size (selected-frame) 48 48)
-  (add-to-list 'default-frame-alist '(height . 48) '(width . 48)))
-
-;;; FILE
+;; -*- auto-byte-compile: nil -*-
+(require 'run-tests)
 (require 'defs)
-
-;;; UNIT TEST
-;;
-(require 'ert)
-
-;; UTILS
-(defun trap-messages (body)
-  "Don't display messages."
-   (require 'cl)
-   (flet ((message (format-string &rest args) nil))
-     (funcall body)))
-(defun safe-funcall (function)
-  (condition-case nil
-      (funcall function)
-    (error nil)))
-(defun safe-word-search-forward (word &optional test-name)
-  (condition-case err
-      (progn
-        (word-search-forward word)
-        t)
-    (error (progn
-             (message
-              "%s: bad formed sentence - %s not tested"
-              err (or test-name
-                      "a function were "))))))
-(defun safe-kill-buffer (buffer-name)
-  (when (get-buffer buffer-name)
-    (kill-buffer buffer-name)))
-(defun safe-unintern (symbol)
-  (when (boundp symbol)
-    (unintern symbol)))
 
 ;;; TESTS
 ;;
@@ -75,10 +36,10 @@
 (ert-deftest mars/force-options-simple-test ()
   (unwind-protect
       (progn
-	(defvar *old-foo* 'bar)
-	(defvar *new-foo* 'foo)
-	(should (eq (mars/force-options (*new-foo* . *old-foo*)) 'foo))
-	(should (eq *old-foo* *new-foo*)))
+    (defvar *old-foo* 'bar)
+    (defvar *new-foo* 'foo)
+    (should (eq (mars/force-options (*new-foo* . *old-foo*)) 'foo))
+    (should (eq *old-foo* *new-foo*)))
     (safe-unintern *old-foo*)
     (safe-unintern *new-foo*)))
 
@@ -393,6 +354,7 @@ by restoring single window frame."
 
 
 ;;; TEST RUNNER
+;;
 (ert-run-tests-batch-and-exit)
 
 (provide 'test-defs)

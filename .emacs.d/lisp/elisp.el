@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 10:19:49 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri Oct 28 12:35:44 2011 (+0200)
+;; Last-Updated: Thu Nov  3 13:24:48 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 29
+;;     Update #: 33
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -48,8 +48,10 @@
 
 (add-to-list 'load-path (expand-file-name load-file-name))
 (require 'adapter)
+(require 'etags)
 
 ;;; ELISP
+;;
 (defun elisp-disassemble (function)
   (interactive (list (function-called-at-point)))
   (disassemble function))
@@ -69,7 +71,6 @@
   (elisp-pp (cl-macroexpand-all form)))
 
 (defun elisp-push-point-marker ()
-  (require 'etags)
   (cond ((featurep 'xemacs)
          (push-tag-mark))
         (t (ring-insert find-tag-marker-ring (point-marker)))))
@@ -170,7 +171,7 @@ in `util/ourcomments-util' of the `nxhtml' package."
     (when out-buf
       (display-buffer out-buf)
       (setq fin-msg ". Finished.")
-      (message "Started 'emacs%s' => %s. Locked until this is finished." args-text ret fin-msg)
+      (message "Started 'emacs%s' => %s. Locked until this is finished%s" args-text ret fin-msg)
       (redisplay))
     (setq ret (apply 'call-process emacs-found nil buf-arg nil args))
     (message "Started 'emacs%s' => %s%s" args-text ret fin-msg)

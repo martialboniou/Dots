@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou
 ;; Created: Sat Feb 19 11:17:32 2011 (+0100)
 ;; Version: 0.8.1
-;; Last-Updated: Mon Oct 31 20:24:16 2011 (+0100)
+;; Last-Updated: Thu Nov  3 13:25:34 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 91
+;;     Update #: 92
 ;; URL:
 ;; Keywords:
 ;; Compatibility:

@@ -29,7 +29,6 @@
                                       he-substitute-string)
                  ("calc-ext"                  calc-do-calc-eval)
                  ("hexview-mode"              hexview-find-file)
-                 ("simple-call-tree"          simple-call-tree-analyze simple-call-tree-alist)
                  ("inf-shen"                  shen-mode)
                  ("pymacs"                    pymacs-apply pymacs-call pymacs-eval 
                                               pymacs-exec pymacs-load)

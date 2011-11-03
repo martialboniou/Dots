@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Tue Nov  1 11:53:24 2011 (+0100)
+;; Last-Updated: Thu Nov  3 16:18:54 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 104
+;;     Update #: 107
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -216,7 +216,7 @@
 ;; tell your functions unreachable via autoloads (generally defined in confs file
 ;; instead of <site-lisp> files). Use `fmakunbound' to test it.
 (defun-dummy t
-  ("code"           . (mars/save-n-purge-code mars/toggle-ecb))
+  ("code"           . (mars/save-n-purge-code mars/toggle-ecb mars/simple-call-tree-view))
   ("window-manager" . mars/toggle-single-window)
   ("media"          . (mars/safe-emms-start-stop mars/emms-any-streams))
   ("gtd"            . (make-remember-frame mars/today-calendar mars/two-days-calendar mars/unscheduled-tasks))
@@ -240,7 +240,7 @@
 (mars/build-ordered-function-keys "f7" compile elisp-macroexpand describe-unbound-keys mars/hexedit
                                   (whitespace-mode            . "<f1>")
                                   (mars/save-n-purge-code     . "<f5>")
-                                  (anything-simple-call-tree  . prev)
+                                  (mars/simple-call-tree-view . prev)
                                   (anything-browse-code       . id) ; faster than ecb
                                   (mars/toggle-ecb            . next)
                                   (cycle-ispell-languages     . "<f2>"))

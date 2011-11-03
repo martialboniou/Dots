@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Jan 19 20:16:06 2008
 ;; Version:
-;; Last-Updated: Mon Oct 31 22:29:16 2011 (+0100)
+;; Last-Updated: Thu Nov  3 21:13:54 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 101
+;;     Update #: 105
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -59,42 +59,49 @@
 
 ;;; IMAGE-MODE
 ;;
-(defun my-image-next-by-number ()
-  (interactive)
-  (let ((file-name (buffer-file-name))
-        base num suffix
-        num-width fmt)
-    (unless (string-match
-             "^\\(.*[^0-9-]\\)?\\(?:[0-9]+-\\)?\\([0-9]+\\)\\(\\.[^.]+\\)?$"
-             file-name)
-      (error "Improper file name"))
-    (setq base (match-string 1 file-name))
-    (setq num (match-string 2 file-name))
-    (setq suffix (match-string 3 file-name))
-    (setq num-width (length num))
-    (setq fmt (format "%%s%%0%dd%%s" num-width))
-    (setq num (1+ (string-to-number num)))
-    (setq file-name (format fmt base num suffix))
-    (unless (file-exists-p file-name)
-      (setq fmt (format "%%s%%0%dd-*%%s" num-width))
-      (setq file-name (format fmt base num suffix))
-      (setq file-name (file-expand-wildcards file-name))
-      (if file-name
-          (setq file-name (car file-name))
-        (error "No more files")))
-    (find-alternate-file file-name)))
-(defun my-image-scroll-up-or-next-by-number ()
-  (interactive)
-  (let* ((image (image-get-display-property))
-         (edges (window-inside-edges))
-         (win-height (- (nth 3 edges) (nth 1 edges)))
-         (img-height (ceiling (cdr (image-size image)))))
-    (if (< (+ win-height (window-vscroll nil t))
-           img-height)
-        (image-scroll-up)
-      (my-image-next-by-number))))
-(define-key image-mode-map (kbd "SPC")
-  'my-image-scroll-up-or-next-by-number)
+(add-to-list 'auto-mode-alist '("\\.\\(bmp\\|BMP\\)$" . image-mode))
+(eval-after-load "image-mode"
+  '(progn
+     (auto-image-file-mode 1)
+  
+     (defun my-image-next-by-number ()
+       (interactive)
+       (let ((file-name (buffer-file-name))
+             base num suffix
+             num-width fmt)
+         (unless (string-match
+                  "^\\(.*[^0-9-]\\)?\\(?:[0-9]+-\\)?\\([0-9]+\\)\\(\\.[^.]+\\)?$"
+                  file-name)
+           (error "Improper file name"))
+         (setq base (match-string 1 file-name))
+         (setq num (match-string 2 file-name))
+         (setq suffix (match-string 3 file-name))
+         (setq num-width (length num))
+         (setq fmt (format "%%s%%0%dd%%s" num-width))
+         (setq num (1+ (string-to-number num)))
+         (setq file-name (format fmt base num suffix))
+         (unless (file-exists-p file-name)
+           (setq fmt (format "%%s%%0%dd-*%%s" num-width))
+           (setq file-name (format fmt base num suffix))
+           (setq file-name (file-expand-wildcards file-name))
+           (if file-name
+               (setq file-name (car file-name))
+             (error "No more files")))
+         (find-alternate-file file-name)))
+
+     (defun my-image-scroll-up-or-next-by-number ()
+       (interactive)
+       (let* ((image (image-get-display-property))
+              (edges (window-inside-edges))
+              (win-height (- (nth 3 edges) (nth 1 edges)))
+              (img-height (ceiling (cdr (image-size image)))))
+         (if (< (+ win-height (window-vscroll nil t))
+                img-height)
+             (image-scroll-up)
+           (my-image-next-by-number))))
+
+     (define-key image-mode-map (kbd "SPC")
+       'my-image-scroll-up-or-next-by-number)))
 
 ;;; EIMP
 ;;
@@ -103,8 +110,8 @@
 
 ;;; IIMAGE
 ;; TODO: test this
-(mapc '(lambda (x)
-         (add-hook x 'turn-on-iimage-mode))
+(mapc #'(lambda (x)
+          (add-hook x 'turn-on-iimage-mode))
       '(Info-mode-hook texinfo-mode-hook wikipedia-mode)) ; info/wiki case
 (eval-after-load "org"             ; org-mode case
   '(progn
@@ -286,42 +293,51 @@
         (anything-emms)
       (emms-streams)))
 
+  (defun mars/safe-emms-playlists ()
+    (let ((buf (emms-playlist-buffer-list)))
+      (and buf
+           (plain-buffer-list buf))))
+
   (defun mars/safe-emms-start-stop ()
     (interactive)
-    (flet ((last-non-empty-buffer (bufs) (car (remove-if '(lambda (x) (= (buffer-size x) 0)) bufs))))
-      (condition-case nil
-          (if (null (last-non-empty-buffer (emms-playlist-buffer-list)))
-              (error "no playlist")       ; throw if no playlist
-            (emms-pause))               ; try pause/resume otherwise (normal way)
-        (error
-         (progn
-           (mapcar
-            (lambda (elt)
-              (kill-buffer elt))
-            (emms-playlist-buffer-list))  ; remove buffers if #'EMMS-PAUSE creates one
-           (emms-history-load)            ; try to restore history
-           (let ((last-loaded-emms-playlist (last-non-empty-buffer (emms-playlist-buffer-list)))) ; fetch the last living non-empty buffer if multiple playlists saved in history
-             (if (null last-loaded-emms-playlist)
-                 (emms)                   ; emms if nothing in history
-               (if (null emms-player-playing-p) ; if not playing (stop or paused)
-                   (save-current-buffer
-                     (set-buffer last-loaded-emms-playlist)
-                     (condition-case nil
-                         (emms-playlist-mode-play-smart) ; try a smart start of the current or next track
-                       (error
-                        (flet ((info-emms-unable-to-play (which-track)
-                                                         (message "Information: [mars] emms: unable to play the %s track in the last playlist saved in history" which-track)))
-                          (info-emms-unable-to-play "next")
-                          (emms-playlist-mode-first)
-                          (condition-case nil
-                              (emms-playlist-mode-play-smart) ; try a smart start of the very first track
-                            (error
-                             (info-emms-unable-to-play "first")
-                             (emms))))))) ; else open a default playlist to load
-                 (when emms-player-paused-p
+    (condition-case nil
+        (if (mars/safe-emms-playlists)
+            (emms-pause)                ; try pause/resume
+          (error "no playlist"))               
+      (error
+       (progn
+         ;; remove the buffer created by 'EMMS-PAUSE
+         (mapc
+          #'(lambda (elt) (kill-buffer elt))
+          (mars/safe-emms-playlists))
+         (emms-history-load)            ; try to restore history
+         ;; fetch the last living playlist saved in history
+         (let ((last-loaded-emms-playlist
+                (car (mars/safe-emms-playlists))))
+           (if (null last-loaded-emms-playlist)
+               (emms)                   ; emms if nothing in history
+             (if (null emms-player-playing-p) ; if stopped or paused
+                 (save-current-buffer
+                   (set-buffer last-loaded-emms-playlist)
                    (condition-case nil
-                       (emms-pause)
-                     (error (emms)))))))))))))
+                       ;; try a smart start of the current or next track
+                       (emms-playlist-mode-play-smart)
+                     (error
+                      (flet ((info-emms-unable-to-play
+                              (which-track)
+                              (message "Information: [mars] emms: unable to play the %s track in the last playlist saved in history" which-track)))
+                        (info-emms-unable-to-play "next")
+                        (emms-playlist-mode-first)
+                        (condition-case nil
+                            ;; try a smart start of the very first track
+                            (emms-playlist-mode-play-smart)
+                          (error
+                           (info-emms-unable-to-play "first")
+                           (emms))))))) ; else open a default playlist to load
+               (when emms-player-paused-p
+                 (condition-case nil
+                     (emms-pause)
+                   (error (emms))))))))))))
 
 (provide 'media)
 

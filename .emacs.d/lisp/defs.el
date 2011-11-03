@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.10
-;; Last-Updated: Thu Nov  3 17:37:48 2011 (+0100)
+;; Last-Updated: Thu Nov  3 20:53:11 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 224
+;;     Update #: 227
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -298,6 +298,15 @@ file; display a message otherwise."
     (if (member (buffer-name (current-buffer)) mars/eternal-buffer-list)
         (bury-buffer)
         (kill-buffer (current-buffer))))
+
+(defun plain-buffer-list (&optional buflist limit) ; UNTESTED
+  "Return a list of non-empty buffers. If BUFLIST exists, filter it.
+LIMIT is the minimal buffer size to consider a buffer to be plain."
+  (let (plains)
+      (dolist (buf (or buflist (buffer-list)))
+          (when (> (buffer-size buf) (or limit 0))
+            (push buf plains)))
+      (nreverse plains)))
 
 (defun first-line-of-buffer ()
   "Return as a string the first line in the current buffer."

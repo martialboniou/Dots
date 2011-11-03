@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Thu Nov  3 16:18:54 2011 (+0100)
+;; Last-Updated: Thu Nov  3 23:52:06 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 107
+;;     Update #: 109
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -90,9 +90,9 @@
      "C-w"       backward-kill-word)))    ; C-w as 'DELETE-BACKWARD-WORD in Vi emu
 ;; C-w may be used for 'backward-word-delete so there should be
 ;; another way to do cut/copy/paste:
-;; 1) Vi commands (d/y/p) for Vim user
-;; 2) special C-; (;/'/a) for Dvorak typist (including Vim user)
-;; 3) standard commands (x/v/c) for Qwerty typist & "terminator" (including Vim user)
+;; 1- Vi commands (d/y/p) for Vim user
+;; 2- special C-; (;/'/a) for Dvorak typist (including Vim user)
+;; 3- standard commands (x/v/c) for Qwerty typist & "terminator" (including Vim user)
 (if *i-am-a-dvorak-typist*
     (bind-keys                          ; Sun help keys' order
      '("C-; C-'" copy-region-as-kill
@@ -239,8 +239,9 @@
 ;; <f7> => hack tools
 (mars/build-ordered-function-keys "f7" compile elisp-macroexpand describe-unbound-keys mars/hexedit
                                   (whitespace-mode            . "<f1>")
-                                  (mars/save-n-purge-code     . "<f5>")
-                                  (mars/simple-call-tree-view . prev)
+                                  (mars/save-n-purge-code     . "<f4>")
+                                  (mars/simple-call-tree-view . "<f5>")
+                                  (anything-simple-call-tree  . prev)
                                   (anything-browse-code       . id) ; faster than ecb
                                   (mars/toggle-ecb            . next)
                                   (cycle-ispell-languages     . "<f2>"))

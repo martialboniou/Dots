@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Thu Nov  3 16:15:52 2011 (+0100)
+;; Last-Updated: Thu Nov  3 20:20:03 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 402
+;;     Update #: 403
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -217,7 +217,7 @@ commands except local binary.
       (when (and (not (= 0 (length command)))
                  (null (string-match "^./" command)))
         (push command non-local-commands)))
-    (reverse
+    (nreverse
      (delete-dups
       (mapcar #'(lambda (sent)
                   (car (split-string sent)))

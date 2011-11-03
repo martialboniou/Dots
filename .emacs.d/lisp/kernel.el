@@ -54,8 +54,8 @@
     (byte-compile-new-files-maybe user-init-file)))
 
 ;; restore windows archiver at startup
-;; (add-hook 'emacs-startup-hook
-;;           #'mars-windows-archiver-load-in-session)
+(add-hook 'emacs-startup-hook
+          #'mars-windows-archiver-load-in-session)
 
 ;; fast kill emacs or not but confirm anyway
 (defadvice update-autoloads-in-package-area (around mars/fast-kill-version activate)

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Nov  3 13:17:42 2011 (+0100)
+;; Last-Updated: Thu Nov  3 17:20:25 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 493
+;;     Update #: 497
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -527,6 +527,7 @@ Move point to the beginning of the line, and run the normal hook
                          (file-name-as-directory mars/personal-data)
                          (file-name-as-directory "Temporary") "Graphviz")))
 (defun mars/simple-call-tree-view ()
+  (interactive)
   (sct-graphviz))
 ;;(car-safe "/Users/mars/.emacs.d/data/Temporary/Graphviz/code.el.png")
 

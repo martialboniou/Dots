@@ -82,9 +82,10 @@ See the advised `delete-frame' at the end of this file as a use case.")
 ;; - window configuration case
 (add-hook 'desktop-save-hook
           #'kiwon/save-window-configuration)
-(add-hook 'desktop-after-read-hook
-          #'kiwon/restore-window-configuration)  ; save/restore the last window
-                                                 ; configuration with `DESKTOP'
+;; (add-hook 'desktop-after-read-hook
+;;           #'kiwon/restore-window-configuration)  ; save/restore the last window
+;;                                                  ; configuration with `DESKTOP'
+
 ;; - path
 (unless desktop-dir
   (setq desktop-dir (expand-file-name

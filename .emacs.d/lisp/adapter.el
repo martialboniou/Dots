@@ -28,6 +28,7 @@
                  ("hippie-exp"                hippie-expand he-init-string 
                                       he-substitute-string)
                  ("calc-ext"                  calc-do-calc-eval)
+                 ("ecb"                       ecb-deactivate) ; required by `code'
                  ("hexview-mode"              hexview-find-file)
                  ("inf-shen"                  shen-mode)
                  ("pymacs"                    pymacs-apply pymacs-call pymacs-eval 
@@ -35,6 +36,7 @@
                  ("markdown-mode"             markdown-mode)
                  ("yaml-mode"                 yaml-mode)
                  ("newsticker"                newsticker-start newsticker-show-news)
+                 ("sendmail"                  mail-position-on-field)
                  ("wl-mailto"                 wl-mailto-compose-message-from-mailto-url)
                  ("emms-source-file"          emms-dired emms-add-directory-tree 
                                       emms-add-directory emms-add-file)

@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.10
-;; Last-Updated: Thu Nov  3 11:44:12 2011 (+0100)
+;; Last-Updated: Thu Nov  3 17:37:48 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 223
+;;     Update #: 224
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -475,9 +475,8 @@ a simple `custom.el'."
                     ;; faster to check compiled file before getting
                     ;; local variables then force byte-recompilation
                     (when (or (not (file-exists-p byte-file))
-                              (and (file-exists-p byte-file)
-                                   (file-newer-than-file-p
-                                    byte-file buffer-file-name)))
+                              (file-newer-than-file-p
+                               file byte-file))
                       (when (with-temp-buffer 
                               (insert-file-contents file t)
                               (normal-mode t)

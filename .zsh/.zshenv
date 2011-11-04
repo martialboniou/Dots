@@ -5,6 +5,7 @@ add_path () {
   path=($1 $path)
 }
 
+# generate full path
 build_path () {
   local SYSTEM=`uname`
   local ADMIN_ACTION=1           # 0 not to reach sbin subdirs
@@ -24,21 +25,19 @@ build_path () {
   typeset -U -g PATH
 }
 
-load_path () {
+fetch_path () {
   local path_file="${ZDOTDIR}/.path"
   if [[ -a ${path_file} && "${+parameters[force_reload]}" -eq 0 ]]; then
     source ${path_file}
   else
     build_path
-    echo "PATH=$PATH" > ${path_file}
+    echo "PATH=${PATH}" > ${path_file}
   fi
-}
+} && fetch_path
 
 # MEMO: rehash
 repath () {
   local force_reload
-  load_path
+  fetch_path
   rehash
 }
-
-load_path

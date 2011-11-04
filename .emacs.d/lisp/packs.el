@@ -183,7 +183,7 @@
                                                            (nosearch . ("doc" "images" "preview" "style"))))
                                     ;; (xwl-elisp          . ((get     . "git clone git://github.com/xwl/xwl-elisp.git")
                                     ;;                        (install . "make byte-compile"))) ; TODO: http://xwl.appspot.com/ (william xu) / include smart-operator
-                                    (emacs-revival  . ((get . "git clone git://github.com/martialboniou/emacs-revival.git")))))             ; TODO: verify sig on get ?
+                                    (emacs-revival  . ((get . "git clone git@github.com:martialboniou/emacs-revival.git")))))             ; TODO: verify sig on get ?
 
 (defun mars/check-command (command &optional commands)
   "Check if command as executable in the `EXEC-PATH'. Throw an error by showing the

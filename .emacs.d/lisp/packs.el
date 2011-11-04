@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Thu Nov  3 20:20:03 2011 (+0100)
+;; Last-Updated: Fri Nov  4 14:20:23 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 403
+;;     Update #: 405
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -65,15 +65,15 @@
 ;; NOTE: try el-get to replace pases and all this
 (defvar mars/site-lisp-package-tree nil
   "A package tree to get / install / tag additional packages in `mars/site-lisp-path'")
-(setq mars/site-lisp-package-tree '((vimpulse     . ((get . "git clone git://gitorious.org/vimpulse/vimpulse")
-                                                     (install . "make")))
+(setq mars/site-lisp-package-tree '((vimpulse       . ((get . "git clone git://gitorious.org/vimpulse/vimpulse")
+                                                       (install . "make")))
                                     (autopair       . ((get . "svn checkout http://autopair.googlecode.com/svn/trunk/ autopair")
                                                        (install . "emacs-compile-directory")))
                                     (auto-pair-plus . ((get . "git clone git://github.com/emacsmirror/auto-pair-plus.git")))
                                     ;; emms main branch on git://git.sv.gnu.org/emms.git
-                                    (emms         . ((get . "git clone git://github.com/martialboniou/emms.git")
-                                                     (install . "make; make emms-print-metadata")
-                                                     (nosearch . ("bin" "doc" "src"))))
+                                    (emms           . ((get . "git clone git://github.com/martialboniou/emms.git")
+                                                       (install . "make; make emms-print-metadata")
+                                                       (nosearch . ("bin" "doc" "src"))))
                                     (anything-config . ((get . "git clone git://repo.or.cz/anything-config.git")
                                                         (install . "make")
                                                         (nosearch . ("developer-tools" "doc"))))
@@ -183,7 +183,7 @@
                                                            (nosearch . ("doc" "images" "preview" "style"))))
                                     ;; (xwl-elisp          . ((get     . "git clone git://github.com/xwl/xwl-elisp.git")
                                     ;;                        (install . "make byte-compile"))) ; TODO: http://xwl.appspot.com/ (william xu) / include smart-operator
-                                    ))             ; TODO: verify sig on get ?
+                                    (emacs-revival  . ((get . "git clone git://github.com/martialboniou/emacs-revival.git")))))             ; TODO: verify sig on get ?
 
 (defun mars/check-command (command &optional commands)
   "Check if command as executable in the `EXEC-PATH'. Throw an error by showing the

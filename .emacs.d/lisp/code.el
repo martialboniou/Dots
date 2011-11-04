@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Nov  3 17:20:25 2011 (+0100)
+;; Last-Updated: Fri Nov  4 22:11:45 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 497
+;;     Update #: 499
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -111,8 +111,8 @@
 ;; if `*i-am-a-vim-user*'
 ;;
 ;; globalize hideshow
-;(when window-system
-;  (require 'hideshow))
+                                        ;(when window-system
+                                        ;  (require 'hideshow))
 (require 'hideshow)
 (eval-after-load "hideshow"
   '(progn
@@ -126,7 +126,7 @@
        (when (cond ((eq hs-global-modes t)
                     t)
                    ((eq (car-safe hs-global-modes) 'not)
-            (not (memq major-(mark)ode (cdr hs-global-modes))))
+                    (not (memq major-(mark)ode (cdr hs-global-modes))))
                    (t (memq major-mode hs-global-modes)))
          (let (inhibit-quit)
            (unless hs-minor-mode
@@ -262,7 +262,7 @@ Move point to the beginning of the line, and run the normal hook
        (local-set-key "\C-cq" 'semantic-ia-show-doc)
        (local-set-key "\C-cs" 'semantic-ia-show-summary)
        (local-set-key "\C-cp" 'semantic-analyze-proto-impl-toggle))
-     (mars/add-hooks (cons 'c-mode-common-hook 
+     (mars/add-hooks (cons 'c-mode-common-hook
                            (mars/generate-mode-hook-list '(lisp emacs-lisp scheme erlang)))
                      #'alexott/cedet-hook)
      ;; c-mode bindings [eassist]
@@ -282,7 +282,7 @@ Move point to the beginning of the line, and run the normal hook
       '(global-semantic-tag-folding-mode t nil (semantic-util-modes)))
      ;;     (global-semantic-folding-mode 1) ; FIXME: no more
      (defun mars/Qt ()                  ; TODO: temp var for test => to move to vars-<specific>.el
-       (setq qt4-base-dir "/Library/Frameworks/QtCore.framework/Headers")) 
+       (setq qt4-base-dir "/Library/Frameworks/QtCore.framework/Headers"))
      (defun mars/semantic-tags ()
        ;; GNU global support
        (require 'semanticdb-global)
@@ -388,7 +388,7 @@ Move point to the beginning of the line, and run the normal hook
 (defvar autopair-hooks (cons 'c-common-hook
                              (mars/generate-mode-hook-list
                               '(python    ; python-mode's autopairs support is extended
-                                          ; to work with single and triple quotes
+                                        ; to work with single and triple quotes
                                 php scala erlang
                                 ;; ruby   ; WARNING: clash with ruby-electric
                                 latex))))
@@ -402,7 +402,7 @@ Move point to the beginning of the line, and run the normal hook
              (list #'autopair-default-handle-action
                    #'autopair-python-triple-quote-action)))
      ;; c++ case
-     (add-lambda-hook 'c++-mode-hook 
+     (add-lambda-hook 'c++-mode-hook
        (push ?{ (getf autopair-dont-pair :comment))
        (push '(?< . ?>) (getf autopair-extra-pairs :code)))
      ;; latex case

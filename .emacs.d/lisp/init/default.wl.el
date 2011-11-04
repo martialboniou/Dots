@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Mon Jan 14 14:31:57 2008
 ;; Version:
-;; Last-Updated: Thu Mar 10 19:27:01 2011 (+0100)
+;; Last-Updated: Fri Nov  4 22:45:52 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 299
+;;     Update #: 326
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -54,6 +54,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
+
+(eval-when-compile (require 'filladapt)
+                   (require 'wl)
+                   (require 'wl-spam)
+                   (require 'elmo-imap4)
+                   (require 'elmo-pop3)
+                   (require 'elmo-nntp)
+                   (require 'elmo-archive)
+                   (require 'mime-edit))
+(declare-function filladapt-mode "filladapt")
+(declare-function wl-summary-refile "wl-summary")
 
 ;;; UTF-8 support
 (setq default-mime-charset-for-write 'utf-8)
@@ -243,8 +254,8 @@
   (if (and wl-message-buffer (get-buffer-window wl-message-buffer))
       (progn
         (wl-summary-toggle-disp-msg 'on)
-        (save-excursion
-          (set-buffer wl-message-buffer)
+        (with-current-buffer
+          wl-message-buffer
           (goto-char (point-min))
           (re-search-forward "^$")
           (while (or (looking-at "^\\[[1-9]") (looking-at "^$"))

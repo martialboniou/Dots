@@ -1,4 +1,7 @@
 ;;; Viper Mode setup
+
+(eval-when-compile (require 'viper))
+
 (setq-default viper-mode t
               viper-inhibit-startup-message 't
               viper-ex-style-editing nil

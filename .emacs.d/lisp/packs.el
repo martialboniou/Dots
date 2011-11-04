@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Fri Nov  4 14:20:23 2011 (+0100)
+;; Last-Updated: Fri Nov  4 20:30:38 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 405
+;;     Update #: 406
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -164,7 +164,8 @@
                                                            (nosearch . ("doc" "etc" "samples" "tests"))))
                                     ;; stable org-mode
                                     (org-mode           . ((get . "git clone git://orgmode.org/org-mode.git")
-                                                           (install . "git checkout --track -b stable origin/maint; git fetch; make; emacs-compile-directory contrib/lisp") ; compile contrib too
+                                                           (install . "make; emacs-compile-directory contrib/lisp") ; compile contrib too
+                                                           ;; (install . "git checkout --track -b stable origin/maint; git fetch; make; emacs-compile-directory contrib/lisp")
                                                            (nosearch . ("BUGFIXING" "EXPERIMENTAL" "UTILITIES" "contrib/babel" "contrib/doc" "contrib/odt" "contrib/scripts" "doc" "testing"))))
                                     (multi-web-mode     . ((get . "git clone git://github.com/martialboniou/multi-web-mode.git")
                                                            (install . "emacs-compile-directory")))

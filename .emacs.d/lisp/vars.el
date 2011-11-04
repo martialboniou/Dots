@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Thu Nov  3 11:36:50 2011 (+0100)
+;; Last-Updated: Fri Nov  4 10:54:42 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 111
+;;     Update #: 112
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -191,6 +191,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
       "cache/newsticker/images"
       "cache/newsticker/groups"
       "cache/eshell"
+      "cache/image-dired"
       "Notes" "Insert" "BBDB" "elmo"))
   (let ((data-cache (expand-file-name (file-name-as-directory "~/.emacs.d/data/cache"))))
     (unless (fboundp 'flet) (require 'cl)) ; elisp obviously needs R*RS | CL standard
@@ -203,6 +204,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
         ido-save-directory-list-file (cachize "ido-last")
         recentf-save-file (cachize "recentf")
         anything-c-adaptive-history-file (cachize "anything-c-adaptive-history")
+        image-dired-dir (cachize "image-dired")
         bookmark-default-file (cachize "bookmark/emacs.bmk")
         bmkp-bmenu-commands-file (cachize "bookmark/bmenu-commands.el")
         bmkp-bmenu-state-file (cachize "bookmark/bmenu-state.el")

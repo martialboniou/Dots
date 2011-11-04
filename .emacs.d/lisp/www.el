@@ -59,16 +59,17 @@
                                    "w3m-cookie"))))
 
 ;;; NEWSTICKER
-(when (require 'newsticker nil t)
-  (when (executable-find w3m-program-name)
-    (require 'w3m)
-    (setq newsticker-html-rendererer 'w3m-region)
-    ;; (setq browse-url-browser-function 'w3m-browse-url) ; w3m as browser
-    )
-  (setq newsticker-automatically-mark-items-as-old t
-        newsticker-automatically-mark-visited-items-as-old t
-        newsticker-retrieval-method (quote extern)
-        newsticker-wget-arguments (quote ("-q" "-O" "-" "--user-agent" "testing"))))
+(eval-after-load "newsticker"
+  '(progn
+     (when (executable-find w3m-program-name)
+       (require 'w3m)
+       (setq newsticker-html-rendererer 'w3m-region)
+       ;; (setq browse-url-browser-function 'w3m-browse-url) ; w3m as browser
+      )
+    (setq newsticker-automatically-mark-items-as-old t
+          newsticker-automatically-mark-visited-items-as-old t
+          newsticker-retrieval-method (quote extern)
+          newsticker-wget-arguments (quote ("-q" "-O" "-" "--user-agent" "testing")))))
 
 (provide 'www)
 

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Fri Nov  4 20:30:38 2011 (+0100)
+;; Last-Updated: Sun Nov  6 14:43:06 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 406
+;;     Update #: 408
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -162,6 +162,9 @@
                                                            ;; (get . "git clone git://github.com/wanderlust/wanderlust.git") ; is out of sync and induces error on emacs 24
                                                            (install . "echo \"(setq load-path (append (list \\\"$PWD/../apel\\\" \\\"$PWD/../flim\\\" \\\"$PWD/../semi\\\") load-path))(setq wl-install-utils t)\" > WL-CFG;make") ; let wl, elmo & utils *uninstalled*
                                                            (nosearch . ("doc" "etc" "samples" "tests"))))
+                                    (vm                 . ((get . "bzr branch lp:vm") ; REQUESTED
+                                                           (install . "autoconf; ./configure; make")
+                                                           (nosearch . ("autom4te.cache" "info" "pixmaps" "src"))))
                                     ;; stable org-mode
                                     (org-mode           . ((get . "git clone git://orgmode.org/org-mode.git")
                                                            (install . "make; emacs-compile-directory contrib/lisp") ; compile contrib too

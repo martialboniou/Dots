@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 21:14:44 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Oct 31 11:51:37 2011 (+0100)
+;; Last-Updated: Sun Nov  6 12:34:30 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 39
+;;     Update #: 40
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -96,7 +96,7 @@
 (provide 'one-language-spoken)
 (require 'preamble)
 (require 'www)
-(unintern 'one-language-spoken)
+(unintern 'one-language-spoken obarray)
 
 (defvar nxhtml-env nil)
 

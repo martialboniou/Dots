@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Jan 19 20:16:06 2008
 ;; Version:
-;; Last-Updated: Thu Nov  3 21:13:54 2011 (+0100)
+;; Last-Updated: Sun Nov  6 11:42:53 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 105
+;;     Update #: 108
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -56,6 +56,8 @@
 (add-to-list 'load-path (file-name-directory load-file-name))
 (require 'www)
 (require 'preamble)
+
+(eval-when-compile (require 'emms))
 
 ;;; IMAGE-MODE
 ;;
@@ -139,10 +141,7 @@
     emms-bin-path (concat (file-name-as-directory emms-path) 
                   "bin/"
                   system-configuration)) ; IMPORTANT: move binary program in bin/<system-configuration>
-  (mars/autoload '(("emms-source-file" emms-dired emms-add-directory-tree emms-add-directory emms-add-file)
-                   ("emms" emms-playlist-buffer-list emms)
-                   ("emms-streams" emms-streams emms-stream-init)))
-  (eval-after-load 'emms
+  (eval-after-load "emms"
     '(progn
        (display-time)
        ;; (setq default-file-name-coding-system 'utf-8) ; maybe not correct
@@ -294,12 +293,14 @@
       (emms-streams)))
 
   (defun mars/safe-emms-playlists ()
+    (require 'emms)
     (let ((buf (emms-playlist-buffer-list)))
       (and buf
            (plain-buffer-list buf))))
 
   (defun mars/safe-emms-start-stop ()
     (interactive)
+    (require 'emms)
     (condition-case nil
         (if (mars/safe-emms-playlists)
             (emms-pause)                ; try pause/resume

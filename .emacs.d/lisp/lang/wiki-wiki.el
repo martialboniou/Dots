@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:02:05 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Oct 31 11:54:25 2011 (+0100)
+;; Last-Updated: Sun Nov  6 12:34:44 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 31
+;;     Update #: 32
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -47,7 +47,7 @@
 
 (provide 'one-language-spoken)
 (require 'preamble)
-(unintern 'one-language-spoken)
+(unintern 'one-language-spoken obarray)
 
 ;;; MARKDOWN
 (add-to-list 'auto-mode-alist '("\\.md\\'\\|\\.mkdn\\'\\|\\.markdown\\'" . markdown-mode))

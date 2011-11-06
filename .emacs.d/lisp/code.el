@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri Nov  4 22:11:45 2011 (+0100)
+;; Last-Updated: Sun Nov  6 11:27:22 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 499
+;;     Update #: 504
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -18,7 +18,7 @@
 ;;; Commentary: header2 + auto-insert (skeleton) / hideshow + hideshowvis /
 ;;              cedet & ecb-autoloads / auto-pair-edit / paredit +
 ;;              highlight-parentheses / eldoc / comint / cheat /
-;;              simple-call-tree / `lang'
+;;              org-babel / simple-call-tree / `lang'
 ;;
 ;;
 ;;; Ideas: CEDET: https://github.com/alexott/emacs-configs/blob/master/rc/emacs-rc-cedet.el
@@ -57,6 +57,8 @@
 (require 'formats)
 (provide 'programming)
 (require 'preamble)
+
+(eval-when-compile (require 'ecb))
 
 ;;; LANGUAGES' CONFIGURATION PATH
 (defvar lang-rep
@@ -519,6 +521,13 @@ Move point to the beginning of the line, and run the normal hook
          "Preconfigured `anything' for cheat sheets."
          (interactive)
          (anything-other-buffer 'anything-c-source-cheat "*Anything cheat*")))))
+
+;;; ORG BABEL
+(eval-after-load "org"
+  '(progn
+     (org-babel-do-load-languages 'org-babel-load-languages 
+                                  '((emacs-lisp . t)
+                                    (ruby . t)))))
 
 ;;; VISUALIZE CALL TREE
 (setq sct-graphviz-dir (expand-file-name

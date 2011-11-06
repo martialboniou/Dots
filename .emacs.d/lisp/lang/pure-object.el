@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Mar  5 23:58:09 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Oct 31 11:53:57 2011 (+0100)
+;; Last-Updated: Sun Nov  6 12:33:06 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 12
+;;     Update #: 15
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -47,7 +47,7 @@
 
 (provide 'one-language-spoken)
 (require 'preamble)
-(unintern 'one-language-spoken)
+(unintern 'one-language-spoken obarray)
 
 ;;; GNU SMALLTALK
 (require 'smalltalk-mode-init)
@@ -57,7 +57,7 @@
   (when (file-exists-p factorcode-source-rep)
     (load (apply 'concat
                  (nconc
-                  (mapcar '(lambda (x) (file-name-as-directory x))
+                  (mapcar #'(lambda (x) (file-name-as-directory x))
                           (list factorcode-source-rep
                                 "misc"
                                 "fuel"))

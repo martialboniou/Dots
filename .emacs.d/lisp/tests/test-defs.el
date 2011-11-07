@@ -138,7 +138,9 @@ by restoring single window frame."
           (switch-to-buffer (car foos))
           (delete-other-windows)
           (mapc #'(lambda (x)
-                    (split-window-above-each-other)
+                    (if (fboundp #'split-window-above-each-other)
+                        (split-window-above-each-other)
+                      (split-window-vertically))
                     (switch-to-buffer x))
                 (cdr foos))               ; hsplitted windows contains FOO, BAR, BAZ,..
           (funcall body))

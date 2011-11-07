@@ -1,4 +1,4 @@
- ;;; media.el ---
+;;; media.el ---
 ;;
 ;; Filename: media.el
 ;; Description:
@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Jan 19 20:16:06 2008
 ;; Version:
-;; Last-Updated: Sun Nov  6 11:42:53 2011 (+0100)
+;; Last-Updated: Mon Nov  7 18:00:41 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 108
+;;     Update #: 116
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -138,47 +138,11 @@
 ;;
 (when (locate-library "emms")
   (setq emms-path (file-name-directory (locate-library "emms"))
-    emms-bin-path (concat (file-name-as-directory emms-path) 
-                  "bin/"
-                  system-configuration)) ; IMPORTANT: move binary program in bin/<system-configuration>
+        emms-bin-path (expand-file-name "../src" emms-path))
   (eval-after-load "emms"
     '(progn
        (display-time)
        ;; (setq default-file-name-coding-system 'utf-8) ; maybe not correct
-       (require 'emms-setup)
-
-       ;; 'emms-devel         requires 'emms-all
-       ;; 'emms-all           requires 'emms-lastfm-client
-       ;; 'emms-lastfm-client requires 'w3m
-       ;; 'w3m                not always here
-       (defun emms-all ()
-         "`emms-all' hack not to load w3m a related script."
-         (emms-standard)
-         (eval-and-compile
-           (require 'emms-mode-line)
-           (require 'emms-mark)
-           (require 'emms-tag-editor)
-           (require 'emms-streams)
-           (require 'emms-lyrics)
-           (require 'emms-playing-time)
-           (require 'emms-player-mpd)
-           (require 'emms-player-xine)
-           (require 'emms-playlist-sort)
-           (require 'emms-browser)
-           (require 'emms-mode-line-icon)
-           (require 'emms-cue)
-           (when (boundp 'mars/w3m-exists)
-             (require 'emms-lastfm-client))
-           (require 'emms-bookmarks)
-           (require 'emms-last-played))
-         (emms-mode-line 1)
-         (emms-mode-line-blank)
-         (emms-lyrics 1)
-         (emms-playing-time 1)
-         (add-to-list 'emms-info-functions 'emms-info-cueinfo)
-         (add-hook 'emms-player-started-hook #'emms-last-played-update-current))
-
-       ;; load
        (emms-devel)                            ; emms-smart-browse on <F2>
        (emms-default-players)
 
@@ -300,7 +264,6 @@
 
   (defun mars/safe-emms-start-stop ()
     (interactive)
-    (require 'emms)
     (condition-case nil
         (if (mars/safe-emms-playlists)
             (emms-pause)                ; try pause/resume
@@ -311,6 +274,7 @@
          (mapc
           #'(lambda (elt) (kill-buffer elt))
           (mars/safe-emms-playlists))
+         (require 'emms-history)
          (emms-history-load)            ; try to restore history
          ;; fetch the last living playlist saved in history
          (let ((last-loaded-emms-playlist

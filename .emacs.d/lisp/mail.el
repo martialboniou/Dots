@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sat Nov  5 11:13:48 2011 (+0100)
+;; Last-Updated: Mon Nov  7 17:46:16 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 89
+;;     Update #: 95
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -46,11 +46,12 @@
 ;;; Code:
 
 (add-to-list 'load-path (file-name-directory load-file-name))
-(require 'preamble)
 (require 'www)
 (require 'gtd)
+(require 'preamble)
 
-(eval-when-compile (require 'sendmail))
+(eval-when-compile (require 'sendmail)
+                   (require 'wl))
 
 ;; TODO: REPLACE #'BBDB-VCARD-IMPORT BY #'trebb/BBDB-VCARD
 (let* ((init-file-name (concat user-login-name ".wl"))
@@ -71,19 +72,15 @@
       (let ((default-wl-fldr (concat folder-directory "default.folders")))
         (when (file-exists-p default-wl-fldr)
           (setq wl-folders-file (convert-standard-filename default-wl-fldr))))))
-  (when (or (not (boundp 'wl-resource-rep))
-            (null wl-resource-rep))         ; handmade install case (neither PASES nor ELPA)
-    (let ((wl-lib (locate-library "wl")))
-      (unless (null wl-lib)
-        (setq wl-resource-rep (expand-file-name
-                               (file-name-directory
-                                (directory-file-name
-                                 (file-name-directory wl-lib))))))))
+  (let ((wl-lib (locate-library "wl")) wl-resource-rep)
+    (unless (null wl-lib)
+      (setq wl-resource-rep (expand-file-name
+                             (file-name-directory
+                              (directory-file-name
+                               (file-name-directory wl-lib))))))
     (when (and (not (null wl-resource-rep))
                (file-exists-p wl-resource-rep))
-      (setq wl-icon-directory (expand-file-name
-                               (concat (file-name-as-directory wl-resource-rep)
-                                       "etc/icons"))))) ; icons relative path
+      (setq wl-icon-directory (expand-file-name "etc/icons" wl-resource-rep)))))
 
 (eval-after-load "wl-draft"
   '(progn
@@ -104,8 +101,19 @@
   '(progn
      (unless window-system
        (setq wl-demo-display-logo nil))
+     ;; Maildir => <~Mail>/Maildir
      (when elmo-localdir-folder-path
-       (setq elmo-maildir-folder-path (concat elmo-localdir-folder-path "/Maildir"))) ; Maildir => <~Mail>/Maildir
+       (setq elmo-maildir-folder-path (concat elmo-localdir-folder-path "/Maildir"))) 
+     ;; imapfilter
+     (when (and (file-readable-p "~/.imapfilter/config.lua")
+                (executable-find "imapfilter"))
+       (add-to-list 'wl-folder-check-entity-pre-hook
+                    (lambda ()
+                      (message "Calling imapfilter...")
+                      (if (eq (call-process "imapfilter") 0)
+                          (message "imapfilter ran fine.")
+                        (message "error running imapfilter!")))))
+     ;; w3m
      (when (executable-find w3m-program-name)
        (require 'octet)                 ; w3m octet for handling attachments
        (octet-mime-setup))

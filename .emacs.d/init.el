@@ -6,7 +6,7 @@
 ;; Author: Martial Boniou
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
-;; Version: 4.0a3
+;; Version: 4.0b1
 ;; Last-Updated: Thu Nov  3 16:10:31 2011 (+0100)
 ;;           By: Martial Boniou
 ;;     Update #: 2058

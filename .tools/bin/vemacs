@@ -2,5 +2,5 @@
 emacs -q -nw -eval "\
 (progn\
   (require 'vim-everywhere)\
-  (switch-buffer \"*scratch*\"))" $*
+  (switch-to-buffer \"*scratch*\"))" $*
 # load emacs in Vim emulation (including Vimpulse/Viper)

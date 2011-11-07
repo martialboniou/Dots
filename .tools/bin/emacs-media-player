@@ -2,6 +2,7 @@
 emacs -q -eval "\
 (progn\
   (require 'media)\
+  (require 'emms-history)\
   (emms-history-load)\
   (unless (fboundp #'remove-if)\
     (require 'cl))\

@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Fri Nov  4 22:53:33 2011 (+0100)
+;; Last-Updated: Sun Nov  6 20:10:06 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 115
+;;     Update #: 122
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -193,12 +193,32 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
       "cache/eshell"
       "cache/image-dired"
       "Notes" "Insert" "BBDB" "elmo"))
-  (let ((data-cache (expand-file-name (file-name-as-directory "~/.emacs.d/data/cache"))))
+  (let ((data-cache (file-name-as-directory "~/.emacs.d/data/cache")))
     (unless (fboundp 'flet) (require 'cl)) ; elisp obviously needs R*RS | CL standard
-    (flet ((cachize (file) (expand-file-name (concat (file-name-as-directory data-cache) file))))
+    (flet ((cachize (file-or-dir &optional obsolete-file-or-dir)
+                    ;; generate name of a specific file or directory in cache
+                    (let ((full-path (expand-file-name file-or-dir 
+                                                       data-cache)))
+                      ;; try to copy/purge obsolete file or directory content
+                      ;; in a safe way; useful when the emacs' boot doesn't
+                      ;; include this file
+                      (when (and obsolete-file-or-dir
+                                 (file-exists-p obsolete-file-or-dir))
+                        (unless (file-exists-p full-path)
+                          (if (file-directory-p obsolete-file-or-dir)
+                              (copy-directory obsolete-file-or-dir
+                                              full-path t t t)
+                            (let ((new-dir (file-name-directory full-path)))
+                              (unless (file-directory-p new-dir)
+                                (make-directory new-dir t))
+                              (copy-file obsolete-file-or-dir full-path))))
+                        (if (file-directory-p obsolete-file-or-dir)
+                            (delete-directory obsolete-file-or-dir t)
+                          (delete-file obsolete-file-or-dir)))
+                      full-path)))
       (setq mars-windows-archiver-file (cachize "windows-archiver")
         kiwon/last-window-configuration-file (cachize "last-window-configuration")
-        desktop-dir data-cache
+        desktop-dir (expand-file-name data-cache)
         desktop-base-file-name "desktop"
         desktop-base-lock-name (concat (if (memq system-type '(ms-dos windows-nt cygwin)) "_" ".") desktop-base-file-name ".lock") ; TODO: add a fun in defs named `prefix-hidden-file'
         ido-save-directory-list-file (cachize "ido-last")
@@ -225,7 +245,11 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
         elmo-msgdb-directory "~/.emacs.d/data/elmo"
         wl-temporary-file-directory (expand-file-name "~/Downloads")
         eshell-directory-name (file-name-as-directory (cachize "eshell")) ; may need a final `slash'
-        emms-cache-file (cachize "emms-cache")))))
+        emms-cache-file (cachize "emms-cache" "~/.emacs.d/emms"))
+      ;; FIXME: temporary hack to auto-remove the default `auto-save-list'
+      (let ((auto-save-folder "~/.emacs.d/data/Temporary/Autosaves"))
+          (when (file-directory-p auto-save-folder)
+            (cachize auto-save-folder "~/.emacs.d/auto-save-list"))))))
 
 
 ;;; PROGRAM NAMES

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Sun Nov  6 14:43:06 2011 (+0100)
+;; Last-Updated: Mon Nov  7 12:40:16 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 408
+;;     Update #: 409
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -187,7 +187,8 @@
                                                            (nosearch . ("doc" "images" "preview" "style"))))
                                     ;; (xwl-elisp          . ((get     . "git clone git://github.com/xwl/xwl-elisp.git")
                                     ;;                        (install . "make byte-compile"))) ; TODO: http://xwl.appspot.com/ (william xu) / include smart-operator
-                                    (emacs-revival  . ((get . "git clone git@github.com:martialboniou/emacs-revival.git")))))             ; TODO: verify sig on get ?
+                                    (emacs-revival  . ((get . "git clone git@github.com:martialboniou/emacs-revival.git")
+                                                       (install . (concat "make LISPDIR=" (expand-file-name (car mars/site-lisp-path) mars/local-root-dir))))))) ; TODO: verify sig on get ?
 
 (defun mars/check-command (command &optional commands)
   "Check if command as executable in the `EXEC-PATH'. Throw an error by showing the

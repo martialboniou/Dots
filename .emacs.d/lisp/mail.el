@@ -46,9 +46,9 @@
 ;;; Code:
 
 (add-to-list 'load-path (file-name-directory load-file-name))
+(require 'preamble)
 (require 'www)
 (require 'gtd)
-(require 'preamble)
 
 (eval-when-compile (require 'sendmail))
 

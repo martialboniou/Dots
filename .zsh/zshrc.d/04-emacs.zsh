@@ -16,7 +16,7 @@ build_emacs_load_path(){
 -eval "(princ (mapconcat #'(lambda (e) (format \"%s\" e)) load-path \":\"))"`
     if [[ "/" = "`echo $elp | awk 'BEGIN{FS=\"\"}{print $1}'`" ]]; then
       # emacs 'LOAD-PATH looks like a path
-      EMACSLOADPATH="${HOME}/.emacs.d/lisp:$elp"
+      export EMACSLOADPATH="${HOME}/.emacs.d/lisp:$elp"
     fi
   fi
 }

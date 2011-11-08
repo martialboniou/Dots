@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
 ;; Version:
-;; Last-Updated: Thu Nov  3 16:18:31 2011 (+0100)
+;; Last-Updated: Tue Nov  8 14:10:48 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 132
+;;     Update #: 135
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -44,7 +44,6 @@
 ;;
 ;;; Code:
 
-(add-to-list 'load-path (file-name-directory load-file-name))
 (require 'code)
 
 ;;; FLYMAKE
@@ -251,10 +250,9 @@
 ;; bound to 'C-p à la Vim
 (require 'yas-jit)
 (let ((yas-dir (file-name-directory (locate-library "yasnippet")))
-           (local-yas-dir (expand-file-name
-                           (concat (file-name-as-directory mars/local-root-dir)
-                                   (file-name-as-directory mars/personal-data)
-                                   (file-name-as-directory "Snippets")))))
+           (local-yas-dir (expand-file-name "Snippets"
+                                            (expand-file-name mars/personal-data
+                                                              mars/local-root-dir))))
        (setq yas/snippet-dirs (if yas-dir (list yas-dir) nil))
        (when (file-exists-p local-yas-dir)
          (push local-yas-dir yas/snippet-dirs)))
@@ -307,9 +305,9 @@
 
 ;;; AUTOCOMPLETE
 (require 'auto-complete-config)
-(let ((data-dir (concat (file-name-as-directory mars/local-root-dir)
-                        (file-name-as-directory mars/personal-data)
-                        "ac-dict")))
+(let ((data-dir (expand-file-name "ac-dict"
+                                  (expand-file-name mars/personal-data
+                                                    mars/local-root-dir))))
   (unless (file-exists-p data-dir)
     (make-directory data-dir))
   (add-to-list 'ac-dictionary-directories data-dir))

@@ -48,7 +48,8 @@
 (add-lambda-hook 'kill-emacs-hook
   (byte-compile-new-files-in-directories-maybe
    (mapcar #'(lambda (dir)
-               (concat (file-name-as-directory mars/local-root-dir) dir))
+               (expand-file-name dir
+                                 mars/local-root-dir))
            mars/local-conf-path))
   (when user-init-file
     (byte-compile-new-files-maybe user-init-file)))
@@ -97,14 +98,12 @@
       (unintern 'emacs-normal-startup obarray))))
 
 ;; load time
-(let ((load-time (destructuring-bind (hi lo ms) (current-time)
-                   (- (+ hi lo) (+ (first emacs-load-start)
-                                   (second emacs-load-start))))))
-  (message "Emacs loaded in %ds" load-time)
-  (when (and *i-am-an-emacsen-dev* (fboundp 'display-external-pop-up))
-    (display-external-pop-up "Emacs startup"
-                             (concat "Emacs loaded in "
-                                     (number-to-string load-time) "s"))))
+(let* ((load-time (destructuring-bind (hi lo ms) (current-time)
+                    (- (+ hi lo) (+ (first emacs-load-start)
+                                    (second emacs-load-start)))))
+       (load-time-msg (format "Emacs loaded in %d s" load-time)))
+  (display-external-pop-up "Emacs startup" load-time-msg))
+
 (put 'narrow-to-region 'disabled nil)
 
 (provide 'kernel)

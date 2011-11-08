@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.10
-;; Last-Updated: Thu Nov  3 20:53:11 2011 (+0100)
+;; Last-Updated: Tue Nov  8 12:28:11 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 227
+;;     Update #: 244
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -59,21 +59,8 @@
 
 ;;; INITIALIZATIONS
 ;;
-(defvar *emacs/init-path* nil
-  "Lisp files to compile.")
-
 (unless (boundp 'mars/eternal-buffer-list)
     (setq mars/eternal-buffer-list '("*scratch*")))
-;;(if (and (boundp 'mars/local-root-dir) (boundp 'mars/local-conf-path)))
-(setq *emacs/init-path* 
-      (cond ((and 
-          (boundp 'mars/local-root-dir)
-          (boundp 'mars/local-conf-path))
-         (mapcar 
-          #'(lambda (x) 
-         (concat (file-name-as-directory mars/local-root-dir) x))
-          mars/local-conf-path))
-        (t "~/.emacs.d/lisp")))
 
 ;;; ESSENTIAL UTILITIES
 ;;;
@@ -85,7 +72,7 @@
 (defun mars/generate-mode-hook-list (modes)
   "Create a quoted list of hooks."
   (mapcar (lambda (arg)
-            (intern (concat (symbol-name arg) "-mode-hook")))
+            (intern (format "%s-mode-hook" (symbol-name arg))))
           modes))
 
 (defmacro add-lambda-hook (hook &rest body)
@@ -127,9 +114,10 @@ if special autoload format (eg: `cedet' autoloads)."
 (defun safe-load-cedet ()       ; UNTESTED
   "Load `cedet'. Be sure to not load the compiled common file."
   (condition-case err
-      (load-file (concat
+      (load-file (expand-file-name
+                  "cedet.el"
                   (file-name-directory
-                   (locate-library "cedet")) "cedet.el"))
+                   (locate-library "cedet"))))
     (error (message "error: cedet environment not loaded: %s" err))))
 
 (defun twb/autoload (library &rest functions) ; UNTESTED
@@ -157,17 +145,14 @@ patterns:
 ROOT (LIST PATH1 PATH2 ...) => ROOT / PATH1 & ROOT / PATH2 & ...
 ROOT                        => ROOT"
   (let ((path (if pathname
-                  (let ((r (file-name-as-directory root)))
-                    (mapcar (lambda (x)
-                              (expand-file-name (concat r x)))
-                            (flatten pathname)))
+                (mapcar (lambda (x)
+                          (expand-file-name x root))
+                        (flatten pathname))
                 (list (expand-file-name root)))))
     (mapc
      (lambda (dir)
        (when (and (mergeable-to-path-p dir)
-                  (not (file-exists-p (concat
-                                       (file-name-as-directory dir)
-                                       ".nosearch")))) ; test exclusion on `dir'
+                  (not (file-exists-p (expand-file-name ".nosearch" dir)))) ; test exclusion on `dir'
          (let ((default-directory dir)
                (orig-load-path load-path))
            (setq load-path (list dir))
@@ -201,7 +186,7 @@ ROOT                        => ROOT"
   "Compiles .emacs."
   (let ((byte-compile-warnings '(unresolved)))
     ;; in case compilation fails, don't leave the old .elc around:
-    (let ((byte-init-file (concat user-init-file ".elc")))
+    (let ((byte-init-file (byte-compile-dest-file user-init-file)))
       (when (file-exists-p byte-init-file)
         (delete-file byte-init-file))
       (byte-compile-file user-init-file))))
@@ -233,7 +218,7 @@ current line."
 
 (defun name-conf-file (name)            ; UNTESTED & OBSOLETE
   "Generates a complete name for a configuration file according to the `Emacs' version."
-  (let ((root-filename (concat "~/.emacs-" name))
+  (let ((root-filename (format "~/.emacs-%s" name))
         (subdir        "~/.emacs.d/")
         (x-subdir      "~/.xemacs/"))
     (cond
@@ -264,7 +249,7 @@ file; display a message otherwise."
                 (let ((z (listify (cdr x))))
                   `(progn
                      ,@(mapcar #'(lambda (y)
-                                   `(unless (fboundp ',y) (defun ,y () (interactive) (when (y-or-n-p ,(concat (symbol-name y) ": function missing. Load the configuration file `" (car x) "'? ")) (conf-load ,(car x)))))) z))))
+                                   `(unless (fboundp ',y) (defun ,y () (interactive) (when (y-or-n-p ,(format "%s: function missing. Load the configuration file `%s'? " (symbol-name y) (car x))) (conf-load ,(car x)))))) z))))
             source-funs))
     `(progn
        ,@(mapcar
@@ -364,17 +349,18 @@ of the message, MSG is the context. Optionally, you can provide an ICON and
 a sound to be played.
    libnotifyd version: djcb@http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html"
   (interactive)
-  (if (eq system-type 'darwin)
+  (if (eq system-type 'darwin)          ; assume 'DARWIN is OS X
        (shell-command
-        (concat "growlnotify -a Emacs -t '" title "' -m '" msg "' 2> /dev/null"))
+        (format "growlnotify -a Emacs -t '%s' -m '%s' 2> /dev/null" title msg))
     (progn
       (when sound (shell-command
-                   (concat "mplayer -really-quiet " sound " 2> /dev/null")))
-      (if (eq window-system 'x)
-          (shell-command (concat "notify-send "
-                                 (if icon (concat "-i " icon) "")
-                                 " '" title "' '" msg "'"))
-        (message (concat title ": " msg))))))
+                   (format "mplayer -really-quiet %s 2> /dev/null" sound)))
+      (when (eq window-system 'x)
+        (shell-command (format "notify-send %s '%s' '%s'"
+                               (if icon (format "-i %s" icon) "")
+                               title  msg)))))
+  (message (format "%s: %s" title msg)))
+
 (defun output-to-growl (msg)            ; UNTESTED
   (let ((fname (make-temp-file "/tmp/growlXXXXXX")))
     (with-temp-file fname
@@ -383,6 +369,7 @@ a sound to be played.
                         (osd-text-to-utf-16-hex msg))))
       (shell-command (format "osascript %s" fname)))
     (delete-file fname)))
+
 (defun osd-text-to-utf-16-hex (text)    ; UNTESTED
   (let* ((utext (encode-coding-string text 'utf-16))
          (ltext (string-to-list utext)))
@@ -406,7 +393,7 @@ a sound to be played.
 
      (defun conf-locate (conf)      ; UNTESTED
        "Locate a configuration file. Normally out of the `LOAD-PATH'."
-       (let ((path (mapcar #'(lambda (x) (concat (file-name-as-directory mars/local-root-dir) x)) mars/local-conf-path)))
+       (let ((path (mapcar #'(lambda (x) (expand-file-name x mars/local-root-dir)) mars/local-conf-path)))
      (locate-library conf nil path)))
 
      (defun conf-load (conf)        ; UNTESTED & SOON UNUSED
@@ -422,9 +409,8 @@ a sound to be played.
     ;; FIXME: work for one site-lisp dir for instance!!
     (mapc #'(lambda (x)
           (let ((mars/loaddefs
-             (concat
-              (file-name-as-directory mars/local-root-dir)
-              (file-name-as-directory x) "loaddefs.el")))
+                 (expand-file-name "loaddefs.el"
+                                   (expand-file-name x mars/local-root-dir))))
             (unless (and (file-exists-p mars/loaddefs)
                  (not renew-autoloads-at-startup)) ; force to renew in some case even if `loaddefs' exists
               (load "update-auto-loads")
@@ -439,13 +425,16 @@ a sound to be played.
        "A custom file for different emacsen and system version or `NIL' if
 none (and not makeable). If `GENERAL' is true, it will refer to or creates
 a simple `custom.el'."
-       (concat (file-name-as-directory mars/local-root-dir)
-           (file-name-as-directory mars/personal-data)
-           (file-name-as-directory subdirectory-in-data)
-           (if general "custom.el"
-         (concat (which-emacs-i-am)
-             "-" (number-to-string emacs-major-version)
-             "-" (replace-regexp-in-string "/" "-" (symbol-name system-type)) ".el"))))
+       (expand-file-name
+        (if general "custom.el"
+          (format "%s-%s-%s.el" 
+                  (which-emacs-i-am)
+                  (number-to-string emacs-major-version)
+                  (replace-regexp-in-string "/" "-" (symbol-name system-type))))
+        (expand-file-name
+         subdirectory-in-data
+         (expand-file-name
+          mars/personal-data mars/local-root-dir))))
      
      (defun safe-build-custom-file (subdirectory-in-data &optional general) ; UNTESTED
        (let ((file (build-custom-file-name subdirectory-in-data general)))
@@ -458,7 +447,8 @@ a simple `custom.el'."
              (path ""))
          (nbutlast dirs-to-create)
          (while dirs-to-create
-           (setq path (concat path (pop dirs-to-create) "/"))
+           (setq path (file-name-as-directory
+                       (concat path (pop dirs-to-create))))
            (unless (file-exists-p path)
              (condition-case nil
              (make-directory path)
@@ -546,9 +536,8 @@ the personal Emacs Lisp configuration directory."
     (let ((config-path (listify mars/local-conf-path)))
       (dolist (config-dir
                (mapcar #'(lambda (x)
-                          (concat
-                           (file-name-as-directory mars/local-root-dir)
-                           x)) config-path))
+                           (expand-file-name x mars/local-root-dir))
+                       config-path))
         (let ((string-length (length config-dir)))
           (when (and (eq (compare-strings config-dir 0 string-length
                                           current-file 0 string-length) 1)
@@ -561,8 +550,7 @@ the personal Emacs Lisp configuration directory."
     (mapcar #'(lambda (x) (progn
                            (message (prin1-to-string path))
                            (byte-recompile-directory
-                            (concat
-                             (file-name-as-directory mars/local-root-dir) x))))
+                            (expand-file-name x mars/local-root-dir))))
             path)))
 
 (defmacro disable-eyecandies (&rest modes) ; UNTESTED
@@ -608,7 +596,7 @@ the personal Emacs Lisp configuration directory."
           (dir
              (if (string-match dir "\\(?:/\\|\\\\)$")
                        (substring dir 0 -1) dir))
-          (newname (concat (file-name-as-directory dir) name)))
+          (newname (expand-file-name name dir)))
 
     (if (not filename)
         (message "Buffer '%s' is not visiting a file!" name)
@@ -659,7 +647,7 @@ Quote each argument separately, join with spaces and call shell-command-to-strin
   "If pid is the process ID of an emacs process, return t, else nil.
 Also returns nil if pid is nil."
   (when pid
-    (let* ((cmdline-file (concat "/proc/" (int-to-string pid) "/cmdline")))
+    (let* ((cmdline-file (format "/proc/%s/cmdline" (int-to-string pid))))
       (when (file-exists-p cmdline-file)
         (with-temp-buffer
           (insert-file-contents-literally cmdline-file)
@@ -697,7 +685,7 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
   (interactive "sServer Name: ")
   (require 'server)
   (setq server-name name)
-  (setq mk-server-socket-file (concat server-socket-dir "/" name))
+  (setq mk-server-socket-file (expand-file-name name server-socket-dir))
   (when (file-exists-p mk-server-socket-file)
     (delete-file mk-server-socket-file)) ; TODO: check server is alive instead of crushing the previous one
   (server-start)
@@ -807,7 +795,7 @@ this method to convert it."
        (search-forward-regexp
         ".+/\\([A-Z0-9]\\{10\\}\\)/[^[:space:]\"]+" (point-at-eol) t)
        (replace-match
-        (concat "http://www.amazon.com/o/asin/"
+        (format "http://www.amazon.com/o/asin/%s%s"
                 (match-string 1)
                 (match-string 3)))))
 
@@ -818,15 +806,16 @@ this method to convert it."
        (search-forward-regexp
         ".+[&?]\\(q=[a-zA-Z0-9%+]+\\)\\(&.+\\)*" (point-at-eol) t)
        (replace-match
-        (concat "http://www.google.com/search?"
+        (format "http://www.google.com/search?%s"
                 (match-string 1)))))
 
 (defun compile-adjust-variable ()       ; UNTESTED
   (unless (file-exists-p "Makefile")
     (set (make-local-variable 'compile-command)
          (let ((file (file-name-nondirectory buffer-file-name)))
-           (concat "gcc -O2 -Wall -o " (file-name-sans-extension file)
-                   " " file)))))
+           (format "gcc -O2 -Wall -o %s %s"
+                   (file-name-sans-extension file)
+                   file)))))
 
 (defmacro define-hash-region (name hash-type) ; UNTESTED
   `(defun ,name (start end)
@@ -930,10 +919,10 @@ attributes are specified then they are only included in the opening tag."
   (interactive "*sTag (including attributes): \nr")
   (let* ((elems (split-string tag " "))
          (tag-name (car elems))
-         (right (concat "</" tag-name ">")))
+         (right (format "</%s>" tag-name)))
     (if (= 1 (length elems))
-        (wrap-region (concat "<" tag-name ">") right beg end)
-      (wrap-region (concat "<" tag ">") right beg end))))
+        (wrap-region (format "<%s>" tag-name) right beg end)
+      (wrap-region (format "<%s>" tag) right beg end))))
 
 (defun wrap-region-with-tag-or-insert () ; UNTESTED
   (interactive)
@@ -1028,7 +1017,7 @@ wrap-region-or-insert using left and right."
     (save-excursion
       (let ((remove-count 0))
         (goto-char (point-min))
-        (while (re-search-forward (concat (char-to-string 13) "$") (point-max) t)
+        (while (re-search-forward (format "%s$" (char-to-string 13)) (point-max) t)
           (setq remove-count (+ remove-count 1))
           (replace-match "" nil nil))
         (message (format "%d ^M removed from buffer." remove-count))))))
@@ -1113,9 +1102,13 @@ which is not affected by suffix optional argument."
     (let ((name       "nxhtml")
           (nxhtml-dir (locate-library "autostart")))
       (when nxhtml-dir
-        (when (and (eq (string-match (concat ".*\\/" name ".*") nxhtml-dir) 0) ; check "/nxhtml" pattern is in the path
-                   (file-exists-p (concat (file-name-directory nxhtml-dir)
-                                          (concat name "/" name ".el")))) ; check nxhtml.el exists
+        (when (and (eq (string-match (format ".*\\/%s.*" name) nxhtml-dir) 0) ; check "/nxhtml" pattern is in the path
+                   (file-exists-p (expand-file-name
+                                   (format "%s.el" name)
+                                   (expand-file-name name
+                                                     (file-name-directory
+                                                      nxhtml-dir)))))
+          ;; check nxhtml.el exists
           (load nxhtml-dir))))))
 (defalias 'ert2-loader 'nxhtml-loader)
 

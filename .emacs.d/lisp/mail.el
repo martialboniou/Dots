@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Nov  7 17:46:16 2011 (+0100)
+;; Last-Updated: Tue Nov  8 12:58:05 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 95
+;;     Update #: 99
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -54,30 +54,27 @@
                    (require 'wl))
 
 ;; TODO: REPLACE #'BBDB-VCARD-IMPORT BY #'trebb/BBDB-VCARD
-(let* ((init-file-name (concat user-login-name ".wl"))
+(let* ((init-file-name (format "%s.wl" user-login-name))
        (init (or (conf-locate init-file-name)
                  (conf-locate "default.wl")))
-       (folder-directory (concat (file-name-as-directory mars/local-root-dir)
-                                 (file-name-as-directory mars/personal-data)
-                                 "wl/"))
-       (folder (convert-standard-filename (concat (file-name-as-directory mars/local-root-dir)
-                                                  (file-name-as-directory mars/personal-data)
-                                                  "wl/" (user-login-name) ".folders"))))
+       (folder-directory (expand-file-name
+                          "wl"
+                          (expand-file-name mars/personal-data
+                                            mars/local-root-dir)))
+       (folder (convert-standard-filename (expand-file-name
+                                           (format "%s.folders" user-login-name)
+                                           folder-directory))))
   (when init
     (when (file-exists-p init)
       (setq wl-init-file (convert-standard-filename init))))
-  (let ((wl-fldr (concat folder-directory (user-login-name) ".folders")))
-    (if (file-exists-p wl-fldr)
-        (setq wl-folders-file (convert-standard-filename wl-fldr))
-      (let ((default-wl-fldr (concat folder-directory "default.folders")))
-        (when (file-exists-p default-wl-fldr)
-          (setq wl-folders-file (convert-standard-filename default-wl-fldr))))))
+  (if (file-exists-p folder)
+      (setq wl-folders-file (convert-standard-filename folder))
+    (let ((default-wl-fldr (expand-file-name "default.folders" folder-directory)))
+      (when (file-exists-p default-wl-fldr)
+        (setq wl-folders-file (convert-standard-filename default-wl-fldr)))))
   (let ((wl-lib (locate-library "wl")) wl-resource-rep)
     (unless (null wl-lib)
-      (setq wl-resource-rep (expand-file-name
-                             (file-name-directory
-                              (directory-file-name
-                               (file-name-directory wl-lib))))))
+      (setq wl-resource-rep (file-name-directory wl-lib)))
     (when (and (not (null wl-resource-rep))
                (file-exists-p wl-resource-rep))
       (setq wl-icon-directory (expand-file-name "etc/icons" wl-resource-rep)))))
@@ -103,7 +100,8 @@
        (setq wl-demo-display-logo nil))
      ;; Maildir => <~Mail>/Maildir
      (when elmo-localdir-folder-path
-       (setq elmo-maildir-folder-path (concat elmo-localdir-folder-path "/Maildir"))) 
+       (setq elmo-maildir-folder-path 
+             (expand-file-name "Maildir" elmo-localdir-folder-path))) 
      ;; imapfilter
      (when (and (file-readable-p "~/.imapfilter/config.lua")
                 (executable-find "imapfilter"))

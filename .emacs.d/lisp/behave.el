@@ -89,10 +89,9 @@ See the advised `delete-frame' at the end of this file as a use case.")
 ;; - path
 (unless desktop-dir
   (setq desktop-dir (expand-file-name
-                     (concat
-                      (file-name-as-directory mars/local-root-dir)
-                      (file-name-as-directory mars/personal-data)
-                      "desktop"))))
+                     "desktop"
+                     (expand-file-name mars/personal-data
+                                       mars/local-root-dir))))
 (unless (file-exists-p desktop-dir)
   (make-directory desktop-dir t))
 (setq desktop-path (list desktop-dir)
@@ -100,29 +99,37 @@ See the advised `delete-frame' at the end of this file as a use case.")
 ;; - directories
 (defmacro define-local-temporary-directory (local-work-directory-symbol)
   "Define the best temporary directory for registering files and sessions."
-  (let ((local-tmp-dir (concat (file-name-as-directory mars/local-root-dir)
-                               (file-name-as-directory mars/personal-data)
-                               (file-name-as-directory "Temporary"))))
-    (let ((dir-symbol (intern (concat (symbol-name local-work-directory-symbol) "-dir"))))
-      (unless (symbol-value dir-symbol) ; creates directory iff unset (eg. `vars' may override)
-                                        ; this <symbol>-dir must be 'NIL before compiling this macro
+  (let ((local-tmp-dir (expand-file-name
+                        "Temporary"
+                        (expand-file-name mars/personal-data
+                                          mars/local-root-dir))))
+    (let ((dir-symbol (intern (format "%s-dir" 
+                                      (symbol-name
+                                       local-work-directory-symbol)))))
+      (unless (symbol-value dir-symbol) 
+        ;; creates directory iff unset (eg. `vars' may override)
+        ;; this <symbol>-dir must be 'NIL before compiling this macro
         (if (file-exists-p local-tmp-dir)
-            `(setq ,dir-symbol ,(concat local-tmp-dir
-                                        (file-name-as-directory
-                                         (capitalize (concat
-                                                      (symbol-name local-work-directory-symbol) "s")))))
-          (let ((name (concat (file-name-as-directory mars/temporary-dir)
-                              "emacs_" (symbol-name local-work-directory-symbol) "s/"
-                              (file-name-as-directory (user-login-name)))))
+            `(setq ,dir-symbol ,(expand-file-name
+                                 (capitalize 
+                                  (format "%ss"
+                                          (symbol-name 
+                                           local-work-directory-symbol)))
+                                 local-tmp-dir))
+          (let ((name (expand-file-name
+                       (user-login-name)
+                       (expand-file-name
+                        (format "emacs_%ss"
+                                (symbol-name local-work-directory-symbol))
+                        mars/temporary-dir))))
             `(progn
                (setq ,dir-symbol ,name)
-               (message ,(concat "Beware: your autosave directory named `" name
-                                 "' may be publicly accessed. Be sure to make it hidden to other users.")))))))))
+               (message ,(format "Beware: your autosave directory named `%s' may be publicly accessed. Be sure to make it hidden to other users." name)))))))))
 (define-local-temporary-directory autosave) ; #<files>#
 (define-local-temporary-directory session)  ; .saves-<pid>-<hostname>
 (define-local-temporary-directory backup)   ; !<backup-directory>!<backup-file>!.~<index>~
-(setq auto-save-file-name-transforms `(("\\([^/]*/\\)*\\(.*\\)" ,(concat autosave-dir "\\2") nil))
-      auto-save-list-file-prefix (concat (file-name-as-directory session-dir) ".saves-")
+(setq auto-save-file-name-transforms `(("\\([^/]*/\\)*\\(.*\\)" ,(expand-file-name "\\2" autosave-dir) nil))
+      auto-save-list-file-prefix (expand-file-name ".saves-" session-dir)
       backup-directory-alist (list (cons "." backup-dir)))
 ;; - desktop load
 (when (featurep 'emacs-normal-startup)
@@ -130,12 +137,12 @@ See the advised `delete-frame' at the end of this file as a use case.")
     '(progn
        (when (fboundp 'display-organizer-at-startup)
          (add-hook 'desktop-after-read-hook #'display-organizer-at-startup))))
-  (desktop-save-mode 1))
+  (condition-case err
+      (desktop-save-mode 1)
+    (error (message (format "behave: %s" err)))))
 (make-directory autosave-dir t)         ; be sure it exists
-(setq the-desktop-file (concat (file-name-as-directory desktop-dir)
-                               desktop-base-file-name)
-      the-desktop-lock (concat (file-name-as-directory desktop-dir)
-                               desktop-base-lock-name))
+(setq the-desktop-file (expand-file-name desktop-base-file-name desktop-dir)
+      the-desktop-lock (expand-file-name desktop-base-lock-name desktop-dir))
 (defun desktop-in-use-p ()
   (and (file-exists-p the-desktop-file) (file-exists-p the-desktop-lock)))
 (defadvice desktop-owner (after pry-from-cold-dead-hands activate)
@@ -151,10 +158,11 @@ See the advised `delete-frame' at the end of this file as a use case.")
           (desktop-save desktop-dirname)
         (call-interactively #'desktop-save)))))
 ;; - unset temporary directory names
-(setq autosave-dir nil
-      session-dir nil
-      backup-dir nil)                   ; otherwise `define-local-temporary-directory' compilation
-                                        ; of the symbol test (in UNLESS clause) doesn't work
+;;   otherwise `define-local-temporary-directory' compilation issue
+(eval-when-compile
+  (setq autosave-dir nil
+        session-dir nil
+        backup-dir nil))
 
 ;;; BUFFERS
 ;;
@@ -180,9 +188,8 @@ the should-be-forbidden C-z.")
      (define-key anything-map (read-kbd-macro mars/anything-pers-action-binding)
        'anything-execute-persistent-action)
      (setcdr (assoc 'persistent-help anything-c-source-advice)
-             (concat "Describe function / C-u "
-                     mars/anything-pers-action-binding
-                     ": Toggle advice"))
+             (format "Describe function / C-u %s: Toggle advice"
+                     mars/anything-pers-action-binding))
      ;; ido case
      (eval-after-load "ido"
        '(progn
@@ -192,7 +199,7 @@ the should-be-forbidden C-z.")
           ;;   'anything-lisp-complete-symbol-partial-match)
           ;; (define-key lisp-interaction-mode-map "\C-\M-i"
           ;;   'anything-lisp-complete-symbol-partial-match)
-          ;; (anything-read-string-mode 0)))))
+          ;; (anything-read-string-mode 0)
           ))))
 
 ;;; MINIBUFFER
@@ -266,27 +273,26 @@ the should-be-forbidden C-z.")
             (lambda ()
               (setq ido-temp-list filename-list)))
            (filename (ido-read-buffer "File History: "))
-           (result-list (delq nil (mapcar 
-                       (lambda (x) 
-                         (if (string= (car x) 
-                              filename) 
-                         (cdr x))) 
-                       file-assoc-list)))
+           (result-list (delq nil (mapcar
+                                   #'(lambda (x)
+                                       (when (string= (car x) filename)
+                                         (cdr x)))
+                                   file-assoc-list)))
            (result-length (length result-list)))
           (find-file
            (cond
-        ((= result-length 0) filename)
-        ((= result-length 1) (car result-list))
-        (t (let ((ido-make-buffer-list-hook
-              (lambda () (setq ido-temp-list result-list))))
-             (ido-read-buffer (format "%d matches:" result-length))))))))
+            ((= result-length 0) filename)
+            ((= result-length 1) (car result-list))
+            (t (let ((ido-make-buffer-list-hook
+                      (lambda () (setq ido-temp-list result-list))))
+                 (ido-read-buffer (format "%d matches:" result-length))))))))
       (defun ido-recentf ()
         "Use ido to select a recently opened file from the `recentf-list'. Written by xsteve."
         (interactive)
         (let ((home (expand-file-name (getenv "HOME"))))
           (find-file (ido-completing-read "Recent File: "
-                          (mapcar
-                           (lambda (path)
+                                          (mapcar
+                                           (lambda (path)
                          (replace-regexp-in-string 
                           home "~" path)) 
                            recentf-list) nil t))))
@@ -297,7 +303,17 @@ the should-be-forbidden C-z.")
           (list 'define-key map (list 'kbd '"C-c F") ''ido-recentf)
           (list 'define-key map (list 'kbd '"C-c C-m") ''make-directory)))
       ;; (add-lambda-hook 'emacs-startup-hook (mars/recentf/override-keys global-map))
-      ))))
+      (eval-after-load "ibuffer"
+        '(progn
+           (defun ibuffer-ido-find-file ()
+             "Like `ido-find-file', but default to the directory of the buffer at point."
+             (interactive)
+             (let ((buf (ibuffer-current-buffer)))
+               (when (buffer-live-p buf)
+                 (setq default-directory
+                       (with-current-buffer buf default-directory))))
+             (ido-find-file-in-dir default-directory))
+           (define-key ibuffer-mode-map (kbd "C-x C-f") #'ibuffer-ido-find-file)))))))
 
 ;;; BOOKMARKS
 ;;

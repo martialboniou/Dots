@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Sun Nov  6 20:10:06 2011 (+0100)
+;; Last-Updated: Mon Nov  7 21:37:43 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 122
+;;     Update #: 133
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -113,9 +113,8 @@ over a frame.")
 ;;; FIRST TIME
 ;;
 (let ((first-file (expand-file-name
-                   (concat (file-name-as-directory mars/local-root-dir)
-                           (file-name-as-directory mars/personal-data)
-                           ".launched"))))
+                   ".launched"
+                   (expand-file-name mars/personal-data mars/local-root-dir))))
   (if (file-exists-p first-file)
       (load-file first-file)
     (progn
@@ -179,10 +178,9 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 ;;
 (defvar c-include-path nil "Additional include path for C programs.")
 (defvar cpp-include-path nil "Additional include path for C++ programs")
-(let ((data-dir (concat (file-name-as-directory mars/local-root-dir)
-                        (file-name-as-directory mars/personal-data))))
+(let ((data-dir (expand-file-name mars/personal-data mars/local-root-dir)))
   (mapc (lambda (x) 
-          (let ((newdir (file-name-as-directory (concat (file-name-as-directory "~/.emacs.d/data") x))))
+          (let ((newdir (expand-file-name data-dir)))
         (unless (file-exists-p newdir)
           (make-directory newdir t))))
     '("cache/semanticdb"
@@ -193,7 +191,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
       "cache/eshell"
       "cache/image-dired"
       "Notes" "Insert" "BBDB" "elmo"))
-  (let ((data-cache (file-name-as-directory "~/.emacs.d/data/cache")))
+  (let ((data-cache (expand-file-name "cache" data-dir)))
     (unless (fboundp 'flet) (require 'cl)) ; elisp obviously needs R*RS | CL standard
     (flet ((cachize (file-or-dir &optional obsolete-file-or-dir)
                     ;; generate name of a specific file or directory in cache
@@ -220,7 +218,9 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
         kiwon/last-window-configuration-file (cachize "last-window-configuration")
         desktop-dir (expand-file-name data-cache)
         desktop-base-file-name "desktop"
-        desktop-base-lock-name (concat (if (memq system-type '(ms-dos windows-nt cygwin)) "_" ".") desktop-base-file-name ".lock") ; TODO: add a fun in defs named `prefix-hidden-file'
+        desktop-base-lock-name (format "%s%s.lock" 
+                                       (if (memq system-type '(ms-dos windows-nt cygwin)) "_" ".")
+                                       desktop-base-file-name) ; TODO: add a fun in defs named `prefix-hidden-file'
         ido-save-directory-list-file (cachize "ido-last")
         recentf-save-file (cachize "recentf")
         anything-c-adaptive-history-file (cachize "anything-c-adaptive-history")
@@ -231,23 +231,23 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
         newsticker-cache-filename (cachize "newsticker/cache")
         newsticker-imagecache-dirname (cachize "newsticker/images")
         newsticker-groups-filename (cachize "newsticker/groups")
-        org-diary-agenda-file "~/.emacs.d/data/Notes/Diary.org"
+        org-diary-agenda-file (expand-file-name "Notes/Diary.org" data-dir)
         savehist-file (cachize "history")
         tramp-persistency-file-name (cachize "tramp")
         ac-comphist-file (cachize "ac-comphist.dat")
         semanticdb-default-save-directory (cachize "semanticdb")
         ede-project-placeholder-cache-file (cachize "projects.ede")
         ecb-tip-of-the-day-file (cachize "ecb-tip-of-day.el")
-        auto-insert-directory "~/.emacs.d/data/Insert"
-        bbdb-file (concat (file-name-as-directory "~/.emacs.d/data/BBDB")
-                  (user-login-name)
-                  ".bbdb")
-        elmo-msgdb-directory "~/.emacs.d/data/elmo"
+        auto-insert-directory (expand-file-name "Insert" data-dir)
+        bbdb-file (expand-file-name (format "%s.bbdb" (user-login-name))
+                                    (expand-file-name "BBDB" data-dir))
+        elmo-msgdb-directory (expand-file-name "elmo" data-dir)
         wl-temporary-file-directory (expand-file-name "~/Downloads")
         eshell-directory-name (file-name-as-directory (cachize "eshell")) ; may need a final `slash'
         emms-cache-file (cachize "emms-cache" "~/.emacs.d/emms"))
       ;; FIXME: temporary hack to auto-remove the default `auto-save-list'
-      (let ((auto-save-folder "~/.emacs.d/data/Temporary/Autosaves"))
+      (let ((auto-save-folder (expand-file-name "Autosaves"
+                                                (expand-file-name "Temporary" data-dir))))
           (when (file-directory-p auto-save-folder)
             (cachize auto-save-folder "~/.emacs.d/auto-save-list"))))))
 
@@ -273,17 +273,18 @@ named FUEL must be found in the `misc/fuel' subdirectory.")
   "The default program for spell checking. May be set to NIL.")
 
 ;;; SPECIFICS (<data>/sys/vars-<hostname>.el or <data>/vars-<hostname>.el)
-;;
-(let ((sys-rep (concat (file-name-as-directory mars/local-root-dir)
-                       (file-name-as-directory mars/personal-data)
-                       (file-name-as-directory "sys"))))
+;; DEPRECATED
+(let ((sys-rep (expand-file-name 
+                "sys"
+                (expand-file-name mars/personal-data mars/local-root-dir))))
   (unless (file-exists-p sys-rep)
     (make-directory sys-rep))
   (condition-case nil
-      (load-file (concat sys-rep
-                         "vars-"
-                         (downcase system-name) "-"
-                         (symbol-name system-type) ".el"))
+      (load-file (expand-file-name
+                  (format "vars-%s-%s.el"
+                          (downcase system-name)
+                          (symbol-name system-type))
+                  sys-rep))
     (error nil)))
 
 (provide 'vars)

@@ -1,3 +1,4 @@
-_RVM=$HOME/.rvm/scripts/rvm
-[[ -s "$_RVM" ]] && source "$_RVM"
-unset _RVM
+() {
+  local rvm_source=$HOME/.rvm/scripts/rvm
+  [[ -s "$rvm_source" ]] && source "$rvm_source"
+}

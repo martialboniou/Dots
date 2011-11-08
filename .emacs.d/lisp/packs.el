@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Mon Nov  7 12:40:16 2011 (+0100)
+;; Last-Updated: Tue Nov  8 20:53:16 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 409
+;;     Update #: 447
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -16,7 +16,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Commentary: populate site-lisp (install if unchecked) + elpa
-;;              (nothing yet!) + pases (load or bootstrap)
+;;              (nothing yet!)
 ;; 
 ;; TODO: tidy this mess up
 ;; 
@@ -47,7 +47,7 @@
 ;;; Code:
 
 ;; packs loading is forbidden if not correctly called (from .emacs or configuration file)
-(add-to-list 'load-path (file-name-directory load-file-name))
+
 (require 'noaccess)
 (require 'walker)
 
@@ -62,9 +62,10 @@
 ;; - hg/mercurial, bzr (both best installed with python egg manager `pip' (or `easy_install' via setuptools));
 ;; - tar, gzip, unzip.
 ;; Windows users, install mingw/msys/gnuwin and complete installation with ruby/gem, python/setuptools/bzr and haskell/cabal/darcs:
-;; NOTE: try el-get to replace pases and all this
+;; NOTE: try el-get ASAP
 (defvar mars/site-lisp-package-tree nil
   "A package tree to get / install / tag additional packages in `mars/site-lisp-path'")
+
 (setq mars/site-lisp-package-tree '((vimpulse       . ((get . "git clone git://gitorious.org/vimpulse/vimpulse")
                                                        (install . "make")))
                                     (autopair       . ((get . "svn checkout http://autopair.googlecode.com/svn/trunk/ autopair")
@@ -77,8 +78,6 @@
                                     (anything-config . ((get . "git clone git://repo.or.cz/anything-config.git")
                                                         (install . "make")
                                                         (nosearch . ("developer-tools" "doc"))))
-                                    ;; (viper-in-more-modes . ((get . "git clone git://gitorious.org/viper-in-more-modes/viper-in-more-modes.git")
-                                    ;;                         (install . "emacs-compile-directory")))
                                     (undo-tree    . ((get . "git clone http://www.dr-qubit.org/git/undo-tree.git")
                                                      (install . "emacs-compile-directory") ; do it from emacs
                                                      ))
@@ -99,7 +98,7 @@
                                                       (install . "./configure; make")))
                                     (markdown-mode . ((get . "git clone git://jblevins.org/git/markdown-mode.git")
                                                       (install . "emacs-compile-directory")))
-                                    (yasnippet     . ((get . "svn checkout http://yasnippet.googlecode.com/svn/trunk/ yasnippet")
+                                    (yasnippet     . ((get . "git clone git://github.com/capitaomorte/yasnippet.git")
                                                       (install . "rake compile")
                                                       (nosearch . ("doc" "extras" "pkg" "snippets"))))
                                     (mailcrypt-3.5.9 . ((get . "curl -L http://sourceforge.net/projects/mailcrypt/files/mailcrypt/3.5.9/mailcrypt-3.5.9.tar.gz/download | tar zx") ; -L b/c URL redirect
@@ -108,9 +107,9 @@
                                     (mhc           . ((get . "git clone git://github.com/yoshinari-nomura/mhc.git")
                                                       (install . "emacs-compile-directory emacs") ; ruby configure.rb; ruby make.rb is OBSOLETE (ftools dependencies)
                                                       (nosearch . ("icons" "ruby-ext" "samples" "xpm"))))
-                                    (mu-cite-201006212322 . ((get . "curl http://www.jpl.org/elips/mu/snapshots/mu-cite-201006212322.tar.gz | tar zx")
-                                                             ;; no compilation yet / need apel10.8/poem
-                                                             ))
+                                    ;; (mu-cite-201006212322 . ((get . "curl http://www.jpl.org/elips/mu/snapshots/mu-cite-201006212322.tar.gz | tar zx")
+                                    ;;                          ;; no compilation yet / need apel10.8/poem
+                                    ;;                          )) ; HTTP 404
                                     (color-theme-6.6.0 . ((get . "curl -L http://download.savannah.gnu.org/releases/color-theme/color-theme-6.6.0.tar.gz | tar zx")
                                                           (install . "emacs-compile-directory; emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\" themes"))) ; FIXME: not in path so error in `themes' (not important!)
                                     (darcsum           . ((get . "darcs get --lazy http://joyful.com/repos/darcsum")
@@ -120,8 +119,7 @@
                                     (remember          . ((get . "git clone git://repo.or.cz/remember-el.git remember")
                                                           (install . "make")))
                                     (rinari            . ((get . "git clone git://github.com/eschulte/rinari.git; cd rinari; git submodule init; git submodule update; cd ..") ; FIXME: no compilation yet!
-                                                          (nosearch . ("doc" "test" "util/jump/test" "util/test"))
-                                                          ))
+                                                          (nosearch . ("doc" "test" "util/jump/test" "util/test"))))
                                     ;; TODO: fetch all the Python/Rope install process
                                     ;; WARNING: `python-mode' is *not* compatible with `wisent-python' in SEMANTIC => use gallina-python.el (provided here)
                                     ;; (python-mode        . ((get . "curl -L http://launchpad.net/python-mode/trunk/5.2.0/+download/python-mode-5.2.0.tgz | tar zx")
@@ -188,7 +186,8 @@
                                     ;; (xwl-elisp          . ((get     . "git clone git://github.com/xwl/xwl-elisp.git")
                                     ;;                        (install . "make byte-compile"))) ; TODO: http://xwl.appspot.com/ (william xu) / include smart-operator
                                     (emacs-revival  . ((get . "git clone git@github.com:martialboniou/emacs-revival.git")
-                                                       (install . (concat "make LISPDIR=" (expand-file-name (car mars/site-lisp-path) mars/local-root-dir))))))) ; TODO: verify sig on get ?
+                                                       (install . "make LISPDIR=/Users/mars/.emacs.d/vendor";(format "make LISPDIR=%s" (expand-file-name (car mars/site-lisp-path) mars/local-root-dir))
+))))) ; TODO: verify sig on get ?
 
 (defun mars/check-command (command &optional commands)
   "Check if command as executable in the `EXEC-PATH'. Throw an error by showing the
@@ -264,76 +263,88 @@ becomes true when an installation is required. So it will re-create AUTOLOADS la
 in `.emacs'. Otherwise AUTOLOADS are generated immediately."
     (when mars/site-lisp-path
       (setq renew-autoloads-at-startup nil)
-      (let ((site-lisp-path (mapcar (lambda (x)
-                                      (expand-file-name
-                                       (concat (file-name-as-directory mars/local-root-dir)
-                                               (file-name-as-directory x)))) mars/site-lisp-path))
+      (let ((site-lisp-path (mapcar #'(lambda (x)
+                                        (expand-file-name 
+                                         x
+                                         (expand-file-name mars/local-root-dir)))
+                                    mars/site-lisp-path))
             executables-in-play)      ; list of binaries used in the current package
-        (mapc (lambda (x)
-                (let ((path site-lisp-path) (found nil) pending)
-                  (while (and (not found) path)
+        (mapc #'(lambda (x)
+                  (let ((path site-lisp-path) (found nil) pending)
+                    (while (and (not found) path)
                     (setq pending (pop path))
-                    (when (file-directory-p (concat pending (symbol-name (car x))))
-                      (setq found t)        ; FIXME: try to check thru 'load-path too (eg. 'vimpulse[/]' member)
-                      ))
+                    (when (file-directory-p (expand-file-name (symbol-name (car x))
+                                                              pending))
+                      (setq found t)))
                   (unless found
-                    (let ((get-method (assoc 'get (cdr x))))
+                    (let ((pkg-dir (symbol-name (car x)))
+                          (get-method (assoc 'get (cdr x))))
                       (if (not get-method)
-                          (error "No method to get the package named %s" (symbol-name (car x)))
+                          (error "packs: no method to get the package named %s" pkg-dir)
                         (with-temp-buffer
                           (save-excursion
                             (save-restriction
-                              (message "packs: %s installing..." (car x))
+                              (message "packs: %s installing..." pkg-dir)
                               (cd (car site-lisp-path)) ; install package in the first site-lisp
                               (let ((get-command (cdr get-method)))
                                 (when (null executables-in-play)
-                                  (setq executables-in-play (mars/fetch-exec-in-package-tree mars/site-lisp-package-tree)))
-                                (mars/execute-commands get-command executables-in-play))
-                              (let ((install-method (assoc 'install (cdr x))))
-                                (when install-method
-                                  (cd (symbol-name (car x)))
-                                  (let ((install-command (cdr install-method)))
-                                    (mars/execute-commands install-command executables-in-play))))
-                              (let (tag-alerted)
-                                (dolist (tag '(nosearch noauto cedet))
-                                  (let ((tag-method (assoc tag (cdr x))))
-                                    (when tag-method
-                                      (unless tag-alerted
-                                        (setq tag-alerted t)
-                                        (message "packs: %s tagging..." (car x)))
-                                      (let ((tag-dirs (cdr tag-method)))
-                                        (when (stringp tag-dirs)
-                                          (setq tag-dirs (list tag-dirs)))
-                                        (mapc #'(lambda (dir)
-                                                  (let ((dirname (concat (car site-lisp-path)
-                                                                         (file-name-as-directory (symbol-name (car x)))
-                                                                         (file-name-as-directory dir))))
-                                                    (when (file-directory-p dirname)
-                                                      (condition-case err
-                                                          (with-temp-file
-                                                              (concat dirname "." (symbol-name tag))
-                                                            nil)
-                                                        (error
-                                                        (message "packs: unable to tag `%s' as %s: %s"
-                                                                 dirname
-                                                                 (symbol-name tag)
-                                                                 err))))))
-                                              tag-dirs))))))
-                              ;; add new directory tree to `load-path'
-                              (mars/add-to-load-path (directory-file-name
-                                                      (concat
-                                                       (car site-lisp-path)
-                                                       (symbol-name (car x)))))
-                              (setq renew-autoloads-at-startup t)
-                              (message "packs: %s installed" (car x))
-                              ))))))))
+                                  (setq executables-in-play (mars/fetch-exec-in-package-tree
+                                                             mars/site-lisp-package-tree)))
+                                (mars/execute-commands get-command executables-in-play)
+                                (let ((install-method (assoc 'install (cdr x))))
+                                  (when install-method
+                                    (if (and (file-readable-p pkg-dir)
+                                             (file-directory-p pkg-dir))
+                                        (cd pkg-dir)
+                                      (error "packs: package `%s' not installed\n\tplease install it in at the root of `%s' via the command:\n\t$ %s"
+                                             pkg-dir
+                                             (car site-lisp-path)
+                                             get-command))
+                                    (let ((install-command (cdr install-method)))
+                                      (mars/execute-commands install-command 
+                                                             executables-in-play))))))
+                            (let (tag-alerted)
+                              (dolist (tag '(nosearch noauto cedet))
+                                (let ((tag-method (assoc tag (cdr x))))
+                                  (when tag-method
+                                    (unless tag-alerted
+                                      (setq tag-alerted t)
+                                      (message "packs: %s tagging..." (car x)))
+                                    (let ((tag-dirs (cdr tag-method)))
+                                      (when (stringp tag-dirs)
+                                        (setq tag-dirs (list tag-dirs)))
+                                      (mapc #'(lambda (dir)
+                                                (let ((dirname
+                                                       (expand-file-name
+                                                        dir
+                                                        (expand-file-name
+                                                         (symbol-name (car x)) (car site-lisp-path)))))
+                                                  (when (file-directory-p dirname)
+                                                    (condition-case err
+                                                        (with-temp-file
+                                                            (expand-file-name
+                                                             (format ".%s" (symbol-name tag))
+                                                             dirname)
+                                                          nil)
+                                                      (error
+                                                       (message "packs: unable to tag `%s' as %s: %s"
+                                                                dirname
+                                                                (symbol-name tag)
+                                                                err))))))
+                                            tag-dirs))))))
+                            ;; add new directory tree to `load-path'
+                            (mars/add-to-load-path (expand-file-name
+                                                    (symbol-name (car x))
+                                                    (car site-lisp-path)))
+                            (setq renew-autoloads-at-startup t)
+                            (message "packs: %s installed" (car x))
+                            )))))))
               mars/site-lisp-package-tree)
         (when (and (not only-mark)
                    renew-autoloads-at-startup) ; generate AUTOLOADS
           (let ((mars/loaddefs
-                 (concat (file-name-as-directory mars/local-root-dir)
-                         (file-name-as-directory (car mars/site-lisp-path))
-                         "loaddefs.el")))
+                 (expand-file-name "loaddefs.el"
+                                   (car site-lisp-path))))
             (load "update-auto-loads")
             (update-autoloads-in-package-area)
             (safe-autoloads-load mars/loaddefs)))
@@ -350,126 +361,6 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
 
 ;;; ELPA
 ;; nothing
-
-;;; PASES
-;; no more used
-;;
-;; Erik Hetzner's Pases (http://e6h.org/pases/)
-(defun pases/check-installable ()
-  (unless (executable-find "unzip")     ; hang on unreachable `unzip'
-    (cond
-     ((eq system-type 'window-nt)
-      (error "IMPORTANT: Pases need unzip to be installed. Please go to `http://gnuwin32.sourceforge.net/packages/unzip.htm', install the convenient setup program and add `C:\\Program Files\\GnuWin32\\bin' or your GnuWin32 binary path in your path"))
-     (t (error "IMPORTANT: You need to install unzip and make it accessible to be able to use pases package manager")))))
-
-(defun mars/pases:get-package (pkg-name url local-path)
-  "Download a package named `name'."
-  (let ((try-limit 2)                   ; retry if empty
-        (complete-url (concat "http://" url "/" pkg-name))
-        (file (expand-file-name
-               (concat (file-name-as-directory local-path)
-                       pkg-name)))
-        (count 0))
-    (while (and (< count try-limit)
-                (or (not (file-exists-p file))
-                    (eq 0 (nth 7 (file-attributes file))))) ; check empty file
-      (incf count)
-      (url-copy-file complete-url file t))))
-
-(defvar mars/pases:loader-file-name nil
-  "Relative path of the `pases' file to load. It must be in one of the directories to load pases packages from as set in the variable `pases:packages-dirs'.")
-
-(defun mars/pases:wl-org-install ()
-  (pases/check-installable)
-  (let ((pases-name "pases")
-        (pases-version "0.2")
-        (dot ".") (hdot "~/.") (d ".d")
-        (wanderlust-package-list '("apel-10.8"
-                                   "flim-1.14.9_20100804"
-                                   "semi-1.14.6_20101024"
-                                   "wl-2.15.9"))
-        (org-package-list '("org-mode-7.5")))
-    (let ((pases-source-dir (expand-file-name (concat hdot pases-name d)))
-          (pases-dir (expand-file-name (concat hdot pases-name dot (which-emacs-i-am) dot
-                                               (number-to-string emacs-major-version) d))))
-      (setq mars/pases:loader-file-name (concat (file-name-as-directory
-                                                 (concat pases-name "-" pases-version))
-                                                "pases-load"))
-      (if (file-exists-p pases-dir)
-          (progn
-            ;; faster startup = pases autoload
-            (add-to-list 'load-path pases-dir)
-            (mars/autoload '(("pases" pases:install-package pases:uninstall-package pases:disable-package pases:enable-package)
-                             ("wl" wl wl-other-frame)
-                             ("wl-draft" wl-draft wl-user-agent-compose))))
-        (let ((pases-file (expand-file-name (concat (file-name-as-directory pases-source-dir)
-                                                    mars/pases:loader-file-name))))
-          (condition-case nil
-              (load pases-file)
-            (error
-             (progn
-               ;; bootstrap if nothing to load
-               (message (format "packs: bootstrap pases"))
-               (let* ((pases-url (concat "http://launchpad.net/" pases-name "/trunk/" pases-version "/+download/"))
-                      (buffer (condition-case err (url-retrieve-synchronously
-                                                   (concat pases-url
-                                                           "pases-bootstrap.el"))
-                                (error (progn
-                                         (message (format "packs: %s" err))
-                                         nil)))))
-                 (when buffer
-                   (with-current-buffer
-                       buffer
-                     (goto-char (point-min))
-                     (re-search-forward "^$" nil 'move)
-                     (eval-region (point) (point-max))
-                     (kill-buffer (current-buffer)))))
-               ;; fetch and install essential packages after bootstraping
-               (if  (fboundp 'pases:install-package)
-                   (let ((pases-file-name (concat pases-name "-" pases-version dot pases-name)))
-                     (when (file-exists-p (expand-file-name
-                                           (concat (file-name-as-directory pases-source-dir)
-                                                   pases-file-name)))
-                       (when (y-or-n-p
-                              (format "Would you like to reset the pases source directory? "))
-                         (delete-directory (expand-file-name pases-source-dir) t)))
-                     ;; fetch pases package and install it
-                     (mars/pases:get-package pases-file-name "launchpad.net/pases/trunk/0.2/+download"
-                                             (expand-file-name (file-name-as-directory pases-source-dir)))
-                     (when (fboundp 'pases:install-package) ; TO COMPILE W/O WARNINGS
-                       (pases:install-package (concat (file-name-as-directory pases-source-dir) pases-file-name))))
-                 (error "packs: bootstraping error: no PASES:INSTALL-PACKAGE function"))
-                 (let ((pases-packages-url (concat "e6h.org/" pases-name)))
-                   ;; fetch wanderlust & org 7 packages and install them
-                   (mapc
-                    #'(lambda (x)
-                        (mars/pases:get-package (concat x dot pases-name) pases-packages-url pases-source-dir)
-                        (if (fboundp 'pases:install-package)
-                            (pases:install-package (expand-file-name
-                                                    (concat (file-name-as-directory pases-source-dir)
-                                                            x dot pases-name)))
-                          (error "packs: no PASES:INSTALL-PACKAGE function")))
-                    (append wanderlust-package-list org-package-list))
-                   ;; FIXME: remove *Compile-Log* window instead of other-windows
-                   (delete-other-windows))))))))))
-
-(defun mars/pases:reload ()
-  "Reload pases. Find the loader file inside the `pases:package-dirs'."
-  (interactive)
-  (let ((dirs (when (and (boundp 'pases:package-dirs)
-                         (boundp 'mars/pases:loader-file-name))
-                pases:package-dirs))
-        pending)
-    (while (not (null dirs))
-      (setq pending (pop dirs))
-      (if (boundp 'mars/pases:loader-file-name)
-        (let ((file-name (expand-file-name
-                          (concat (file-name-as-directory pending)
-                                  mars/pases:loader-file-name))))
-          (when (locate-library file-name)
-            (setq dirs nil)
-            (load file-name)))
-        (error (format "mars/pases:loader-file-name is undefined"))))))
 
 ;; FIXME: rebuild `update-autoloads-in-package-area' to create/update loaddefs and `safe-autoloads-load' to load-file it in the case of a different `base' directory.
 

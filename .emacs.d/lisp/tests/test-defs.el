@@ -121,7 +121,7 @@ SYMBOL-FLAG whether it's a list of strings or symbols."
        (cond ((= num 1) (if symbol-flag 'foo "foo"))
              ((= num 2) (if symbol-flag 'bar "bar"))
              ((= num 3) (if symbol-flag 'baz "baz"))
-             (t  (let ((quux (concat "q" (make-string (- num 3) ?u) "ux")))
+             (t  (let ((quux (format "q%sux" (make-string (- num 3) ?u))))
                    (if symbol-flag (intern quux) quux)))))
       (setq num (1- num)))
     list))
@@ -215,16 +215,21 @@ by restoring single window frame."
   (should (string= (trim-string "that's all folks!") "that's all folks!"))
   (should (string= (trim-string "  that\t's all \nfolks!\n \t ") "that\t's all \nfolks!")))
 
-(if (file-exists-p "tests/vendor/README")
+(if (file-exists-p (expand-file-name "vendor/README" (file-name-directory load-file-name)))
     (progn
       (ert-deftest elisp-files-in-below-directory-posix-test ()
         (should
          (equal
-          (sort (elisp-files-in-below-directory "tests/vendor") #'string<)
+          (sort (elisp-files-in-below-directory (expand-file-name
+                                                 "vendor"
+                                                 (file-name-directory load-file-name)))
+                #'string<)
           (mapcar
            #'(lambda (file)
-               (concat (file-name-as-directory (expand-file-name "."))
-                       (file-name-as-directory "tests/vendor") file))
+               (expand-file-name file
+                                 (expand-file-name
+                                  "vendor"
+                                  (file-name-directory load-file-name))))
            '("file0.el" "pack1/file1.el" "pack1/third-party/file2.el"
              "pack2/file3.el" "pack2/file4.el" "pack2/file5.el"))))))
   (message "You must run this test with a Bourne shell script from the root directory to test."))

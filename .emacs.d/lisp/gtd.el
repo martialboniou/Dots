@@ -8,7 +8,7 @@
 ;; Version:
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 84
+;;     Update #: 86
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -51,13 +51,14 @@
 
 ;;; ORG MODE
 ;; (from 'Using Org Mode as a Day Planner' by John Wiegley)
-(defvar *notes-dir* (concat (file-name-as-directory
-                             (concat (file-name-as-directory mars/local-root-dir)
-                                     mars/personal-data))
-                            "Notes"))
+(defvar *notes-dir* (expand-file-name
+                     "Notes"
+                     (expand-file-name mars/personal-data
+                                       mars/local-root-dir)))
 
 (require 'org-install)
 (require 'org-protocol)
+
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (define-key mode-specific-map [?a] 'org-agenda)
 
@@ -94,11 +95,11 @@
 (add-hook 'remember-mode-hook #'org-remember-apply-template)
 (custom-set-variables
  '(org-directory *notes-dir*)
- '(org-default-notes-file (concat
-                           (file-name-as-directory org-directory) "Notes.org"))
- '(org-agenda-files (mapcar (lambda (item)
-                              (concat
-                               (file-name-as-directory org-directory) item ".org"))
+ '(org-default-notes-file (expand-file-name "Notes.org"
+                                            org-directory))
+ '(org-agenda-files (mapcar #'(lambda (item)
+                                (expand-file-name (format "%s.org" item)
+                                                  org-directory))
                             '("Todo")))
  '(org-agenda-ndays 7)
  '(org-deadline-warning-days 14)

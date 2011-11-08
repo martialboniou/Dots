@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sun Nov  6 11:27:22 2011 (+0100)
+;; Last-Updated: Tue Nov  8 12:10:42 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 504
+;;     Update #: 507
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -53,7 +53,6 @@
 ;;
 ;;; Code:
 
-(add-to-list 'load-path (file-name-directory load-file-name))
 (require 'formats)
 (provide 'programming)
 (require 'preamble)
@@ -63,9 +62,7 @@
 ;;; LANGUAGES' CONFIGURATION PATH
 (defvar lang-rep
   (condition-case nil
-      (expand-file-name
-       (concat (file-name-directory load-file-name)
-               "lang"))
+      (expand-file-name "lang" (file-name-directory load-file-name))
     (error (progn (message "code: unable to locate a lang directory") nil)))
   "Programming languages' configuration repository.")
 
@@ -113,8 +110,6 @@
 ;; if `*i-am-a-vim-user*'
 ;;
 ;; globalize hideshow
-                                        ;(when window-system
-                                        ;  (require 'hideshow))
 (require 'hideshow)
 (eval-after-load "hideshow"
   '(progn
@@ -531,10 +526,11 @@ Move point to the beginning of the line, and run the normal hook
 
 ;;; VISUALIZE CALL TREE
 (setq sct-graphviz-dir (expand-file-name
-                        (concat
-                         (file-name-as-directory mars/local-root-dir)
-                         (file-name-as-directory mars/personal-data)
-                         (file-name-as-directory "Temporary") "Graphviz")))
+                        "Graphviz"
+                        (expand-file-name "Temporary"
+                                          (expand-file-name mars/personal-data
+                                                            mars/local-root-dir))))
+
 (defun mars/simple-call-tree-view ()
   (interactive)
   (sct-graphviz))

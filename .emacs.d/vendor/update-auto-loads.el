@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Feb 20 11:57:06 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sat Mar  5 13:31:29 2011 (+0100)
+;; Last-Updated: Tue Nov  8 15:17:57 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 3
+;;     Update #: 12
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -58,13 +58,13 @@ the non-omitted and non-extruded subdirectories on one side and an alist on the
 other side; those cons are like this: (FILENAME-AS-SYMBOL . LIST-OF-EXTRUDED-ROOT-DIR)."
   (interactive "DDirectory name: ")
   (let (subdirectories-list
-	extrude-root-directory-alist
+        extrude-root-directory-alist
         (current-directory-list
          (directory-files-and-attributes directory t)))
     (while current-directory-list
       (when
-          (eq t (car (cdr (car current-directory-list))))
-        (let ((dir-name (car (car current-directory-list))))
+          (eq t (cadr (car current-directory-list)))
+        (let ((dir-name (caar current-directory-list)))
           (unless
               (or
                ;; check if directory is not a well-known archive one
@@ -77,7 +77,7 @@ other side; those cons are like this: (FILENAME-AS-SYMBOL . LIST-OF-EXTRUDED-ROO
                (let ((found nil))
                  (when extrude-if-file-named-list
                    (mapc '(lambda (x)
-                            (when (and x (file-exists-p (concat dir-name "/" x)))
+                            (when (and x (file-exists-p (expand-file-name x dir-name)))
                               (let ((kv (assq (intern x) extrude-root-directory-alist)))
                                 (if kv
                                     (setcdr (assq (intern x) extrude-root-directory-alist) (append (cdr kv) (list dir-name)))
@@ -92,7 +92,7 @@ other side; those cons are like this: (FILENAME-AS-SYMBOL . LIST-OF-EXTRUDED-ROO
                    (setq pending omit-if-file-named-list)
                    (while (and pending (null found))
                      (setq omit-file (pop pending))
-                     (when (and omit-file (file-exists-p (concat dir-name "/" omit-file)))
+                     (when (and omit-file (file-exists-p (expand-file-name omit-file dir-name)))
                        (setq found t))))
                  found))
             (setq subdirectories-list
@@ -107,8 +107,10 @@ other side; those cons are like this: (FILENAME-AS-SYMBOL . LIST-OF-EXTRUDED-ROO
       subdirectories-list)))
 
 ;;;###autoload
-(let ((new-path (expand-file-name (file-name-directory load-file-name))))
-  (unless (member new-path (mapcar '(lambda (x) (file-name-as-directory x)) load-path))
+(let ((new-path (expand-file-name
+                 (directory-file-name
+                  (file-name-directory load-file-name)))))
+  (unless (member new-path load-path)
     (setq load-path (cons new-path load-path))))
 
 ;;;###autoload
@@ -120,11 +122,11 @@ subdirectories instead of the standard `update-autoloads-from-directories'."
   (interactive)
   (save-excursion
     (let ((base (file-truename
-		 (file-name-directory
-		  (symbol-file 'update-autoloads-in-package-area 'defun)))))
+                 (file-name-directory
+                  (symbol-file 'update-autoloads-in-package-area 'defun)))))
       (unless (fboundp 'update-autoloads-from-directories)
-	(require 'autoload))
-      (let ((generated-autoload-file (concat base "loaddefs.el")))
+    (require 'autoload))
+      (let ((generated-autoload-file (expand-file-name "loaddefs.el" base)))
         (unless (file-exists-p generated-autoload-file)
           (with-current-buffer (find-file-noselect generated-autoload-file)
             (insert ";;")                 ; create the file with non-zero size to appease autoload
@@ -132,27 +134,26 @@ subdirectories instead of the standard `update-autoloads-from-directories'."
         (cd base)
         (if file
             (update-file-autoloads file) 
-          (let ((additional-directories (subdirectories-in-below-directory base '(".nosearch" ".noauto") '(".cedet")))
-                ;; put a .cedet file at the root of your cedet directory
-                (expanded-path (mapcar '(lambda (x) (file-name-as-directory (expand-file-name x)))
-                                       load-path)))
+          (let ((additional-directories (subdirectories-in-below-directory 
+                                         base
+                                         '(".nosearch" ".noauto") '(".cedet"))))
+            ;; NOTE: put a .cedet file at the root of your cedet directory
             (update-autoloads-from-directories base)
             ;; normal case
             (dolist (dir (car additional-directories))
-              (when (member (file-name-as-directory dir) expanded-path) ; belongs to `LOAD-PATH'
+              (when (member dir load-path) ; belongs to `LOAD-PATH'
                 (update-autoloads-from-directories dir)))
             ;; CEDET case
             (let ((cedet-bases (cdr (cadr additional-directories))))
               (dolist (dir cedet-bases)
                 (message "CEDET autoloads for %s and its subdirs." dir)
                 (unless (fboundp 'cedet-update-autoloads)
-                  (load "cedet"))	; latest common/cedet in `LOAD-PATH'
+                  (load "cedet"))   ; latest common/cedet in `LOAD-PATH'
                 ;; FIXME: common/cedet rebuilds `LOAD-PATH'
                 (cedet-update-autoloads generated-autoload-file dir)
                 (let ((subdirs (subdirectories-in-below-directory dir '(".nosearch"))))
-                  (message (prin1-to-string subdirs))
                   (dolist (subdir subdirs)
-                    (when (member (file-name-as-directory subdir) expanded-path) ; belongs to `LOAD-PATH'
+                    (when (member subdir load-path) ; belongs to `LOAD-PATH'
                       (cedet-update-autoloads generated-autoload-file subdir))))))))))))
 
 ;;;###autoload

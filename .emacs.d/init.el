@@ -7,9 +7,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 4.0b1
-;; Last-Updated: Thu Nov  3 16:10:31 2011 (+0100)
+;; Last-Updated: Tue Nov  8 15:24:30 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 2058
+;;     Update #: 2061
 ;; URL: https://github.com/martialboniou/Dots.git
 ;; Keywords: .emacs, init
 ;; Compatibility: C-\ is linked to Esc-map
@@ -40,21 +40,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 
-(add-to-list 'load-path (expand-file-name 
-                         (concat
-                          (file-name-as-directory
-                           (file-name-directory load-file-name)) "lisp")))
+(add-to-list 'load-path (expand-file-name "lisp" (file-name-directory load-file-name)))
 
 (provide 'emacs-normal-startup)
 (require 'kernel)
-
-;; (condition-case err
-;;     (load-library "kernel")
-;;   (error 
-;;    (progn
-;;     (message "%s: you should add \"~/.emacs.d/lisp\" to EMACSLOADPATH" err)
-;;     (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
-;;     (load-library "kernel"))))
 
 ;;; SERVER
 ;;
@@ -70,11 +59,6 @@
 
 ;; minibuffer histories
 (savehist-mode 1)
-
-;; compile eventually
-;; (unless (or (file-exists-p (concat user-init-file ".elc")) 
-;;             (null (functionp #'byte-compile-user-init-file)))
-;;   (byte-compile-file user-init-file))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; init.el ends here

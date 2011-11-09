@@ -45,7 +45,7 @@
 ;; 
 ;;; Code:
 (provide 'one-language-spoken)
-(require 'preamble)
+(require 'code-preamble)
 (unintern 'one-language-spoken obarray)
 
 ;;; GALLINA-PYTHON - NON GNU VERSION

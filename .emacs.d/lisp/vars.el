@@ -216,7 +216,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
                       full-path)))
       (setq mars-windows-archiver-file (cachize "windows-archiver")
         kiwon/last-window-configuration-file (cachize "last-window-configuration")
-        desktop-dir (expand-file-name data-cache)
+        desktop-dir data-cache
         desktop-base-file-name "desktop"
         desktop-base-lock-name (format "%s%s.lock" 
                                        (if (memq system-type '(ms-dos windows-nt cygwin)) "_" ".")

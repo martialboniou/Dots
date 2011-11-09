@@ -46,7 +46,6 @@
 ;;
 ;;; Code:
 
-(add-to-list 'load-path (expand-file-name load-file-name))
 (require 'adapter)
 (require 'etags)
 

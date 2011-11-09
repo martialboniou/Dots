@@ -6,10 +6,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
-;; Version: 4.0b1
-;; Last-Updated: Tue Nov  8 15:24:30 2011 (+0100)
+;; Version: 4.0b2
+;; Last-Updated: Wed Nov  9 13:50:35 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 2061
+;;     Update #: 2064
 ;; URL: https://github.com/martialboniou/Dots.git
 ;; Keywords: .emacs, init
 ;; Compatibility: C-\ is linked to Esc-map
@@ -40,9 +40,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 
-(add-to-list 'load-path (expand-file-name "lisp" (file-name-directory load-file-name)))
+(add-to-list 'load-path (expand-file-name "lisp" 
+                          (file-name-directory load-file-name)))
+(delete-dups load-path)
 
 (provide 'emacs-normal-startup)
+
 (require 'kernel)
 
 ;;; SERVER

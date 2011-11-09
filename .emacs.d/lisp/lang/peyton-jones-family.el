@@ -46,7 +46,7 @@
 ;;; Code:
 
 (provide 'one-language-spoken)
-(require 'preamble)
+(require 'code-preamble)
 (unintern 'one-language-spoken obarray)
 
 ;;; HASKELL MODE

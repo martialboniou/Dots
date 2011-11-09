@@ -1,6 +1,5 @@
-(add-to-list 'load-path (expand-file-name (file-name-directory load-file-name)))
+(require 'noaccess)
 
-(cond ((not (featurep 'booting))     (require 'kernel)))
-(cond ((not (featurep 'programming)) (require 'code)))
+(cond ((not (featurep 'booting)) (require 'kernel)))
 
 (provide 'preamble)

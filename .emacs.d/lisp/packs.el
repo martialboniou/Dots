@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Tue Nov  8 20:53:16 2011 (+0100)
+;; Last-Updated: Wed Nov  9 14:14:11 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 447
+;;     Update #: 456
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -89,7 +89,8 @@
                                                      (install . "./configure; make")
                                                      (nosearch . ("doc" "en" "ext" "ja" "sample"))))
                                     (haskellmode-emacs . ((get . "darcs get http://code.haskell.org/haskellmode-emacs")
-                                                          (install . "make"))) ; TODO: compile
+                                                          (install . "make compile")
+                                                          (noauto . ".")))
                                     (git-emacs     . ((get . "git clone git://github.com/tsgates/git-emacs.git")
                                                       (install . "make")
                                                       (nosearch . "docs")
@@ -137,7 +138,7 @@
                                                            (nosearch . ("build" "contrib" "Pymacs" "tests"))))
                                     (ropemacs           . ((get . "hg clone https://bitbucket.org/agr/ropemacs")
                                                            (install . "python setup.py install")
-                                                           ))
+                                                           (nosearch . ".")))
                                     (bbdb               . ((get . "cvs -d \":pserver:anonymous:@bbdb.cvs.sourceforge.net:/cvsroot/bbdb\" checkout bbdb")
                                                            (install . "autoconf;./configure;cd lisp;make autoloadsc;cd ..; make") ; soon DEPRECATED / IMPORTANT: problem in configure on Windows: `emacs' path with spaces
                                                            (nosearch . ("autom4te.cache" "bits/bbdb-filters/doc" "html" "tex" "texinfo" "utils"))))
@@ -263,7 +264,9 @@ becomes true when an installation is required. So it will re-create AUTOLOADS la
 in `.emacs'. Otherwise AUTOLOADS are generated immediately."
     (when mars/site-lisp-path
       (setq renew-autoloads-at-startup nil)
-      (let ((site-lisp-path (mapcar #'(lambda (x)
+      (let (broken-packages
+            (broken-tags (list nil)) 
+            (site-lisp-path (mapcar #'(lambda (x)
                                         (expand-file-name 
                                          x
                                          (expand-file-name mars/local-root-dir)))
@@ -277,6 +280,7 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
                                                               pending))
                       (setq found t)))
                   (unless found
+                   ;; getting & installing
                     (let ((pkg-dir (symbol-name (car x)))
                           (get-method (assoc 'get (cdr x))))
                       (if (not get-method)
@@ -293,16 +297,14 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
                                 (mars/execute-commands get-command executables-in-play)
                                 (let ((install-method (assoc 'install (cdr x))))
                                   (when install-method
-                                    (if (and (file-readable-p pkg-dir)
-                                             (file-directory-p pkg-dir))
-                                        (cd pkg-dir)
-                                      (error "packs: package `%s' not installed\n\tplease install it in at the root of `%s' via the command:\n\t$ %s"
-                                             pkg-dir
-                                             (car site-lisp-path)
-                                             get-command))
-                                    (let ((install-command (cdr install-method)))
-                                      (mars/execute-commands install-command 
-                                                             executables-in-play))))))
+                                    (condition-case nil
+                                        (progn
+                                         (cd pkg-dir) ; unable to change directory if broken
+                                         (let ((install-command (cdr install-method)))
+                                           (mars/execute-commands install-command 
+                                                                  executables-in-play)))
+                                      (error (add-to-list 'broken-packages (car x)))))))))))
+                            ;; tagging
                             (let (tag-alerted)
                               (dolist (tag '(nosearch noauto cedet))
                                 (let ((tag-method (assoc tag (cdr x))))
@@ -318,27 +320,26 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
                                                        (expand-file-name
                                                         dir
                                                         (expand-file-name
-                                                         (symbol-name (car x)) (car site-lisp-path)))))
+                                                         pkg-dir (car site-lisp-path)))))
                                                   (when (file-directory-p dirname)
-                                                    (condition-case err
-                                                        (with-temp-file
-                                                            (expand-file-name
-                                                             (format ".%s" (symbol-name tag))
-                                                             dirname)
-                                                          nil)
-                                                      (error
-                                                       (message "packs: unable to tag `%s' as %s: %s"
-                                                                dirname
-                                                                (symbol-name tag)
-                                                                err))))))
+                                                    (let ((file-tag (expand-file-name 
+                                                                     (format ".%s" (symbol-name tag))
+                                                                     dirname)))
+                                                        (condition-case err
+                                                            (with-temp-file ; touch file as marker tag
+                                                                file-tag
+                                                              nil)
+                                                          (error
+                                                           (setcdr (assoc tag broken-tags)
+                                                                   (cons file-tag 
+                                                                         (cdr (assoc tag broken-tags))))))))))
                                             tag-dirs))))))
                             ;; add new directory tree to `load-path'
                             (mars/add-to-load-path (expand-file-name
-                                                    (symbol-name (car x))
-                                                    (car site-lisp-path)))
+                                                    pkg-dir
+                                                    (car site-lisp-path))))
                             (setq renew-autoloads-at-startup t)
-                            (message "packs: %s installed" (car x))
-                            )))))))
+                            (message "packs: %s installed" (car x)))))
               mars/site-lisp-package-tree)
         (when (and (not only-mark)
                    renew-autoloads-at-startup) ; generate AUTOLOADS
@@ -349,6 +350,9 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
             (update-autoloads-in-package-area)
             (safe-autoloads-load mars/loaddefs)))
         (setq renew-autoloads-at-startup nil))))
+
+;; (setq toto (list (cons 'ta '(titi tutu))))
+;; (setcdr (assoc 'ta toto) (cons "machine"(cdr (assoc 'ta toto))))
 
 (defun mars/renew-site-lisp ()
   "Renew PATH and AUTOLOADS."

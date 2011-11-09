@@ -323,8 +323,11 @@ Move point to the beginning of the line, and run the normal hook
        (setq ecb-version-check nil
              stack-trace-on-error nil)) ; for unstable version
      (setq ecb-tip-of-the-day nil)
-     (push '(ecb-minor-mode nil) desktop-minor-mode-table) ; compatibility with DESKTOP
-     ;; ECB version of mars/toggle-single-window defined in <confs>/window-manager.el
+     ;; ECB compatible `desktop'
+     (eval-after-load "desktop"
+      '(progn
+         (push '(ecb-minor-mode nil) desktop-minor-mode-table)))
+     ;; ECB compatible `mars/toggle-single-window' defined in `window-manager'
      (if (fboundp 'mars/toggle-single-window)
          (progn
            (defvar mars/ecb-previously-running nil

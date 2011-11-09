@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.10
-;; Last-Updated: Tue Nov  8 12:28:11 2011 (+0100)
+;; Last-Updated: Wed Nov  9 10:29:10 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 244
+;;     Update #: 248
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -150,15 +150,19 @@ ROOT                        => ROOT"
                         (flatten pathname))
                 (list (expand-file-name root)))))
     (mapc
-     (lambda (dir)
-       (when (and (mergeable-to-path-p dir)
-                  (not (file-exists-p (expand-file-name ".nosearch" dir)))) ; test exclusion on `dir'
-         (let ((default-directory dir)
-               (orig-load-path load-path))
-           (setq load-path (list dir))
-           (normal-top-level-add-subdirs-to-load-path)
-           (nconc load-path orig-load-path)))) ; reverse path construct
-     path)))
+     #'(lambda (dir)
+         (when (and (mergeable-to-path-p dir)
+                    (not (file-exists-p (expand-file-name ".nosearch" dir)))) ; test exclusion on `dir'
+           (let ((default-directory dir)
+                 (orig-load-path load-path))
+             (setq load-path (list dir))
+             (normal-top-level-add-subdirs-to-load-path)
+             (setq load-path
+                   (mapcar #'(lambda (x)
+                               (directory-file-name x)) load-path))
+             (nconc load-path orig-load-path)))) ; reverse path construct
+     path)
+    (delete-dups load-path)))
 
 (defun mars/autoload (libraries-and-functions) ; UNTESTED
   (mapc (lambda(x)

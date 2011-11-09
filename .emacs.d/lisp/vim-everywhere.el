@@ -47,8 +47,8 @@
 ;;
 ;;; Code:
 
-(add-to-list 'load-path (file-name-directory load-file-name))
-(defvar *vim-now* t)
+(defvar *vim-now* t) ; vemacs case
+(provide 'emulation-context)
 (require 'preamble)
 
 ;; (unless (fboundp 'mars/add-to-load-path)
@@ -501,6 +501,7 @@ TODO: case of '''colorscheme' this'' where this is
 ;; C-w = Window manipulation in normal modes; a kind of `DELETE-BACKWARD-WORD' elsewhere
 
 (provide 'vim-everywhere)
+(unintern 'emulation-context obarray)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; vim-everywhere.el ends here

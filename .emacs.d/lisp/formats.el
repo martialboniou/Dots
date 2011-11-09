@@ -49,7 +49,6 @@
 ;; 
 ;;; Code:
 
-(add-to-list 'load-path (file-name-directory load-file-name))
 (require 'adapter)
 
 ;;; UTF-8

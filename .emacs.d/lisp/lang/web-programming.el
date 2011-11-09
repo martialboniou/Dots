@@ -94,7 +94,7 @@
 
 
 (provide 'one-language-spoken)
-(require 'preamble)
+(require 'code-preamble)
 (require 'www)
 (unintern 'one-language-spoken obarray)
 

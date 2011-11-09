@@ -45,7 +45,6 @@
 ;; 
 ;;; Code:
 
-(add-to-list 'load-path (file-name-directory load-file-name))
 (require 'www)
 (require 'gtd)
 (require 'preamble)
@@ -233,9 +232,8 @@
            bbdb-ignore-some-messages-alist '(("From" . "no.?reply\\|DAEMON\\|daemon\\|facebookmail\\|twitter")))
      (add-hook 'bbdb-notice-hook #'bbdb-auto-notes-hook)
      (add-hook 'wl-mail-setup-hook #'bbdb-insinuate-sendmail)
-     ;; citation (see signature in confs/init/wl if any)
-     ;; (mars/autoload '(("mu-cite" mu-cite-original)))
-     ;; (add-hook 'mail-citation-hook #'mu-cite-original)
+     ;; citation
+     ;; (add-hook 'mail-citation-hook #'cite-cite)
      ;; vCard case
      (load "ch6-bbdb-import-csv-buffer") ; Outlook vCard conversion
      (require 'bbdb-vcard-import) ; vCard import + the 2 following funs

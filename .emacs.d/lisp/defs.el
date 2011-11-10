@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.10
-;; Last-Updated: Wed Nov  9 10:29:10 2011 (+0100)
+;; Last-Updated: Thu Nov 10 11:25:37 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 248
+;;     Update #: 272
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -180,6 +180,18 @@ ROOT                        => ROOT"
           (function (cadr bindings)))
       (bind-key key function)
       (bind-keys (cddr bindings)))))
+
+(defmacro add-to-alist (key value alist)
+  "add VALUE to an ALIST at KEY."
+  `(if (null (assoc ,key ,alist))
+      (setq ,alist (cons (list ,key ,value) ,alist))
+     (progn
+       (setcdr (assoc ,key ,alist)
+               (cons ,value (cdr (assoc ,key ,alist))))
+       ,alist)))
+
+(defun value-alist (key alist)          ; UNTESTED
+  (cdr (assoc key alist)))
 
 (defun dont-kill-emacs ()               ; UNTESTED
   "Disallow emacs to kill on the dangerous C-x C-c command."

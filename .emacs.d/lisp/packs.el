@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Wed Nov  9 14:14:11 2011 (+0100)
+;; Last-Updated: Thu Nov 10 12:26:11 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 456
+;;     Update #: 495
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -84,7 +84,8 @@
                                     (yaml-mode    . ((get . "git clone git://github.com/yoshiki/yaml-mode.git")
                                                      (install . "make")))
                                     (keats        . ((get . "git clone git://github.com/rejeep/keats.git")
-                                                     (install . "emacs-compile-directory")))
+                                                     (install . "emacs-compile-directory")
+                                                     (nosearch . "dummy-test-error")))
                                     (howm-1.3.9.1 . ((get . "curl http://howm.sourceforge.jp/a/howm-1.3.9.1.tar.gz | tar zx")
                                                      (install . "./configure; make")
                                                      (nosearch . ("doc" "en" "ext" "ja" "sample"))))
@@ -265,7 +266,7 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
     (when mars/site-lisp-path
       (setq renew-autoloads-at-startup nil)
       (let (broken-packages
-            (broken-tags (list nil)) 
+            broken-tags  
             (site-lisp-path (mapcar #'(lambda (x)
                                         (expand-file-name 
                                          x
@@ -316,23 +317,21 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
                                       (when (stringp tag-dirs)
                                         (setq tag-dirs (list tag-dirs)))
                                       (mapc #'(lambda (dir)
-                                                (let ((dirname
-                                                       (expand-file-name
-                                                        dir
-                                                        (expand-file-name
-                                                         pkg-dir (car site-lisp-path)))))
-                                                  (when (file-directory-p dirname)
-                                                    (let ((file-tag (expand-file-name 
-                                                                     (format ".%s" (symbol-name tag))
-                                                                     dirname)))
-                                                        (condition-case err
-                                                            (with-temp-file ; touch file as marker tag
-                                                                file-tag
-                                                              nil)
-                                                          (error
-                                                           (setcdr (assoc tag broken-tags)
-                                                                   (cons file-tag 
-                                                                         (cdr (assoc tag broken-tags))))))))))
+                                                (let* ((dirname (expand-file-name dir
+                                                                                  (expand-file-name
+                                                                                   pkg-dir (car site-lisp-path))))
+                                                      (file-tag (expand-file-name (format ".%s"
+                                                                                          (symbol-name tag))
+                                                                                  dirname)))
+                                                  (condition-case err
+                                                      (progn
+                                                        (message "create: %s" file-tag)
+                                                        (with-temp-file ; touch file as marker tag
+                                                            file-tag
+                                                          nil))
+                                                    (error
+                                                     (add-to-alist tag (format "%s" file-tag)
+                                                                   broken-tags)))))
                                             tag-dirs))))))
                             ;; add new directory tree to `load-path'
                             (mars/add-to-load-path (expand-file-name
@@ -341,6 +340,17 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
                             (setq renew-autoloads-at-startup t)
                             (message "packs: %s installed" (car x)))))
               mars/site-lisp-package-tree)
+        (when (or broken-packages broken-tags)
+          (message "%S" broken-packages )
+          (message "%S" broken-tags )
+         (with-temp-file (expand-file-name ".packs-errors.log"
+                                           (expand-file-name mars/personal-data
+                                                             mars/local-root-dir))
+           (insert ";; -*- emacs-lisp: t; no-byte-compile:t -*-\n")
+           (mapc #'(lambda (x)
+                     (unless (null x)
+                       (insert (format "(setq %s %S)" (symbol-name x) (symbol-name x)))))
+                 '(broken-packages broken-tags))))
         (when (and (not only-mark)
                    renew-autoloads-at-startup) ; generate AUTOLOADS
           (let ((mars/loaddefs
@@ -350,9 +360,6 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
             (update-autoloads-in-package-area)
             (safe-autoloads-load mars/loaddefs)))
         (setq renew-autoloads-at-startup nil))))
-
-;; (setq toto (list (cons 'ta '(titi tutu))))
-;; (setcdr (assoc 'ta toto) (cons "machine"(cdr (assoc 'ta toto))))
 
 (defun mars/renew-site-lisp ()
   "Renew PATH and AUTOLOADS."

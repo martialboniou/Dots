@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Nov  8 12:58:05 2011 (+0100)
+;; Last-Updated: Thu Nov 10 19:38:29 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 99
+;;     Update #: 100
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -76,7 +76,9 @@
       (setq wl-resource-rep (file-name-directory wl-lib)))
     (when (and (not (null wl-resource-rep))
                (file-exists-p wl-resource-rep))
-      (setq wl-icon-directory (expand-file-name "etc/icons" wl-resource-rep)))))
+      (setq wl-icon-directory
+            (expand-file-name "etc/icons"
+                              (expand-file-name ".." wl-resource-rep))))))
 
 (eval-after-load "wl-draft"
   '(progn

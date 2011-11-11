@@ -38,6 +38,7 @@ fetch_path () {
 # MEMO: rehash
 repath () {
   local force_reload
+  export PATH=/usr/bin:/bin # ensure reset
   fetch_path
   rehash
 }

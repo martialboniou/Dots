@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Thu Nov 10 12:26:11 2011 (+0100)
+;; Last-Updated: Fri Nov 11 15:47:54 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 495
+;;     Update #: 499
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -346,11 +346,14 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
          (with-temp-file (expand-file-name ".packs-errors.log"
                                            (expand-file-name mars/personal-data
                                                              mars/local-root-dir))
-           (insert ";; -*- emacs-lisp: t; no-byte-compile:t -*-\n")
+           (insert ";; -*- emacs-lisp: t; no-byte-compile: t -*-\n")
            (mapc #'(lambda (x)
                      (unless (null x)
-                       (insert (format "(setq %s %S)" (symbol-name x) (symbol-name x)))))
-                 '(broken-packages broken-tags))))
+                       (insert (format "(setq %s %s)\n"
+                                       (symbol-name (car x))
+                                       (prin1-to-string (cdr x))))))
+                 (list (cons 'broken-packages broken-packages) 
+                       (cons 'broken-tags broken-tags)))))
         (when (and (not only-mark)
                    renew-autoloads-at-startup) ; generate AUTOLOADS
           (let ((mars/loaddefs

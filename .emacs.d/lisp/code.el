@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Nov  8 12:10:42 2011 (+0100)
+;; Last-Updated: Fri Nov 11 17:56:39 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 507
+;;     Update #: 513
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -439,17 +439,17 @@ Move point to the beginning of the line, and run the normal hook
            (autopair-mode 1)
          (autopair-mode 0)))
      ;; delete case
-     (define-key paredit-mode-map [(kp-delete)] 'paredit-forward-delete)
-     (define-key paredit-mode-map [(control kp-delete)] 'paredit-forward-kill-word)
-     (define-key paredit-mode-map [(control backspace)] 'paredit-backward-kill-word)
+     (define-key paredit-mode-map [(kp-delete)] #'paredit-forward-delete)
+     (define-key paredit-mode-map [(control kp-delete)] #'paredit-forward-kill-word)
+     (define-key paredit-mode-map [(control backspace)] #'paredit-backward-kill-word)
      ;; term case
      (when *i-am-a-terminator*
-       (define-key paredit-mode-map (kbd "C-h") 'paredit-backward-delete)
-       (define-key paredit-mode-map (kbd "C-w") 'paredit-backward-kill-word))
+       (define-key paredit-mode-map (kbd "C-h") #'paredit-backward-delete)
+       (define-key paredit-mode-map (kbd "C-w") #'paredit-backward-kill-word))
      ;; close parenthesis case
-     (define-key paredit-mode-map [?\)] 'paredit-close-parenthesis)
+     (define-key paredit-mode-map [?\)] #'paredit-close-parenthesis)
      (define-key paredit-mode-map [(meta ?\))]
-       'paredit-close-parenthesis-and-newline)
+       #'paredit-close-parenthesis-and-newline)
      ;; viper case
      (eval-after-load "vimpulse"
        '(progn
@@ -478,7 +478,14 @@ Move point to the beginning of the line, and run the normal hook
      (defun override-slime-repl-bindings-with-paredit ()
        (define-key slime-repl-mode-map
          (read-kbd-macro paredit-backward-delete-key) nil))
-     (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)))
+     (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
+     ;; no-window-support case
+     ;; vt-100 and alike don't know keys like "\C-\S-\)" and so on
+     ;; NOTE: ensure function keys like <f2> are well mapped on termcaps like '\eOQ'
+     (define-key paredit-mode-map (kbd "<f2>]") #'paredit-forward-barf-sexp) ; \C-\S-\]
+     (define-key paredit-mode-map (kbd "<f2>[") #'paredit-backward-barf-sexp) ; \C-\S-\[
+     (define-key paredit-mode-map (kbd "<f2>0") #'paredit-forward-slurp-sexp) ; \C-\)
+     (define-key paredit-mode-map (kbd "<f2>9") #'paredit-backward-slurp-sexp))) ; \C-\(
 
 ;;; ELDOC
 (mars/add-hooks (mars/generate-mode-hook-list

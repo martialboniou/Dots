@@ -50,13 +50,13 @@
         (defvar foobar 'baz)
         ;; add a list including 'bar to 'foo key
         (add-to-alist 'foo 'bar foo-alist)
-        (should (equal foo-alist '((foo bar))))
+        (should (equal foo-alist '((foo . bar))))
         ;; push a function result as symbol to the container at 'foo key
         (add-to-alist 'foo (intern (format "%s" "baz")) foo-alist)
         (should (equal foo-alist '((foo baz bar))))
         ;; add a new container at a new generated key
         (add-to-alist foobar 'quux foo-alist)
-        (should (equal foo-alist '((baz quux) (foo baz bar)))))
+        (should (equal foo-alist '((baz . quux) (foo baz bar)))))
     (safe-unintern 'foobar)
     (safe-unintern 'foo-alist)))
 

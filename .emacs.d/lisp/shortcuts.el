@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Thu Nov  3 23:52:06 2011 (+0100)
+;; Last-Updated: Fri Nov 11 15:58:21 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 109
+;;     Update #: 110
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -299,6 +299,7 @@
 (bind-keys
  '("C-c t" default-term
    "C-c w" mars/wl))                    ; 'WL-OTHER-FRAME but ensure the `confs/mail' load
+;; Remember <f2> is also used for `paredit' edition in NON-WINDOW mode
 
 (provide 'shortcuts)
 

@@ -323,4 +323,11 @@ the should-be-forbidden C-z.")
 (define-key special-event-map [sigusr2]
   #'(lambda () (interactive) (kill-emacs)))
 
+;;; VT100 KEYS
+(when (null window-system)
+  (require 'lk201)
+  (terminal-init-lk201))
+(eval-when-compile (require 'lk201))
+
+
 (provide 'behave)

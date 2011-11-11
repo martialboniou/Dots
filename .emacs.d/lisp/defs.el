@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.10
-;; Last-Updated: Fri Nov 11 15:49:05 2011 (+0100)
+;; Last-Updated: Fri Nov 11 18:08:06 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 273
+;;     Update #: 274
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -184,7 +184,7 @@ ROOT                        => ROOT"
 (defmacro add-to-alist (key value alist)
   "add VALUE to an ALIST at KEY."
   `(if (null (assoc ,key ,alist))
-      (setq ,alist (cons (cons ,key ,value) ,alist))
+      (setq ,alist (cons (list ,key ,value) ,alist))
      (progn
        (setcdr (assoc ,key ,alist)
                (cons ,value (cdr (assoc ,key ,alist))))

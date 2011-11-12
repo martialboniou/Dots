@@ -6,18 +6,23 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Fri Nov 11 15:58:21 2011 (+0100)
+;; Last-Updated: Sat Nov 12 12:52:50 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 110
+;;     Update #: 140
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Commentary: Arrow / Functions keys (should be loaded at the end of
-;;              .emacs)
-;;              Other keys (see .emacs for main bindings)
+;;; Commentary: <f1>-<f4>  is reserved to Emacs
+;;              <f9>-<f12> should be kept untouched as they are commands
+;;                         for desktop like OSX or Gnome
+;;              <f5>-<f8>  will be used in this system
+;;              <f2>       normally used for 2C-two-columns, will be
+;;                         extended especially for the NO-WINDOW-SYSTEM
+;;                         mode where 'C-S..', 'C-<arrow>', 'C-<specialkey>',
+;;                         'C-;', 'C-.' or 'C-\}' aren't VT100 compatible.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -96,7 +101,11 @@
     (bind-keys                          ; Sun help keys' order
      '("C-; C-'" copy-region-as-kill
        "C-; C-a" yank
-       "C-; C-;" kill-region))
+       "C-; C-;" kill-region
+       ;; unavailable C-; in NO-WINDOW-SYSTEM => use <f2>
+       "<f2>'"   copy-region-as-kill
+       "<f2>a"   yank
+       "<f2>;"   kill-region))
   (when *i-am-a-terminator*
     (cua-mode t)))                      ; C-c/C-x got timeout in order
                                         ; to make combinations to work
@@ -133,9 +142,11 @@
 (eval-after-load "smex"
   '(progn
      (bind-keys
-      '("M-x" smex
-        "C-:" smex
-        "M-X" smex-major-mode-commands))))
+      '("<f2>x" smex
+        "M-x"    smex
+        "C-:"    smex
+        "<f2>X" smex-major-mode-commands
+        "M-X"    smex-major-mode-commands))))
 
 ;;; UTILITY MACROS
 ;;
@@ -230,6 +241,7 @@
                                   (mars/toggle-single-window  . id)
                                   (cycle-buffer-backward      . next)
                                   (cycle-buffer               . prev)
+                                  (delete-window              . "<end>") ; C-<end> may be used too
                                   (kill-this-buffer           . "<f1>")
                                   ((lambda () (interactive)
                                      (undo-kill-buffer ()))   . "<f2>")
@@ -257,41 +269,57 @@
 ;; - Navigating: Windmove uses C-<up> etc.
 (windmove-default-keybindings 'control)
 ;; - Split & Resize
-(bind-keys '("C-<up>"      windmove-up
-             "C-S-<left>"  (lambda () (interactive)
-                             (split-window-horizontally)
-                             (previous-buffer))
-             "C-S-<right>" (lambda () (interactive)
-                             (split-window-horizontally)
-                             (buf-move-right)
-                             (previous-buffer))
-             "C-S-<up>"    (lambda () (interactive)
-                             (split-window-vertically)
-                             (previous-buffer))
-             "C-S-<down>"  (lambda () (interactive)
-                             (split-window-vertically)
-                             (buf-move-down)
-                             (previous-buffer))
-             "C-S-<end>"   delete-window
-             "C-{"         shrink-window-horizontally ; TODO: replace both b/c paredit
-             "C-}"         enlarge-window-horizontally
-             "C-^"         enlarge-window
-             ;; - Swap buffers: M-<up> etc.
-             "M-<up>"      buf-move-up
-             "M-<down>"    buf-move-down
-             "M-<right>"   buf-move-right
-             "M-<left>"    buf-move-left
-             ;; - Rotate all buffers: M-S-<up> | M-S-<down>
-             "M-S-<down>"  (lambda () (interactive) (mars/rotate-windows 'down))
-             "M-S-<up>"    (lambda () (interactive) (mars/rotate-windows 'up))
-             ;; - Tile
-             "M-S-<left>"  (lambda () (interactive) ; left favorite layouts
-                             (tiling-cycle 3 mars-tiling-favorite-main-layouts))
-             "M-S-<right>" (lambda () (interactive) ; right favorite layouts
-                             (tiling-cycle 3 mars-tiling-favorite-secondary-layouts))
-             "M-S-<end>"   tiling-cycle)) ; accepts prefix number
+(bind-keys 
+ '("C-<up>"       windmove-up
+   "<f2><up>"     windmove-up
+   "<f2><down>"   windmove-down
+   "<f2><left>"   windmove-left
+   "<f2><right>"  windmove-right
+   ;; - Split windows
+   "C-S-<left>"   (lambda () (interactive)
+                    (split-window-horizontally)
+                    (previous-buffer))
+   "C-S-<right>"  (lambda () (interactive)
+                    (split-window-horizontally)
+                    (buf-move-right)
+                    (previous-buffer))
+   "C-S-<up>"     (lambda () (interactive)
+                    (split-window-vertically)
+                    (previous-buffer))
+   "C-S-<down>"   (lambda () (interactive)
+                    (split-window-vertically)
+                    (buf-move-down)
+                    (previous-buffer))
+   ;; - Delete the current window
+   "C-<end>"      delete-window         ; <f5><end> may be used too
+   ;; - Resize windows
+                                        ;"C-<prior>"    shrink-window-horizontally
+   
+                                        ;"C-<next>"     enlarge-window-horizontally
+                                        ;"C-^"          enlarge-window
+   ;; - Scroll horizontally
+   "<f2><prior>"  scroll-right
+   "<f2><next>"   scroll-left
+   ;; - Swap buffers: M-<up> etc.
+   "M-<up>"       buf-move-up
+   "M-<down>"     buf-move-down
+   "M-<right>"    buf-move-right
+   "M-<left>"     buf-move-left
+   ;; - Rotate all buffers: M-S-<up> | M-S-<down>
+   "M-S-<down>"   (lambda () (interactive) (mars/rotate-windows 'down))
+   "M-S-<up>"     (lambda () (interactive) (mars/rotate-windows 'up))
+   "<f2><end>"    (lambda () (interactive) (mars/rotate-windows 'down))
+   "<f2><home>"   (lambda () (interactive) (mars/rotate-windows 'up))
+   ;; - Tile
+   "M-S-<left>"   (lambda () (interactive) ; left favorite layouts
+                    (tiling-cycle 3 mars-tiling-favorite-main-layouts))
+   "<f2><kp-delete>" (lambda () (interactive) ; '<f2>C-d' for 2C-two-columns
+                       (tiling-cycle 3 mars-tiling-favorite-main-layouts))
+   "M-S-<right>"  (lambda () (interactive) ; right favorite layouts
+                    (tiling-cycle 3 mars-tiling-favorite-secondary-layouts))
+   "M-S-<end>"    tiling-cycle)) ; accepts prefix number
 
-;; Remember (use <f8><f7> or "C-c (C-)r" to open in another frame)
+;; Remember (use <f8><f7> or "C-c C-r" to open in another frame)
 (bind-keys
  '("C-c C-r" make-remember-frame
    "C-c r"   make-remember-frame))

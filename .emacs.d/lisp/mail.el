@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Nov 10 19:38:29 2011 (+0100)
+;; Last-Updated: Sat Nov 12 13:22:30 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 100
+;;     Update #: 102
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -352,7 +352,13 @@
 (defun mars/wl ()
   "Open Wanderlust in another frame."
   (interactive)
-  (wl-other-frame))
+  (if (null window-system)
+      (if (< (length (window-list nil -1 nil)) 2)
+          (wl)
+        (when (y-or-n-p "Would you like to start Wanderlust here? ")
+          (delete-other-windows)
+          (wl)))
+    (wl-other-frame)))
 
 (provide 'mail)
 

@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.10
-;; Last-Updated: Fri Nov 11 18:08:06 2011 (+0100)
+;; Last-Updated: Sat Nov 12 13:25:47 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 274
+;;     Update #: 276
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -1105,10 +1105,12 @@ which is not affected by suffix optional argument."
          (win (when buf (get-buffer-window buf t))))
     (if win
         (progn
-          (raise-frame (window-frame win))
+          (when window-system
+            (raise-frame (window-frame win)))
           (select-window win))
       (progn
-       (select-frame (make-frame))
+        (when window-system
+          (select-frame (make-frame)))
        (term shell-file-name)))))
 
 ;; lennart-borgman libraries' loaders

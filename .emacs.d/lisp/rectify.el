@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
 ;; Version:
-;; Last-Updated: Tue Nov  8 14:10:48 2011 (+0100)
+;; Last-Updated: Sat Nov 12 22:52:25 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 135
+;;     Update #: 138
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -304,28 +304,37 @@
       (yas/advise-indent-function 'ruby-indent-line)))))
 
 ;;; AUTOCOMPLETE
-(require 'auto-complete-config)
-(let ((data-dir (expand-file-name "ac-dict"
-                                  (expand-file-name mars/personal-data
-                                                    mars/local-root-dir))))
-  (unless (file-exists-p data-dir)
-    (make-directory data-dir))
-  (add-to-list 'ac-dictionary-directories data-dir))
-(ac-config-default)
-(eval-after-load "semantic-ia"
-  '(progn
-     (defun ac-semantic-candidate (prefix)
-       (if (memq major-mode
-                 '(c-mode c++-mode jde-mode java-mode))
-           (mapcar 'semantic-tag-name
-                   (ignore-errors
-                     (or (semantic-ia-get-completions
-                          (semantic-analyze-current-context) (point))
-                         (senator-find-tag-for-completion (regexp-quote prefix)))))))
-     (defvar ac-source-semantic
-       '((candidates . (lambda () (all-completions ac-prefix (ac-semantic-candidate ac-prefix)))))
-       "Source for semantic.")
-     (setq ac-sources (cons 'ac-source-semantic ac-sources))))
+(condition-case err
+    (require 'auto-complete-config)
+  (error (message "rectify: %s\n\tYou should install auto-complete" err)))
+(eval-after-load "auto-complete-config"
+ '(progn
+   (let ((default-ac-dir (expand-file-name "dict"
+                           (file-name-directory (locate-library "auto-complete")))))
+     (when (and (file-readable-p  default-ac-dir)
+                (file-directory-p default-ac-dir))
+        (add-to-list 'ac-dictionary-directories default-ac-dir)))
+   (let ((data-ac-dir (expand-file-name "ac-dict"
+                                      (expand-file-name mars/personal-data
+                                                        mars/local-root-dir))))
+     (unless (file-exists-p data-ac-dir)
+       (make-directory data-ac-dir))
+     (add-to-list 'ac-dictionary-directories data-ac-dir))
+   (ac-config-default)
+   (eval-after-load "semantic-ia"
+     '(progn
+        (defun ac-semantic-candidate (prefix)
+          (if (memq major-mode
+                    '(c-mode c++-mode jde-mode java-mode))
+              (mapcar 'semantic-tag-name
+                      (ignore-errors
+                        (or (semantic-ia-get-completions
+                             (semantic-analyze-current-context) (point))
+                             (senator-find-tag-for-completion (regexp-quote prefix)))))))
+        (defvar ac-source-semantic
+          '((candidates . (lambda () (all-completions ac-prefix (ac-semantic-candidate ac-prefix)))))
+          "Source for semantic.")
+        (setq ac-sources (cons 'ac-source-semantic ac-sources))))))
 
 (provide 'rectify)
 

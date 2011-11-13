@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sat Nov 12 14:24:22 2011 (+0100)
+;; Last-Updated: Sun Nov 13 14:32:31 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 104
+;;     Update #: 108
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -77,8 +77,8 @@
     (when (and (not (null wl-resource-rep))
                (file-exists-p wl-resource-rep))
       (setq wl-icon-directory
-            (expand-file-name "etc/icons"
-                              (expand-file-name ".." wl-resource-rep))))))
+            (expand-file-name "icons"
+                              (el-get-package-directory "wanderlust"))))))
 
 (eval-after-load "wl-draft"
   '(progn

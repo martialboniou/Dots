@@ -6,7 +6,7 @@
 ;; Author: Martial Boniou
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
-;; Version: 4.0b2
+;; Version: 4.1-experimental
 ;; Last-Updated: Wed Nov  9 13:50:35 2011 (+0100)
 ;;           By: Martial Boniou
 ;;     Update #: 2064
@@ -17,7 +17,12 @@
 ;; Features that might be required by this library:
 ;;
 ;;   CEDET 1.0 normally loaded..
-;;   REMARK: `load-path' and `loaddefs' generated
+;;   REMARK: `load-path' and `loaddefs' generated in 'WALKER and 'ADAPTER;
+;;           'PACKS should be replaced by 'EL-SELECT and may soon not be
+;;           required:
+;;           - `el-select' <-- `walker' <-- `packs'
+;;           - `el-select' <-- `walker' <-- `adapter'
+;;           you should be able to load 'KERNEL w/o 'PACKS but only 'ADAPTER
 ;;   TIPS: http://cheat.errtheblog.com/s/emacs_tips/
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

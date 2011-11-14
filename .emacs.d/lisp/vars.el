@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Mon Nov  7 21:37:43 2011 (+0100)
+;; Last-Updated: Mon Nov 14 16:51:45 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 133
+;;     Update #: 140
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -68,7 +68,7 @@ recommended to boot CEDET faster.")
 (defvar *i-am-an-emacsen-dev* t
   "If true, ELISP helpers will be loaded providing tools
 to easily visualize ELISP macro expansions.")
-(defvar *i-might-be-a-saiki-komon* t
+(defvar *i-might-be-a-saiki-komon* nil
   "If true, display an organizer window at startup.
 A `saiki-komon' is a clan administrator inside gang
 organization. (See `gtd' file for usage.)")
@@ -171,7 +171,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
                 (cdr list))))
       file))
   (defalias 'executable-find 'mingw-executable-find)
-  (setq explicit-shell-file-name "bash")
+  (defvar explicit-shell-file-name "bash")
   (setq shell-file-name "bash"))
 
 ;;; DATA PATH
@@ -231,7 +231,8 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
         newsticker-cache-filename (cachize "newsticker/cache")
         newsticker-imagecache-dirname (cachize "newsticker/images")
         newsticker-groups-filename (cachize "newsticker/groups")
-        org-diary-agenda-file (expand-file-name "Notes/Diary.org" data-dir)
+        org-diary-agenda-file (expand-file-name "Diary.org"
+                                                (expand-file-name "Notes" data-dir))
         savehist-file (cachize "history")
         tramp-persistency-file-name (cachize "tramp")
         ac-comphist-file (cachize "ac-comphist.dat")
@@ -242,9 +243,9 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
         bbdb-file (expand-file-name (format "%s.bbdb" (user-login-name))
                                     (expand-file-name "BBDB" data-dir))
         elmo-msgdb-directory (expand-file-name "elmo" data-dir)
-        wl-temporary-file-directory (expand-file-name "~/Downloads")
+        wl-temporary-file-directory (expand-file-name "Downloads" "~")
         eshell-directory-name (file-name-as-directory (cachize "eshell")) ; may need a final `slash'
-        emms-cache-file (cachize "emms-cache" "~/.emacs.d/emms"))
+        emms-cache-file (cachize "emms-cache" "~/.emacs.d/emms/"))
       ;; FIXME: temporary hack to auto-remove the default `auto-save-list'
       (let ((auto-save-folder (expand-file-name "Autosaves"
                                                 (expand-file-name "Temporary" data-dir))))

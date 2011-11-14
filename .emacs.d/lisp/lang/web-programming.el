@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 21:14:44 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sun Nov  6 12:34:30 2011 (+0100)
+;; Last-Updated: Sun Nov 13 20:27:08 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 40
+;;     Update #: 41
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -140,7 +140,6 @@
 ;;; NXHTML - not recommended
 (when nxhtml-env
   (nxhtml-loader))                      ; defined in `confs/defs'
-(autoload 'nxhtml-mumamo-mode "~/.emacs.d/packages/nxhtml/autostart.el" nil t)
 (eval-after-load "nxhtml-mumamo-mode"
   '(progn
      (setq mumamo-chunk-coloring 'submode-colored)

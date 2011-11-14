@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:40:26 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sun Nov  6 12:33:41 2011 (+0100)
+;; Last-Updated: Mon Nov 14 13:59:56 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 37
+;;     Update #: 38
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -50,10 +50,6 @@
 (unintern 'one-language-spoken obarray)
 
 ;;; HASKELL MODE
-(load "haskell-site-file")              ; haskell-mode autoloads
-(add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-(add-hook 'haskell-mode-hook 'turn-on-haskell-indent) ; or indent or simple-indent
-;; inferior mode
 (setq haskell-program-name mars/haskell-program-name)
 
 ;;; SHEN MODE

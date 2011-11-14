@@ -6,16 +6,16 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:02:05 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sun Nov  6 12:34:44 2011 (+0100)
+;; Last-Updated: Mon Nov 14 14:13:48 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 32
+;;     Update #: 33
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: markdown / textile / yaml-mode / haml-mode / auctex
+;;; Commentary: textile / yaml-mode / haml-mode / auctex
 ;; 
 ;; 
 ;; 
@@ -49,15 +49,12 @@
 (require 'code-preamble)
 (unintern 'one-language-spoken obarray)
 
-;;; MARKDOWN
-(add-to-list 'auto-mode-alist '("\\.md\\'\\|\\.mkdn\\'\\|\\.markdown\\'" . markdown-mode))
 
 ;;; TEXTILE
 (add-to-list 'auto-mode-alist '("\\.textile\\'" . textile-mode))
 
 ;;; YAML-MODE
 ;; not a markup actually!
-(add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 (eval-after-load "yaml-mode"
     '(progn
        (add-hook 'yaml-mode-hook

@@ -1,0 +1,10 @@
+(:name emms
+       :description "The Emacs Multimedia System"
+       :type git
+       :url "git://git.sv.gnu.org/emms.git"
+       :info "doc"
+       :load-path ("./lisp")
+       :features emms-setup
+        `(,(format "mkdir -p %s" (expand-file-name "emms" user-emacs-directory))
+          ,(concat "make EMACS=" el-get-emacs " SITEFLAG=\"--no-site-file -L " (expand-file-name "emacs-w3m" el-get-dir) "\" autoloads lisp docs emms-print-metadata"))
+       :depends emacs-w3m)

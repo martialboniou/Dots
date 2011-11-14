@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Fri Nov 11 15:47:54 2011 (+0100)
+;; Last-Updated: Mon Nov 14 14:18:59 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 499
+;;     Update #: 514
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -66,43 +66,14 @@
 (defvar mars/site-lisp-package-tree nil
   "A package tree to get / install / tag additional packages in `mars/site-lisp-path'")
 
-(setq mars/site-lisp-package-tree '((vimpulse       . ((get . "git clone git://gitorious.org/vimpulse/vimpulse")
-                                                       (install . "make")))
-                                    (autopair       . ((get . "svn checkout http://autopair.googlecode.com/svn/trunk/ autopair")
-                                                       (install . "emacs-compile-directory")))
-                                    (auto-pair-plus . ((get . "git clone git://github.com/emacsmirror/auto-pair-plus.git")))
-                                    ;; emms main branch on git://git.sv.gnu.org/emms.git
-                                    (emms           . ((get . "git clone git://github.com/martialboniou/emms.git")
-                                                       (install . "make; make emms-print-metadata")
-                                                       (nosearch . ("bin" "doc" "src"))))
-                                    (anything-config . ((get . "git clone git://repo.or.cz/anything-config.git")
-                                                        (install . "make")
-                                                        (nosearch . ("developer-tools" "doc"))))
-                                    (undo-tree    . ((get . "git clone http://www.dr-qubit.org/git/undo-tree.git")
-                                                     (install . "emacs-compile-directory") ; do it from emacs
-                                                     ))
-                                    (yaml-mode    . ((get . "git clone git://github.com/yoshiki/yaml-mode.git")
-                                                     (install . "make")))
-                                    (keats        . ((get . "git clone git://github.com/rejeep/keats.git")
-                                                     (install . "emacs-compile-directory")
-                                                     (nosearch . "dummy-test-error")))
+(setq mars/site-lisp-package-tree '(
+                                    
+                                    
                                     (howm-1.3.9.1 . ((get . "curl http://howm.sourceforge.jp/a/howm-1.3.9.1.tar.gz | tar zx")
                                                      (install . "./configure; make")
                                                      (nosearch . ("doc" "en" "ext" "ja" "sample"))))
-                                    (haskellmode-emacs . ((get . "darcs get http://code.haskell.org/haskellmode-emacs")
-                                                          (install . "make compile")
-                                                          (noauto . ".")))
-                                    (auto-complete . ((get . "git clone git://github.com/m2ym/auto-complete.git")
-                                                      (install . "make")
-                                                      (nosearch . ("dict" "doc" "etc"))))
-                                    (git-emacs     . ((get . "git clone git://github.com/tsgates/git-emacs.git")
-                                                      (install . "make")
-                                                      (nosearch . "docs")
-                                                      (noauto . ".")))
-                                    (magit         . ((get . "git clone git://github.com/philjackson/magit.git")
-                                                      (install . "./configure; make")))
-                                    (markdown-mode . ((get . "git clone git://jblevins.org/git/markdown-mode.git")
-                                                      (install . "emacs-compile-directory")))
+                                    
+                                    
                                     (yasnippet     . ((get . "git clone git://github.com/capitaomorte/yasnippet.git")
                                                       (install . "rake compile")
                                                       (nosearch . ("doc" "extras" "pkg" "snippets"))))
@@ -143,9 +114,9 @@
                                     (ropemacs           . ((get . "hg clone https://bitbucket.org/agr/ropemacs")
                                                            (install . "python setup.py install")
                                                            (nosearch . ".")))
-                                    (bbdb               . ((get . "cvs -d \":pserver:anonymous:@bbdb.cvs.sourceforge.net:/cvsroot/bbdb\" checkout bbdb")
-                                                           (install . "autoconf;./configure;cd lisp;make autoloadsc;cd ..; make") ; soon DEPRECATED / IMPORTANT: problem in configure on Windows: `emacs' path with spaces
-                                                           (nosearch . ("autom4te.cache" "bits/bbdb-filters/doc" "html" "tex" "texinfo" "utils"))))
+                                    ;; (bbdb               . ((get . "cvs -d \":pserver:anonymous:@bbdb.cvs.sourceforge.net:/cvsroot/bbdb\" checkout bbdb")
+                                    ;;                        (install . "autoconf;./configure;cd lisp;make autoloadsc;cd ..; make") ; soon DEPRECATED / IMPORTANT: problem in configure on Windows: `emacs' path with spaces
+                                    ;;                        (nosearch . ("autom4te.cache" "bits/bbdb-filters/doc" "html" "tex" "texinfo" "utils"))))
                                     (cedet              . ((get . "bzr checkout bzr://cedet.bzr.sourceforge.net/bzrroot/cedet/code/trunk cedet")
                                                            (install . "make")
                                                            (nosearch . ("cogre/templates" "cogre/tests" "ede/templates" "semantic/doc" "semantic/tests" "srecode/templates" "testprojects" "www"))
@@ -154,40 +125,37 @@
                                                            (install . "sed -i '' 's/\\\(load-path nil)\\\).*\\\(\\\" > ecb-compile-script\\\)/\\1(setq ecb-version-check nil)\\2/' Makefile;make CEDET=`echo $PWD/../cedet`;make autoloads EBATCH=\"emacs -batch -no-site-file -eval \\\"(add-to-list 'load-path \\\\\\\".\\\\\\\")\\\"\"") ; FIXME: assume cedet is in the same directory / windows users should use GNU bash / the first command disables compatibility check for CEDET; TODO: test it on Win32/64
                                                            (nosearch . ("ecb-images" "html"))
                                                            (noauto . ".")))
-                                    (apel               . ((get . "git clone git://github.com/wanderlust/apel.git")
-                                                           (install . "make")))
-                                    (flim               . ((get . "git clone git://github.com/wanderlust/flim.git")
-                                                           (install . "make LISPDIR=..")
-                                                           (nosearch . "tests")))
-                                    (semi               . ((get . "git clone git://github.com/wanderlust/semi.git")
-                                                           (install . "make LISPDIR=..")))
-                                    (wanderlust         . ((get     . "cvs -d :pserver:anonymous@cvs.m17n.org:/cvs/root checkout wanderlust")
-                                                           ;; (get . "git clone git://github.com/wanderlust/wanderlust.git") ; is out of sync and induces error on emacs 24
-                                                           (install . "echo \"(setq load-path (append (list \\\"$PWD/../apel\\\" \\\"$PWD/../flim\\\" \\\"$PWD/../semi\\\") load-path))(setq wl-install-utils t)\" > WL-CFG;make") ; let wl, elmo & utils *uninstalled*
-                                                           (nosearch . ("doc" "etc" "samples" "tests"))))
+                                    ;; (apel               . ((get . "git clone git://github.com/wanderlust/apel.git")
+                                    ;;                        (install . "make")))
+                                    ;; (flim               . ((get . "git clone git://github.com/wanderlust/flim.git")
+                                    ;;                        (install . "make LISPDIR=..")
+                                    ;;                        (nosearch . "tests")))
+                                    ;; (semi               . ((get . "git clone git://github.com/wanderlust/semi.git")
+                                    ;;                        (install . "make LISPDIR=..")))
+                                    ;; (wanderlust         . ((get     . "cvs -d :pserver:anonymous@cvs.m17n.org:/cvs/root checkout wanderlust")
+                                    ;;                        ;; (get . "git clone git://github.com/wanderlust/wanderlust.git") ; is out of sync and induces error on emacs 24
+                                    ;;                        (install . "echo \"(setq load-path (append (list \\\"$PWD/../apel\\\" \\\"$PWD/../flim\\\" \\\"$PWD/../semi\\\") load-path))(setq wl-install-utils t)\" > WL-CFG;make") ; let wl, elmo & utils *uninstalled*
+                                    ;;                        (nosearch . ("doc" "etc" "samples" "tests"))))
                                     (vm                 . ((get . "bzr branch lp:vm") ; REQUESTED
                                                            (install . "autoconf; ./configure; make")
                                                            (nosearch . ("autom4te.cache" "info" "pixmaps" "src"))))
                                     ;; stable org-mode
-                                    (org-mode           . ((get . "git clone git://orgmode.org/org-mode.git")
-                                                           (install . "make; emacs-compile-directory contrib/lisp") ; compile contrib too
-                                                           ;; (install . "git checkout --track -b stable origin/maint; git fetch; make; emacs-compile-directory contrib/lisp")
-                                                           (nosearch . ("BUGFIXING" "EXPERIMENTAL" "UTILITIES" "contrib/babel" "contrib/doc" "contrib/odt" "contrib/scripts" "doc" "testing"))))
+                                    ;; (org-mode           . ((get . "git clone git://orgmode.org/org-mode.git")
+                                    ;;                        (install . "make; emacs-compile-directory contrib/lisp") ; compile contrib too
+                                    ;;                        ;; (install . "git checkout --track -b stable origin/maint; git fetch; make; emacs-compile-directory contrib/lisp")
+                                    ;;                        (nosearch . ("BUGFIXING" "EXPERIMENTAL" "UTILITIES" "contrib/babel" "contrib/doc" "contrib/odt" "contrib/scripts" "doc" "testing"))))
                                     (multi-web-mode     . ((get . "git clone git://github.com/martialboniou/multi-web-mode.git")
                                                            (install . "emacs-compile-directory")))
                                     ;; TODO: nxhtml may be not used anymore (installer will be maintained to use `ert2' in `confs/elisp' and configuration will be available if required)
-                                    (nxhtml             . ((get . "bzr branch lp:nxhtml")
-                                                           ;; the following version is not fully compatible with 23 due to deprecated face + a bug I found about remove-hooking Viper in `util/mumamo'
-                                                           ;; (get . "curl http://ourcomments.org/Emacs/DL/elisp/nxhtml/zip/nxhtml-2.08-100425.zip > _nxhtml.zip; unzip _nxhtml.zip; rm _nxhtml.zip") ; `unzip' is not pipe-friendly
-                                                           (install . "cd util; sed \"/remove-hook 'text-mode-hook 'viper-mode/d\" mumamo.el > mumamo_tmp.el; mv mumamo_tmp.el mumamo.el; cd ..; emacs-compile-directory;cd nxhtml;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";cd ../related;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";cd ../util;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";")
-                                                           (nosearch . ("alts" "etc" "nxhtml" "related" "tests" "util" ".bzr"))
-                                                           (noauto . ".")))
-                                    (emacs-w3m          . ((get . "cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot checkout emacs-w3m")
-                                                           (install . "emacs -batch -q -no-site-file -l w3mhack.el NONE -f w3mhack-nonunix-install")
-                                                           (nosearch . ("attic" "autom4te.cache" "doc" "icons" "icons30" "patches" "shimbun"))))
-                                    (auctex-11.86       . ((get . "curl -L http://ftp.gnu.org/gnu/auctex/auctex-11.86.tar.gz | tar zx")
-                                                           ;; TODO: (install . "emacs -Q -eval \"\" ;./configure --with-lispdir=. --with-texmf-dir=/usr/local/texlive/texmf-local;make")
-                                                           (nosearch . ("doc" "images" "preview" "style"))))
+                                    ;; (nxhtml             . ((get . "bzr branch lp:nxhtml")
+                                    ;;                        ;; the following version is not fully compatible with 23 due to deprecated face + a bug I found about remove-hooking Viper in `util/mumamo'
+                                    ;;                        ;; (get . "curl http://ourcomments.org/Emacs/DL/elisp/nxhtml/zip/nxhtml-2.08-100425.zip > _nxhtml.zip; unzip _nxhtml.zip; rm _nxhtml.zip") ; `unzip' is not pipe-friendly
+                                    ;;                        (install . "cd util; sed \"/remove-hook 'text-mode-hook 'viper-mode/d\" mumamo.el > mumamo_tmp.el; mv mumamo_tmp.el mumamo.el; cd ..; emacs-compile-directory;cd nxhtml;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";cd ../related;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";cd ../util;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";")
+                                    ;;                        (nosearch . ("alts" "etc" "nxhtml" "related" "tests" "util" ".bzr"))
+                                                           ;; (noauto . ".")))
+                                    ;; (emacs-w3m          . ((get . "cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot checkout emacs-w3m")
+                                    ;;                        (install . "emacs -batch -q -no-site-file -l w3mhack.el NONE -f w3mhack-nonunix-install")
+                                    ;;                        (nosearch . ("attic" "autom4te.cache" "doc" "icons" "icons30" "patches" "shimbun"))))
                                     ;; (xwl-elisp          . ((get     . "git clone git://github.com/xwl/xwl-elisp.git")
                                     ;;                        (install . "make byte-compile"))) ; TODO: http://xwl.appspot.com/ (william xu) / include smart-operator
                                     (emacs-revival  . ((get . "git clone git@github.com:martialboniou/emacs-revival.git")

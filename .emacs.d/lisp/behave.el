@@ -24,12 +24,13 @@
 ;;; ERASING/UNDOING
 ;;
 (bind-key "<kp-delete>" 'delete-char)
-(if (locate-library "undo-tree")
-    (require 'undo-tree)              ; display tree by using C-x u
-  (progn
-    (require 'redo+)
+;; try 'REDO+ iff no 'UNDO-TREE
+(unless (el-get-package-is-installed "undo-tree") ; display tree by using C-x u
+  (condition-case nil
+      (require 'redo+)
+    (error (message "behave: install undo-tree or at least redo+ to get a better undo support")))
     (eval-after-load "redo"
-      '(progn (setq undo-no-redo t)))))
+      '(progn (setq undo-no-redo t))))
 
 ;;; MODAL EDITING incl. COLOR-THEME & PARENS
 ;;
@@ -82,9 +83,9 @@ See the advised `delete-frame' at the end of this file as a use case.")
 ;; - window configuration case
 (add-hook 'desktop-save-hook
           #'kiwon/save-window-configuration)
-;; (add-hook 'desktop-after-read-hook
-;;           #'kiwon/restore-window-configuration)  ; save/restore the last window
-;;                                                  ; configuration with `DESKTOP'
+(add-hook 'desktop-after-read-hook
+          #'kiwon/restore-window-configuration)  ; save/restore the last window
+                                                 ; configuration with `DESKTOP'
 
 ;; - path
 (unless desktop-dir
@@ -177,7 +178,6 @@ See the advised `delete-frame' at the end of this file as a use case.")
   '(define-key ibuffer-mode-map (kbd "'") 'kill-all-dired-buffers))
 ;; - anything
 (require 'anything-match-plugin)
-(require 'anything-config)
 (eval-after-load "anything-config"
   '(progn
      (defvar mars/anything-pers-action-binding "C-."
@@ -324,10 +324,9 @@ the should-be-forbidden C-z.")
   #'(lambda () (interactive) (kill-emacs)))
 
 ;;; VT100 KEYS
+(eval-when-compile (require 'lk201))
 (when (null window-system)
   (require 'lk201)
   (terminal-init-lk201))
-(eval-when-compile (require 'lk201))
-
 
 (provide 'behave)

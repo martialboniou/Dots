@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.10
-;; Last-Updated: Sat Nov 12 13:25:47 2011 (+0100)
+;; Last-Updated: Mon Nov 14 16:39:05 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 276
+;;     Update #: 279
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -1114,20 +1114,17 @@ which is not affected by suffix optional argument."
        (term shell-file-name)))))
 
 ;; lennart-borgman libraries' loaders
-(defun nxhtml-loader ()                 ; UNTESTED & UNUSED
+(defun nxhtml-loader ()                 ; UNTESTED
   "load NXHTML library and all lennart-borgman libraries (including Unit Test additions named ERT2)"
   (unless (fboundp 'nxhtml-list-loaded-features)
     (let ((name       "nxhtml")
-          (nxhtml-dir (locate-library "autostart")))
-      (when nxhtml-dir
-        (when (and (eq (string-match (format ".*\\/%s.*" name) nxhtml-dir) 0) ; check "/nxhtml" pattern is in the path
-                   (file-exists-p (expand-file-name
-                                   (format "%s.el" name)
-                                   (expand-file-name name
-                                                     (file-name-directory
-                                                      nxhtml-dir)))))
-          ;; check nxhtml.el exists
-          (load nxhtml-dir))))))
+          (nxhtml-autostart (locate-library "autostart")))
+      (when nxhtml-autostart
+        (when (eq (string-match name
+                                (file-name-nondirectory
+                                 (directory-file-name
+                                  (file-name-directory nxhtml-autostart)))) 0) ; check "nxhtml" pattern is in the last directory of NXHTML-AUTOSTART path
+          (load nxhtml-autostart))))))
 (defalias 'ert2-loader 'nxhtml-loader)
 
 ;; toggle-transparency

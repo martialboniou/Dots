@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri Nov 11 17:56:39 2011 (+0100)
+;; Last-Updated: Tue Nov 15 14:15:40 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 513
+;;     Update #: 518
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -390,11 +390,18 @@ Move point to the beginning of the line, and run the normal hook
                               '(python    ; python-mode's autopairs support is extended
                                         ; to work with single and triple quotes
                                 php scala erlang
-                                ;; ruby   ; WARNING: clash with ruby-electric
+                              ;; ruby     ; WARNING: ruby-electric need to be informed
                                 latex))))
 (mars/add-hooks autopair-hooks #'(lambda () (autopair-mode 1)))
 (eval-after-load "autopair"
   '(progn
+     ;; TODO: ruby-electric case
+     (eval-after-load "ruby-electric"
+       '(progn
+          (add-lambda-hook 'ruby-mode-hook
+            (substitute-key-definition 'ruby-electric-curlies nil ruby-mode-map)
+            (substitute-key-definition 'ruby-electric-matching-char nil ruby-mode-map)
+            (substitute-key-definition 'ruby-electric-closing-matching-char nil ruby-mode-map))))
      ;; python case
      (add-lambda-hook 'python-mode-hook
        (push '(?' . ?') (getf autopair-extra-pairs :code))
@@ -414,7 +421,8 @@ Move point to the beginning of the line, and run the normal hook
      ;; (add-lambda-hook 'emacs-lisp-mode-hook
      ;;   (push '(?` . ?') (getf autopair-extra-pairs :comment))
      ;;   (push '(?` . ?') (getf autopair-extra-pairs :string)))
-     (require 'auto-pair+)))
+     (require 'auto-pair+)
+     (setq autopair-autowrap t)))
 
 ;;; PAREDIT + HIGHLIGHT-PARENTHESES
 (add-lambda-hook '(lisp-mode-hook

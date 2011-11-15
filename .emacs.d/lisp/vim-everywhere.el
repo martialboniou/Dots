@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Mon Nov 14 17:25:45 2011 (+0100)
+;; Last-Updated: Tue Nov 15 15:25:04 2011 (+0100)
 ;;           By:
-;;     Update #: 282
+;;     Update #: 286
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -69,6 +69,7 @@
 ;;                           found-dirs))))
 ;;             '(color-theme vimpulse))))
 ;;   (load-library "color-theme-autoloads"))
+
 
 ;;; PREAMBULE
 (defvar viper-custom-file-name nil
@@ -89,6 +90,14 @@
 
 (eval-after-load "viper"
   '(progn
+     ;; 0- bugfixing
+     ;; - ruby case
+     (add-to-list 'viper-vi-state-mode-list 'ruby-mode)
+     ;; - autopair case
+     (eval-after-load "autopair"
+       '(progn
+          (require 'autopair-viper-compat)))
+
      ;; 1- vimpulse
      (require 'vimpulse)
      (eval-after-load "vimpulse"
@@ -102,6 +111,7 @@
           (eval-after-load "ibuffer"
             '(progn
                (define-key ibuffer-mode-map "\C-w" 'vimpulse-like-window-map)))))
+
      ;; 2- parenface to add a default color to parentheses as Vim does
      (if (locate-library "hl-line+")
          (global-hl-line-mode)

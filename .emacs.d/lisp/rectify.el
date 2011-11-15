@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
 ;; Version:
-;; Last-Updated: Mon Nov 14 14:31:53 2011 (+0100)
+;; Last-Updated: Tue Nov 15 15:33:19 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 139
+;;     Update #: 141
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -47,6 +47,7 @@
 (require 'code)
 
 ;;; FLYMAKE
+;;
 (mars/add-hooks '(emacs-lisp-mode-hook
                   php-mode-hook
                   python-mode-hook)

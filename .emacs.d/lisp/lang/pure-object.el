@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Mar  5 23:58:09 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Nov 14 19:39:03 2011 (+0100)
+;; Last-Updated: Tue Nov 15 12:07:58 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 17
+;;     Update #: 26
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -52,18 +52,23 @@
 ;;; GNU SMALLTALK
 ;;
 (require 'smalltalk-mode-init)
-
-;;; FACTOR
+
+;;; RUBY
 ;;
-
-;;; RINARI
-;; Rinari Is Not A Rails IDE
+;; - Rinari Is Not A Rails IDE
 (when (el-get-package-is-installed "rinari")
-  (mars/add-hooks (mars/generate-mode-hook-list '(rhtml ruby)) #'(lambda () (rinari-launch))))
-
-
+  (add-lambda-hook 'ruby-mode-hook
+    (defadvice ruby-mode-set-encoding
+      (around ruby-mode-set-encoding-disable activate) nil))
+  (mars/add-hooks (mars/generate-mode-hook-list '(rhtml ruby))
+                  #'(lambda ()
+                      ;; autoloaded interactive function
+                      (rinari-launch))))
+;; - ruby electric
+;; NOTE: AUTOPAIR case is managed in 'CODE
 
 ;;; FACTOR
+;;
 (when (boundp 'factorcode-source-rep)
   (when (file-exists-p factorcode-source-rep)
     (load (apply 'concat

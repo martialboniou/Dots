@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Nov  3 13:27:02 2011 (+0100)
+;; Last-Updated: Tue Nov 15 15:39:10 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 114
+;;     Update #: 116
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -162,17 +162,20 @@ Otherwise the update regexps won't match."
 
 ;;; FLYSPELL
 ;;
+(defvar flyspell-activate nil
+  "Activates FLYSPELL on recommended text and prog MODES.")
 (let ((spell-checker-name (or spelling-tool-name 'aspell)))
   ;; run FLYSPELL if `spell-checker-name' is the name of an executable
   (defvar spell-checker-text-hooks (mars/generate-mode-hook-list '(latex markdown))
-        "List of major mode hooks for text typing where FLYSPELL will be loaded.") ; TODO: `confs/vars'
+        "List of major mode hooks for text typing where FLYSPELL will be loaded.") ; TODO: VARS
   (defvar spell-checker-prog-hooks (cons 'c-mode-common-hook 
                                          (mars/generate-mode-hook-list '(emacs-lisp shen scheme clojure scala java ruby python factor js)))
-    "List of major mode hook for programming languages where FLYSPELL will be loaded.") ; TODO: `confs/vars'
+    "List of major mode hook for programming languages where FLYSPELL will be loaded.") ; TODO: VARS
   (if (executable-find (symbol-name spell-checker-name))
       (progn
-        (mars/add-hooks spell-checker-text-hooks  #'turn-on-flyspell)
-        (mars/add-hooks spell-checker-prog-hooks  #'flyspell-prog-mode))
+        (when flyspell-activate
+          (mars/add-hooks spell-checker-text-hooks  #'turn-on-flyspell)
+          (mars/add-hooks spell-checker-prog-hooks  #'flyspell-prog-mode)))
     (message "formats: you should install %s in order to work with flyspell checker" (symbol-name spell-checker-name)))
   (when *i-am-a-dvorak-typist*
     ;; .emacs defines C-; for fast copy-paste-cut key-bindings in dvorak typing context

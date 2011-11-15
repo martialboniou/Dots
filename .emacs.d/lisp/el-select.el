@@ -20,52 +20,49 @@
 (setq el-get-sources '((:name nxhtml
                               :load nil) ; choose 'NXHTML or 'MULTI-WEB-MODE
                                         ;  in 'WEB-PROGRAMMING
-                       (:name anything
-                              :features nil)
-                       (:name emms
-                              :features nil)
                        (:name ropemacs
-                              :build '("python setup.py install"))
-                       (:name darcsum
-                              :compile ("."))))
+                              :build '("python setup.py install"))))
 
+(defvar mars/packages '(el-get
+                        color-theme
+                        vimpulse
+                        keats
+                        shen-mode
+                        haskellmode-emacs
+                        pylookup
+                        pymacs
+                        mailcrypt
+                        auto-pair-plus
+                        auto-complete
+                        org-mode
+                        howm
+                        remember
+                        multi-web-mode
+                        markdown-mode
+                        magit
+                        undo-tree
+                        git-emacs
+                        switch-window
+                        emacs-w3m
+                        yaml-mode
+                        yasnippet
+                        sunrise-commander
+                        wanderlust))
+(locate-library "inf-ruby")
 (condition-case nil
     (progn
       (el-get-executable-find "rake")
       (add-to-list 'el-get-sources '(:name yasnippet
                                            :build '("rake compile")))
-      (add-to-list 'el-get-sources '(:name rinari
-                                           :url "https://github.com/eschulte/rinari.git"
-                                           :features nil)))
-  (error (message "el-select: yasnippet won't be compiled and rinari won't be installed without rake, a simple ruby build program.")))
+      (add-to-list 'el-get-sources '(:name inf-ruby-bond
+                                           :depends nil)) ; use RINARI's INF-RUBY
+      (setq mars/packages (nconc mars/packages '(rinari
+                                                 ruby-electric))))
+  (error (message "el-select: yasnippet won't be compiled and rinari and other packages for ruby won't be installed without rake, a simple ruby build program.")))
 
-(defvar mars/packages
-  (append '(el-get
-            color-theme
-            vimpulse
-            keats
-            shen-mode
-            haskellmode-emacs
-            pylookup
-            pymacs
-            mailcrypt
-            auto-pair-plus
-            auto-complete
-            org-mode
-            howm
-            remember
-            multi-web-mode
-            markdown-mode
-            magit
-            undo-tree
-            git-emacs
-            switch-window
-            emacs-w3m
-            yaml-mode
-            yasnippet
-            sunrise-commander
-            wanderlust)
-          (mapcar #'el-get-source-name el-get-sources)))
+(setq mars/packages
+  (nconc mars/packages
+         (mapcar #'el-get-source-name el-get-sources)))
 
 (condition-case nil
     (progn
@@ -77,3 +74,4 @@
 (el-get 'wait)
 
 (provide 'el-select)            ; required by 'ADAPTER
+

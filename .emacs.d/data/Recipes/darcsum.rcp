@@ -1,0 +1,5 @@
+(:name darcsum
+       :description "A pcl-cvs like interface for managing darcs patches"
+       :type darcs
+       :url "http://joyful.com/repos/darcsum"
+       :compile ("."))

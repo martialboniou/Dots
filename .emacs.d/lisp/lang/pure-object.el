@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Mar  5 23:58:09 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sun Nov  6 12:33:06 2011 (+0100)
+;; Last-Updated: Mon Nov 14 19:39:03 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 15
+;;     Update #: 17
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -50,7 +50,18 @@
 (unintern 'one-language-spoken obarray)
 
 ;;; GNU SMALLTALK
+;;
 (require 'smalltalk-mode-init)
+
+;;; FACTOR
+;;
+
+;;; RINARI
+;; Rinari Is Not A Rails IDE
+(when (el-get-package-is-installed "rinari")
+  (mars/add-hooks (mars/generate-mode-hook-list '(rhtml ruby)) #'(lambda () (rinari-launch))))
+
+
 
 ;;; FACTOR
 (when (boundp 'factorcode-source-rep)

@@ -5,10 +5,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer: Martial Boniou
 ;; Created: Sat Feb 19 11:17:32 2011 (+0100)
-;; Version: 0.8.1
-;; Last-Updated: Thu Nov  3 13:25:34 2011 (+0100)
+;; Version: 0.8.2-sr
+;; Last-Updated: Mon Nov 14 20:12:05 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 92
+;;     Update #: 93
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -128,7 +128,8 @@ open and unsaved. -- matt curtis (with enhancements by <hondana@gmx.com>"
            dired-guess-shell-alist-user '(("\\.image" "squeak"))))) ; FIXME: pharo
 
 ;;; SUNRISE-COMMANDER
-(add-to-list 'auto-mode-alist '("\\.srvm\\'" . sr-virtual-mode))
+(when (el-get-package-is-installed "sunrise-commander")
+  (add-to-list 'auto-mode-alist '("\\.srvm\\'" . sr-virtual-mode)))
 (eval-after-load 'sunrise-commander
   '(progn
      (defun dired-details-hide()

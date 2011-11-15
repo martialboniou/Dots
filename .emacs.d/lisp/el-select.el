@@ -18,32 +18,52 @@
                                                    (expand-file-name mars/personal-data 
                                                                      mars/local-root-dir)))
 (setq el-get-sources '((:name nxhtml
-                              :load nil)))
+                              :load nil) ; choose 'NXHTML or 'MULTI-WEB-MODE
+                                        ;  in 'WEB-PROGRAMMING
+                       (:name anything
+                              :features nil)
+                       (:name emms
+                              :features nil)
+                       (:name ropemacs
+                              :build '("python setup.py install"))
+                       (:name darcsum
+                              :compile ("."))))
 
 (condition-case nil
     (progn
       (el-get-executable-find "rake")
       (add-to-list 'el-get-sources '(:name yasnippet
-                                           :build '("/usr/bin/rake compile"))))
-  (error (message "el-select: yasnippet won't be compiled without rake, a simple ruby build program.")))
+                                           :build '("rake compile")))
+      (add-to-list 'el-get-sources '(:name rinari
+                                           :url "https://github.com/eschulte/rinari.git"
+                                           :features nil)))
+  (error (message "el-select: yasnippet won't be compiled and rinari won't be installed without rake, a simple ruby build program.")))
 
 (defvar mars/packages
   (append '(el-get
+            color-theme
             vimpulse
             keats
+            shen-mode
             haskellmode-emacs
+            pylookup
+            pymacs
+            mailcrypt
             auto-pair-plus
             auto-complete
             org-mode
+            howm
+            remember
+            multi-web-mode
             markdown-mode
             magit
             undo-tree
             git-emacs
             switch-window
             emacs-w3m
-            emms
             yaml-mode
             yasnippet
+            sunrise-commander
             wanderlust)
           (mapcar #'el-get-source-name el-get-sources)))
 

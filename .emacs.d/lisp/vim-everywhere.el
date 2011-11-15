@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Mon Nov  7 14:16:29 2011 (+0100)
+;; Last-Updated: Mon Nov 14 17:25:45 2011 (+0100)
 ;;           By:
-;;     Update #: 281
+;;     Update #: 282
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -108,7 +108,6 @@
        (progn
          (defface hl-line '((t (:background "grey10"))) "Dummy hl-line.")
          (setq hl-line-face 'hl-line)))
-     (color-theme-initialize)
      (require 'parenface)
 
      ;; 3- nothing to add (mis)match parentheses -- vimpulse uses 'show-parens

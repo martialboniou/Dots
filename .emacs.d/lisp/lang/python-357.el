@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 23:42:52 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sun Nov  6 12:33:59 2011 (+0100)
+;; Last-Updated: Mon Nov 14 20:01:23 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 136
+;;     Update #: 137
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -112,17 +112,6 @@
            (delete-trailing-whitespace))))))
 
 ;;; PYLOOKUP
-(setq pylookup-dir
-      (condition-case nil
-          (file-name-directory (locate-library "pylookup"))
-        (error nil)))
-(unless (null pylookup-dir)
-  (let ((py-py (concat pylookup-dir "pylookup.py"))
-        (py-db (concat pylookup-dir "pylookup.db")))
-    (setq pylookup-program
-          (and (file-exists-p py-py) py-py))
-    (setq pylookup-db-file
-          (and (file-exists-p py-db) py-db))))
 ;; <C-c h> to display python lookup in python buffer
 (eval-after-load "python"
   '(progn

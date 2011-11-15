@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Mon Nov 14 14:18:59 2011 (+0100)
+;; Last-Updated: Mon Nov 14 19:45:12 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 514
+;;     Update #: 522
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -67,35 +67,12 @@
   "A package tree to get / install / tag additional packages in `mars/site-lisp-path'")
 
 (setq mars/site-lisp-package-tree '(
-                                    
-                                    
-                                    (howm-1.3.9.1 . ((get . "curl http://howm.sourceforge.jp/a/howm-1.3.9.1.tar.gz | tar zx")
-                                                     (install . "./configure; make")
-                                                     (nosearch . ("doc" "en" "ext" "ja" "sample"))))
-                                    
-                                    
-                                    (yasnippet     . ((get . "git clone git://github.com/capitaomorte/yasnippet.git")
-                                                      (install . "rake compile")
-                                                      (nosearch . ("doc" "extras" "pkg" "snippets"))))
-                                    (mailcrypt-3.5.9 . ((get . "curl -L http://sourceforge.net/projects/mailcrypt/files/mailcrypt/3.5.9/mailcrypt-3.5.9.tar.gz/download | tar zx") ; -L b/c URL redirect
-                                                        (install . "autoconf; ./configure; make")
-                                                        (nosearch . ("autom4te.cache" "tests"))))
+                                   
                                     (mhc           . ((get . "git clone git://github.com/yoshinari-nomura/mhc.git")
                                                       (install . "emacs-compile-directory emacs") ; ruby configure.rb; ruby make.rb is OBSOLETE (ftools dependencies)
                                                       (nosearch . ("icons" "ruby-ext" "samples" "xpm"))))
-                                    ;; (mu-cite-201006212322 . ((get . "curl http://www.jpl.org/elips/mu/snapshots/mu-cite-201006212322.tar.gz | tar zx")
-                                    ;;                          ;; no compilation yet / need apel10.8/poem
-                                    ;;                          )) ; HTTP 404
-                                    (color-theme-6.6.0 . ((get . "curl -L http://download.savannah.gnu.org/releases/color-theme/color-theme-6.6.0.tar.gz | tar zx")
-                                                          (install . "emacs-compile-directory; emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\" themes"))) ; FIXME: not in path so error in `themes' (not important!)
-                                    (darcsum           . ((get . "darcs get --lazy http://joyful.com/repos/darcsum")
-                                                          (install . "emacs-compile-directory")))
-                                    (shen-mode         . ((get . "git clone git://github.com/eschulte/shen-mode.git")
-                                                          (install . "emacs-compile-directory")))
-                                    (remember          . ((get . "git clone git://repo.or.cz/remember-el.git remember")
-                                                          (install . "make")))
-                                    (rinari            . ((get . "git clone git://github.com/eschulte/rinari.git; cd rinari; git submodule init; git submodule update; cd ..") ; FIXME: no compilation yet!
-                                                          (nosearch . ("doc" "test" "util/jump/test" "util/test"))))
+                                    ;; (rinari            . ((get . "git clone git://github.com/eschulte/rinari.git; cd rinari; git submodule init; git submodule update; cd ..") ; FIXME: no compilation yet!
+                                    ;;                       (nosearch . ("doc" "test" "util/jump/test" "util/test"))))
                                     ;; TODO: fetch all the Python/Rope install process
                                     ;; WARNING: `python-mode' is *not* compatible with `wisent-python' in SEMANTIC => use gallina-python.el (provided here)
                                     ;; (python-mode        . ((get . "curl -L http://launchpad.net/python-mode/trunk/5.2.0/+download/python-mode-5.2.0.tgz | tar zx")
@@ -144,8 +121,6 @@
                                     ;;                        (install . "make; emacs-compile-directory contrib/lisp") ; compile contrib too
                                     ;;                        ;; (install . "git checkout --track -b stable origin/maint; git fetch; make; emacs-compile-directory contrib/lisp")
                                     ;;                        (nosearch . ("BUGFIXING" "EXPERIMENTAL" "UTILITIES" "contrib/babel" "contrib/doc" "contrib/odt" "contrib/scripts" "doc" "testing"))))
-                                    (multi-web-mode     . ((get . "git clone git://github.com/martialboniou/multi-web-mode.git")
-                                                           (install . "emacs-compile-directory")))
                                     ;; TODO: nxhtml may be not used anymore (installer will be maintained to use `ert2' in `confs/elisp' and configuration will be available if required)
                                     ;; (nxhtml             . ((get . "bzr branch lp:nxhtml")
                                     ;;                        ;; the following version is not fully compatible with 23 due to deprecated face + a bug I found about remove-hooking Viper in `util/mumamo'

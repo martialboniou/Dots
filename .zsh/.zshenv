@@ -41,4 +41,4 @@ repath () {
   export PATH=/usr/bin:/bin # ensure reset
   fetch_path
   rehash
-}
+} && repath

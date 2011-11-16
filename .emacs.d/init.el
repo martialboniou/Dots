@@ -7,9 +7,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 4.1-experimental
-;; Last-Updated: Wed Nov  9 13:50:35 2011 (+0100)
+;; Last-Updated: Wed Nov 16 11:00:01 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 2064
+;;     Update #: 2066
 ;; URL: https://github.com/martialboniou/Dots.git
 ;; Keywords: .emacs, init
 ;; Compatibility: C-\ is linked to Esc-map

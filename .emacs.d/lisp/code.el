@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Nov 15 14:15:40 2011 (+0100)
+;; Last-Updated: Tue Nov 15 23:00:10 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 518
+;;     Update #: 549
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -16,8 +16,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Commentary: header2 + auto-insert (skeleton) / hideshow + hideshowvis /
-;;              cedet & ecb-autoloads / auto-pair-edit / paredit +
-;;              highlight-parentheses / eldoc / comint / cheat /
+;;              cedet & ecb-autoloads / textmate (bindings on parens) or 
+;;              auto-pair-plus (for non-lisp modes) / paredit (slurp/barf)
+;;              + highlight-parentheses / eldoc / comint / cheat /
 ;;              org-babel / simple-call-tree / `lang'
 ;;
 ;;
@@ -57,7 +58,9 @@
 (provide 'programming)
 (require 'preamble)
 
-(eval-when-compile (require 'ecb))
+(eval-when-compile (require 'ecb)
+                   (unless (fboundp #'autopair-mode)
+                     (defun autopair-mode (arg) nil)))
 
 ;;; LANGUAGES' CONFIGURATION PATH
 (defvar lang-rep
@@ -384,15 +387,32 @@ Move point to the beginning of the line, and run the normal hook
     (when (y-or-n-p "Start ecb? ")
       (ecb-activate))))
 
+;;; TEXTMATE (AKA BINDINGS ON PARENTHESES)
+;;  2009 version
+(unless (el-get-package-is-installed "auto-pair-plus")
+  (defvar tm-hooks (cons 'c-common-hook
+                               (mars/generate-mode-hook-list
+                                '(python php scala erlang
+                                  ruby latex))))
+  (require 'textmate)
+  (eval-after-load "textmate"
+    '(progn
+       (setq tm/dont-activate t)
+       (tm/initialize)
+       (mars/add-hooks tm-hooks #'tm/minor-mode-on))))
+
 ;;; AUTO-PAIR-PLUS
-(defvar autopair-hooks (cons 'c-common-hook
-                             (mars/generate-mode-hook-list
-                              '(python    ; python-mode's autopairs support is extended
+;;
+(when (el-get-package-is-installed "auto-pair-plus")
+  (defvar autopair-hooks (cons 'c-common-hook
+                               (mars/generate-mode-hook-list
+                                '(python    ; python-mode's autopairs support is extended
                                         ; to work with single and triple quotes
-                                php scala erlang
-                              ;; ruby     ; WARNING: ruby-electric need to be informed
-                                latex))))
-(mars/add-hooks autopair-hooks #'(lambda () (autopair-mode 1)))
+                                  php scala erlang
+                                  ;; ruby     ; WARNING: ruby-electric need to be informed
+                                  latex))))
+  (mars/add-hooks autopair-hooks #'(lambda ()
+                                     (autopair-mode 1))))
 (eval-after-load "autopair"
   '(progn
      ;; TODO: ruby-electric case
@@ -417,10 +437,6 @@ Move point to the beginning of the line, and run the normal hook
        (set (make-local-variable 'autopair-handle-action-fns)
             (list #'autopair-default-handle-action
                   #'autopair-latex-mode-paired-delimiter-action)))
-     ;; emacs-lisp case (WARNING: unused)
-     ;; (add-lambda-hook 'emacs-lisp-mode-hook
-     ;;   (push '(?` . ?') (getf autopair-extra-pairs :comment))
-     ;;   (push '(?` . ?') (getf autopair-extra-pairs :string)))
      (require 'auto-pair+)
      (setq autopair-autowrap t)))
 
@@ -440,12 +456,15 @@ Move point to the beginning of the line, and run the normal hook
 (eval-after-load "paredit"
   '(progn
      ;; autopair case (ie deactivate AUTOPAIR when PAREDIT is turned on)
-     (defadvice paredit-mode (around disable-autopairs-around (arg) activate)
-       "Disable autopairs mode if paredit-mode is turned on. -- tim-c-harper@emacswiki"
-       ad-do-it
-       (if (null ad-return-value)
-           (autopair-mode 1)
-         (autopair-mode 0)))
+     (eval-after-load "autopair"
+       '(progn
+          (defadvice paredit-mode (around disable-autopairs-around (arg) activate)
+            "Disable autopairs mode if paredit-mode is turned on.
+-- tim-c-harper@emacswiki"
+            ad-do-it
+            (if (null ad-return-value)
+                (autopair-mode 1)
+              (autopair-mode 0)))))
      ;; delete case
      (define-key paredit-mode-map [(kp-delete)] #'paredit-forward-delete)
      (define-key paredit-mode-map [(control kp-delete)] #'paredit-forward-kill-word)
@@ -488,7 +507,7 @@ Move point to the beginning of the line, and run the normal hook
          (read-kbd-macro paredit-backward-delete-key) nil))
      (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
      ;; no-window-support case
-     ;; vt-100 and alike don't know keys like "\C-\S-\)" and so on
+     ;; vt-100 and alike don't know keys like "\C-\S-0" and so on
      ;; NOTE: ensure function keys like <f2> are well mapped on termcaps like '\eOQ'
      (define-key paredit-mode-map (kbd "<f2>]") #'paredit-forward-barf-sexp) ; \C-\S-\]
      (define-key paredit-mode-map (kbd "<f2>[") #'paredit-backward-barf-sexp) ; \C-\S-\[

@@ -32,8 +32,8 @@
                         pylookup
                         pymacs
                         mailcrypt
-                        auto-pair-plus
                         auto-complete
+                        auto-pair-plus
                         org-mode
                         howm
                         remember

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Nov 15 15:39:10 2011 (+0100)
+;; Last-Updated: Tue Nov 15 21:09:57 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 116
+;;     Update #: 117
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -177,31 +177,37 @@ Otherwise the update regexps won't match."
           (mars/add-hooks spell-checker-text-hooks  #'turn-on-flyspell)
           (mars/add-hooks spell-checker-prog-hooks  #'flyspell-prog-mode)))
     (message "formats: you should install %s in order to work with flyspell checker" (symbol-name spell-checker-name)))
-  (when *i-am-a-dvorak-typist*
-    ;; .emacs defines C-; for fast copy-paste-cut key-bindings in dvorak typing context
-    (setq flyspell-auto-correct-binding
-          [(control ?\')]))        ; use C-' instead
-  (eval-after-load "ispell"             ; configure flyspell even if FLYSPELL is
-                                        ; muted at startup
+  (eval-after-load "flyspell"
     '(progn
-       (setq flyspell-issue-welcome-flag nil)
-       (setq ispell-default-dictionary "fr_FR")
-       (when spelling-tool-name
-         (setq ispell-program-name spelling-tool-name))
-       (when ispell-program-name               ; boost needed if aspell
-         (when (eq 'aspell
-                   (intern (car (last (split-string ispell-program-name "/")))))
-           (setq ispell-extra-args '("--sug-mode=ultra"))))))
-  (defvar lang-ring nil
-    "The spelling check ring of dictionary names for the language I usually write")
-  (let ((langs '("en_US" "fr_FR")))
-    (setq lang-ring (make-ring (length langs)))
-    (dolist (elem langs) (ring-insert lang-ring elem)))
-  (defun cycle-ispell-languages ()
-    (interactive)
-    (let ((lang (ring-ref lang-ring -1)))
-      (ring-insert lang-ring lang)
-      (ispell-change-dictionary lang))))
+       ;; mouse-wheel replaces mouse-2 nowadays
+       (define-key flyspell-mode-map [down-mouse-3] 'flyspell-correct-word) ; map correction on mouse-3
+       ;; dvorak case
+      (when *i-am-a-dvorak-typist*
+        ;; .emacs defines C-; for fast copy-paste-cut key-bindings in dvorak typing context
+        (setq flyspell-auto-correct-binding
+              [(control ?\')]))           ; use C-' instead
+      ;; dictionaries
+      (eval-after-load "ispell"           ; configure flyspell even if FLYSPELL is
+                                        ; muted at startup
+        '(progn
+           (setq flyspell-issue-welcome-flag nil
+                 ispell-default-dictionary "fr_FR")
+           (when spelling-tool-name
+             (setq ispell-program-name spelling-tool-name))
+           (when ispell-program-name               ; boost needed if aspell
+             (when (eq 'aspell
+                       (intern (car (last (split-string ispell-program-name "/")))))
+               (setq ispell-extra-args '("--sug-mode=ultra"))))))
+      (defvar lang-ring nil
+        "The spelling check ring of dictionary names for the language I usually write")
+      (let ((langs '("en_US" "fr_FR")))
+        (setq lang-ring (make-ring (length langs)))
+        (dolist (elem langs) (ring-insert lang-ring elem)))
+      (defun cycle-ispell-languages ()
+        (interactive)
+        (let ((lang (ring-ref lang-ring -1)))
+          (ring-insert lang-ring lang)
+          (ispell-change-dictionary lang))))))
 
 (provide 'formats)
 

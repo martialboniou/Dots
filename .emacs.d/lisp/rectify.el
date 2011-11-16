@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
 ;; Version:
-;; Last-Updated: Tue Nov 15 15:33:19 2011 (+0100)
+;; Last-Updated: Tue Nov 15 23:47:31 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 141
+;;     Update #: 154
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -48,8 +48,7 @@
 
 ;;; FLYMAKE
 ;;
-(mars/add-hooks '(emacs-lisp-mode-hook
-                  php-mode-hook
+(mars/add-hooks '(php-mode-hook         ; TODO: check for slowing down
                   python-mode-hook)
                 #'(lambda () (when buffer-file-name (flymake-mode 1))))
 (eval-after-load "flymake"
@@ -63,7 +62,7 @@
        (when (get-char-property (point) 'flymake-overlay)
          (let ((help (get-char-property (point) 'help-echo)))
            (when help (message (format "%s" help))))))
-     (add-hook 'post-command-hook 'my-flymake-show-help)
+     (add-hook 'post-command-hook #'my-flymake-show-help)
      ;; elisp case
      (defun flymake-elisp-init ()
        (unless (string-match "^ " (buffer-name))
@@ -87,7 +86,7 @@
                      (princ (format "%s:%s: error: Unmatched bracket or quote\n"
                                     file (line-number-at-pos))))))))
              local-file)))))
-     (push '("\\.el$" flymake-elisp-init) flymake-allowed-file-name-masks)))
+     (push '("\\.el\\'" flymake-elisp-init) flymake-allowed-file-name-masks)))
 
 ;;; HIPPIE-EXPAND
 (eval-after-load "hippie-exp"           ; should be bound to C-p and use

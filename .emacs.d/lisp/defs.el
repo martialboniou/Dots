@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.10
-;; Last-Updated: Mon Nov 14 16:39:05 2011 (+0100)
+;; Last-Updated: Wed Nov 16 23:27:10 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 279
+;;     Update #: 281
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -1134,6 +1134,15 @@ which is not affected by suffix optional argument."
                  '(100 100)
                '(97 92))))
     (modify-all-frames-parameters (list (cons 'alpha opa)))))
+
+;; toggle-mode-line
+(defun toggle-mode-line ()              ; UNTESTED
+  "toggle the modeline on and off"
+  (interactive)
+  (setq mode-line-format
+        (if (eq mode-line-format nil)
+            (default-value 'mode-line-format)))
+  (redraw-display))
 
 (provide 'defs)
 

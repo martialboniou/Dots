@@ -1,3 +1,54 @@
+;;; behave.el --- 
+;; 
+;; Filename: behave.el
+;; Description: Provides Emacs main behavior
+;; Author: Martial Boniou
+;; Maintainer: 
+;; Created: Thu Nov 17 17:30:20 2011 (+0100)
+;; Version: 0.6
+;; Last-Updated: Thu Nov 17 18:01:23 2011 (+0100)
+;;           By: Martial Boniou
+;;     Update #: 6
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Commentary: erasing (kp-delete support) + undoing (UNDO-TREE | REDO+) /
+;;              modal editing (aka VIMPULSE) / DESKTOP + AUTOSAVE + SESSION /
+;;              buffers (UNIQUIFY + ANYTHING + IBUFFER) / minibuffer
+;;              (IDO + SMEX) / files (RECENTF) / BOOKMARK-PLUS / ESCREEN /
+;;              POSIX (kill emacs on SIGUSR2) / VT100 
+;;              (arrow + function keys support esp. in iTerm2.app)
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Change Log:
+;; 
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+;; 
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;; 
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Code:
+
+
 (require 'adapter)
 
 ;;; MAIN
@@ -20,7 +71,7 @@
   (setq ns-alternate-modifier nil
         ns-command-modifier 'meta       ; NeXT/Apple computers got real Meta keys
         ns-antialias-text t))
-
+
 ;;; ERASING/UNDOING
 ;;
 (bind-key "<kp-delete>" 'delete-char)
@@ -29,14 +80,14 @@
   (condition-case nil
       (require 'redo+)
     (error (message "behave: install undo-tree or at least redo+ to get a better undo support")))
-    (eval-after-load "redo"
-      '(progn (setq undo-no-redo t))))
-
+  (eval-after-load "redo"
+    '(progn (setq undo-no-redo t))))
+
 ;;; MODAL EDITING incl. COLOR-THEME & PARENS
 ;;
 (when *i-am-a-vim-user*
   (require 'vim-everywhere))        ; otherwise see 'APPEARANCE
-
+
 ;;; DESKTOP & AUTOSAVE & SESSION
 ;;
 ;; - vars
@@ -85,7 +136,7 @@ See the advised `delete-frame' at the end of this file as a use case.")
           #'kiwon/save-window-configuration)
 (add-hook 'desktop-after-read-hook
           #'kiwon/restore-window-configuration)  ; save/restore the last window
-                                                 ; configuration with `DESKTOP'
+                                        ; configuration with `DESKTOP'
 
 ;; - path
 (unless desktop-dir
@@ -104,17 +155,17 @@ See the advised `delete-frame' at the end of this file as a use case.")
                         "Temporary"
                         (expand-file-name mars/personal-data
                                           mars/local-root-dir))))
-    (let ((dir-symbol (intern (format "%s-dir" 
+    (let ((dir-symbol (intern (format "%s-dir"
                                       (symbol-name
                                        local-work-directory-symbol)))))
-      (unless (symbol-value dir-symbol) 
+      (unless (symbol-value dir-symbol)
         ;; creates directory iff unset (eg. `vars' may override)
         ;; this <symbol>-dir must be 'NIL before compiling this macro
         (if (file-exists-p local-tmp-dir)
             `(setq ,dir-symbol ,(expand-file-name
-                                 (capitalize 
+                                 (capitalize
                                   (format "%ss"
-                                          (symbol-name 
+                                          (symbol-name
                                            local-work-directory-symbol)))
                                  local-tmp-dir))
           (let ((name (expand-file-name
@@ -164,7 +215,7 @@ See the advised `delete-frame' at the end of this file as a use case.")
   (setq autosave-dir nil
         session-dir nil
         backup-dir nil))
-
+
 ;;; BUFFERS
 ;;
 ;; - uniquify
@@ -201,7 +252,7 @@ the should-be-forbidden C-z.")
           ;;   'anything-lisp-complete-symbol-partial-match)
           ;; (anything-read-string-mode 0)
           ))))
-
+
 ;;; MINIBUFFER
 ;;
 ;; - ido
@@ -227,9 +278,10 @@ the should-be-forbidden C-z.")
 (condition-case err
     (smex-initialize)
   (error "emacs: smex disabled: %s" err))
-
+
 ;;; FILES
 ;;
+;; - recentf
 (recentf-mode 1)
 (eval-after-load "recentf"
   '(progn
@@ -258,71 +310,76 @@ the should-be-forbidden C-z.")
      ;; ido case
      (eval-after-load "ido"
        '(progn
-      ;; open recent files according to history of mini-buffer (incl. files search
-      ;; and management) or according to the list of recently loaded ones.
-      (defun ido-recentf-file-name-history ()
-        "Find a file in the `file-name-history' using ido for completion. Written by Markus Gattol."
-        (interactive)
-        (let* ((all-files 
-            (remove-duplicates
-             (mapcar 'expand-file-name
-                 file-name-history) :test 'string=)) ; remove dups after expanding
-           (file-assoc-list (mapcar (lambda (x) (cons (file-name-nondirectory x) x)) all-files))
-           (filename-list (remove-duplicates (mapcar 'car file-assoc-list) :test 'string=))
-           (ido-make-buffer-list-hook
-            (lambda ()
-              (setq ido-temp-list filename-list)))
-           (filename (ido-read-buffer "File History: "))
-           (result-list (delq nil (mapcar
-                                   #'(lambda (x)
-                                       (when (string= (car x) filename)
-                                         (cdr x)))
-                                   file-assoc-list)))
-           (result-length (length result-list)))
-          (find-file
-           (cond
-            ((= result-length 0) filename)
-            ((= result-length 1) (car result-list))
-            (t (let ((ido-make-buffer-list-hook
-                      (lambda () (setq ido-temp-list result-list))))
-                 (ido-read-buffer (format "%d matches:" result-length))))))))
-      (defun ido-recentf ()
-        "Use ido to select a recently opened file from the `recentf-list'. Written by xsteve."
-        (interactive)
-        (let ((home (expand-file-name (getenv "HOME"))))
-          (find-file (ido-completing-read "Recent File: "
-                                          (mapcar
-                                           (lambda (path)
-                         (replace-regexp-in-string 
-                          home "~" path)) 
-                           recentf-list) nil t))))
-      (defmacro mars/recentf/override-keys (map)
-        "Force the keys overriding in some modes."
-        (list 'lambda nil
-          (list 'define-key map (list 'kbd '"C-c C-f") ''ido-recentf-file-name-history)
-          (list 'define-key map (list 'kbd '"C-c F") ''ido-recentf)
-          (list 'define-key map (list 'kbd '"C-c C-m") ''make-directory)))
-      ;; (add-lambda-hook 'emacs-startup-hook (mars/recentf/override-keys global-map))
-      (eval-after-load "ibuffer"
-        '(progn
-           (defun ibuffer-ido-find-file ()
-             "Like `ido-find-file', but default to the directory of the buffer at point."
-             (interactive)
-             (let ((buf (ibuffer-current-buffer)))
-               (when (buffer-live-p buf)
-                 (setq default-directory
-                       (with-current-buffer buf default-directory))))
-             (ido-find-file-in-dir default-directory))
-           (define-key ibuffer-mode-map (kbd "C-x C-f") #'ibuffer-ido-find-file)))))))
-
+          ;; open recent files according to history of mini-buffer (incl. files search
+          ;; and management) or according to the list of recently loaded ones.
+          (defun ido-recentf-file-name-history ()
+            "Find a file in the `file-name-history' using ido for completion. Written by Markus Gattol."
+            (interactive)
+            (let* ((all-files
+                    (remove-duplicates
+                     (mapcar 'expand-file-name
+                             file-name-history) :test 'string=)) ; remove dups after expanding
+                   (file-assoc-list (mapcar (lambda (x) (cons (file-name-nondirectory x) x)) all-files))
+                   (filename-list (remove-duplicates (mapcar 'car file-assoc-list) :test 'string=))
+                   (ido-make-buffer-list-hook
+                    (lambda ()
+                      (setq ido-temp-list filename-list)))
+                   (filename (ido-read-buffer "File History: "))
+                   (result-list (delq nil (mapcar
+                                           #'(lambda (x)
+                                               (when (string= (car x) filename)
+                                                 (cdr x)))
+                                           file-assoc-list)))
+                   (result-length (length result-list)))
+              (find-file
+               (cond
+                ((= result-length 0) filename)
+                ((= result-length 1) (car result-list))
+                (t (let ((ido-make-buffer-list-hook
+                          (lambda () (setq ido-temp-list result-list))))
+                     (ido-read-buffer (format "%d matches:" result-length))))))))
+          (defun ido-recentf ()
+            "Use ido to select a recently opened file from the `recentf-list'. Written by xsteve."
+            (interactive)
+            (let ((home (expand-file-name (getenv "HOME"))))
+              (find-file (ido-completing-read "Recent File: "
+                                              (mapcar
+                                               (lambda (path)
+                                                 (replace-regexp-in-string
+                                                  home "~" path))
+                                               recentf-list) nil t))))
+          (defmacro mars/recentf/override-keys (map)
+            "Force the keys overriding in some modes."
+            (list 'lambda nil
+                  (list 'define-key map (list 'kbd '"C-c C-f") ''ido-recentf-file-name-history)
+                  (list 'define-key map (list 'kbd '"C-c F") ''ido-recentf)
+                  (list 'define-key map (list 'kbd '"C-c C-m") ''make-directory)))
+          ;; (add-lambda-hook 'emacs-startup-hook (mars/recentf/override-keys global-map))
+          (eval-after-load "ibuffer"
+            '(progn
+               (defun ibuffer-ido-find-file ()
+                 "Like `ido-find-file', but default to the directory of the buffer at point."
+                 (interactive)
+                 (let ((buf (ibuffer-current-buffer)))
+                   (when (buffer-live-p buf)
+                     (setq default-directory
+                           (with-current-buffer buf default-directory))))
+                 (ido-find-file-in-dir default-directory))
+               (define-key ibuffer-mode-map (kbd "C-x C-f") #'ibuffer-ido-find-file)))))))
+
 ;;; BOOKMARKS
 ;;
 (require 'bookmark+)
-
+
+;;; ESCREEN
+(when (el-get-package-is-installed "escreen")
+  (require 'escreen-setup)
+  (escreen-install))
+
 ;;; POSIX ENVIRONMENT
 (define-key special-event-map [sigusr2]
   #'(lambda () (interactive) (kill-emacs)))
-
+
 ;;; VT100 KEYS
 (eval-when-compile (require 'lk201))
 (when (null window-system)
@@ -330,3 +387,7 @@ the should-be-forbidden C-z.")
   (terminal-init-lk201))
 
 (provide 'behave)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; behave.el ends here

@@ -25,6 +25,7 @@
 
 (defvar mars/packages '(el-get
                         color-theme
+                        escreen
                         vimpulse
                         keats
                         shen-mode

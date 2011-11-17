@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Sat Nov 12 12:52:50 2011 (+0100)
+;; Last-Updated: Thu Nov 17 19:45:56 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 140
+;;     Update #: 151
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -59,11 +59,10 @@
    "C-x F"     ido-recentf
    "C-x f"     ido-find-file ; may be called from `ido-switch-buffer' (doing C-x C-b C-f) [but use [(jxjf)] in `sticky-control']
    "C-="       shell-command
-   "M-n"       new-frame                ; XXX check if no issue
+   "M-n"       make-frame
    "M-<f2>"    apply-macro-to-region-lines ; use F3/F4 for kmacro start/end
-   "C-c o"     anything-occur              ; or simply occur ?
-   ;; "M-:"       anything-eval-expression-with-eldoc ; a super evaluator
-   "C-:"       anything-M-x             ; C-S-; NOTE: may be smex if 'smex
+   "C-c o"     anything-occur              ; TODO: or simply occur ?
+   "C-:"       anything-M-x             ; C-S-; NOTE: may be #'smex if 'SMEX
    "C-c l"     org-store-link ; [default]
    "C-x C-b"   ido-switch-buffer        ; switch buffer on "C-x C-b" (faster than typing "C-x b") [but use [(jxb)] in `sticky-control']
    "C-x b"     ibuffer                  ; nice buffer browser (a la `dired') [but use [(jxjb)] in `sticky-control']
@@ -80,11 +79,12 @@
                                         ; - buffers (prefer `ido-switch-buffer' [C-x C-b] or `cycle-buffer' [<f5><f[4|6]>] for faster cycling)
                                         ; - recentf (prefer `ido-recentf-file-name-history' [C-x C-f] for faster finding)
                                         ; - files in `default-directory' (not present in `anything-mini')
-   "C-c C-9"   anything-imenu           ; IMPORTANT: useful for fast code navigation (w/o `ecb' fancies)
+   "C-c C-9"   anything-imenu           ; IMPORTANT: useful for fast code navigation (unless `ecb')
                                         ;            anything-browse-code map on [<f7><f7>] too
    "C-<f10>"   tmm-menubar              ; key-controlled menu (`<f10>' is default but awkward on OSX/Gnome) IMPORTANT: remember this for `no-window-system' session
    ))
-;; C-\ as <meta> everywhere (except anywhere `viper-mode' rewrites it)
+;; C-\ as <meta> everywhere (except anywhere `viper-mode' rewrites it) 
+;; NOTE: ESCREEN settings below (as 'escreen-map is C-\)
 (fset 'new-meta-prefix (copy-keymap 'ESC-prefix))
 (bind-key "C-\\" 'new-meta-prefix)
 (when *i-am-a-terminator*
@@ -142,10 +142,10 @@
 (eval-after-load "smex"
   '(progn
      (bind-keys
-      '("<f2>x" smex
+      '("<f2>x"  smex
         "M-x"    smex
         "C-:"    smex
-        "<f2>X" smex-major-mode-commands
+        "<f2>X"  smex-major-mode-commands
         "M-X"    smex-major-mode-commands))))
 
 ;;; UTILITY MACROS
@@ -264,7 +264,7 @@
                                   (mars/unscheduled-tasks    . "<f6>")
                                   (make-remember-frame       . prev)
                                   (mars/safe-emms-start-stop . id)) ; used as a 'START/STOP switch
-
+
 ;; XMonad like keybindings for windows manipulation
 ;; - Navigating: Windmove uses C-<up> etc.
 (windmove-default-keybindings 'control)
@@ -318,15 +318,37 @@
    "M-S-<right>"  (lambda () (interactive) ; right favorite layouts
                     (tiling-cycle 3 mars-tiling-favorite-secondary-layouts))
    "M-S-<end>"    tiling-cycle)) ; accepts prefix number
-
-;; Remember (use <f8><f7> or "C-c C-r" to open in another frame)
+
+;; escreen keybindings
+;; NOTE: the use of <f2> doesn't impact 2C-two-columns keybindings
+(eval-after-load "escreen-setup"
+  '(progn
+     (defmacro escreen-keybindings-builder (super)
+       "Builds keybindings for ESCREEN. SUPER may be a Meta key.
+In this case, type \"M-\" as argument."
+       `(bind-keys
+         ;; - manage
+         '(,(concat super "c") escreen-create-screen
+           ,(concat super "k") escreen-kill-screen
+           ;; - Vi-like navigation
+           ,(concat super "l") escreen-goto-next-screen
+           ,(concat super "h") escreen-goto-prev-screen
+           ;; - jump
+           ,(concat super "j") escreen-goto-screen
+           ;; - print
+           ,(concat super "p") escreen-get-active-screen-numbers-with-emphasis)))
+     (escreen-keybindings-builder "M-")
+     (escreen-keybindings-builder "<f2>"))) ; use <f2> for NO-WINDOW-SYSTEM case
+
+;; remember keybindings (use <f8><f7> or "C-c C-r" to open in another frame)
 (bind-keys
  '("C-c C-r" make-remember-frame
    "C-c r"   make-remember-frame))
-;; Utils
+
+;; miscellaneous launcher keybindings
 (bind-keys
  '("C-c t" default-term
-   "C-c w" mars/wl))                    ; 'WL-OTHER-FRAME but ensure the `confs/mail' load
+   "C-c w" mars/wl))                    ; 'WL-OTHER-FRAME but ensure the `lisp/mail' load
 ;; Remember <f2> is also used for `paredit' edition in NON-WINDOW mode
 
 (provide 'shortcuts)

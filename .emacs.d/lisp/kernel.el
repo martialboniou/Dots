@@ -72,21 +72,20 @@
       (kill-emacs)
     (let ((windows (window-list frame)))
       (if (> (length windows) 1)
-      (if (y-or-n-p (format "Multiple windows in this frame detected. Close anyway? ")) (progn ad-do-it) nil)
-    ;; one window case
-    (let ((pending confirm-frame-action-buffer-alist)
-          (buf (window-buffer (car windows)))
-          found)
-      (while (and (null found) pending)
-        (let ((property (pop pending)))
-          (when (member (with-current-buffer
-                buf
-                  (symbol-value (car property))) (cdr property))
-        (message (prin1-to-string property))
-        (setq found t))))
-      (if (and found (not (y-or-n-p (format "Are you sure you want to delete this frame? "))))
-          nil
-        (progn ad-do-it)))))))
+          (if (y-or-n-p (format "Multiple windows in this frame detected. Close anyway? ")) (progn ad-do-it) nil)
+        ;; one window case
+        (let ((pending confirm-frame-action-buffer-alist)
+              (buf (window-buffer (car windows)))
+              found)
+          (while (and (null found) pending)
+            (let ((property (pop pending)))
+              (when (member (with-current-buffer
+                                buf
+                              (symbol-value (car property))) (cdr property))
+                (setq found t))))
+          (if (and found (not (y-or-n-p (format "Are you sure you want to delete this frame? "))))
+              nil
+            ad-do-it))))))
 
 ;; reload emacs
 (defun reload-emacs ()          ; TODO: check it prolly might not work

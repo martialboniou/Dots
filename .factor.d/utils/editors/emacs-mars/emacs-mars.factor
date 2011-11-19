@@ -1,10 +1,12 @@
 ! Copyright (C) 2011 Martial Boniou.
 ! See http://factorcode.org/license.txt for BSD license.
 ! hack from editors.emacs by Slava Pestov.
-USING: definitions io.launcher io.pathnames namespaces kernel
-parser words sequences math math.parser namespaces editors make
-system combinators.short-circuit fry threads vocabs.loader ;
+USING: combinators.short-circuit editors kernel make math.parser
+namespaces sequences system vocabs ;
 IN: editors.emacs-mars
+
+SINGLETON: emacsclient-mars
+emacsclient-mars editor-class set-global
 
 SYMBOL: emacsclient-path
 SYMBOL: emacsserver-name
@@ -15,7 +17,7 @@ HOOK: default-emacsserver os ( -- path )
 M: object default-emacsclient ( -- path ) "emacsclient" ;
 M: object default-emacsserver ( -- path ) "mars"        ;
 
-: emacsclient ( file line -- )
+M: emacsclient-mars editor-command ( file line -- command )
     [
         {
             [ emacsclient-path get-global ]
@@ -28,12 +30,6 @@ M: object default-emacsserver ( -- path ) "mars"        ;
         "--no-wait" ,
         number>string "+" prepend ,
         ,
-    ] { } make
-    os windows? [ run-detached drop ] [ try-process ] if ;
-
-: emacs ( word -- )
-    where first2 emacsclient ;
-
-[ emacsclient ] edit-hook set-global
+    ] { } make ;
 
 os windows? [ "editors.emacs-mars.windows" require ] when

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Nov 16 20:53:26 2011 (+0100)
+;; Last-Updated: Sat Nov 19 10:44:34 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 550
+;;     Update #: 556
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -16,11 +16,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Commentary: header2 + auto-insert (skeleton) / hideshow + hideshowvis /
-;;              cedet & ecb-autoloads / textmate (bindings on parens) or 
-;;              auto-pair-plus (for non-lisp modes) / paredit (slurp/barf)
-;;              + highlight-parentheses / eldoc / comint / cheat /
-;;              org-babel / simple-call-tree / `lang'
-;;
+;;              cedet & ecb-autoloads / auto-pair-plus (for non-lisp modes) /
+;;              paredit (slurp/barf for lisp modes) + highlight-parentheses /
+;;              eldoc / comint / cheat / org-babel / simple-call-tree / `lang'
 ;;
 ;;; Ideas: CEDET: https://github.com/alexott/emacs-configs/blob/master/rc/emacs-rc-cedet.el
 ;;
@@ -344,7 +342,7 @@ Move point to the beginning of the line, and run the normal hook
                        (setq mars/ecb-previously-running t)
                        (delete-other-windows))
                    (progn
-                     (setq *mars/previous-window-configuration* (current-window-configuration))
+                     (setq *mars/previous-window-configuration* (current-window-configuration-printable))
                      (setq mars/ecb-previously-running nil)
                      (delete-other-windows)))
                (if mars/ecb-previously-running
@@ -386,20 +384,6 @@ Move point to the beginning of the line, and run the normal hook
             (ecb-activate))))
     (when (y-or-n-p "Start ecb? ")
       (ecb-activate))))
-
-;;; TEXTMATE (AKA BINDINGS ON PARENTHESES)
-;;  2009 version
-(unless (el-get-package-is-installed "auto-pair-plus")
-  (defvar tm-hooks (cons 'c-common-hook
-                               (mars/generate-mode-hook-list
-                                '(python php scala erlang
-                                  ruby latex))))
-  (require 'textmate)
-  (eval-after-load "textmate"
-    '(progn
-       (setq tm/dont-activate t)
-       (tm/initialize)
-       (mars/add-hooks tm-hooks #'tm/minor-mode-on))))
 
 ;;; AUTO-PAIR-PLUS
 ;;
@@ -504,18 +488,13 @@ Move point to the beginning of the line, and run the normal hook
      (define-key paredit-mode-map (kbd "M-<right>")   nil)
      (define-key paredit-mode-map (kbd "C-M-<left>")  nil)
      (define-key paredit-mode-map (kbd "C-M-<right>") nil)
+     ;; no-window-system case
+     ;; <C-S-*> is unavailable; use <f2>-9 and so on as defined in `shortcuts'
      ;; slime case
      (defun override-slime-repl-bindings-with-paredit ()
        (define-key slime-repl-mode-map
          (read-kbd-macro paredit-backward-delete-key) nil))
-     (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
-     ;; no-window-support case
-     ;; vt-100 and alike don't know keys like "\C-\S-0" and so on
-     ;; NOTE: ensure function keys like <f2> are well mapped on termcaps like '\eOQ'
-     (define-key paredit-mode-map (kbd "<f2>]") #'paredit-forward-barf-sexp) ; \C-\S-\]
-     (define-key paredit-mode-map (kbd "<f2>[") #'paredit-backward-barf-sexp) ; \C-\S-\[
-     (define-key paredit-mode-map (kbd "<f2>0") #'paredit-forward-slurp-sexp) ; \C-\)
-     (define-key paredit-mode-map (kbd "<f2>9") #'paredit-backward-slurp-sexp))) ; \C-\(
+     (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)))
 
 ;;; ELDOC
 (mars/add-hooks (mars/generate-mode-hook-list

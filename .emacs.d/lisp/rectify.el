@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
 ;; Version:
-;; Last-Updated: Tue Nov 15 23:47:31 2011 (+0100)
+;; Last-Updated: Fri Nov 18 10:55:56 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 154
+;;     Update #: 157
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -53,10 +53,8 @@
                 #'(lambda () (when buffer-file-name (flymake-mode 1))))
 (eval-after-load "flymake"
   '(progn
+     ;; M-S-h & M-S-l to go to previous & next error resp.
      (add-hook 'find-file-hook #'flymake-find-file-hook)
-     (bind-keys
-      '("M-h" 'flymake-goto-prev-error
-        "M-l" 'flymake-goto-next-error))
      ;; show help
      (defun my-flymake-show-help ()
        (when (get-char-property (point) 'flymake-overlay)
@@ -244,7 +242,7 @@
        (interactive)
        (let ((hippie-expand-try-functions-list '(try-complete-file-name-partially try-complete-file-name)))
          (call-interactively 'hippie-expand)))
-     (bind-key "C-S-p" 'special-expand-file-name-at-point)))
+     (bind-key "C-S-p" #'special-expand-file-name-at-point)))
 
 ;;; YASNIPPETS
 ;; bound to 'C-p à la Vim

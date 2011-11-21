@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Fri Nov 18 11:20:17 2011 (+0100)
+;; Last-Updated: Mon Nov 21 17:39:01 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 166
+;;     Update #: 171
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -100,7 +100,7 @@
 ;; 2- special C-; (;/'/a) for Dvorak typist (including Vim user)
 ;; 3- standard commands (x/v/c) for Qwerty typist & "terminator" (including Vim user)
 (if *i-am-a-dvorak-typist*
-    (bind-keys                          ; Sun help keys' order
+    (bind-keys                          ; Oracle/Sun Type 5/6 Keyboards extra keys' order
      '("C-; C-'" copy-region-as-kill
        "C-; C-a" yank
        "C-; C-;" kill-region
@@ -217,13 +217,13 @@
   "Creates the keybindings for windows-archiver."
   (let ((acc))
     (dotimes (elt 10 acc)
-      (setq acc (append acc `((lambda () (interactive) (mars-windows-archiver-restore ,elt))))))
+      (setq acc (append acc `((lambda () (interactive) (revive-plus:wconf-archive-restore ,elt))))))
     `(mars/build-ordered-function-keys ,key
                                        ,@acc
-                                       (mars-windows-archiver-save  . id)            ; save current
+                                       (revive-plus:wconf-archive-save . id)            ; save current
                                        ((lambda () (interactive)
-                                          (mars-windows-archiver-restore 0)) . prev) ; restore last
-                                       (mars-windows-archiver-restore . next)))) ; restore which
+                                          (revive-plus:wconf-archive-restore 0)) . prev) ; restore last
+                                       (revive-plus:wconf-archive-restore . next)))) ; restore which
 
 ;;; DUMMY FUNCTIONS
 ;;
@@ -231,7 +231,6 @@
 ;; instead of <site-lisp> files). Use `fmakunbound' to test it.
 (defun-dummy t
   ("code"           . (mars/save-n-purge-code mars/toggle-ecb mars/simple-call-tree-view))
-  ("window-manager" . mars/toggle-single-window)
   ("media"          . (mars/safe-emms-start-stop mars/emms-any-streams))
   ("gtd"            . (make-remember-frame mars/today-calendar mars/two-days-calendar mars/unscheduled-tasks))
   ("mail"           . (mars/draft-email mars/wl))
@@ -242,32 +241,32 @@
 ;;
 ;; <f5> + <f6> => toggle single window + cycle/(undo-)kill-buffer + windows configuration archiver
 (mars/build-ordered-function-keys "f5"
-                                  (mars/toggle-single-window  . id)
-                                  (cycle-buffer-backward      . next)
-                                  (cycle-buffer               . prev)
-                                  (delete-window              . "<end>") ; C-<end> may be used too
-                                  (kill-this-buffer           . "<f1>")
+                                  (revive-plus:toggle-single-window . id)
+                                  (cycle-buffer-backward            . next)
+                                  (cycle-buffer                     . prev)
+                                  (delete-window                    . "<end>") ; C-<end> may be used too
+                                  (kill-this-buffer                 . "<f1>")
                                   ((lambda () (interactive)
-                                     (undo-kill-buffer ()))   . "<f2>")
-                                  (anything                   . "<f8>"))
+                                     (undo-kill-buffer ()))         . "<f2>")
+                                  (anything                         . "<f8>"))
 (mars/build-windows-archiver-function-keys "f6")
 ;; <f7> => hack tools
 (mars/build-ordered-function-keys "f7" compile elisp-macroexpand describe-unbound-keys mars/hexedit
-                                  (whitespace-mode            . "<f1>")
-                                  (mars/save-n-purge-code     . "<f4>")
-                                  (mars/simple-call-tree-view . "<f5>")
-                                  (anything-simple-call-tree  . prev)
-                                  (anything-browse-code       . id) ; faster than ecb
-                                  (mars/toggle-ecb            . next)
-                                  (cycle-ispell-languages     . "<f2>"))
+                                  (whitespace-mode                  . "<f1>")
+                                  (mars/save-n-purge-code           . "<f4>")
+                                  (mars/simple-call-tree-view       . "<f5>")
+                                  (anything-simple-call-tree        . prev)
+                                  (anything-browse-code             . id) ; faster than ecb
+                                  (mars/toggle-ecb                  . next)
+                                  (cycle-ispell-languages           . "<f2>"))
 ;; <f8> => daily tasks
 (global-unset-key [f8])
 (mars/build-ordered-function-keys "f8" mars/emms-any-streams
-                                  (mars/draft-email          . "<f4>")
-                                  (mars/two-days-calendar    . "<f5>")
-                                  (mars/unscheduled-tasks    . "<f6>")
-                                  (make-remember-frame       . prev)
-                                  (mars/safe-emms-start-stop . id)) ; used as a 'START/STOP switch
+                                  (mars/draft-email                 . "<f4>")
+                                  (mars/two-days-calendar           . "<f5>")
+                                  (mars/unscheduled-tasks           . "<f6>")
+                                  (make-remember-frame              . prev)
+                                  (mars/safe-emms-start-stop        . id)) ; used as a 'START/STOP switch
 
 ;; XMonad like keybindings for windows manipulation
 ;; - Navigating: Windmove uses C-<up> etc.

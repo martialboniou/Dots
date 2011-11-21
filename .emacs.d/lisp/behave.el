@@ -5,10 +5,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Thu Nov 17 17:30:20 2011 (+0100)
-;; Version: 0.6
-;; Last-Updated: Thu Nov 17 18:01:23 2011 (+0100)
+;; Version: 0.6.1
+;; Last-Updated: Mon Nov 21 17:24:13 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 6
+;;     Update #: 9
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -131,12 +131,6 @@ See the advised `delete-frame' at the end of this file as a use case.")
 (mapc #'(lambda (x)
           (add-to-list 'desktop-modes-not-to-save x))
       '(Info-mode dired-mode image-mode))
-;; - window configuration case
-(add-hook 'desktop-save-hook
-          #'kiwon/save-window-configuration)
-(add-hook 'desktop-after-read-hook
-          #'kiwon/restore-window-configuration)  ; save/restore the last window
-                                        ; configuration with `DESKTOP'
 
 ;; - path
 (unless desktop-dir

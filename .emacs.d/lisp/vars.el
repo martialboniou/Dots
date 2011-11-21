@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Mon Nov 14 16:51:45 2011 (+0100)
+;; Last-Updated: Mon Nov 21 16:36:22 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 140
+;;     Update #: 146
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -214,8 +214,10 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
                             (delete-directory obsolete-file-or-dir t)
                           (delete-file obsolete-file-or-dir)))
                       full-path)))
-      (setq mars-windows-archiver-file (cachize "windows-archiver")
-        kiwon/last-window-configuration-file (cachize "last-window-configuration")
+      (setq revive-plus:wconf-archive-file (cachize "wconf-archive"
+                                                    "~/.emacs.d/wconf-archive")
+        revive-plus:last-wconf-file (cachize "last-wconf"
+                                             "~/.emacs.d/last-wconf")
         desktop-dir data-cache
         desktop-base-file-name "desktop"
         desktop-base-lock-name (format "%s%s.lock" 

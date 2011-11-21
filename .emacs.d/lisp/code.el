@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sat Nov 19 10:44:34 2011 (+0100)
+;; Last-Updated: Mon Nov 21 17:30:20 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 556
+;;     Update #: 562
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -327,50 +327,7 @@ Move point to the beginning of the line, and run the normal hook
      ;; ECB compatible `desktop'
      (eval-after-load "desktop"
       '(progn
-         (push '(ecb-minor-mode nil) desktop-minor-mode-table)))
-     ;; ECB compatible `mars/toggle-single-window' defined in `window-manager'
-     (if (fboundp 'mars/toggle-single-window)
-         (progn
-           (defvar mars/ecb-previously-running nil
-             "Previous state of ECB.")
-           (defadvice mars/toggle-single-window (around ecb-active activate)
-             (interactive)
-             (if (cdr (window-list nil 0))
-                 (if (ecb-activated-in-this-frame)
-                     (when (y-or-n-p "This frame is ECB'd. Do you want to deactivate ECB? ")
-                       (ecb-deactivate)
-                       (setq mars/ecb-previously-running t)
-                       (delete-other-windows))
-                   (progn
-                     (setq *mars/previous-window-configuration* (current-window-configuration-printable))
-                     (setq mars/ecb-previously-running nil)
-                     (delete-other-windows)))
-               (if mars/ecb-previously-running
-                   (progn
-                     (ecb-activate)
-                     (setq mars/ecb-previously-running nil))
-                 (when *mars/previous-window-configuration*
-                   (set-window-configuration *mars/previous-window-configuration*)
-                   (setq *mars/ecb-in-previous-window-configuration* nil)))))))
-     ;; ECB version of mars-windows-archiver-save
-     (defadvice mars-windows-archiver-save (around ecb-active activate)
-       (interactive)
-       (if (ecb-activated-in-this-frame)
-           (when (y-or-n-p "BEWARE: you should deactivate ecb first. Archive the current window configuration anyway? ")
-             (let ((dont-alert t))
-               ad-do-it))
-         (progn
-           ad-do-it)))
-     ;; ECB version of kiwon/save-window-configuration
-     (defadvice kiwon/save-window-configuration (around ecb-active (&optional ecb-manage) activate)
-       (let ((ecb-active (ecb-activated-in-this-frame)))
-         (when (and ecb-manage ecb-active) ; you cannot deactivate ecb when desktop is autosaved so
-           (ecb-deactivate))               ; `ecb-manage' is here for the `kill-emacs-hook' case
-         (progn
-           ad-do-it
-           (when ecb-active
-             (append-to-file "(ecb-activate)" nil kiwon/last-window-configuration-file)))))
-     (add-hook 'kill-emacs-hook '(lambda () (kiwon/save-window-configuration t)) 'append)))
+         (push '(ecb-minor-mode nil) desktop-minor-mode-table)))))
 (defun mars/toggle-ecb ()
   (interactive)
   (if (ecb-activated)

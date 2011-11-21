@@ -5,10 +5,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer: Martial Boniou
 ;; Created: Sat Feb 19 11:17:32 2011 (+0100)
-;; Version: 0.8
-;; Last-Updated: Fri Nov 18 14:15:44 2011 (+0100)
+;; Version: 0.8.1
+;; Last-Updated: Mon Nov 21 17:41:42 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 74
+;;     Update #: 81
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -52,11 +52,9 @@
 
 (when (fboundp 'winner-mode)
   (winner-mode 1))
-(require 'revive+)                      ; to preserve window-focus in revive
-
-;;; CUSTOMS + VARS
-(defvar *mars/previous-window-configuration* nil
-  "State of windows' configuration to restore.")
+
+(setq revive-plus:all-frames t)
+(revive-plus:minimal-setup)
 
 ;;; ROTATE-WINDOWS + TOGGLE-SINGLE-WINDOW
 (defun rotate-windows-helper(x d)
@@ -80,15 +78,6 @@
             (rotate-windows-helper (reverse list) (window-buffer (car (last list))))
             (when selected
               (select-window (cadr list)))))))))
-
-(defun mars/toggle-single-window ()
-  (interactive)
-  (if (cdr (window-list nil 0))
-      (progn
-        (setq *mars/previous-window-configuration* (current-window-configuration-printable))
-        (delete-other-windows))
-    (unless (null *mars/previous-window-configuration*)
-      (restore-window-configuration *mars/previous-window-configuration*))))
 
 ;;; WINDMOVE
 (eval-after-load "windmove"

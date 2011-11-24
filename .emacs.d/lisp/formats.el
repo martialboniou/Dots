@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Nov 15 21:09:57 2011 (+0100)
+;; Last-Updated: Thu Nov 24 15:00:47 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 117
+;;     Update #: 118
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -177,15 +177,15 @@ Otherwise the update regexps won't match."
           (mars/add-hooks spell-checker-text-hooks  #'turn-on-flyspell)
           (mars/add-hooks spell-checker-prog-hooks  #'flyspell-prog-mode)))
     (message "formats: you should install %s in order to work with flyspell checker" (symbol-name spell-checker-name)))
+   ;; dvorak case
+  (when *i-am-a-dvorak-typist*
+    ;; .emacs defines C-; for fast copy-paste-cut key-bindings in dvorak typing context
+    (setq flyspell-auto-correct-binding
+          [(control ?\')]))           ; use C-' instead
   (eval-after-load "flyspell"
     '(progn
-       ;; mouse-wheel replaces mouse-2 nowadays
+       ;; mouse-wheel makes mouse-2 a hard life nowadays
        (define-key flyspell-mode-map [down-mouse-3] 'flyspell-correct-word) ; map correction on mouse-3
-       ;; dvorak case
-      (when *i-am-a-dvorak-typist*
-        ;; .emacs defines C-; for fast copy-paste-cut key-bindings in dvorak typing context
-        (setq flyspell-auto-correct-binding
-              [(control ?\')]))           ; use C-' instead
       ;; dictionaries
       (eval-after-load "ispell"           ; configure flyspell even if FLYSPELL is
                                         ; muted at startup

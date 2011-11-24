@@ -38,6 +38,7 @@
                         org-mode
                         howm
                         remember
+                        revive-plus
                         multi-web-mode
                         markdown-mode
                         magit

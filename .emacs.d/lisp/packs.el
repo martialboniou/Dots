@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Mon Nov 14 19:45:12 2011 (+0100)
+;; Last-Updated: Thu Nov 24 18:37:04 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 522
+;;     Update #: 524
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -68,9 +68,9 @@
 
 (setq mars/site-lisp-package-tree '(
                                    
-                                    (mhc           . ((get . "git clone git://github.com/yoshinari-nomura/mhc.git")
-                                                      (install . "emacs-compile-directory emacs") ; ruby configure.rb; ruby make.rb is OBSOLETE (ftools dependencies)
-                                                      (nosearch . ("icons" "ruby-ext" "samples" "xpm"))))
+                                    ;; (mhc           . ((get . "git clone git://github.com/yoshinari-nomura/mhc.git")
+                                    ;;                   (install . "emacs-compile-directory emacs") ; ruby configure.rb; ruby make.rb is OBSOLETE (ftools dependencies)
+                                    ;;                   (nosearch . ("icons" "ruby-ext" "samples" "xpm"))))
                                     ;; (rinari            . ((get . "git clone git://github.com/eschulte/rinari.git; cd rinari; git submodule init; git submodule update; cd ..") ; FIXME: no compilation yet!
                                     ;;                       (nosearch . ("doc" "test" "util/jump/test" "util/test"))))
                                     ;; TODO: fetch all the Python/Rope install process
@@ -81,19 +81,19 @@
                                     ;; WARNING: python.el is installable but `generate-file-autoloads' function complains about the naming form
                                     ;; (python.el          . ((get . "git clone git://github.com/fgallina/python.el")
                                     ;;                        (install . "emacs-compile-directory")))
-                                    (pylookup           . ((get . "git clone git://github.com/tsgates/pylookup.git") ; TODO: Issue 10 to merge for Python 2
-                                                           (install . "emacs-compile-directory")
-                                                           (nosearch . "python-2.7.1-docs-html"))) ; wtf this archive here / need a fork?
-                                    (Pymacs             . ((get . "git clone git://github.com/pinard/Pymacs.git")
-                                                           (install . "make; emacs-compile-directory") ; install Pymacs.egg in your python site-packges TODO: may require `eshell' for root install and su/sudo
-                                                           (alert . "You may install PYMACS python part by running:\n\tpip install Pymacs\n\nThen don't forget to install rope and ropemode using pip (or easy_install)")
-                                                           (nosearch . ("build" "contrib" "Pymacs" "tests"))))
-                                    (ropemacs           . ((get . "hg clone https://bitbucket.org/agr/ropemacs")
-                                                           (install . "python setup.py install")
-                                                           (nosearch . ".")))
-                                    ;; (bbdb               . ((get . "cvs -d \":pserver:anonymous:@bbdb.cvs.sourceforge.net:/cvsroot/bbdb\" checkout bbdb")
-                                    ;;                        (install . "autoconf;./configure;cd lisp;make autoloadsc;cd ..; make") ; soon DEPRECATED / IMPORTANT: problem in configure on Windows: `emacs' path with spaces
-                                    ;;                        (nosearch . ("autom4te.cache" "bits/bbdb-filters/doc" "html" "tex" "texinfo" "utils"))))
+                                    ;; (pylookup           . ((get . "git clone git://github.com/tsgates/pylookup.git") ; TODO: Issue 10 to merge for Python 2
+                                    ;;                        (install . "emacs-compile-directory")
+                                    ;;                        (nosearch . "python-2.7.1-docs-html"))) ; wtf this archive here / need a fork?
+                                    ;; (Pymacs             . ((get . "git clone git://github.com/pinard/Pymacs.git")
+                                    ;;                        (install . "make; emacs-compile-directory") ; install Pymacs.egg in your python site-packges TODO: may require `eshell' for root install and su/sudo
+                                    ;;                        (alert . "You may install PYMACS python part by running:\n\tpip install Pymacs\n\nThen don't forget to install rope and ropemode using pip (or easy_install)")
+                                    ;;                        (nosearch . ("build" "contrib" "Pymacs" "tests"))))
+                                    ;; (ropemacs           . ((get . "hg clone https://bitbucket.org/agr/ropemacs")
+                                    ;;                        (install . "python setup.py install")
+                                    ;;                        (nosearch . ".")))
+                                    ;; ;; (bbdb               . ((get . "cvs -d \":pserver:anonymous:@bbdb.cvs.sourceforge.net:/cvsroot/bbdb\" checkout bbdb")
+                                    ;; ;;                        (install . "autoconf;./configure;cd lisp;make autoloadsc;cd ..; make") ; soon DEPRECATED / IMPORTANT: problem in configure on Windows: `emacs' path with spaces
+                                    ;; ;;                        (nosearch . ("autom4te.cache" "bits/bbdb-filters/doc" "html" "tex" "texinfo" "utils"))))
                                     (cedet              . ((get . "bzr checkout bzr://cedet.bzr.sourceforge.net/bzrroot/cedet/code/trunk cedet")
                                                            (install . "make")
                                                            (nosearch . ("cogre/templates" "cogre/tests" "ede/templates" "semantic/doc" "semantic/tests" "srecode/templates" "testprojects" "www"))

@@ -28,8 +28,6 @@ if [ "`uname`" = "Darwin" ]; then
   #type detach &>/dev/null && alias mpd="detach mpd --no-daemon" || echo "MPD doesn't work as expected"
   SRC_HILITE_LESSPIPE=src-hilite-lesspipe.sh # port install source-highlight
   OPEN_COMMAND='open'
-  MANPATH=`/usr/bin/manpath`
-  export MANPATH=/usr/brewery/share/man:$MANPATH # MacPorts: man
   export LSCOLORS=dxgxcxdxbxegedabagacad
   alias ls='ls -G' # AIX/BSD ls command
   alias ghci='EDITOR=mvim ghci'

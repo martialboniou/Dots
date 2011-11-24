@@ -104,4 +104,4 @@ Final Thoughts
 I'll do a blog for all this ASAP.
 
 * **TODO:** bindings map database for my bindings in and out of the shell, Emacs and Vim (useful in Mac OS X and Xmonad/Gnome context).
-* **TODO:** snippets database in another project to organize some tidbits and hacks used in those kind of dotfiles. For instance, read `chit` files with, ruby [`chit`](https://github.com/robin/chit).
+* **TODO:** snippets database in another project to organize some tidbits and hacks used in those kind of dotfiles. For instance, read `chit` files with ruby [`chit`](https://github.com/libin/chit) (ruby 1.9.2 required).

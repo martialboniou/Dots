@@ -1,8 +1,0 @@
-(:name markdown-mode
-       :description "Markdown files editing mode"
-       :type git
-       :url "git://jblevins.org/git/markdown-mode.git"
-       :compile "."
-       :post-init (lambda ()
-                    (add-to-list 'auto-mode-alist
-                                 '("\\.\\(mk?dn?\\|mdown\\|markdown\\)\\'" . markdown-mode))))

@@ -1,4 +1,3 @@
-;; -*- no-byte-compile: t -*-
 ;;; EL-GET SELECT
 ;;
 (require 'noaccess)
@@ -9,10 +8,11 @@
 
 (unless (require 'el-get nil t)
   (url-retrieve                         ; MUST USE BEFORE 'FLIM REQUIREMENT
-   "https://raw.github.com/dimitri/el-get/master/el-get-install.el"
+   "https://raw.github.com/martialboniou/el-get/master/el-get-install.el"
    (lambda (s)
-     (goto-char (point-max))
-     (eval-print-last-sexp))))
+     (let ((el-get-install-branch "master"))
+       (goto-char (point-max))
+       (eval-print-last-sexp)))))
 
 (add-to-list 'el-get-recipe-path (expand-file-name "Recipes"
                                                    (expand-file-name mars/personal-data 

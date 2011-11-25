@@ -4,7 +4,7 @@
 
 (require 'appearance)
 
-;; (require 'packs)
+(require 'packs)
 
 ;; (when *i-am-a-common-lisp-advocate*
 ;;   (unless (fboundp 'eieio-defclass)     ; `cedet' if no CLOS

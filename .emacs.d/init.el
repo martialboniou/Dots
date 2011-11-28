@@ -7,9 +7,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 4.1-experimental
-;; Last-Updated: Wed Nov 16 11:00:01 2011 (+0100)
+;; Last-Updated: Sun Nov 27 22:14:42 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 2066
+;;     Update #: 2067
 ;; URL: https://github.com/martialboniou/Dots.git
 ;; Keywords: .emacs, init
 ;; Compatibility: C-\ is linked to Esc-map
@@ -57,6 +57,14 @@
 ;;
 (start-named-server user-login-name)
 
+;;; REVIVE
+;;
+(setq revive-plus:all-frames t)
+(revive-plus:minimal-setup)
+
+;;; ALL THE FUN
+;; these packages are not loaded when Emacs boots from `kernel'
+;;
 (require 'mail)         ; emacs as a MUA, a web browser, a syndicate and an organizer
 (require 'file-manager)     ; emacs as a file manager
 (require 'rectify)      ; emacs as a programming environment including smart code validation

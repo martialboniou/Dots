@@ -52,9 +52,9 @@
 ;;
 ;;; Code:
 
-(require 'formats)
 (provide 'programming)
 (require 'preamble)
+(require 'formats)
 
 (eval-when-compile (require 'ecb)
                    (unless (fboundp #'autopair-mode)
@@ -518,7 +518,7 @@ Move point to the beginning of the line, and run the normal hook
   (unless (featurep 'one-language-spoken)
     (require 'pure-object)              ; for smalltalk / factor / io
     (require 'wiki-wiki)                ; for markup languages as mediawiki or markdown
-    ;; (require 'church-inspired)          ; for lisp (including scheme)
+    (require 'church-inspired)          ; for lisp (including scheme)
     ;; (require 'marseille)                ; for logic and expert programming (including prolog)
     (require 'peyton-jones-family)      ; for ML family and shenlanguage.org
     (require 'web-programming)          ; for web languages (mweb or nxhtml)

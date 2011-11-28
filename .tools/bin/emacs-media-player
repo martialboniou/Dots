@@ -1,8 +1,6 @@
 #!/bin/sh
-emacs -q -eval "\
+emacs -q -l media -l emms-history -eval "\
 (progn\
-  (require 'media)\
-  (require 'emms-history)\
   (emms-history-load)\
   (unless (fboundp #'remove-if)\
     (require 'cl))\

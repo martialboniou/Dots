@@ -1,0 +1,3 @@
+#!/bin/sh
+emacs -q -l church-inspired $*
+# `lang` subdirectory of local site-lisp MUST be in EMACSLOADPATH

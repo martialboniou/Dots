@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou
 ;; Created: Sat Feb 19 11:17:32 2011 (+0100)
 ;; Version: 0.8.1
-;; Last-Updated: Mon Nov 21 17:41:42 2011 (+0100)
+;; Last-Updated: Sun Nov 27 22:14:38 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 81
+;;     Update #: 82
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -53,8 +53,10 @@
 (when (fboundp 'winner-mode)
   (winner-mode 1))
 
-(setq revive-plus:all-frames t)
-(revive-plus:minimal-setup)
+;; revive-plus
+;; see. `user-init-file' because window configuration
+;;       persistence has no sense when Emacs boots partially
+
 
 ;;; ROTATE-WINDOWS + TOGGLE-SINGLE-WINDOW
 (defun rotate-windows-helper(x d)

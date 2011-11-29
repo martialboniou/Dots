@@ -1,6 +1,7 @@
 #!/bin/sh
-emacs -q -l mail -eval "\
+emacs -q -eval "\
 (progn\
+  (require 'mail)\
   (add-hook 'wl-exit-hook 'kill-emacs)\
   (condition-case err\
       (wl)\

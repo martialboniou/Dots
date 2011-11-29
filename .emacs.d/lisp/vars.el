@@ -188,6 +188,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
       "cache/newsticker/cache"
       "cache/newsticker/images"
       "cache/newsticker/groups"
+      "cache/emms"
       "cache/eshell"
       "cache/image-dired"
       "Notes" "Insert" "BBDB" "elmo"))
@@ -247,7 +248,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
         elmo-msgdb-directory (expand-file-name "elmo" data-dir)
         wl-temporary-file-directory (expand-file-name "Downloads" "~")
         eshell-directory-name (file-name-as-directory (cachize "eshell")) ; may need a final `slash'
-        emms-cache-file (cachize "emms-cache" "~/.emacs.d/emms/"))
+        emms-directory (cachize "emms" "~/.emacs.d/emms"))
       ;; FIXME: temporary hack to auto-remove the default `auto-save-list'
       (let ((auto-save-folder (expand-file-name "Autosaves"
                                                 (expand-file-name "Temporary" data-dir))))

@@ -6,16 +6,16 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:38:43 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sun Nov  6 12:33:24 2011 (+0100)
+;; Last-Updated: Thu Dec  1 12:01:57 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 3
+;;     Update #: 4
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: slime
+;;; Commentary: quicklisp slime
 ;; 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -25,7 +25,6 @@
 ;;        script like this:
 ;; 
 ;;        $ EMACS="emacs -q -l church-inspired"       
-;; 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -56,6 +55,26 @@
 (provide 'one-language-spoken)
 (require 'code-preamble)
 (unintern 'one-language-spoken obarray)
+
+;;; QUICKLISP SLIME
+(add-lambda-hook 'emacs-startup-hook
+  ;; check helper wasn't loaded at startup (using CLBUILD maybe)
+ (unless (and (boundp 'quicklisp-slime-helper-dist) 
+              (not (boundp 'mars/quicklisp-slime-rep)))
+   (condition-case err
+       (load (expand-file-name "slime-helper.el" mars/quicklisp-slime-rep))
+     (error "church-inspired: quicklisp slime helper not loaded: %s" err))
+   ;; NOTE: remember REPL may not be the same as the one loaded by another
+   ;;       helper launcher like the CLBUILD2 internal slime script
+   (eval-after-load "slime-autoloads"
+     '(progn
+        (when (and (boundp 'mars/common-lisp-program-name)
+                   (executable-find mars/common-lisp-program-name))
+          (setq inferior-lisp-program mars/common-lisp-program-name))
+        (slime-setup '(slime-fancy slime-tramp slime-asdf))))
+   (eval-after-load "slime"
+     '(progn
+        (slime-require :swank-listener-hooks)))))
 
 (provide 'church-inspired)
 

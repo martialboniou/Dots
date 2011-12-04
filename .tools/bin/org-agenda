@@ -3,7 +3,7 @@
 # display 2 days' org-agenda view using emacs and elinks
 
 declare -a ORG_DONE_KEYWORDS=(DONE DEFERRED CANCELLED)
-ORG_PATH="${HOME}/.emacs.d/vendor/org-mode"
+ORG_PATH="${HOME}/.emacs.d/el-get/org-mode"
 ORG_CONTRIB_PATH="${ORG_PATH}/contrib/lisp"
 ORG_AGENDA_DIRECTORY="${HOME}/.emacs.d/data/Notes"
 ORG_AGENDA_FILE="Todo.org"
@@ -13,8 +13,7 @@ ORG_DONE_SEQ="\"|\""            # filter DONE & alike
 for i in ${ORG_DONE_KEYWORDS[@]}; do
     ORG_DONE_SEQ="$ORG_DONE_SEQ \"$i\""
 done
-AGENDA=`emacs -batch -eval "(progn\
-\
+AGENDA=`emacs --batch --eval "(progn\
 (add-to-list (quote load-path) \"${ORG_CONTRIB_PATH}\")\
 (add-to-list (quote load-path) \"${ORG_PATH}/lisp\")\
 (require (quote org))\
@@ -27,7 +26,7 @@ AGENDA=`emacs -batch -eval "(progn\
 (org-agenda-list nil nil 2)\
 (let ((bs (copy-sequence (buffer-string))) beg)\
       (with-temp-buffer\
-        (rename-buffer \"Agenda\" t)
+        (rename-buffer \"Agenda\" t)\
         (set-buffer-modified-p nil)\
         (insert bs)\
         (org-agenda-remove-marked-text (quote org-filtered))\

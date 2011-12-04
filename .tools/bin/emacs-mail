@@ -1,5 +1,5 @@
 #!/bin/sh
-emacs -q -eval "\
+emacs --no-init-file --no-site-file --eval "\
 (progn\
   (require 'mail)\
   (add-hook 'wl-exit-hook 'kill-emacs)\

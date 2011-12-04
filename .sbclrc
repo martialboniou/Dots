@@ -1,11 +1,23 @@
-;;; ASDF (deprecated?)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; ASDF (DON'T USE ASDF-INSTALL)
 (require 'asdf)
-(pushnew #P"~/.sbcl/systems/" asdf:*central-registry* :test #'equal)
-(push #P"~/.sbcl/systems/" asdf:*central-registry*)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; * ADD THIS BLOCK TO CLBUILD2/CONF.LISP *
+;;;{{{
+(pushnew #P"~/.sbcl/systems/" asdf:*central-registry* :test #'equal)
+;; now symlink projects to ~/.sbcl/site
+;; then symlink '*.asd' in ~/.sbcl/site/<project> to ~/.sbcl/systems
+;; finally run: (ASDF:OOS 'ASDF:LOAD-OP :<project>)
+
+;;;}}}
+;;; * BECAUSE CLBUILD OVERRIDES THIS FILE *
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; QUICKLISP
 ;;; The following lines added by ql:add-to-init-file:
 #-quicklisp
-(let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
+(let ((quicklisp-init (merge-pathnames ".quicklisp/setup.lisp"
                                        (user-homedir-pathname))))
   (when (probe-file quicklisp-init)
     (load quicklisp-init)))

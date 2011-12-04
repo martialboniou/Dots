@@ -1,6 +1,8 @@
 #!/bin/sh
-emacs -q -l media -l emms-history -eval "\
+emacs --no-init-file --no-site-file --eval "\
 (progn\
+  (require 'media)
+  (require 'emms-history)
   (emms-history-load)\
   (unless (fboundp #'remove-if)\
     (require 'cl))\

@@ -260,6 +260,8 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 ;;
 (defvar mars/haskell-program-name "ghci"
   "Haskell interpreter fullname.")
+(defvar mars/common-lisp-program-name "sbcl"
+  "Common Lisp program name")
 (custom-set-variables
  '(tramp-default-method "ssh"))
 (if (member system-type '(windows-nt ms-dos))
@@ -273,6 +275,8 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 (defvar factorcode-source-rep "~/Dynamics/factor/src/factor"
   "The up-to-date factor source repository. The Emacs environment
 named FUEL must be found in the `misc/fuel' subdirectory.")
+(defvar mars/quicklisp-slime-rep (expand-file-name ".quicklisp" "~")
+ "`slime-helper' directory.")
 (defvar spelling-tool-name nil
   "The default program for spell checking. May be set to NIL.")
 

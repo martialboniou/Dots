@@ -1,2 +1,2 @@
 #!/bin/sh
-emacs -q -l kernel $*
+emacs --no-init-file --no-site-file --eval "(require 'kernel)" $*

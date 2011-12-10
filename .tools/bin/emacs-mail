@@ -7,5 +7,5 @@ emacs --no-init-file --no-site-file --eval "\
       (wl)\
     (error \"%s\" err)))" $*
 # first require 'MAIL (it includes 'WWW for html decoding & 'GTD for 'ORG-MODE support)
-# then say to kill emacs on 'WL exiting
-# finally run 'WL safely
+# then say to kill emacs on #'WL exiting
+# finally run #'WL safely

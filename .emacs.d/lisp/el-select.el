@@ -34,6 +34,7 @@
                         pymacs
                         mailcrypt
                         auto-complete
+                        ac-slime
                         auto-pair-plus
                         org-mode
                         howm

@@ -15,5 +15,5 @@ emacs --no-init-file --no-site-file --eval "\
       (set-process-query-on-exit-flag\
         (get-process \"emms-player-simple-process\") nil)))" $*
 # first require 'MEDIA (and a minimalist configuration)
-# then restore the last session with 'EMMS-HISTORY-LOAD
+# then restore the last session with #'EMMS-HISTORY-LOAD
 # finally go to the last playlist or open a new one

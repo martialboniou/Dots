@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:38:43 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Dec  1 12:01:57 2011 (+0100)
+;; Last-Updated: Sat Dec 10 21:02:46 2011 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 4
+;;     Update #: 7
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -74,7 +74,14 @@
         (slime-setup '(slime-fancy slime-tramp slime-asdf))))
    (eval-after-load "slime"
      '(progn
-        (slime-require :swank-listener-hooks)))))
+        (slime-require :swank-listener-hooks)
+        (when (el-get-package-is-installed "ac-slime")
+          (mars/add-hooks '(slime-mode-hook slime-repl-mode-hook)
+                         #'set-up-slime-ac)
+          (eval-after-load "auto-complete"
+            '(progn
+               (add-to-list 'ac-modes 'slime-repl-mode)
+               (add-to-list 'ac-modes 'lisp-mode))))))))
 
 (provide 'church-inspired)
 

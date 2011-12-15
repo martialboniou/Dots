@@ -88,6 +88,24 @@
 (fset 'new-meta-prefix (copy-keymap 'ESC-prefix))
 (bind-key "C-\\" #'new-meta-prefix)
 
+;; C-z case
+(global-unset-key (kbd "C-z"))      ; ELSCREEN or other packages may use it
+(global-unset-key (kbd "C-x C-z"))  ; reserved for viper-mode
+
+;; M-: in NO-WINDOW-SYSTEM
+(unless window-system
+  (bind-key "<f2>:" #'eval-expression))
+
+;; SMEX case
+(eval-after-load "smex"
+  '(progn
+     (bind-keys
+      '("<f2>x"  smex
+        "M-x"    smex
+        "C-:"    smex
+        "<f2>X"  smex-major-mode-commands
+        "M-X"    smex-major-mode-commands))))
+
 (when *i-am-a-terminator*
   (bind-keys
    '("C-x C-h"   help-command ; use F1 for contextual help / C-h being rebind
@@ -117,8 +135,7 @@
      (setq cua-auto-tabify-rectangles nil)
      (transient-mark-mode 1)
      (setq cua-keep-region-after-copy t))) ; MS Windows behavior
-(global-unset-key (kbd "C-z"))      ; ELSCREEN or other packages may use it
-(global-unset-key (kbd "C-x C-z"))  ; reserved for viper-mode
+
 ;; sticky-control when required
 (unless (and (not *i-can-do-yubitsume-now*) window-system)
   (require 'sticky-control)
@@ -141,16 +158,6 @@
          (setq sticky-control-shortcuts
                (cons '(?v . "\C-v")     ; paste in CUA-mode
                      sticky-control-shortcuts))))))
-
-;; smex case
-(eval-after-load "smex"
-  '(progn
-     (bind-keys
-      '("<f2>x"  smex
-        "M-x"    smex
-        "C-:"    smex
-        "<f2>X"  smex-major-mode-commands
-        "M-X"    smex-major-mode-commands))))
 
 ;;; UTILITY MACROS
 ;;

@@ -42,7 +42,9 @@ set history=1000 " boost history up
 set shortmess=atI " stifle many interruptive prompts
 
 set backupdir=~/.vim/backup
+silent execute '!umask 027; mkdir -p ~/.vim/backup'
 set directory=~/.vim/tmp
+silent execute '!umask 027; mkdir -p ~/.vim/tmp'
 helptags ~/.vim/doc
 
 set incsearch

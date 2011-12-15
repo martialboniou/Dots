@@ -1,6 +1,6 @@
 #!/bin/sh
 emacs --no-init-file --no-site-file --eval "(progn\
-(require 'kernel)
+(require 'kernel)\
 (require 'gtd)\
 (start-named-server \"$USER\")\
 (mars/two-days-calendar)\

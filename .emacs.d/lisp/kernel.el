@@ -31,7 +31,8 @@
 
 (require 'formats)                      ; emacs as an universal typewriter
 (require 'crypto)                       ; emacs as a secret agent
-(require 'window-manager)               ; emacs as a window-manager
+(require 'window-manager)               ; emacs as a window manager
+(require 'file-manager)                 ; emacs as a file manager
 (require 'shortcuts)                    ; emacs as a key commander
 
 (when *i-am-an-emacsen-dev*

@@ -32,6 +32,8 @@ alias lsa='ls -ld .*'
 # web cat
 alias wcat='wget -q -O -'
 alias dog=wcat
+# less w/o double char
+alias les=less
 alias monitor="netstat | grep -v localhost | grep -v stream | grep -v dgram"
 if [ "$MAN_COMMAND" ]; then
   alias man=$MAN_COMMAND

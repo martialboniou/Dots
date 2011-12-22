@@ -24,6 +24,9 @@ dirstack $1 > /dev/null
 # ---[ Alias Section ]-------------------------------------------------
 alias dirstack='dirdump; typeset -U dirs_shared; dirstack'
 alias cd\?='dirdump; typeset -U dirs_shared; dirstack'
+# dvorak case
+alias cdL="dirdump; typeset -U dirs_shared; dirstack" # as L is near ?
+alias cdl="dirdump; typeset -U dirs_shared; dirstack" # easier to type than cd?
 if [[ $(uname) == Darwin ]];then
  autoload -U _guidirs
  #_guidirs 2> /dev/null

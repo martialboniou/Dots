@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Mon Nov 21 16:36:22 2011 (+0100)
-;;           By: Martial Boniou
-;;     Update #: 146
+;; Last-Updated: Mon Dec 19 19:00:43 2011 (+0100)
+;;           By: mars
+;;     Update #: 148
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -173,6 +173,12 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
   (defalias 'executable-find 'mingw-executable-find)
   (defvar explicit-shell-file-name "bash")
   (setq shell-file-name "bash"))
+
+;;; NOTEBOOK CONTEXT
+;; touch ~/.notebook if your computer need low resolution screen setup
+(defvar *mars/notebook-context* 
+    (file-readable-p (expand-file-name ".notebook" "~"))
+  "If true, this computer has low resolution. Useful for graphics & font settings.")
 
 ;;; DATA PATH
 ;;

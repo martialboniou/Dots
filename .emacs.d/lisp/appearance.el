@@ -34,7 +34,7 @@
 
      ;; ALIAS-MINOR-MODES TODO: merge to appearance.el
      ;; shorten indicator in mode-line
-     (alias-minor-modes      
+     (alias-minor-modes
       '(undo-tree
     UT
     abbrev    Ab
@@ -55,7 +55,7 @@
 (unless (member system-type '(windows-nt ms-dos))
                     ;(set-face-attribute 'default :height 120)
   (set-face-attribute 'default nil
-              :height 140
+              :height (if *mars/notebook-context* 100 140)
               :family "DejaVu Sans Mono")) ; TODO: force DejaVu_Sans_Mono font install on OSX
 (if window-system
     (setq hl-paren-colors

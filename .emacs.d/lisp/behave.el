@@ -222,7 +222,8 @@ See the advised `delete-frame' at the end of this file as a use case.")
 (eval-after-load "ibuffer"
   '(define-key ibuffer-mode-map (kbd "'") 'kill-all-dired-buffers))
 ;; - anything
-(require 'anything-match-plugin)
+(when (el-get-package-is-installed "anything")
+  (require 'anything-match-plugin))
 (eval-after-load "anything-config"
   '(progn
      (defvar mars/anything-pers-action-binding "C-."

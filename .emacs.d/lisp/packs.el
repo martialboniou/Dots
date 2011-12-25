@@ -133,7 +133,8 @@
                                     ;;                        (nosearch . ("attic" "autom4te.cache" "doc" "icons" "icons30" "patches" "shimbun"))))
                                     ;; (xwl-elisp          . ((get     . "git clone git://github.com/xwl/xwl-elisp.git")
                                     ;;                        (install . "make byte-compile"))) ; TODO: http://xwl.appspot.com/ (william xu) / include smart-operator
-                                    (emacs-revival  . ((get . "git clone git@github.com:martialboniou/emacs-revival.git")
+                                    ;; (pp-c-l . ((get . "git clone https://github.com/martialboniou/pp-c-l.git")))
+                                    (emacs-revival  . ((get . "git clone https://github.com/martialboniou/emacs-revival.git")
                                                        (install . "make LISPDIR=/Users/mars/.emacs.d/vendor";(format "make LISPDIR=%s" (expand-file-name (car mars/site-lisp-path) mars/local-root-dir))
 ))))) ; TODO: verify sig on get ?
 

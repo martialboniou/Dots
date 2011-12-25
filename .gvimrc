@@ -6,7 +6,7 @@ if has("mac")
   set gfn=DejaVu_Sans_Mono:h14
   set lines=52
 elseif has("x11")
-  if filereadable(".notebook") " if notebook => smaller fonts
+  if filereadable($HOME."/.notebook") " if notebook => smaller fonts
     set gfn=DejaVu\ Sans\ Mono\ 10
   else
     set gfn=DejaVu\ Sans\ Mono\ 14

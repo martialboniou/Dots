@@ -7,7 +7,19 @@
               `(let ((,file (merge-pathnames (concatenate 'string quicklisp-directory-name ,filename) (user-homedir-pathname))))
                 (when (probe-file ,file)
                  (load ,file))))))
-  (quicklisp-init "asdf.lisp")
   (quicklisp-init "setup.lisp")))
 ;; project directory example: ~/.config/common-lisp/source-registry.conf.d/projects.conf
 ;; containing the following snippet: (:tree (:home "MyLispDirectory/Projects"))
+
+;; in quicklisp/setup.lisp, replace:
+;; (ensure-asdf-loaded)
+;; by:
+;; #-asdf (load (qmerge "asdf.lisp"))
+;; to get a convenient version (SBCL ASDF2 version may have some non-standard quirks)
+
+;;; STALE FASL RECOMPILATION TRICK
+(defmethod asdf:perform :around ((o asdf:load-op) (c asdf:cl-source-file))
+ (handler-case (call-next-method o c)
+  (sb-ext:invalid-fasl ()
+   (asdf:perform (make-instance 'asdf:compile-op) c)
+   (call-next-method))))

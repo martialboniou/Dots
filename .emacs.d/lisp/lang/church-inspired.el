@@ -6,16 +6,16 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:38:43 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sat Dec 10 21:02:46 2011 (+0100)
+;; Last-Updated: Tue Jan 10 18:17:29 2012 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 7
+;;     Update #: 9
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: quicklisp slime
+;;; Commentary: quicklisp slime / redshank
 ;; 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -82,6 +82,11 @@
             '(progn
                (add-to-list 'ac-modes 'slime-repl-mode)
                (add-to-list 'ac-modes 'lisp-mode))))))))
+
+;;; REDSHANK
+;;
+(when (el-get-package-is-installed "redshank")
+  ())
 
 (provide 'church-inspired)
 

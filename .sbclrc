@@ -1,24 +1,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ASDF (DON'T USE ASDF-INSTALL)
-(require 'asdf)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; * ADD THIS BLOCK TO CLBUILD2/CONF.LISP *
-;;;{{{
-(pushnew #P"~/.sbcl/systems/" asdf:*central-registry* :test #'equal)
-;; now symlink projects to ~/.sbcl/site
-;; then symlink '*.asd' in ~/.sbcl/site/<project> to ~/.sbcl/systems
-;; finally run: (ASDF:OOS 'ASDF:LOAD-OP :<project>)
-
-;;;}}}
-;;; * BECAUSE CLBUILD OVERRIDES THIS FILE *
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; QUICKLISP
-;;; The following lines added by ql:add-to-init-file:
+;;; ASDF from QUICKLISP
 #-quicklisp
-(let ((quicklisp-init (merge-pathnames ".quicklisp/setup.lisp"
-                                       (user-homedir-pathname))))
-  (when (probe-file quicklisp-init)
-    (load quicklisp-init)))
-
+(let ((quicklisp-directory-name ".quicklisp/"))
+ (macrolet ((quicklisp-init (filename)
+             (let ((file (gensym)))
+              `(let ((,file (merge-pathnames (concatenate 'string quicklisp-directory-name ,filename) (user-homedir-pathname))))
+                (when (probe-file ,file)
+                 (load ,file))))))
+  (quicklisp-init "asdf.lisp")
+  (quicklisp-init "setup.lisp")))
+;; project directory example: ~/.config/common-lisp/source-registry.conf.d/projects.conf
+;; containing the following snippet: (:tree (:home "MyLispDirectory/Projects"))

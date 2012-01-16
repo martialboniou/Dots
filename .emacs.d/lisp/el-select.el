@@ -40,6 +40,7 @@
                         mailcrypt
                         auto-complete
                         ac-slime
+                        redshank
                         anything
                         auto-pair-plus
                         org-mode
@@ -52,6 +53,7 @@
                         darcsum
                         undo-tree
                         git-emacs
+                        gist
                         switch-window
                         emacs-w3m
                         yaml-mode

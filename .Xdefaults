@@ -1,35 +1,35 @@
 ! Additional keys (mainly for emacsen)
-*VT100*modifyOtherKeys: 2
+XTerm*vt100.modifyOtherKeys: 1
+XTerm*vt100.formatOtherKeys: 1
+XTerm*vt100.eightBitInput: false
+XTerm*vt100.locale: UTF-8
+XTerm*vt100.encodingMode: locale
 
 Xft.antialias: true
 ! URxvt colors based on vim/colors/underwater
-URxvt*geometry: 74x60
-!URxvt*font: xft:Liberation Mono:style=Regular:pixelsize=15
-URxvt*font: xft:Monospace:pixelsize=14
-!was Inconsolata
+URxvt*font: xft:DejaVu Sans Mono:size=12
 URxvt*scrollBar: false
 URxvt*depth: 32
-!URxvt*background: rgba:0000/0000/0000/aaaa
+!URxvt*background: rgba:1111/1111/1111/4444
+URxvt*background: rgb:1111/1111/1111
 !URxvt*fading: 15
 !URxvt*fadeColor: black
 !URxvt*cursorColor: yellow
 URxvt*cursorColor: #55a096
-!URxvt*pointerColor: yellow
 URxvt*pointerColor: #55a096
 URxvt*pointerColor2: black
 URxvt*transparent: false
-!URxvt*transparent: true
-!URxvt.shading: 10
+URxvt.shading: 50
+URxvt*borderless: true
 !URxvt*inheritPixmap: true
 URxvt*saveLines: 6000
 URxvt*termName: xterm-256color
-URxvt*iso14755_52: false
+!URxvt*iso14755_52: false
 
 ! XTerm
 XTerm*faceName: DejaVu Sans Mono
-XTerm*faceSize: 12
-XTerm*metaSendsEscape: true
-XTerm*VT100.eightBitInput: true
+XTerm*faceSize: 10
+!XTerm*metaSendsEscape: true
 
 ! UXTerm !
 

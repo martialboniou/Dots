@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:38:43 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Jan 10 18:17:29 2012 (+0100)
+;; Last-Updated: Wed Jan 25 10:59:46 2012 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 9
+;;     Update #: 13
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -56,11 +56,12 @@
 (require 'code-preamble)
 (unintern 'one-language-spoken obarray)
 
-;;; QUICKLISP SLIME
+;;; QUICKLISP SLIME (testing)
 (add-lambda-hook 'emacs-startup-hook
   ;; check helper wasn't loaded at startup (using CLBUILD maybe)
- (unless (and (boundp 'quicklisp-slime-helper-dist) 
+ (if (and (boundp 'quicklisp-slime-helper-dist) 
               (not (boundp 'mars/quicklisp-slime-rep)))
+     (message "quicklisp slime not here (rep-bound: %S)" (boundp 'mars/quicklisp-slime-rep))
    (condition-case err
        (load (expand-file-name "slime-helper.el" mars/quicklisp-slime-rep))
      (error "church-inspired: quicklisp slime helper not loaded: %s" err))
@@ -84,9 +85,7 @@
                (add-to-list 'ac-modes 'lisp-mode))))))))
 
 ;;; REDSHANK
-;;
-(when (el-get-package-is-installed "redshank")
-  ())
+;; (automatic)
 
 (provide 'church-inspired)
 

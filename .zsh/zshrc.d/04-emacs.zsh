@@ -12,6 +12,7 @@ fi
 # generate EMACS load-path and append your configuration directory (here .emacs.d/lisp)
 build_emacs_load_path(){
   if (( $+commands[emacs] )); then
+    unset EMACSLOADPATH
     local elp=`emacs -batch \
 -eval "(princ (mapconcat #'(lambda (e) (format \"%s\" e)) load-path \":\"))"`
     if [[ "/" = "`echo $elp | awk 'BEGIN{FS=\"\"}{print $1}'`" ]]; then

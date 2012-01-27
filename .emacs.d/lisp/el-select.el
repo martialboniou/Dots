@@ -64,15 +64,19 @@
                         wanderlust))
 (condition-case nil
     (progn
+      ;; TODO: find a way to install RINARI correctly
       (el-get-executable-find "rake")
+      ;; YASNIPPET install is ugly (requires python *and* ruby)
+      ;; check pygments module is installed
       (add-to-list 'el-get-sources '(:name yasnippet
                                            :build '("rake compile")))
       ;;(add-to-list 'el-get-sources '(:name rinari
       ;;                                     :build '(("git" "submodule" "init")
       ;;                                              ("git" "submodule" "update")
       ;;                                              ))) ; doc:install_info OBSOLETE b/c no ginstall-info revision
-      (add-to-list 'el-get-sources '(:name inf-ruby-bond
-                                           :depends nil)) ; use RINARI's INF-RUBY
+      ;(add-to-list 'el-get-sources '(:name inf-ruby-bond
+      ;                                     :depends nil)
+      ; ) ; use RINARI's INF-RUBY
       (setq mars/packages (nconc mars/packages '(ruby-electric))))
   (error (message "el-select: yasnippet won't be compiled and rinari and other packages for ruby won't be installed without rake, a simple ruby build program.")))
 

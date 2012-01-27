@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.4
-;; Last-Updated: Thu Nov 24 18:37:04 2011 (+0100)
+;; Last-Updated: Fri Jan 27 14:15:08 2012 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 524
+;;     Update #: 525
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -99,7 +99,7 @@
                                                            (nosearch . ("cogre/templates" "cogre/tests" "ede/templates" "semantic/doc" "semantic/tests" "srecode/templates" "testprojects" "www"))
                                                            (cedet . ".")))
                                     (ecb                . ((get . "cvs -z3 -d:pserver:anonymous@ecb.cvs.sourceforge.net:/cvsroot/ecb checkout -P ecb")
-                                                           (install . "sed -i '' 's/\\\(load-path nil)\\\).*\\\(\\\" > ecb-compile-script\\\)/\\1(setq ecb-version-check nil)\\2/' Makefile;make CEDET=`echo $PWD/../cedet`;make autoloads EBATCH=\"emacs -batch -no-site-file -eval \\\"(add-to-list 'load-path \\\\\\\".\\\\\\\")\\\"\"") ; FIXME: assume cedet is in the same directory / windows users should use GNU bash / the first command disables compatibility check for CEDET; TODO: test it on Win32/64
+                                                           (install . "sed 's/\\\(load-path nil)\\\).*\\\(\\\" > ecb-compile-script\\\)/\\1(setq ecb-version-check nil)\\2/' Makefile > Makefile.tmp && mv Makefile.tmp Makefile;make CEDET=$(dirname `pwd`)/cedet`;make autoloads EBATCH=\"emacs -batch -no-site-file -eval \\\"(add-to-list 'load-path \\\\\\\".\\\\\\\")\\\"\"") ; FIXME: assume cedet is in the same directory / windows users should use GNU bash / the first command disables compatibility check for CEDET; TODO: test it on Win32/64
                                                            (nosearch . ("ecb-images" "html"))
                                                            (noauto . ".")))
                                     ;; (apel               . ((get . "git clone git://github.com/wanderlust/apel.git")

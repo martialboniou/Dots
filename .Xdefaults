@@ -7,20 +7,20 @@ XTerm*vt100.encodingMode: locale
 
 Xft.antialias: true
 ! URxvt colors based on vim/colors/underwater
-URxvt*font: xft:DejaVu Sans Mono:size=12
+!URxvt*font: xft:DejaVu Sans Mono:size=12
 URxvt*scrollBar: false
-URxvt*depth: 32
+!URxvt*depth: 32
 !URxvt*background: rgba:1111/1111/1111/4444
-URxvt*background: rgb:1111/1111/1111
+!URxvt*background: rgb:1111/1111/1111
 !URxvt*fading: 15
 !URxvt*fadeColor: black
 !URxvt*cursorColor: yellow
 URxvt*cursorColor: #55a096
 URxvt*pointerColor: #55a096
 URxvt*pointerColor2: black
-URxvt*transparent: false
-URxvt.shading: 50
-URxvt*borderless: true
+!URxvt*transparent: false
+!URxvt.shading: 50
+!URxvt*borderless: true
 !URxvt*inheritPixmap: true
 URxvt*saveLines: 6000
 URxvt*termName: xterm-256color

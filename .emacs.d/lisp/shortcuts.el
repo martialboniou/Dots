@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Thu Nov 24 15:02:30 2011 (+0100)
+;; Last-Updated: Tue Jan 31 16:18:39 2012 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 173
+;;     Update #: 179
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -92,9 +92,8 @@
 (global-unset-key (kbd "C-z"))      ; ELSCREEN or other packages may use it
 (global-unset-key (kbd "C-x C-z"))  ; reserved for viper-mode
 
-;; M-: in NO-WINDOW-SYSTEM
-(unless window-system
-  (bind-key "<f2>:" #'eval-expression))
+;; M-: alias (useful for NO-WINDOW-SYSTEM)
+(bind-key "<f2>:" #'eval-expression)
 
 ;; SMEX case
 (eval-after-load "smex"
@@ -247,8 +246,17 @@
 ;;; SPECIAL KEYS
 ;;
 ;; <f5> + <f6> => toggle single window + cycle/(undo-)kill-buffer + windows configuration archiver
+(defun mars/toggle-single-window ()
+  (interactive)
+  (condition-case err
+      (call-interactively 'revive-plus:toggle-single-window)
+    (error (if (el-get-package-is-installed "revive-plus")
+               (progn
+                 (message "shortcuts: %s" err)
+                 (require 'revive+))
+             (message "shortcuts: please, el-get install revive-plus")))))
 (mars/build-ordered-function-keys "f5"
-                                  (revive-plus:toggle-single-window . id)
+                                  (mars/toggle-single-window . id)
                                   (cycle-buffer-backward            . next)
                                   (cycle-buffer                     . prev)
                                   (delete-window                    . "<end>") ; C-<end> may be used too

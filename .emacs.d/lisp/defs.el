@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.10
-;; Last-Updated: Wed Nov 16 23:27:10 2011 (+0100)
+;; Last-Updated: Tue Jan 31 16:23:23 2012 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 281
+;;     Update #: 284
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -265,7 +265,7 @@ file; display a message otherwise."
                 (let ((z (listify (cdr x))))
                   `(progn
                      ,@(mapcar #'(lambda (y)
-                                   `(unless (fboundp ',y) (defun ,y () (interactive) (when (y-or-n-p ,(format "%s: function missing. Load the configuration file `%s'? " (symbol-name y) (car x))) (conf-load ,(car x)))))) z))))
+                                   `(unless (fboundp ',y) (defun ,y () (interactive) (when (y-or-n-p ,(format "%s: function missing. Load the configuration file `%s'? " (symbol-name y) (car x))) (progn (require (intern ,(car x)))(call-interactively ',y)))))) z))))
             source-funs))
     `(progn
        ,@(mapcar

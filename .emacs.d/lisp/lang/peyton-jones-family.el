@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:40:26 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Nov 14 13:59:56 2011 (+0100)
+;; Last-Updated: Wed Feb  1 23:23:02 2012 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 38
+;;     Update #: 52
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -54,31 +54,21 @@
 
 ;;; SHEN MODE
 (add-to-list 'auto-mode-alist '("\\.shen\\'" . shen-mode))
-;; (eval-after-load "inf-shen"
-;;   '(progn
-;;      (defun check-balanced-parens (start end)
-;;        "Check if parentheses in the region are balanced. Signals a 
-;; scan-error if not." 
-;;        (save-restriction 
-;;          (save-excursion 
-;;            (let ((deactivate-mark nil)) 
-;;              (condition-case c 
-;;                  (progn 
-;;                    (narrow-to-region start end) 
-;;                    (goto-char (point-min))
-;;                    (while (/= 0 (- (point)
-;;                                    (forward-list)))) 
-;;                    t)
-;;                (scan-error (signal 'scan-error '("Region parentheses not balanced."))))))))
-;;      (defadvice shen-eval-region (around shen-secure-eval (start end &optional and-go) activate)
-;;        (interactive "r\nP")
-;;        (when (condition-case err
-;;                  (progn
-;;                    (check-balanced-parens start end)
-;;                    t)      
-;;                (error
-;;                 (y-or-n-p (format "%s Eval anyway ?" (error-message-string err)))))
-;;          ad-do-it))))
+(eval-after-load "shen-mode"
+  '(progn
+     (eval-after-load "paredit"
+       '(progn
+          ;; disable paredit-semicolon to type final 
+          ;; disable paredit-backslash to type comment end tag normally
+          (defun shen-paredit-mode-hook ()
+            (define-key paredit-mode-map "\\" (lambda ()
+                                             (interactive)
+                                             (cond ((eq (preceding-char) 42) (insert "\\"))
+                                                   (t (call-interactively #'paredit-backslash))))))
+          (add-hook 'shen-mode-hook #'shen-paredit-mode-hook)
+          ;; enable curlies in PAREDIT for type declarations
+          (define-key shen-mode-map "{" #'paredit-open-curly)
+          (define-key shen-mode-map "}" #'paredit-close-curly-and-newline)))))
 
 (provide 'peyton-jones-family)
 

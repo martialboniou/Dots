@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Mon Dec 19 19:00:43 2011 (+0100)
-;;           By: mars
-;;     Update #: 148
+;; Last-Updated: Thu Feb 23 11:05:29 2012 (+0100)
+;;           By: Martial Boniou
+;;     Update #: 149
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -278,6 +278,11 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 (defvar w3m-program-name "w3m"
   "The current program name of ye goo' olde W3M.")
 (setq w3m-command w3m-program-name)     ; required by `anything-config'
+(defvar lintnode-rep "~/Dynamics/javascript/lintnode"
+  "The `flymake-jslint' repository to use node.js with Emacs. Recommended
+installation: npm install express connect-form haml underscore .")
+(defvar js-comint-program-name "node"
+  "The default JavaScript console.")
 (defvar factorcode-source-rep "~/Dynamics/factor/src/factor"
   "The up-to-date factor source repository. The Emacs environment
 named FUEL must be found in the `misc/fuel' subdirectory.")

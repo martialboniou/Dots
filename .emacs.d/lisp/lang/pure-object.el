@@ -70,7 +70,7 @@
 ;;; FACTOR
 ;;
 (when (boundp 'factorcode-source-rep)
-  (when (file-exists-p factorcode-source-rep)
+  (when (file-directory-p factorcode-source-rep)
     (load (apply 'concat
                  (nconc
                   (mapcar #'(lambda (x) (file-name-as-directory x))

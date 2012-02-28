@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Tue Jan 31 16:18:39 2012 (+0100)
+;; Last-Updated: Wed Feb 15 15:34:06 2012 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 179
+;;     Update #: 180
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -59,7 +59,7 @@
    "C-x F"     ido-recentf
    "C-x f"     ido-find-file ; may be called from `ido-switch-buffer' (doing C-x C-b C-f) [but use [(jxjf)] in `sticky-control']
    "C-="       shell-command
-   "M-n"       make-frame               ; NOTE: or #'screen-create-screen if 'ESCREEN 
+   "M-n"       make-frame               ; NOTE: or #'screen-create-screen if 'ESCREEN
    "M-<f2>"    apply-macro-to-region-lines ; use F3/F4 for kmacro start/end
    "C-c o"     anything-occur              ; TODO: or simply occur ?
    "C-:"       anything-M-x             ; C-S-; NOTE: or #'smex if 'SMEX
@@ -287,7 +287,7 @@
 ;; - Navigating: Windmove uses C-<up> etc.
 (windmove-default-keybindings 'control)
 ;; - Split & Resize
-(bind-keys 
+(bind-keys
  '("C-<up>"       windmove-up
    "<f2><up>"     windmove-up
    "<f2><down>"   windmove-down
@@ -312,7 +312,7 @@
    "C-<end>"      delete-window         ; <f5><end> may be used too
    ;; - Resize windows
                                         ;"C-<prior>"    shrink-window-horizontally
-   
+
                                         ;"C-<next>"     enlarge-window-horizontally
                                         ;"C-^"          enlarge-window
    ;; - Scroll horizontally

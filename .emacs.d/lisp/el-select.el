@@ -55,6 +55,7 @@
                         git-emacs
                         gist
                         switch-window
+                        js-comint
                         emacs-w3m
                         yaml-mode
                         yasnippet

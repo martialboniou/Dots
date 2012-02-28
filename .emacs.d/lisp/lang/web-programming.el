@@ -5,10 +5,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Sun Mar  6 21:14:44 2011 (+0100)
-;; Version: 
-;; Last-Updated: Sun Nov 13 20:27:08 2011 (+0100)
+;; Version: 0.3
+;; Last-Updated: Thu Feb 23 18:35:31 2012 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 41
+;;     Update #: 54
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -110,6 +110,42 @@
                  (> emacs-minor-version 1)))
   (add-to-list 'auto-mode-alist '("\\.js$"    . espresso-mode))
   (add-to-list 'auto-mode-alist '("\\.json$"  . espresso-mode)))
+(add-lambda-hook 'js-mode-hook
+  (imenu-add-menubar-index))
+;; lintnode -> flymake-jslint
+(when (boundp 'lintnode-rep)
+  (when (file-directory-p lintnode-rep)
+    (add-to-list 'load-path lintnode-rep)
+    (mars/autoload '(("flymake-jslint" lintnode-hook)))
+    (add-lambda-hook 'js-mode-hook (lintnode-hook))))
+
+(eval-after-load "flymake-jslint"
+  '(progn
+     (setq lintnode-location lintnode-rep 
+           lintnode-node-program (if (and (boundp 'js-comint-program-name)
+                                          (file-executable-p js-comint-program-name))
+                                     js-comint-program-name
+                                   "node")
+           lintnode-jslint-excludes (list 'nomen 'undef 'plusplus 'onevar 'white))))
+;; js-comint
+(when (el-get-package-is-installed "js-comint")
+  (add-lambda-hook 'js-mode-hook
+    (local-set-key "\C-x\C-e" 'js-send-last-sexp)
+    (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
+    (local-set-key "\C-cb" 'js-send-buffer)
+    (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
+    (local-set-key "\C-cl" 'js-load-file-and-go))
+  (eval-after-load "js-comint"
+    '(progn
+       (setq inferior-js-program-command (if (and (boundp 'js-comint-program-name)
+                                                  (file-executable-p js-comint-program-name))
+                                             js-comint-program-name
+                                           "node")
+             inferior-js-mode-hook (lambda ()
+                                     (ansi-color-for-comint-mode-on)
+                                     (add-to-list 'comint-preoutput-filter-functions
+                                                  (lambda (output)
+                                                    (replace-regexp-in-string ".*1G\.\.\..*5G" "..." (replace-regexp-in-string ".*1G.*3G" ">" output)))))))))
 
 ;;; PHP
 (dolist (php-exts '("\\.php[s34]?\\'"

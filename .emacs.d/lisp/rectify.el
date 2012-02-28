@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
 ;; Version:
-;; Last-Updated: Fri Nov 18 10:55:56 2011 (+0100)
+;; Last-Updated: Thu Feb 23 14:05:29 2012 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 157
+;;     Update #: 158
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -55,6 +55,10 @@
   '(progn
      ;; M-S-h & M-S-l to go to previous & next error resp.
      (add-hook 'find-file-hook #'flymake-find-file-hook)
+     ;; flymake cursor
+     (condition-case err
+         (require 'flymake-cursor)
+       (error (message "%s" err)))
      ;; show help
      (defun my-flymake-show-help ()
        (when (get-char-property (point) 'flymake-overlay)

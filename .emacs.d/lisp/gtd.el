@@ -135,12 +135,17 @@
  '(remember-handler-functions (quote (org-remember-handler))))
 
 ;; capture setup
-(setq org-capture-templates
-      '(("l"  "Link" entry
-         (file+headline org-default-notes-file "Links to Read")
-         "* %a\n %?\n %i")))
+(eval-after-load "org-capture"
+  '(progn
+     (setq org-capture-templates
+           '(("l" "Web Link" entry
+              (file+headline org-default-notes-file "Web Links")
+              "* %a\nAdded: %U\nComments: %i%?")
+             ("b" "Simple Bookmark" entry
+              (file+headline org-default-notes-file "Simple Bookmarks")
+              "* %a\n\n%i%?")))))
 ;; use the following bookmarklet:
-;; javascript:location.href='org-protocol:/capture//l/encodeURIComponent(location.href)+'/'encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection())
+;; javascript:location.href='org-protocol:/capture:/l/'+encodeURIComponent(location.href)+'/'+encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection())
 
 ;; DELETE-FRAME w/o alert in remember case 
 (eval-after-load "remember"
@@ -190,12 +195,14 @@
   (interactive)
   (org-agenda-list nil nil 2))
 
-(defun mars/unscheduled-tasks ()
-  "Open `org-agenda' on unscheduled tasks."
-  (interactive)
-  (let ((org-agenda-skip-function (lambda () (org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "<[^\n]+>")))
-        (org-agenda-overriding-header "Unscheduled TODO entries: "))
-    (org-todo-list t)))
+(eval-after-load "org-agenda"
+  '(progn
+     (defun mars/unscheduled-tasks ()
+       "Open `org-agenda' on unscheduled tasks."
+       (interactive)
+       (let ((org-agenda-skip-function (lambda () (org-agenda-skip-entry-if 'scheduled 'deadline 'regexp "<[^\n]+>")))
+             (org-agenda-overriding-header "Unscheduled TODO entries: "))
+         (org-todo-list t)))))
 
 (provide 'gtd)
 

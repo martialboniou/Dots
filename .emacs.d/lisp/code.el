@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Jan 25 11:16:30 2012 (+0100)
+;; Last-Updated: Wed Mar 21 13:50:20 2012 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 567
+;;     Update #: 569
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -518,8 +518,7 @@ Move point to the beginning of the line, and run the normal hook
   (unless (featurep 'one-language-spoken)
     (require 'pure-object)              ; for smalltalk / factor / io
     (require 'wiki-wiki)                ; for markup languages as mediawiki or markdown
-    (require 'church-inspired)          ; for lisp (including scheme)
-    ;; (require 'marseille)                ; for logic and expert programming (including prolog)
+    (require 'church-inspired)          ; for lisp (including scheme) & prolog
     (require 'peyton-jones-family)      ; for ML family and shenlanguage.org
     (require 'web-programming)          ; for web languages (mweb or nxhtml)
     (require 'python-357)))             ; for python 2 / 3

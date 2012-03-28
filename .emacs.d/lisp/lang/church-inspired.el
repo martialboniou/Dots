@@ -1,21 +1,21 @@
 ;;; church-inspired.el --- 
 ;; 
 ;; Filename: church-inspired.el
-;; Description: Lisp
+;; Description: Alonzo Church works including early lambda calculus (Lisp) & mathematic logic (Prolog)
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:38:43 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Jan 25 10:59:46 2012 (+0100)
+;; Last-Updated: Wed Mar 21 14:45:54 2012 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 13
+;;     Update #: 25
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: quicklisp slime / redshank
+;;; Commentary: quicklisp slime / redshank / prolog
 ;; 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -24,7 +24,10 @@
 ;;        manually but run it from the QUICKLISP directory with CLBUILD2
 ;;        script like this:
 ;; 
-;;        $ EMACS="emacs -q -l church-inspired"       
+;;        $ EMACS="emacs -q -l church-inspired"
+;;
+;;        Shen is also a Lisp with logic kernel but it is mainly functional
+;;        programming with deductive datatypes (see peyton-jones-family)
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -59,33 +62,52 @@
 ;;; QUICKLISP SLIME (testing)
 (add-lambda-hook 'emacs-startup-hook
   ;; check helper wasn't loaded at startup (using CLBUILD maybe)
- (if (and (boundp 'quicklisp-slime-helper-dist) 
-              (not (boundp 'mars/quicklisp-slime-rep)))
-     (message "quicklisp slime not here (rep-bound: %S)" (boundp 'mars/quicklisp-slime-rep))
-   (condition-case err
-       (load (expand-file-name "slime-helper.el" mars/quicklisp-slime-rep))
-     (error "church-inspired: quicklisp slime helper not loaded: %s" err))
-   ;; NOTE: remember REPL may not be the same as the one loaded by another
-   ;;       helper launcher like the CLBUILD2 internal slime script
-   (eval-after-load "slime-autoloads"
-     '(progn
-        (when (and (boundp 'mars/common-lisp-program-name)
-                   (executable-find mars/common-lisp-program-name))
-          (setq inferior-lisp-program mars/common-lisp-program-name))
-        (slime-setup '(slime-fancy slime-tramp slime-asdf))))
-   (eval-after-load "slime"
-     '(progn
-        (slime-require :swank-listener-hooks)
-        (when (el-get-package-is-installed "ac-slime")
-          (mars/add-hooks '(slime-mode-hook slime-repl-mode-hook)
-                         #'set-up-slime-ac)
-          (eval-after-load "auto-complete"
-            '(progn
-               (add-to-list 'ac-modes 'slime-repl-mode)
-               (add-to-list 'ac-modes 'lisp-mode))))))))
+  (if (and (boundp 'quicklisp-slime-helper-dist)
+           (not (boundp 'mars/quicklisp-slime-rep)))
+      (message "quicklisp slime not here (rep-bound: %S)" (boundp 'mars/quicklisp-slime-rep))
+    (condition-case err
+        (load (expand-file-name "slime-helper.el" mars/quicklisp-slime-rep))
+      (error "church-inspired: quicklisp slime helper not loaded: %s" err))
+    ;; NOTE: remember REPL may not be the same as the one loaded by another
+    ;;       helper launcher like the CLBUILD2 internal slime script
+    (eval-after-load "slime-autoloads"
+      '(progn
+         (when (and (boundp 'mars/common-lisp-program-name)
+                    (executable-find mars/common-lisp-program-name))
+           (setq inferior-lisp-program mars/common-lisp-program-name))
+         (slime-setup '(slime-fancy slime-tramp slime-asdf))))
+    (eval-after-load "slime"
+      '(progn
+         (slime-require :swank-listener-hooks)
+         (when (el-get-package-is-installed "ac-slime")
+           (mars/add-hooks '(slime-mode-hook slime-repl-mode-hook)
+                           #'set-up-slime-ac)
+           (eval-after-load "auto-complete"
+             '(progn
+                (add-to-list 'ac-modes 'slime-repl-mode)
+                (add-to-list 'ac-modes 'lisp-mode))))))))
 
 ;;; REDSHANK
 ;; (automatic)
+
+;;; PROLOG
+;;
+(setq prolog-system 'yap)
+(setq auto-mode-alist
+      (append '(("\\.pl$" . prolog-mode) ; WARNING: Perl (FIXME: find header like prolog.vim?)
+                ("\\.yap$" . prolog-mode)
+                ("\\.mcy$" . mercury-mode)) ; or 'm' but Obj-C/matlab/Mathematica...
+              auto-mode-alist))
+(eval-after-load "prolog"
+  '(progn
+     (setq prolog-system
+           (cond
+            ((and (boundp 'mars/prolog-system)
+                  (not (null mars/prolog-system))) mars/prolog-system)
+            ((executable-find "sicstus") 'sicstus)
+            ((executable-find "yap") 'yap)
+            ((executable-find "swipl") 'swi)
+            (t 'gnu)))))                ; using gprolog by default
 
 (provide 'church-inspired)
 

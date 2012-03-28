@@ -1,23 +1,26 @@
 ;;; peyton-jones-family.el --- 
 ;; 
 ;; Filename: peyton-jones-family.el
-;; Description: 
+;; Description: category theory lambda static languages
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:40:26 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Feb  1 23:23:02 2012 (+0100)
+;; Last-Updated: Wed Mar 21 13:51:41 2012 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 52
+;;     Update #: 55
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: haskell-mode
+;;; Commentary: haskell-mode / shen-mode
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;; 
+;;;  Note: Mercury has datatypes but depends on Prolog philosophy
+;;         (see church-inspired)
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 

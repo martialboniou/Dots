@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Thu Feb 23 11:05:29 2012 (+0100)
+;; Last-Updated: Wed Mar 21 14:11:23 2012 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 149
+;;     Update #: 150
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -267,7 +267,9 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 (defvar mars/haskell-program-name "ghci"
   "Haskell interpreter fullname.")
 (defvar mars/common-lisp-program-name "sbcl"
-  "Common Lisp program name")
+  "Common Lisp program name.")
+(defvar mars/prolog-system 'yap
+  "Prolog default system")
 (custom-set-variables
  '(tramp-default-method "ssh"))
 (if (member system-type '(windows-nt ms-dos))

@@ -238,13 +238,19 @@
        (setq emms-source-file-default-directory "~/Music/"
              emms-stream-default-list '(       ; Metal Rules
                                         ("Metal On: The Thrasher"
-                                         "http://67.212.188.94:8100" 1 url)
+                                         "http://94.23.244.89:8006" 1 url)
+                                        ("2LATE2HEALMETALRADIO"
+                                         "http://listen.radionomy.com/2late2heal-metal-radio" 1 url)
+                                        ("Metal On: The Brutal"
+                                         "http://94.23.244.89:8004" 1 url)
                                         ("DEATH.FM"
                                          "http://hi1.death.fm:8211" 1 url)
-                                        ("Metal On: The Brutal"
-                                         "http://65.60.19.42:8130" 1 url)
                                         ("H4XED"
                                          "http://sc-01.h4xed.us:7080" 1 url)
+                                        ("Metal-Only"
+                                         "http://listen.radionomy.com/metal-only" 1 url)
+                                        ("DarkSoul 7 Extreme Metal Radio"
+                                         "http://www.darksoul7.com:8000" 1 url)
                                         ("James Bond"
                                          "http://www.somafm.com/secretagent.pls" 1 streamlist)))))
   ;; Type M-x emms-add-all to add all music in your ~/Music directory.

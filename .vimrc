@@ -189,6 +189,7 @@ if has("autocmd")
     
     augroup filetypedetect
         " Set some modes based of file extension
+        au BufNewFile,BufRead *.fountain,*.spmd set filetype=fountain
         au BufNewFile,BufRead *.json set filetype=json
         au BufNewFile,BufRead *.asp set filetype=aspjscript " all my .asp files ARE jscript
         "au BufNewFile,BufRead *.tpl set filetype=html " all my .tpl files ARE html

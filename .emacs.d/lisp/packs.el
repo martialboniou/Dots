@@ -96,10 +96,12 @@
                                     ;; ;;                        (nosearch . ("autom4te.cache" "bits/bbdb-filters/doc" "html" "tex" "texinfo" "utils"))))
                                     (cedet              . ((get . "bzr checkout bzr://cedet.bzr.sourceforge.net/bzrroot/cedet/code/trunk cedet")
                                                            (install . "make")
-                                                           (nosearch . ("cogre/templates" "cogre/tests" "ede/templates" "semantic/doc" "semantic/tests" "srecode/templates" "testprojects" "www"))
-                                                           (cedet . ".")))
+                                                           ;; (nosearch . ("cogre/templates" "cogre/tests" "ede/templates" "semantic/doc" "semantic/tests" "srecode/templates" "testprojects" "www"))
+                                                           ;; (cedet . ".") ; in order to use CEDET-UPDATE-AUTOLOADS from previous version to parse EIEIO's DEFCLASS in .loaddefs
+                                                           (nosearch . "."))) ; IMPORTANT: cedet-devel-load.el does the job
                                     (ecb                . ((get . "cvs -z3 -d:pserver:anonymous@ecb.cvs.sourceforge.net:/cvsroot/ecb checkout -P ecb")
-                                                           (install . "sed 's/\\\(load-path nil)\\\).*\\\(\\\" > ecb-compile-script\\\)/\\1(setq ecb-version-check nil)\\2/' Makefile > Makefile.tmp && mv Makefile.tmp Makefile;make CEDET=$(dirname `pwd`)/cedet`;make autoloads EBATCH=\"emacs -batch -no-site-file -eval \\\"(add-to-list 'load-path \\\\\\\".\\\\\\\")\\\"\"") ; FIXME: assume cedet is in the same directory / windows users should use GNU bash / the first command disables compatibility check for CEDET; TODO: test it on Win32/64
+                                                           ;; TODO replacement : https://github.com/alexott/ecb/blob/master/Makefile
+                                                           (install . "sed 's/\\\(load-path nil)\\\).*\\\(\\\" > ecb-compile-script\\\)/\\1(setq ecb-version-check nil)\\2/' Makefile > Makefile.tmp && mv Makefile.tmp Makefile && sed 's/echo \\\"\\\(load-file \\\\\\\"\\\$\\\(CEDET\\\)\\\/common\\\/cedet.el\\\\\\\"\\\)\\\"' Makefile > Makefile.tmp && Makefile.tmp Makefile && make CEDET=$(dirname `pwd`)/cedet && make autoloads EBATCH=\"emacs -batch -no-site-file -eval \\\"(add-to-list 'load-path \\\\\\\".\\\\\\\")\\\"\"") ; FIXME: assume cedet is in the same directory / windows users should use GNU bash / the first command disables compatibility check for CEDET; TODO: test it on Win32/64
                                                            (nosearch . ("ecb-images" "html"))
                                                            (noauto . ".")))
                                     ;; (apel               . ((get . "git clone git://github.com/wanderlust/apel.git")

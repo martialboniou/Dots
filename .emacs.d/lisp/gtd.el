@@ -55,7 +55,11 @@
                      (expand-file-name mars/personal-data
                                        mars/local-root-dir)))
 
-(require 'org-install)
+;(condition-case nil
+   (require 'org-loaddefs)
+;  (error
+;   (error "toto")
+;   (require 'org-install))) ; 2012: org-install is OBSOLETE 
 (require 'org-protocol)
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))

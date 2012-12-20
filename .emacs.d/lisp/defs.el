@@ -114,10 +114,12 @@ if special autoload format (eg: `cedet' autoloads)."
 (defun safe-load-cedet ()       ; UNTESTED
   "Load `cedet'. Be sure to not load the compiled common file."
   (condition-case err
-      (load-file (expand-file-name
-                  "cedet.el"
-                  (file-name-directory
-                   (locate-library "cedet"))))
+    (let* ((library      (file-name-directory
+                           (locate-library "cedet")))
+           (current-name (expand-file-name "cedet-devel-load.el" library)))
+     (if (file-exists-p current-name)
+        (load-file current-name)
+      (load-file (expand-file-name "cedet.el" library))))
     (error (message "error: cedet environment not loaded: %s" err))))
 
 (defun twb/autoload (library &rest functions) ; UNTESTED

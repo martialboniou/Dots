@@ -1,49 +1,49 @@
-;;; packs.el --- 
-;; 
+;;; packs.el ---
+;;
 ;; Filename: packs.el
 ;; Description: Maintain/install packages
 ;; Author: Martial Boniou
-;; Maintainer: 
+;; Maintainer:
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
-;; Version: 0.4
+;; Version: 0.5-dying-code
 ;; Last-Updated: Fri Jan 27 14:15:08 2012 (+0100)
 ;;           By: Martial Boniou
 ;;     Update #: 525
-;; URL: 
-;; Keywords: 
-;; Compatibility: 
-;; 
+;; URL:
+;; Keywords:
+;; Compatibility:
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Commentary: populate site-lisp (install if unchecked) + elpa
 ;;              (nothing yet!)
-;; 
-;; TODO: tidy this mess up
-;; 
+;;
+;; TODO: declared OBSOLETE soon //==> 'EL-SELECT (using el-get)
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
-;; 
-;; 
+;;
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 ;; packs loading is forbidden if not correctly called (from .emacs or configuration file)
@@ -56,18 +56,17 @@
 ;; - install in the first directory of `mars/site-lisp-path' (by default) if not found
 ;; - add required subdirs to LOAD-PATH if newly installed
 ;; IMPORTANT: required programs are:
-;; - bash, touch; 
+;; - bash, touch;
 ;; - make, autoconf, rake (need ruby; `rvm' must be installed on Un*k-like);
 ;; - curl, cvs, svn, git, darcs (best installed with `cabal' coming with haskell-platform);
 ;; - hg/mercurial, bzr (both best installed with python egg manager `pip' (or `easy_install' via setuptools));
 ;; - tar, gzip, unzip.
 ;; Windows users, install mingw/msys/gnuwin and complete installation with ruby/gem, python/setuptools/bzr and haskell/cabal/darcs:
-;; NOTE: try el-get ASAP
 (defvar mars/site-lisp-package-tree nil
   "A package tree to get / install / tag additional packages in `mars/site-lisp-path'")
 
 (setq mars/site-lisp-package-tree '(
-                                   
+
                                     ;; (mhc           . ((get . "git clone git://github.com/yoshinari-nomura/mhc.git")
                                     ;;                   (install . "emacs-compile-directory emacs") ; ruby configure.rb; ruby make.rb is OBSOLETE (ftools dependencies)
                                     ;;                   (nosearch . ("icons" "ruby-ext" "samples" "xpm"))))
@@ -139,6 +138,8 @@
                                     (emacs-revival  . ((get . "git clone https://github.com/martialboniou/emacs-revival.git")
                                                        (install . "make LISPDIR=/Users/mars/.emacs.d/vendor";(format "make LISPDIR=%s" (expand-file-name (car mars/site-lisp-path) mars/local-root-dir))
 ))))) ; TODO: verify sig on get ?
+
+(setq mars/site-lisp-package-tree nil)
 
 (defun mars/check-command (command &optional commands)
   "Check if command as executable in the `EXEC-PATH'. Throw an error by showing the
@@ -215,9 +216,9 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
     (when mars/site-lisp-path
       (setq renew-autoloads-at-startup nil)
       (let (broken-packages
-            broken-tags  
+            broken-tags
             (site-lisp-path (mapcar #'(lambda (x)
-                                        (expand-file-name 
+                                        (expand-file-name
                                          x
                                          (expand-file-name mars/local-root-dir)))
                                     mars/site-lisp-path))
@@ -251,7 +252,7 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
                                         (progn
                                          (cd pkg-dir) ; unable to change directory if broken
                                          (let ((install-command (cdr install-method)))
-                                           (mars/execute-commands install-command 
+                                           (mars/execute-commands install-command
                                                                   executables-in-play)))
                                       (error (add-to-list 'broken-packages (car x)))))))))))
                             ;; tagging
@@ -301,7 +302,7 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
                        (insert (format "(setq %s %s)\n"
                                        (symbol-name (car x))
                                        (prin1-to-string (cdr x))))))
-                 (list (cons 'broken-packages broken-packages) 
+                 (list (cons 'broken-packages broken-packages)
                        (cons 'broken-tags broken-tags)))))
         (when (and (not only-mark)
                    renew-autoloads-at-startup) ; generate AUTOLOADS

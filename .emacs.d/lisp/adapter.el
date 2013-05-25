@@ -1,23 +1,25 @@
 (require 'walker)
-
+(require 'packs)
 ;; automagic
-(generate-loaddefs)
+;;; TEMPORARY REMOVED (NO VENDOR)
+;; (generate-loaddefs)
 
-(setq renew-autoloads-at-startup nil)   ; reset to prevent slow reloading
+;; (setq renew-autoloads-at-startup nil)   ; reset to prevent slow reloading
 
-(defun update-autoloads-on-kill ()
-  "Update autoloads on kill iff emacs boots correctly."
-  (when (require 'kernel)
-    (update-autoloads-in-package-area)))
-(add-hook 'kill-emacs-hook #'update-autoloads-on-kill)
+;; (defun update-autoloads-on-kill ()
+;;   "Update autoloads on kill iff emacs boots correctly."
+;;   (when (require 'kernel)
+;;     (update-autoloads-in-package-area)))
+;; (add-hook 'kill-emacs-hook #'update-autoloads-on-kill)
 
-;; handmade
-(mars/autoload '(("iswitchb"                  iswitchb-minibuffer-setup)
+;; handmade ;; TODO: 2013/05/23 PURGE THIS!!!
+(mars/autoload '(;("iswitchb"                  iswitchb-minibuffer-setup)
+                 ("update-autoloads-in-package-area" update-auto-loads) ;; shut up warning TODO: remove quickly
                  ("anything-show-completion"  use-anything-show-completion)
                  ("autopair"                  autopair-mode)
-                 ("header2"                   auto-make-header auto-update-file-header)
-                 ("hippie-exp"                hippie-expand he-init-string 
-                                      he-substitute-string)
+                 ;("header2"                   auto-make-header auto-update-file-header)
+                 ;("hippie-exp"                hippie-expand he-init-string 
+                 ;                     he-substitute-string)
                  ("inf-shen"                  shen-mode)
                  ("pymacs"                    pymacs-apply pymacs-call pymacs-eval 
                                               pymacs-exec pymacs-load)

@@ -81,13 +81,19 @@ open and unsaved. -- matt curtis (with enhancements by <hondana@gmx.com>"
        (define-key dired-do-map   "\C-d" 'dired-do-command)
        (define-key dired-do-map   "d"    'dired-apply-function)
        ;; (require 'dired-aux)               ; attributes and goodies (autoloaded)
-       (require 'dired-details)
-       (dired-details-install)            ; show/hide (type ")" to show)
-       ;; (require 'dired-details+)       ; no need in this setting
-       (setq dired-details-hidden-string "")
-       (require 'dired+)                  ; colors + bonus
-       (require 'wdired)                  ; editable (type `r' to rename [default was `e'])
-       (require 'wdired-extension)        ; rect-mark + wdired-format-filename
+       (unless (el-get-package-is-installed "dired-details")
+         (message "file-manager: dired-details is not installed."))
+       (eval-after-load "dired-details"
+         '(progn
+            (dired-details-install)            ; show/hide (type ")" to show)
+            ;; (when (locate-library "dired-details+") (require 'dired-details+))       ; no need in this setting
+            (setq dired-details-hidden-string "")))
+       (when (el-get-package-is-installed "dired-plus")
+         (require 'dired+)) ; colors + bonus
+       (when (locate-library "wdired")      ; should be in Emacs 24
+         (require 'wdired)                 ; editable (type `r' to rename [default was `e'])
+         (when (locate-library "wdired-extension")
+           (require 'wdired-extension)))      ; rect-mark + wdired-format-filename
        ;; (when (boundp 'viper-emacs-state-mode-list)
        ;;   ;; the following line manages the viper/wdired clash
        ;;   ;; (add-to-list 'viper-emacs-state-mode-list 'dired-mode)

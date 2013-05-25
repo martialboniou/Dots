@@ -6,32 +6,33 @@
                           (expand-file-name "el-get"
                             (expand-file-name mars/local-root-dir))))
 
-(unless (require 'el-get nil t)
+(unless (require 'el-get nil 'noerror)
   (with-current-buffer
       (url-retrieve-synchronously ; MUST USE BEFORE 'FLIM REQUIREMENT
-       "https://raw.github.com/martialboniou/el-get/master/el-get-install.el")
-   ; (let (el-get-master-branch)
+       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
+    (let (el-get-master-branch)
       (goto-char (point-max))
-      (eval-print-last-sexp)));)
+      (eval-print-last-sexp))))
 
 (unless (boundp 'el-get-recipe-path)
  (error "el-get is not installed"))
 
 (add-to-list 'el-get-recipe-path (expand-file-name "Recipes"
-                                                   (expand-file-name mars/personal-data 
+                                                   (expand-file-name mars/personal-data
                                                                      mars/local-root-dir)))
-(setq el-get-sources '((:name nxhtml
-                              :load nil) ; choose 'NXHTML or 'MULTI-WEB-MODE
-                                        ;  in 'WEB-PROGRAMMING
- ;;                      (:name ropemacs
-  ;;                            :build '(("python" "setup.py" "install" "||" "sudo" "python" "setup.py" "install"))
-  ;;                            )
-                       ))
+
+(setq el-get-sources '((:name vimpulse
+                              :features nil) ; let 'VIM-EVERYWHERE do the loading
+                       (:name nxhtml
+                              :load nil))) ; choose 'NXHTML or 'MULTI-WEB-MODE
+                                           ; in 'WEB-PROGRAMMING
+;; :name ropemacs :build '(("python" "setup.py" "install" "||" "sudo" "python" "setup.py" "install"))
 
 (defvar mars/packages '(el-get
                         color-theme
                         escreen
                         vimpulse
+                        vimpulse-surround
                         keats
                         shen-mode
                         haskellmode-emacs
@@ -41,8 +42,12 @@
                         auto-complete
                         ac-slime
                         redshank
+                        smex
                         anything
+                        bookmark+
                         auto-pair-plus
+                        dired-details
+                        dired-plus
                         org-mode
                         howm
                         remember
@@ -50,16 +55,15 @@
                         multi-web-mode
                         markdown-mode
                         magit
-                        darcsum
+                        ;; darcsum
                         undo-tree
                         git-emacs
                         gist
                         switch-window
                         js-comint
-                        emacs-w3m
                         yaml-mode
                         yasnippet
-                        emms
+                        emms            ; install emacs-w3m
                         sunrise-commander
                         bbdb
                         wanderlust))

@@ -1,6 +1,6 @@
 ;;; Viper Mode setup
 
-(eval-when-compile (require 'viper))
+;; (eval-when-compile (require 'viper))
 
 (setq-default viper-mode t
               viper-inhibit-startup-message 't

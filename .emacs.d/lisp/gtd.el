@@ -5,8 +5,8 @@
 ;; Author: Martial Boniou
 ;; Maintainer:
 ;; Created: Tue Feb 22 11:31:42 2011 (+0100)
-;; Version:
-;; Last-Updated:
+;; Version: 0.3
+;; Last-Updated: 
 ;;           By:
 ;;     Update #: 86
 ;; URL:
@@ -56,7 +56,7 @@
                                        mars/local-root-dir)))
 
 ;(condition-case nil
-   (require 'org-loaddefs)
+(require 'org-loaddefs)
 ;  (error
 ;   (error "toto")
 ;   (require 'org-install))) ; 2012: org-install is OBSOLETE 
@@ -68,7 +68,8 @@
 ;; common setup
 (eval-after-load "org"
   '(progn
-     (require 'org-wiegley-ext)
+     (when (fboundp 'org-wiegley-ext)
+       (require 'org-wiegley-ext))
      (when *i-might-be-a-saiki-komon*
        (defun display-organizer-at-startup ()
          (call-interactively #'mars/two-days-calendar)))
@@ -94,7 +95,6 @@
     (define-key viper-vi-global-user-map "C-c /" 'org-sparse-tree))
 
 ;; agenda & remember setup
-(org-remember-insinuate)
 (add-hook 'remember-mode-hook #'org-remember-apply-template)
 (custom-set-variables
  '(org-directory *notes-dir*)
@@ -151,7 +151,9 @@
 ;; use the following bookmarklet:
 ;; javascript:location.href='org-protocol:/capture:/l/'+encodeURIComponent(location.href)+'/'+encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection())
 
-;; DELETE-FRAME w/o alert in remember case 
+;; DELETE-FRAME w/o alert in remember case
+(when (locate-library "org-remember")
+  (require 'org-remember))
 (eval-after-load "remember"
   '(progn
      ;; http://metajack.im/2008/12/30/gtd-capture-with-emacs-orgmode

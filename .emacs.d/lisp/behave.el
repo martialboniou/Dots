@@ -1,51 +1,51 @@
-;;; behave.el --- 
-;; 
+;;; behave.el ---
+;;
 ;; Filename: behave.el
 ;; Description: Provides Emacs main behavior
 ;; Author: Martial Boniou
-;; Maintainer: 
+;; Maintainer:
 ;; Created: Thu Nov 17 17:30:20 2011 (+0100)
-;; Version: 0.6.1
+;; Version: 0.6.2
 ;; Last-Updated: Fri Jan 27 14:08:33 2012 (+0100)
 ;;           By: Martial Boniou
 ;;     Update #: 10
-;; URL: 
-;; Keywords: 
-;; Compatibility: 
-;; 
+;; URL:
+;; Keywords:
+;; Compatibility:
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Commentary: erasing (kp-delete support) + undoing (UNDO-TREE | REDO+) /
 ;;              modal editing (aka VIMPULSE) / DESKTOP + AUTOSAVE + SESSION /
 ;;              buffers (UNIQUIFY + ANYTHING + IBUFFER) / minibuffer
 ;;              (IDO + SMEX) / files (RECENTF) / BOOKMARK-PLUS / ESCREEN /
-;;              POSIX (kill emacs on SIGUSR2) / VT100 
+;;              POSIX (kill emacs on SIGUSR2) / VT100
 ;;              (arrow + function keys support esp. in iTerm2.app)
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
-;; 
-;; 
+;;
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 
@@ -112,12 +112,8 @@ compiled. This directory is known as `auto-save-list'.")
 That's where foo~ goes. It should normally be nil if
 `user-init-file' is compiled.")
 (defvar confirm-frame-action-buffer-alist nil ; kill frame alert
-  "Associated list of buffer properties in order to get a confirmation
-alert during action on the frame containing this buffer. A property
-is a CONS formed by an information and a LIST of parameters for
-this information.
-Example: (MAJOR-MODE . (CHESS-MASTER-MODE MAIL-DRAFT-MODE).
-See the advised `delete-frame' at the end of this file as a use case.")
+  "Associated list of buffer properties in order to get a confirmation alert during action on the frame containing this buffer. A property is a CONS formed by an information and a LIST of parameters for this information. Used by the adviced version of 'DELETE-FRAME defined in KERNEL.
+Example: (MAJOR-MODE . (CHESS-MASTER-MODE MAIL-DRAFT-MODE).")
 ;; - loading
 (require 'desktop)
 ;; - filtering
@@ -217,11 +213,13 @@ See the advised `delete-frame' at the end of this file as a use case.")
 ;;; BUFFERS
 ;;
 ;; - uniquify
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'post-forward-angle-brackets ; name<foo/bar> | name<quux/bar>
-      uniquify-after-kill-buffer-p t
-      uniquify-ignore-buffers-re "^\\*"
-      global-auto-revert-mode t)
+(when (locate-library "uniquify")
+  (require 'uniquify))                  ; should be in Emacs 24
+(eval-after-load "uniquify"
+  '(setq uniquify-buffer-name-style 'post-forward-angle-brackets ; name<foo/bar>|name<quux/bar>
+         uniquify-after-kill-buffer-p t
+         uniquify-ignore-buffers-re "^\\*"
+         global-auto-revert-mode t))
 ;; - ibuffer
 (eval-after-load "ibuffer"
   '(define-key ibuffer-mode-map (kbd "'") 'kill-all-dired-buffers))
@@ -274,9 +272,8 @@ the should-be-forbidden C-z.")
            ido-default-buffer-method 'selected-window
            ido-ignore-extensions t)))   ; `completion-ignored-extensions'
 ;; - smex
-(condition-case err
-    (smex-initialize)
-  (error "emacs: smex disabled: %s" err))
+(unless (el-get-package-is-installed "smex")
+  (message "behave: smex is not installed"))
 
 ;;; FILES
 ;;
@@ -367,12 +364,10 @@ the should-be-forbidden C-z.")
                (define-key ibuffer-mode-map (kbd "C-x C-f") #'ibuffer-ido-find-file)))))))
 
 ;;; BOOKMARKS
-;;
-(require 'bookmark+)
+;; (el-get features bookmark+)
 
 ;;; ESCREEN
 (when (el-get-package-is-installed "escreen")
-  (require 'escreen-setup)
   (escreen-install))
 
 ;;; POSIX ENVIRONMENT
@@ -380,8 +375,9 @@ the should-be-forbidden C-z.")
   #'(lambda () (interactive) (kill-emacs)))
 
 ;;; VT100 KEYS
-(eval-when-compile (require 'lk201))
-(when (null window-system)
+(eval-when-compile (when (locate-library "lk201") (require 'lk201)))
+(when (and (null window-system)
+           (locate-library "lk201"))
   (require 'lk201)
   (terminal-init-lk201))
 

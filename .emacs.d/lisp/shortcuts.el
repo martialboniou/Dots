@@ -137,10 +137,11 @@
 
 ;; sticky-control when required
 (unless (and (not *i-can-do-yubitsume-now*) window-system)
-  (require 'sticky-control)
-  (setq sticky-control-timeout 0.3)
+  (when (locate-library "sticky-control")
+      (require 'sticky-control))
   (eval-after-load "sticky-control"
     '(progn
+       (setq sticky-control-timeout 0.3)
        ;; - revert FIND-FILE and SWITCH-BUFFER actions
        (setq sticky-control-shortcuts
              (append
@@ -184,8 +185,8 @@
      '(zorg . `a')                        binds Fx-A  to #'ZORG
      '(baz . id)                          binds Fx-Fx to #'BAZ
   "
-  (flet ((funkey-assoc-p (fun) (and (consp fun) (or (stringp (cdr fun))
-                                                    (symbolp (cdr fun))))))
+  (flet ((funkey-assoc-p (fun) (and (consp fun) (or (stringp (cdr fun)) ; OBSOLETE: replace flet
+                                                       (symbolp (cdr fun))))))
     (let ((key (if (= (string-to-char function-key) 60)
                    function-key
                  (concat "<" function-key ">")))

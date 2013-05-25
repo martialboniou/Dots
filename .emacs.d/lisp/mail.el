@@ -5,7 +5,7 @@
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
-;; Version: 
+;; Version: 0.8
 ;; Last-Updated: Mon Nov 14 00:22:49 2011 (+0100)
 ;;           By: Martial Boniou
 ;;     Update #: 109
@@ -48,6 +48,7 @@
 (require 'www)
 (require 'gtd)
 (require 'preamble)
+(require 'behave)                       ; to control frame deletion
 
 (eval-when-compile (require 'sendmail)
                    (require 'wl))
@@ -116,9 +117,13 @@
      (when (executable-find w3m-program-name)
        (require 'octet)                 ; w3m octet for handling attachments
        (octet-mime-setup))
-     (require 'filladapt)
+     (when (locate-library "filladapt")
+       (require 'filladapt))
      (load "mime-setup")
-     (require 'bbdb-wl)
+     (when (and (locate-library "bbdb-wl")    ; TODO: upgrade
+                (locate-library "bbdb-hooks")) ; check BBDB is currently v2 (bbdb3-wl is alpha on 2013-05-25)
+       (require 'bbdb-wl))
+
      ;; PGP
      ;; (mars/autoload "pgg"
      ;;                pgg-encrypt-region
@@ -127,7 +132,7 @@
      ;;                pgg-verify-region
      ;;                pgg-insert-key
      ;;                pgg-snarf-keys-region)
-     (bbdb-wl-setup)
+     ;; (bbdb-wl-setup)
      ;; (defun bbdb-wl-exit-2 ()
      ;;   (let ((bbdb-buf (get-buffer bbdb-buffer-name)))
      ;;     (when bbdb-buf
@@ -206,141 +211,147 @@
           (add-hook 'mime-view-mode-hook #'no-line-wrap-this-buffer) ; defined in <confs/defs.el>
           (add-hook 'wl-message-redisplay-hook #'no-line-wrap-this-buffer-internal)))
      ;; BBDB
-     (remove-hook 'wl-message-redisplay-hook #'bbdb-wl-get-update-record) ; FIXME: temporary to avoid annoying mismatch bugs
-     (define-key wl-draft-mode-map "\t" 'bbdb-complete-name) ; now TAB => BBDB
-     (setq bbdb-use-pop-up t
-           bbdb-electric-p t             ; be disposable with SPC
-           signature-use-bbdb t
-           bbdb-elided-display t
-           bbdb-always-add-address t
-           bbdb-wl-folder-regexp "^[^+.]"  ; get addresses anything but local or maildirs
-           bbdb-wl-ignore-folder-regexp "^@" ; ignoring `@-' too
-           bbdb-use-alternate-names t    ; use AKA
-           bbdb-message-caching-enabled t ; be fast
-           bbdb-north-american-phone-numbers-p nil
-           wl-summary-from-function 'bbdb-wl-from-func
-           bbdb-auto-notes-alist '(("X-ML-Name" (".*$" ML 0))
-                                   ("X-MailingList" (".*$" ML 0))
-                                   ("X-Ml_Name" (".*$" ML 0))
-                                   ("X-Mailer" (".*$" User-Agent 0))
-                                   ("X-Newsreader" (".*$" User-Agent 0))
-                                   ("User-Agent" (".*$" User-Agent 0)) ; spy MUAs for stats
-                                   ;; X-Face may be catch here too
-                                   )
-           bbdb-file-coding-system 'utf-8-unix ; utf-8 encoding
-           file-coding-system-alist (cons '("\\.bbdb" utf-8 . utf-8)
-                                          file-coding-system-alist)
-           bbdb/mail-auto-create-p 'bbdb-ignore-some-messages-hook
-           bbdb-ignore-some-messages-alist '(("From" . "no.?reply\\|DAEMON\\|daemon\\|facebookmail\\|twitter")))
-     (add-hook 'bbdb-notice-hook #'bbdb-auto-notes-hook)
-     (add-hook 'wl-mail-setup-hook #'bbdb-insinuate-sendmail)
-     ;; citation
-     ;; (add-hook 'mail-citation-hook #'cite-cite)
-     ;; vCard case
-     (load "ch6-bbdb-import-csv-buffer") ; Outlook vCard conversion
-     (require 'bbdb-vcard-import) ; vCard import + the 2 following funs
-     ;; fix silent errors of multi-line address entry
-     (defun wicked/vcard-parse-region (beg end &optional filter)
-       "Parse the raw vcard data in region, and return an alist representing data. This function is just like `vcard-parse-string' except that it operates on a region of the current buffer rather than taking a string as an argument. Note: this function modifies the buffer!"
-       (or filter
-           (setq filter 'vcard-standard-filter))
-       (let ((case-fold-search t)
-             (vcard-data nil)
-             (pos (make-marker))
-             (newpos (make-marker))
-             properties value)
-         (save-restriction
-           (narrow-to-region beg end)
-           (save-match-data
-             ;; Unfold folded lines and delete naked carriage returns
-             (goto-char (point-min))
-             (while (re-search-forward "\r$\\|\n[ \t]" nil t)
-               (goto-char (match-beginning 0))
-               (delete-char 1))
-             (goto-char (point-min))
-             (re-search-forward "^begin:[ \t]*vcard[ \t]*\n")
-             (set-marker pos (point))
-             (while (and (not (looking-at "^end[ \t]*:[ \t]*vcard[ \t]*$"))
-                         (re-search-forward ":[ \t]*" nil t))
-               (set-marker newpos (match-end 0))
-               (setq properties
-                     (vcard-parse-region-properties pos (match-beginning 0)))
-               (set-marker pos (marker-position newpos))
-               (re-search-forward "\n[-A-Z0-9;=]+:")   ;; change to deal with multiline
-               (set-marker newpos (1+ (match-beginning 0))) ;; change to deal with multiline
-               (setq value
-                     (vcard-parse-region-value properties pos (match-beginning 0)))
-               (set-marker pos (marker-position newpos))
-               (goto-char pos)
-               (funcall filter properties value)
-               (setq vcard-data (cons (cons properties value) vcard-data)))))
-         (nreverse vcard-data)))
-
-     ;; import phone number from Gmail or Linkedln vCards
-     (defun wicked/bbdb-vcard-merge (record)
-       "Merge data from vcard interactively into bbdb."
-       (let* ((name (bbdb-vcard-values record "fn"))
-              (company (bbdb-vcard-values record "org"))
-              (net (bbdb-vcard-get-emails record))
-              (addrs (bbdb-vcard-get-addresses record))
-              (phones (bbdb-vcard-get-phones record))
-              (categories (bbdb-vcard-values record "categories"))
-              (notes (and (not (string= "" categories))
-                          (list (cons 'categories categories))))
-              ;; TODO: addrs are not yet imported.  To do this right,
-              ;; figure out a way to map the several labels to
-              ;; `bbdb-default-label-list'.  Note, some phone number
-              ;; conversion may break the format of numbers.
-              (bbdb-north-american-phone-numbers-p nil)
-              (new-record (bbdb-vcard-merge-interactively name
-                                                          company
-                                                          net
-                                                          nil ;; Skip addresses
-                                                          phones ;; Include phones
-                                                          notes)))
-         (setq bbdb-vcard-merged-records (append bbdb-vcard-merged-records
-                                                 (list new-record)))))
-     ;; Replace vcard.el's definition
-     (fset 'vcard-parse-region 'wicked/vcard-parse-region)
-     ;; Replace bbdb-vcard-import.el's definition
-     (fset 'bbdb-vcard-merge 'wicked/bbdb-vcard-merge)
-
-     ;; BBDB db switcher
-     ;; (defun bbdb-switch-to-other-bbdb-file (&optional db dont-ask)
-     ;;   (interactive)
-     ;;   (unless db
-     ;;     (setq db (if dont-ask (expand-file-name "~/.bbdb") ; default one
-     ;;                (read-file-name "Use bbdb database "))))
-     ;;   (setq bbdb-file db
-     ;;         bbdb-buffer (get-file-buffer db)))
-     ;;  (require 'bbdb-rf)                      ; to export BBDB to Outlook...
-     ;; mu-cite (citation/heading/signature) & PGP mailcrypt
-     ;; (require 'mu-cite)
-     
-     ;; mailcrypt // thanks to <http://box.matto.nl/wanderlustgpg.html>
-     (add-hook 'wl-summary-mode-hook #'mc-install-read-mode)
-     (add-hook 'wl-mail-setup-hook #'mc-install-write-mode)
-     (defun mc-wl-verify-signature ()
-       (interactive)
-       (save-window-excursion
-         (wl-summary-jump-to-current-message)
-         (mc-verify)))
-     (defun mc-wl-decrypt-message ()
-       (interactive)
-       (save-window-excursion
-         (wl-summary-jump-to-current-message)
-         (let ((inhibit-read-only t))
-           (mc-decrypt))))
-     (eval-after-load "mailcrypt"
+     (eval-after-load "bbdb-wl"
        '(progn
-          (setq mc-modes-alist
-                (append
-                 (quote
-                  ((wl-draft-mode (encrypt . mc-encrypt-message)
-                                  (sign    . mc-sign-message))
-                   (wl-summary-mode (decrypt . mc-wl-decrypt-message)
-                                    (verify  . mc-wl-verify-signature))))
-                 mc-modes-alist))))))
+          (remove-hook 'wl-message-redisplay-hook #'bbdb-wl-get-update-record) ; FIXME: temporary to avoid annoying mismatch bugs
+          (define-key wl-draft-mode-map "\t" 'bbdb-complete-name) ; now TAB => BBDB
+          (setq bbdb-use-pop-up t
+                bbdb-electric-p t             ; be disposable with SPC
+                signature-use-bbdb t
+                bbdb-elided-display t
+                bbdb-always-add-address t
+                bbdb-wl-folder-regexp "^[^+.]"  ; get addresses anything but local or maildirs
+                bbdb-wl-ignore-folder-regexp "^@" ; ignoring `@-' too
+                bbdb-use-alternate-names t    ; use AKA
+                bbdb-message-caching-enabled t ; be fast
+                bbdb-north-american-phone-numbers-p nil
+                wl-summary-from-function 'bbdb-wl-from-func
+                bbdb-auto-notes-alist '(("X-ML-Name" (".*$" ML 0))
+                                        ("X-MailingList" (".*$" ML 0))
+                                        ("X-Ml_Name" (".*$" ML 0))
+                                        ("X-Mailer" (".*$" User-Agent 0))
+                                        ("X-Newsreader" (".*$" User-Agent 0))
+                                        ("User-Agent" (".*$" User-Agent 0)) ; spy MUAs for stats
+                                        ;; X-Face may be catch here too
+                                        )
+                bbdb-file-coding-system 'utf-8-unix ; utf-8 encoding
+                file-coding-system-alist (cons '("\\.bbdb" utf-8 . utf-8)
+                                               file-coding-system-alist)
+                bbdb/mail-auto-create-p 'bbdb-ignore-some-messages-hook
+                bbdb-ignore-some-messages-alist '(("From" . "no.?reply\\|DAEMON\\|daemon\\|facebookmail\\|twitter")))
+          (add-hook 'bbdb-notice-hook #'bbdb-auto-notes-hook)
+          (add-hook 'wl-mail-setup-hook #'bbdb-insinuate-sendmail)
+          ;; citation
+          ;; (add-hook 'mail-citation-hook #'cite-cite)
+          ;; vCard case
+          (when (and (locate-library "ch6-bbdb-import-csv-buffer")
+                     (locate-library "bbdb-vcard-import"))
+            (load "ch6-bbdb-import-csv-buffer") ; Outlook vCard conversion
+            (require 'bbdb-vcard-import) ; vCard import + the 2 following funs
+            ;; fix silent errors of multi-line address entry
+            (defun wicked/vcard-parse-region (beg end &optional filter)
+              "Parse the raw vcard data in region, and return an alist representing data. This function is just like `vcard-parse-string' except that it operates on a region of the current buffer rather than taking a string as an argument. Note: this function modifies the buffer!"
+              (or filter
+                  (setq filter 'vcard-standard-filter))
+              (let ((case-fold-search t)
+                    (vcard-data nil)
+                    (pos (make-marker))
+                    (newpos (make-marker))
+                    properties value)
+                (save-restriction
+                  (narrow-to-region beg end)
+                  (save-match-data
+                    ;; Unfold folded lines and delete naked carriage returns
+                    (goto-char (point-min))
+                    (while (re-search-forward "\r$\\|\n[ \t]" nil t)
+                      (goto-char (match-beginning 0))
+                      (delete-char 1))
+                    (goto-char (point-min))
+                    (re-search-forward "^begin:[ \t]*vcard[ \t]*\n")
+                    (set-marker pos (point))
+                    (while (and (not (looking-at "^end[ \t]*:[ \t]*vcard[ \t]*$"))
+                                (re-search-forward ":[ \t]*" nil t))
+                      (set-marker newpos (match-end 0))
+                      (setq properties
+                            (vcard-parse-region-properties pos (match-beginning 0)))
+                      (set-marker pos (marker-position newpos))
+                      (re-search-forward "\n[-A-Z0-9;=]+:")   ;; change to deal with multiline
+                      (set-marker newpos (1+ (match-beginning 0))) ;; change to deal with multiline
+                      (setq value
+                            (vcard-parse-region-value properties pos (match-beginning 0)))
+                      (set-marker pos (marker-position newpos))
+                      (goto-char pos)
+                      (funcall filter properties value)
+                      (setq vcard-data (cons (cons properties value) vcard-data)))))
+                (nreverse vcard-data)))
+
+            ;; import phone number from Gmail or Linkedln vCards
+            (defun wicked/bbdb-vcard-merge (record)
+              "Merge data from vcard interactively into bbdb."
+              (let* ((name (bbdb-vcard-values record "fn"))
+                     (company (bbdb-vcard-values record "org"))
+                     (net (bbdb-vcard-get-emails record))
+                     (addrs (bbdb-vcard-get-addresses record))
+                     (phones (bbdb-vcard-get-phones record))
+                     (categories (bbdb-vcard-values record "categories"))
+                     (notes (and (not (string= "" categories))
+                                 (list (cons 'categories categories))))
+                     ;; TODO: addrs are not yet imported.  To do this right,
+                     ;; figure out a way to map the several labels to
+                     ;; `bbdb-default-label-list'.  Note, some phone number
+                     ;; conversion may break the format of numbers.
+                     (bbdb-north-american-phone-numbers-p nil)
+                     (new-record (bbdb-vcard-merge-interactively name
+                                                                 company
+                                                                 net
+                                                                 nil ;; Skip addresses
+                                                                 phones ;; Include phones
+                                                                 notes)))
+                (setq bbdb-vcard-merged-records (append bbdb-vcard-merged-records
+                                                        (list new-record)))))
+            ;; Replace vcard.el's definition
+            (fset 'vcard-parse-region 'wicked/vcard-parse-region)
+            ;; Replace bbdb-vcard-import.el's definition
+            (fset 'bbdb-vcard-merge 'wicked/bbdb-vcard-merge))
+
+          ;; BBDB db switcher
+          ;; (defun bbdb-switch-to-other-bbdb-file (&optional db dont-ask)
+          ;;   (interactive)
+          ;;   (unless db
+          ;;     (setq db (if dont-ask (expand-file-name "~/.bbdb") ; default one
+          ;;                (read-file-name "Use bbdb database "))))
+          ;;   (setq bbdb-file db
+          ;;         bbdb-buffer (get-file-buffer db)))
+          ;;  (require 'bbdb-rf)                      ; to export BBDB to Outlook...
+          ;; mu-cite (citation/heading/signature) & PGP mailcrypt
+          ;; (require 'mu-cite)
+          )) ; 'EVAL-AFTER-LOAD for 'BBDB-WL
+
+     ;; mailcrypt // thanks to <http://box.matto.nl/wanderlustgpg.html>
+     (when (locate-library "mailcrypt")
+       (add-hook 'wl-summary-mode-hook #'mc-install-read-mode)
+       (add-hook 'wl-mail-setup-hook #'mc-install-write-mode)
+       (defun mc-wl-verify-signature ()
+         (interactive)
+         (save-window-excursion
+           (wl-summary-jump-to-current-message)
+           (mc-verify)))
+       (defun mc-wl-decrypt-message ()
+         (interactive)
+         (save-window-excursion
+           (wl-summary-jump-to-current-message)
+           (let ((inhibit-read-only t))
+             (mc-decrypt))))
+       (eval-after-load "mailcrypt"
+         '(progn
+            (setq mc-modes-alist
+                  (append
+                   (quote
+                    ((wl-draft-mode (encrypt . mc-encrypt-message)
+                                    (sign    . mc-sign-message))
+                     (wl-summary-mode (decrypt . mc-wl-decrypt-message)
+                                      (verify  . mc-wl-verify-signature))))
+                   mc-modes-alist)))))))
 
 (defun mars/draft-email ()
   "Open an email draft on the default Wanderlust posting user."

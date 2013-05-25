@@ -174,6 +174,12 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
   (defvar explicit-shell-file-name "bash")
   (setq shell-file-name "bash"))
 
+;;; NEXTSTEP/COCOA COMPATIBILITY
+;;
+(when (eq system-type 'darwin)
+  (setq ns-command-modifier 'meta
+	ns-option-modifier nil))	; Option works as compose key too
+
 ;;; NOTEBOOK CONTEXT
 ;; touch ~/.notebook if your computer need low resolution screen setup
 (defvar *mars/notebook-context* 

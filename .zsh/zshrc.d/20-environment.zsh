@@ -2,11 +2,11 @@
 EMACSNAMESERVER=$USERNAME
 () {
     local -a editors
-    local editor 
+    local editor
     # vemacs = emacs w/ vimpulse (Vim emu)
     editors=(
-        "emacsclient --socket-name=$EMACSNAMESERVER --alternate-editor=vim" # replace vim by vemacs ASAP
         "vim"
+        "emacsclient --socket-name=$EMACSNAMESERVER --alternate-editor=vim" # replace vim by vemacs ASAP
         "nvi"
         "vi"
         "nano"

@@ -48,7 +48,8 @@
 (require 'adapter)
 
 ;;; CPT
-(require 'ps-ccrypt)                    ; ccrypt 1.9 needed
+(when (locate-library "ps-ccrypt")
+  (require 'ps-ccrypt))			; ccrypt 1.9 needed
 
 ;;; GPG
 (unless (fboundp 'epa-decrypt-region)

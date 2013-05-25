@@ -5,7 +5,7 @@
 ;; Author: Martial Boniou
 ;; Maintainer:
 ;; Created: Sat Jan 19 20:16:06 2008
-;; Version:
+;; Version: 0.3
 ;; Last-Updated: Mon Nov  7 18:00:41 2011 (+0100)
 ;;           By: Martial Boniou
 ;;     Update #: 116
@@ -56,7 +56,8 @@
 (require 'www)
 (require 'preamble)
 
-(eval-when-compile (require 'emms))
+(when (locate-library "emms")
+  (eval-when-compile (require 'emms)))
 
 ;;; IMAGE-MODE
 ;;
@@ -64,7 +65,7 @@
 (eval-after-load "image-mode"
   '(progn
      (auto-image-file-mode 1)
-  
+
      (defun my-image-next-by-number ()
        (interactive)
        (let ((file-name (buffer-file-name))
@@ -178,9 +179,9 @@
        (require 'emms-info-libtag)
        (setq emms-info-functions '(emms-info-libtag))
        ;; (setq emms-player-list 'emms-player-mpd)
-       
+
        ;; Custom variables
-       
+
        (setq emms-info-asynchronously t)
        (setq emms-mode-line-mode-line-function
              (lambda nil
@@ -272,7 +273,7 @@
     (condition-case nil
         (if (mars/safe-emms-playlists)
             (emms-pause)                ; try pause/resume
-          (error "no playlist"))               
+          (error "no playlist"))
       (error
        (progn
          ;; remove the buffer created by 'EMMS-PAUSE

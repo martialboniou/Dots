@@ -3,29 +3,29 @@
 ;; Filename: vim-everywhere.el
 ;; Description: Vimpulse configuration
 ;; Author: Martial Boniou
-;; Maintainer: 
+;; Maintainer:
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
-;; Version: 0.4
+;; Version: 0.4.9
 ;; Last-Updated: Tue Nov 15 20:31:20 2011 (+0100)
 ;;           By:
 ;;     Update #: 291
-;; URL: 
-;; Keywords: 
-;; Compatibility: 
+;; URL:
+;; Keywords:
+;; Compatibility:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Commentary: Vimpulse + your Vim colorscheme in Emacs
-;; 
+;;
 ;; keep (quite) same syntax highlighting everywhere
 ;; by hondana@gmx.com 2001-2011
-;; 
-;; 
+;;
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
-;; 
-;; 
+;;
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; This program is free software; you can redistribute it and/or
@@ -96,10 +96,12 @@
      ;; - autopair case
      (eval-after-load "autopair"
        '(progn
-          (require 'autopair-viper-compat)))
-
+          (when (locate-library "autopair-viper-compat")
+	    (require 'autopair-viper-compat))))
+     
      ;; 1- vimpulse
-     (require 'vimpulse)
+     (when (locate-library "vimpulse")
+        (require 'vimpulse))
      (eval-after-load "vimpulse"
        '(progn
           (define-key viper-vi-global-user-map [(control kp-delete)] nil)
@@ -118,13 +120,15 @@
        (progn
          (defface hl-line '((t (:background "grey10"))) "Dummy hl-line.")
          (setq hl-line-face 'hl-line)))
-     (require 'parenface)
+     (when (locate-library "parenface")
+       (require 'parenface))
 
      ;; 3- nothing to add (mis)match parentheses -- vimpulse uses 'show-parens
      ;;    so there's no need to add 'mic-paren
 
      ;; 4- line numbering
-     (require 'linum-settings)          ; WARNING: multi-web-mode tags' mode must be linum-ed
+     (when (locate-library "linum-settings")
+       (require 'linum-settings))	; WARNING: multi-web-mode tags' mode must be linum-ed
 
      ;; 5- colorize numbers, todos & warnings
      (defface font-lock-number-face
@@ -487,7 +491,7 @@ TODO: case of '''colorscheme' this'' where this is
      ;; fetch your vim colorscheme and load a mockup adapter
      (setq *chosen-theme* (colorscheme-to-color-theme "wombat256mod")) ; default theme
      ;; or (setq *chosen-theme* (colorscheme-to-color-theme "inkpot"))
-     
+
      (mars/extract-colorscheme-from-vimrc)
      (funcall *chosen-theme*) ;; FIXME: slow down
 

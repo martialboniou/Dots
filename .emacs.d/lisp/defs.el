@@ -5,7 +5,7 @@
 ;; Author: Martial Boniou
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
-;; Version: 0.10
+;; Version: 0.15
 ;; Last-Updated: Tue Jan 31 16:23:23 2012 (+0100)
 ;;           By: Martial Boniou
 ;;     Update #: 284
@@ -61,6 +61,11 @@
 ;;
 (unless (boundp 'mars/eternal-buffer-list)
     (setq mars/eternal-buffer-list '("*scratch*")))
+
+;;; RETRO-COMPATIBILITIES
+;;
+(unless (fboundp 'cl-flet)
+  (defalias 'cl-flet 'flet))
 
 ;;; ESSENTIAL UTILITIES
 ;;;

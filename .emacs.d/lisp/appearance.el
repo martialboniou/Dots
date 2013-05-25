@@ -29,18 +29,15 @@
   '(progn
      ;; PRETTY
      ;; pretty control-l
-     (require 'pp-c-l)
-     (pretty-control-l-mode 1)
+     (when (locate-library "pp-c-l")
+       (require 'pp-c-l))
+     (eval-after-load 'pp-c-l
+       '(pretty-control-l-mode 1))
 
      ;; ALIAS-MINOR-MODES TODO: merge to appearance.el
      ;; shorten indicator in mode-line
-     (alias-minor-modes
-      '(undo-tree
-    UT
-    abbrev    Ab
-    autopair  AP
-    paredit   PE
-    flymake   FM))
+     (when (fboundp 'alias-minor-modes)
+       (alias-minor-modes '(undo-tree UT abbrev Ab autopair AP paredit PE flymake FM)))
 
      ;; PRETTY-LAMBDA
      ;; replace LAMBDA -> λ
@@ -48,7 +45,8 @@
                       scheme-mode
                       emacs-lisp-mode
                       python-mode))
-     (pretty-lambda-for-modes)))
+     (when (el-get-package-is-installed "pretty-lambdada")
+       (pretty-lambda-for-modes))))
 
 ;;; FANCY
 ;;

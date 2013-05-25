@@ -94,7 +94,7 @@
       (unintern 'emacs-normal-startup obarray))))
 
 ;; load time
-(let* ((load-time (destructuring-bind (hi lo ms) (current-time)
+(let* ((load-time (destructuring-bind (hi lo ms &optional ps) (current-time)
                     (- (+ hi lo) (+ (first emacs-load-start)
                                     (second emacs-load-start)))))
        (load-time-msg (format "Emacs loaded in %d s" load-time)))

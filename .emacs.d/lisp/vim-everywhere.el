@@ -1,24 +1,24 @@
 ;;; vim-everywhere.el ---
 ;;
 ;; Filename: vim-everywhere.el
-;; Description: Vimpulse configuration
+;; Description: Vim emulation setup
 ;; Author: Martial Boniou
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
-;; Version: 0.4.9
-;; Last-Updated: Tue Nov 15 20:31:20 2011 (+0100)
+;; Version: 0.6
+;; Last-Updated: Sat May 25 20:51:45 2013 (+0200)
 ;;           By:
-;;     Update #: 291
+;;     Update #: 297
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Commentary: Vimpulse + your Vim colorscheme in Emacs
+;;; Commentary: ( Evil || Vimpulse ) + your Vim colorscheme in Emacs
 ;;
 ;; keep (quite) same syntax highlighting everywhere
-;; by hondana@gmx.com 2001-2011
+;; by hondana@gmx.com 2001-2013
 ;;
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -90,29 +90,35 @@
 
 (eval-after-load "viper"
   '(progn
-     ;; 0- bugfixing
+     ;; 0- tweaks
+     (define-key viper-vi-global-user-map [(control kp-delete)] nil)
      ;; - ruby case
      (add-to-list 'viper-vi-state-mode-list 'ruby-mode)
      ;; - autopair case
      (eval-after-load "autopair"
        '(progn
           (when (locate-library "autopair-viper-compat")
-	    (require 'autopair-viper-compat))))
-     
-     ;; 1- vimpulse
-     (when (locate-library "vimpulse")
-        (require 'vimpulse))
-     (eval-after-load "vimpulse"
-       '(progn
-          (define-key viper-vi-global-user-map [(control kp-delete)] nil)
-          ;; add C-w outside vimpulse -- eg. C-w C-w -> other-window
-          (fset 'vimpulse-like-window-map (copy-keymap vimpulse-window-map))
-          (eval-after-load "dired"
-            '(progn
-               (define-key dired-mode-map "\C-w" 'vimpulse-like-window-map)))
-          (eval-after-load "ibuffer"
-            '(progn
-               (define-key ibuffer-mode-map "\C-w" 'vimpulse-like-window-map)))))
+            (require 'autopair-viper-compat))))
+
+     ;; 1- evil or vimpulse
+     (if (locate-library "evil")
+        (require 'evil)
+      (when (locate-library "vimpulse")
+        (require 'vimpulse)))    
+     ;; add C-w outside evil or vimpulse -- eg. C-w C-w -> other-window
+     (flet ((extended-C-w () (progn
+                               (eval-after-load "dired"
+                                 '(define-key dired-mode-map "\C-w" 'evil-like-window-map))
+                               (eval-after-load "ibuffer"
+                                 '(define-key ibuffer-mode-map "\C-w" 'evil-like-window-map)))))
+       (eval-after-load "evil"
+         '(progn
+            (fset 'evil-like-window-map (copy-keymap evil-window-map))
+            (extended-C-w)))
+       (eval-after-load "vimpulse"      ; FIXME: ugly
+         '(progn
+            (fset 'evil-like-window-map (copy-keymap vimpulse-window-map))
+            (extended-C-w))))
 
      ;; 2- parenface to add a default color to parentheses as Vim does
      (if (locate-library "hl-line+")
@@ -128,7 +134,7 @@
 
      ;; 4- line numbering
      (when (locate-library "linum-settings")
-       (require 'linum-settings))	; WARNING: multi-web-mode tags' mode must be linum-ed
+       (require 'linum-settings))       ; WARNING: multi-web-mode tags' mode must be linum-ed
 
      ;; 5- colorize numbers, todos & warnings
      (defface font-lock-number-face
@@ -219,15 +225,27 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
                                                         (other-window 1)
                                                         (switch-to-buffer (other-buffer))))
      (define-key viper-insert-basic-map "\C-e" nil) ; IMPORTANT: in order to use ASCII C-a/C-e in insert mode
-     (define-key viper-vi-basic-map "\C-e" 'viper-scroll-up-one) ; should be defined anyway
-     (define-key viper-insert-basic-map (kbd "C-,") 'vimpulse-copy-from-below) ; switch 'C-e to 'C-,
-     (define-key vimpulse-visual-basic-map "F" 'viper-find-char-backward)
-     (define-key vimpulse-visual-basic-map "t" 'viper-goto-char-forward)
-     (define-key vimpulse-visual-basic-map "T" 'viper-goto-char-backward)
-     (define-key vimpulse-visual-basic-map "e" '(lambda ()
-                                                  (interactive)
-                                                  (viper-end-of-word 1)
-                                                  (viper-forward-char 1)))
+     (define-key viper-vi-basic-map "\C-e" 'viper-scroll-up-one) ; should be defined anywayi
+     (eval-after-load 'evil
+       '(progn
+          (define-key viper-insert-basic-map (kbd "C-,") 'evil-copy-from-below)
+          (define-key evil-visual-state-map "F" 'viper-find-char-backward)
+          (define-key evil-visual-state-map "t" 'viper-goto-char-forward)
+          (define-key evil-visual-state-map "T" 'viper-goto-char-backward)
+          (define-key evil-visual-state-map "e" '(lambda ()
+                                                   (interactive)
+                                                   (viper-end-of-word 1)
+                                                   (viper-forward-char 1)))))
+     (eval-after-load 'vimpulse
+        '(progn
+            (define-key viper-insert-basic-map (kbd "C-,") 'vimpulse-copy-from-below) ; switch 'C-e to 'C-,
+            (define-key vimpulse-visual-basic-map "F" 'viper-find-char-backward)
+            (define-key vimpulse-visual-basic-map "t" 'viper-goto-char-forward)
+            (define-key vimpulse-visual-basic-map "T" 'viper-goto-char-backward)
+            (define-key vimpulse-visual-basic-map "e" '(lambda ()
+                                                        (interactive)
+                                                        (viper-end-of-word 1)
+                                                        (viper-forward-char 1)))))
      (push '("only"  (delete-other-windows)) ex-token-alist)
      (push '("close" (delete-window))        ex-token-alist)
      (define-key viper-vi-global-user-map " d" 'viper-kill-buffer)

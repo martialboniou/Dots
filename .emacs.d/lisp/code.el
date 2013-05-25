@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Mar 21 13:50:20 2012 (+0100)
+;; Last-Updated: Sat May 25 20:46:16 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 569
+;;     Update #: 573
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -68,40 +68,42 @@
   "Programming languages' configuration repository.")
 
 ;;; HEADER2 + AUTO-INSERT
-(add-hook 'write-file-functions 'auto-update-file-header)
-(mars/add-hooks '(c-mode-common-hook emacs-lisp-hook) 'auto-make-header)
-(defun mars/create-header2-if-none (&optional update-me)
-  "Creates a header if none. Updates header if UPDATE-ME is T."
-  (interactive "P")
-  (require 'header2)                    ; for header-max FIXME: find smthg else
-  (save-excursion
-    (save-restriction
-      (narrow-to-region 1 (min header-max (1- (buffer-size))))
-      (let ((patterns file-header-update-alist))
-        (setq last-command  nil)
-        (let (pattern-found stop)
-          (while (and (null stop) patterns)
-            (goto-char (point-min))
-            (when (re-search-forward (car (car patterns)) nil t)
-              (goto-char (match-end 0))
-              (if update-me
-                  (progn
-                    (when (null pattern-found)
-                      (setq pattern-found t)
-                      (message "Header updated"))
-                    (funcall (cdr (car patterns))))
-                (setq stop t)))
-            (setq patterns  (cdr patterns)))
-          (unless (or stop pattern-found)
-            (when (y-or-n-p "Would you like to make a file header? ")
-              (widen)
-              (goto-char (point-max))
-              (let ((end (point)))      ; remove extra lines
-                (backward-word 1)
-                (end-of-line)
-                (delete-region (point) end))
-              (newline 2)               ; add two lines to symmetrize
-              (make-header))))))))
+(defun mars/create-header2-if-none (&optional update-me) (message "code: header2 is not installed"))
+(eval-after-load "header2"
+  '(progn
+     (add-hook 'write-file-functions 'auto-update-file-header)
+     (mars/add-hooks '(c-mode-common-hook emacs-lisp-hook) 'auto-make-header)
+     (defun mars/create-header2-if-none (&optional update-me)
+       "Creates a header if none. Updates header if UPDATE-ME is T."
+       (interactive "P")
+       (save-excursion
+         (save-restriction
+           (narrow-to-region 1 (min header-max (1- (buffer-size))))
+           (let ((patterns file-header-update-alist))
+             (setq last-command  nil)
+             (let (pattern-found stop)
+               (while (and (null stop) patterns)
+                 (goto-char (point-min))
+                 (when (re-search-forward (car (car patterns)) nil t)
+                   (goto-char (match-end 0))
+                   (if update-me
+                       (progn
+                         (when (null pattern-found)
+                           (setq pattern-found t)
+                           (message "Header updated"))
+                         (funcall (cdr (car patterns))))
+                     (setq stop t)))
+                 (setq patterns  (cdr patterns)))
+               (unless (or stop pattern-found)
+                 (when (y-or-n-p "Would you like to make a file header? ")
+                   (widen)
+                   (goto-char (point-max))
+                   (let ((end (point)))      ; remove extra lines
+                     (backward-word 1)
+                     (end-of-line)
+                     (delete-region (point) end))
+                   (newline 2)               ; add two lines to symmetrize
+                   (make-header))))))))))
 (defalias 'mars/create-header-if-none 'mars/create-header2-if-none)
 
 ;;; HIDESHOW + HIDESHOWVIS

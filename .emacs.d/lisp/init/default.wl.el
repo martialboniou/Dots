@@ -55,7 +55,7 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'filladapt)
+(eval-when-compile ;; (require 'filladapt)
                    (require 'wl)
                    (require 'wl-spam)
                    (require 'elmo-imap4)
@@ -264,7 +264,7 @@
                 (start (point))
                 (end (if all
                          (point-max)
-                       (if (or (re-search-forward "^[^>\n]* wrote:[ \n]+" nil 
+                       (if (or (re-search-forward "^[^>\n]* wrote:[ \n]+" nil
                                                   t)
                                (re-search-forward "^>>>>>" nil t)
                                (re-search-forward "^ *>.*\n *>" nil t))
@@ -462,7 +462,7 @@
                                   locales/wrote
                                   ":\n\n"))
          (if (not (string-match
-                   "^\\([[(]\\)\\([a-zA-Z0-9._-]+\\)\\([ 
+                   "^\\([[(]\\)\\([a-zA-Z0-9._-]+\\)\\([
 :,]\\)\\([0-9]+\\)\\([])]\\)" subject))
              ()
            (setq ml-prefix (mars/match-string 1 subject)
@@ -532,8 +532,8 @@
      (defun mars/simplify-822date (str &optional at-time iso-ymd)
        "Simplify `Date' in RFC 822 message.
 Note: the simplified date is not conformed to RFC 822."
-       (if (not (string-match "\\([0-9]+\\)[ \t]+\\([a-zA-Z]+\\)[ \t]+\\([0-9]+\\)[ 
-\t]+\\([0-9]+\\):\\([0-9]+\\)\\(:\\([0-9]+\\)\\)?\\([ 
+       (if (not (string-match "\\([0-9]+\\)[ \t]+\\([a-zA-Z]+\\)[ \t]+\\([0-9]+\\)[
+\t]+\\([0-9]+\\):\\([0-9]+\\)\\(:\\([0-9]+\\)\\)?\\([
 \t]+\\([-+0-9a-zA-Z]+\\)\\)?" str))
            str
          (let (day mon year month ymd hour min ampm tmzn)

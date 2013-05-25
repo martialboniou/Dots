@@ -58,6 +58,7 @@
                         magit
                         ;; darcsum
                         ;; undo-tree ; installed with evil
+                        header2
                         git-emacs
                         gist
                         switch-window

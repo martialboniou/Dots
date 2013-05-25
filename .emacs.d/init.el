@@ -16,14 +16,16 @@
 (add-to-list 'el-get-recipe-path (expand-file-name "Recipes"
                                                    (expand-file-name mars/personal-data
                                                                      mars/local-root-dir)))
-(setq el-get-sources '((:name vimpulse
-                              :features nil) ; let 'VIM-EVERYWHERE configure 'VIMPULSE
+(setq el-get-sources '((:name evil
+                          :features nil)     ; let 'VIM-EVERYWHERE configure 'EVIL
+                        (:name vimpulse
+                            :features nil) ; let 'VIM-EVERYWHERE configure 'VIMPULSE
                        (:name bbdb
                               :branch "v2.x"
                               :build `("autoconf" ,(concat "./configure --with-emacs=" el-get-emacs)
                                        "make clean" "rm -f lisp/bbdb-autoloads.el"
                                        "make autoloadsc info")
-			      :features bbdb-autoloads
+                  :features bbdb-autoloads
                               :info "texinfo")
                        (:name emms
                               :info nil ; TODO: 2013-05-23 fix info file
@@ -124,8 +126,16 @@
 (put 'narrow-to-region 'disabled nil)
 (unintern 'booting obarray)
 
-(require 'mail)
 
 (savehist-mode 1)
+
+;; DEVELOPMENT
+(eval-after-load "header2"
+  '(progn
+     (add-hook 'write-file-functions 'auto-update-file-header)
+     (mars/add-hooks '(c-mode-common-hook emacs-lisp-hook) 'auto-make-header)))
+
+;; MAILING DURING TEST PHASE
+(require 'mail)
 
 ;; (wl)

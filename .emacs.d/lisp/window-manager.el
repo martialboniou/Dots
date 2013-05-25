@@ -15,7 +15,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Commentary: everything to split / tile / cycle / archive windows / 
+;;; Commentary: everything to split / tile / cycle / archive windows /
 ;;              autosave current window configuration / no windowing
 ;;              mouse support
 ;;  Note: need handmade tiling and buffer-move autoloads
@@ -174,7 +174,8 @@ When prefix arg is given,  \"same size\" is same width."
 (unless window-system
   (xterm-mouse-mode t)
   ;; mouse wheel support
-  (require 'mwheel-term))
+  (when (locate-library "mwheel-term")
+   (require 'mwheel-term)))
 
 (provide 'window-manager)
 

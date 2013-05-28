@@ -65,13 +65,13 @@
                         cycle-buffer
                         js-comint
                         yaml-mode
-                        yasnippet
                         emms            ; install emacs-w3m
                         sunrise-commander
                         bbdb
                         wanderlust))
 
-(defvar mars/personal-recipes '(ascii))
+(defvar mars/personal-recipes '(yas-jit) ; my version loads 'YASNIPPET
+  )
 
 (condition-case nil
     (progn

@@ -1,6 +1,0 @@
-(:name ascii
-       :website "http://www.emacswiki.org/emacs/ascii.el"
-       :description "Display the current ASCII character code in a table on another window"
-       :type http
-       :url "http://www.emacswiki.org/emacs/download/ascii.el"
-       :features nil)

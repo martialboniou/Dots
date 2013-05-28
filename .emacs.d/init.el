@@ -18,8 +18,6 @@
                                                                      mars/local-root-dir)))
 (setq el-get-sources '((:name evil
                           :features nil)     ; let 'VIM-EVERYWHERE configure 'EVIL
-                        (:name vimpulse
-                            :features nil) ; let 'VIM-EVERYWHERE configure 'VIMPULSE
                        (:name bbdb
                               :branch "v2.x"
                               :build `("autoconf" ,(concat "./configure --with-emacs=" el-get-emacs)

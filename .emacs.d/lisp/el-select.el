@@ -62,6 +62,7 @@
                         git-emacs
                         gist
                         switch-window
+                        cycle-buffer
                         js-comint
                         yaml-mode
                         yasnippet

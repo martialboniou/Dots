@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Tue Feb 22 11:31:42 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: 
+;; Last-Updated: Tue May 28 11:52:26 2013 (+0200)
 ;;           By:
-;;     Update #: 86
+;;     Update #: 91
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -57,9 +57,6 @@
 
 ;(condition-case nil
 (require 'org-loaddefs)
-;  (error
-;   (error "toto")
-;   (require 'org-install))) ; 2012: org-install is OBSOLETE 
 (require 'org-protocol)
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
@@ -68,8 +65,13 @@
 ;; common setup
 (eval-after-load "org"
   '(progn
-     (when (fboundp 'org-wiegley-ext)
-       (require 'org-wiegley-ext))
+     ;; auto archiving setup: 'ARCHIVE-DONE-TASKS needed to clean up
+     (eval-after-load "org-wiegley-ext"
+       '(setq org-my-archive-expiry-days 45))
+     (add-to-list 'safe-local-variable-values '(after-save-hook archive-done-tasks)) ; add: -*- after-save-hook (archive-done-tasks) -*- in your Org files to archive automatically (ie. all DONE|DEFERRED|CANCELLED tasks go to the archive file if date exceeds 45 days)
+     (if (fboundp 'org-wiegley-ext)
+         (require 'org-wiegley-ext)
+       (defun archive-done-tasks () (message "gtd: org-wiegley-ext is not installed.")))
      (when *i-might-be-a-saiki-komon*
        (defun display-organizer-at-startup ()
          (call-interactively #'mars/two-days-calendar)))
@@ -83,12 +85,6 @@
        (define-key org-agenda-keymap   "\C-n" 'next-line)
        (define-key org-agenda-mode-map "\C-p" 'previous-line)
        (define-key org-agenda-keymap   "\C-p" 'previous-line))))
-
-;; auto archiving setup
-(eval-after-load "org-wiegley-ext"
-  '(progn
-     (setq org-my-archive-expiry-days 14)
-     (add-to-list 'safe-local-variable-values '(after-save-hook archive-done-tasks)))) ; add: -*- after-save-hook (archive-done-tasks) -*- in your Org files to archive automatically (ie. all DONE|DEFERRED|CANCELLED tasks go to the archive file if date exceeds 14 days)
 
 ;; viper compatibility setup
 (if (boundp 'viper-version)

@@ -6,16 +6,16 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.6
-;; Last-Updated: Sat May 25 20:51:45 2013 (+0200)
+;; Last-Updated: Tue May 28 12:23:09 2013 (+0200)
 ;;           By:
-;;     Update #: 297
+;;     Update #: 302
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Commentary: ( Evil || Vimpulse ) + your Vim colorscheme in Emacs
+;;; Commentary: Evil + your Vim colorscheme in Emacs
 ;;
 ;; keep (quite) same syntax highlighting everywhere
 ;; by hondana@gmx.com 2001-2013
@@ -67,7 +67,7 @@
 ;;                                       (push (expand-file-name found-dir) load-path))
 ;;                                   (error nil))))
 ;;                           found-dirs))))
-;;             '(color-theme vimpulse))))
+;;             '(color-theme evil))))
 ;;   (load-library "color-theme-autoloads"))
 
 
@@ -100,25 +100,17 @@
           (when (locate-library "autopair-viper-compat")
             (require 'autopair-viper-compat))))
 
-     ;; 1- evil or vimpulse
-     (if (locate-library "evil")
-        (require 'evil)
-      (when (locate-library "vimpulse")
-        (require 'vimpulse)))    
-     ;; add C-w outside evil or vimpulse -- eg. C-w C-w -> other-window
-     (flet ((extended-C-w () (progn
-                               (eval-after-load "dired"
-                                 '(define-key dired-mode-map "\C-w" 'evil-like-window-map))
-                               (eval-after-load "ibuffer"
-                                 '(define-key ibuffer-mode-map "\C-w" 'evil-like-window-map)))))
-       (eval-after-load "evil"
-         '(progn
-            (fset 'evil-like-window-map (copy-keymap evil-window-map))
-            (extended-C-w)))
-       (eval-after-load "vimpulse"      ; FIXME: ugly
-         '(progn
-            (fset 'evil-like-window-map (copy-keymap vimpulse-window-map))
-            (extended-C-w))))
+     ;; 1- Evil
+     (when (locate-library "evil")
+        (require 'evil))
+     ;; add C-w outside Evil -- eg. C-w C-w -> other-window
+     (eval-after-load "evil"
+       '(progn
+          (fset 'evil-like-window-map (copy-keymap evil-window-map))
+          (eval-after-load "dired"
+            '(define-key dired-mode-map "\C-w" 'evil-like-window-map))
+          (eval-after-load "ibuffer"
+            '(define-key ibuffer-mode-map "\C-w" 'evil-like-window-map))))
 
      ;; 2- parenface to add a default color to parentheses as Vim does
      (if (locate-library "hl-line+")
@@ -129,7 +121,7 @@
      (when (locate-library "parenface")
        (require 'parenface))
 
-     ;; 3- nothing to add (mis)match parentheses -- vimpulse uses 'show-parens
+     ;; 3- nothing to add (mis)match parentheses -- 'show-parens
      ;;    so there's no need to add 'mic-paren
 
      ;; 4- line numbering
@@ -226,7 +218,7 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
                                                         (switch-to-buffer (other-buffer))))
      (define-key viper-insert-basic-map "\C-e" nil) ; IMPORTANT: in order to use ASCII C-a/C-e in insert mode
      (define-key viper-vi-basic-map "\C-e" 'viper-scroll-up-one) ; should be defined anywayi
-     (eval-after-load 'evil
+     (eval-after-load "evil"
        '(progn
           (define-key viper-insert-basic-map (kbd "C-,") 'evil-copy-from-below)
           (define-key evil-visual-state-map "F" 'viper-find-char-backward)
@@ -236,16 +228,6 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
                                                    (interactive)
                                                    (viper-end-of-word 1)
                                                    (viper-forward-char 1)))))
-     (eval-after-load 'vimpulse
-        '(progn
-            (define-key viper-insert-basic-map (kbd "C-,") 'vimpulse-copy-from-below) ; switch 'C-e to 'C-,
-            (define-key vimpulse-visual-basic-map "F" 'viper-find-char-backward)
-            (define-key vimpulse-visual-basic-map "t" 'viper-goto-char-forward)
-            (define-key vimpulse-visual-basic-map "T" 'viper-goto-char-backward)
-            (define-key vimpulse-visual-basic-map "e" '(lambda ()
-                                                        (interactive)
-                                                        (viper-end-of-word 1)
-                                                        (viper-forward-char 1)))))
      (push '("only"  (delete-other-windows)) ex-token-alist)
      (push '("close" (delete-window))        ex-token-alist)
      (define-key viper-vi-global-user-map " d" 'viper-kill-buffer)
@@ -344,7 +326,7 @@ TODO: case of '''colorscheme' this'' where this is
      ;; NOTE: - parenface added to customize parentheses' color
      ;;       - numbers colors added
      ;;       - recommended parentheses matching is 'mic-paren
-     ;;         (paren-face-(mis)match) but vimpulse uses its
+     ;;         (paren-face-(mis)match) but Evil uses its
      ;;         own matcher based on 'show-paren
 
      (defmacro defcolor-theme (name &rest colors)

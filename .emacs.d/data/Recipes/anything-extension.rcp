@@ -1,0 +1,8 @@
+(:name anything-extension
+       :website "http://www.emacswiki.org/emacs/anything-extension.el"
+       :description "Extension functions for anything.el"
+       :type http
+       :url "http://www.emacswiki.org/emacs/download/anything-extension.el"
+       :depends anything
+       :features nil)
+;; unused

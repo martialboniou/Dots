@@ -21,7 +21,7 @@
                                                    (expand-file-name mars/personal-data
                                                                      mars/local-root-dir)))
 
-(setq el-get-sources '((:name vimpulse
+(setq el-get-sources '((:name evil
                               :features nil) ; let 'VIM-EVERYWHERE do the loading
                        (:name nxhtml
                               :load nil))) ; choose 'NXHTML or 'MULTI-WEB-MODE
@@ -70,6 +70,9 @@
                         sunrise-commander
                         bbdb
                         wanderlust))
+
+(defvar mars/personal-recipes '(ascii))
+
 (condition-case nil
     (progn
       ;; TODO: find a way to install RINARI correctly
@@ -100,6 +103,7 @@
          (mapcar #'el-get-source-name el-get-sources)))
 
 (el-get 'sync mars/packages)
+;; (el-get 'sync mars/personal-recipes)
 (el-get 'wait)
 
 (provide 'el-select)            ; required by 'ADAPTER

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Sat May 25 20:46:16 2013 (+0200)
+;; Last-Updated: Wed May 29 21:23:17 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 573
+;;     Update #: 581
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -16,9 +16,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Commentary: header2 + auto-insert (skeleton) / hideshow + hideshowvis /
-;;              cedet & ecb-autoloads / auto-pair-plus (for non-lisp modes) /
-;;              paredit (slurp/barf for lisp modes) + highlight-parentheses /
-;;              eldoc / comint / cheat / org-babel / simple-call-tree / `lang'
+;;              cedet & ecb-autoloads / electric-dot-and-dash /
+;;              auto-pair-plus (for non-lisp modes) / paredit (slurp & barf
+;;              for lisp modes) + highlight-parentheses / eldoc / comint /
+;;              cheat / org-babel / simple-call-tree / `lang'
 ;;
 ;;; Ideas: CEDET: https://github.com/alexott/emacs-configs/blob/master/rc/emacs-rc-cedet.el
 ;;
@@ -56,7 +57,7 @@
 (require 'preamble)
 (require 'formats)
 
-(eval-when-compile (require 'ecb)
+(eval-when-compile (require-if-located 'ecb)
                    (unless (fboundp #'autopair-mode)
                      (defun autopair-mode (arg) nil)))
 
@@ -344,6 +345,19 @@ Move point to the beginning of the line, and run the normal hook
     (when (y-or-n-p "Start ecb? ")
       (ecb-activate))))
 
+;;; TEMPORARY LIST OF LANGAGES WITH LISP PARENS
+;; TODO: to 'VARS ?
+(defvar lispem-hooks (mars/generate-mode-hook-list
+                      '(lisp emacs-lisp lisp-interaction clojure scheme shen qi slime-repl inferior-lisp inferior-qi)))
+
+;;; ELECTRIC-DOT-AND-DASH
+;; aka electric-dot-and-slash here
+(require-if-installed 'electric-dot-and-dash) 
+(eval-after-load "electric-dot-and-dash"
+  '(mars/add-hooks lispem-hooks #'(lambda ()
+                                    (local-set-key "." 'electric-dot-and-dash-dot)
+                                    (local-set-key "/" 'electric-dot-and-dash-dash))))
+
 ;;; AUTO-PAIR-PLUS
 ;;
 (when (el-get-package-is-installed "auto-pair-plus")
@@ -387,18 +401,10 @@ Move point to the beginning of the line, and run the normal hook
      (setq autopair-autowrap t)))
 
 ;;; PAREDIT + HIGHLIGHT-PARENTHESES
-(add-lambda-hook '(lisp-mode-hook
-                   emacs-lisp-mode-hook
-                   lisp-interaction-mode-hook
-                   clojure-mode-hook
-                   scheme-mode-hook
-                   shen-mode-hook
-                   qi-mode-hook
-                   slime-repl-mode-hook
-                   inferior-lisp-mode-hook
-                   inferior-qi-mode-hook)
-  (paredit-mode +1)
-  (highlight-parentheses-mode t))
+(when (el-get-package-is-installed "paredit")
+  (add-lambda-hook lispem-hooks
+    (paredit-mode +1)
+    (highlight-parentheses-mode t)))
 (eval-after-load "paredit"
   '(progn
      ;; autopair case (ie deactivate AUTOPAIR when PAREDIT is turned on)

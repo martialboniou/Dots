@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Wed May 29 17:24:28 2013 (+0200)
+;; Last-Updated: Wed May 29 20:38:49 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 185
+;;     Update #: 186
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -110,8 +110,10 @@
   '(progn
      (evil-leader/set-leader ",")
      (evil-leader/set-key
+       "e" 'ido-recentf-file-name-history ; memo: :e => open ,e => recently open
        "f" 'ido-recentf-file-name-history
        "F" 'ido-find-file
+       "," 'ido-switch-buffer           ; memo: ,, => switch buffer
        "b" 'ido-switch-buffer
        "B" 'ibuffer
        "d" 'make-directory

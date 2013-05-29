@@ -25,7 +25,7 @@
                               :post-init nil)
                        (:name evil-numbers
                               :features nil) ; let 'VIM-EVERYWHERE configure 'EVIL
-                       (:name bbdb
+                       (:name bbdb           ; BBDB for wanderlust
                               :branch "v2.x"
                               :build `("autoconf" ,(concat "./configure --with-emacs=" el-get-emacs)
                                        "make clean" "rm -f lisp/bbdb-autoloads.el"

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 0.8
-;; Last-Updated: Mon Nov 14 00:22:49 2011 (+0100)
+;; Last-Updated: Wed May 29 20:39:57 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 109
+;;     Update #: 110
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -117,8 +117,7 @@
      (when (executable-find w3m-program-name)
        (require 'octet)                 ; w3m octet for handling attachments
        (octet-mime-setup))
-     (when (locate-library "filladapt")
-       (require 'filladapt))
+     (require-if-installed 'filladapt)
      (load "mime-setup")
      (when (and (locate-library "bbdb-wl")    ; TODO: upgrade
                 (locate-library "bbdb-hooks")) ; check BBDB is currently v2 (bbdb3-wl is alpha on 2013-05-25)

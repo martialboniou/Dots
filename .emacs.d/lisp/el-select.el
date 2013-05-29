@@ -57,6 +57,7 @@
                         magit
                         ;; darcsum
                         header2
+                        filladapt
                         git-emacs
                         gist
                         switch-window

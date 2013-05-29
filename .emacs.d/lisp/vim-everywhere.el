@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.6
-;; Last-Updated: Wed May 29 15:48:10 2013 (+0200)
+;; Last-Updated: Wed May 29 17:59:21 2013 (+0200)
 ;;           By:
-;;     Update #: 324
+;;     Update #: 334
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -141,12 +141,14 @@
   '(progn
      ;; 1- boot Evil & friends properly
      (if-bound-call viper-go-away)      ; FIXME: missing hooks in Evil? to shutdown viper on turn-on
+     (evil-mode 1)
      (require-if-installed 'evil-leader)
      (eval-after-load "evil-leader"
        ;; cf. 'SHORTCUTS to customize 'EVIL-LEADER
        '(progn
-          (evil-leader/set-leader ",")  ; default is ,
-          (global-evil-leader-mode)))
+          ;; FIXME: https://github.com/cofi/evil-leader/issues/7
+          (add-hook 'emacs-startup-hook 'global-evil-leader-mode)
+          (evil-leader/set-leader ","))) ; default is ,
      (require-if-installed 'evil-surround :library 'surround)
      (eval-after-load "surround"
        '(global-surround-mode 1))

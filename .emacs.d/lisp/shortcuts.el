@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Wed May 29 15:56:59 2013 (+0200)
+;; Last-Updated: Wed May 29 17:24:28 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 183
+;;     Update #: 185
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -114,6 +114,7 @@
        "F" 'ido-find-file
        "b" 'ido-switch-buffer
        "B" 'ibuffer
+       "d" 'make-directory
        "k" 'kill-buffer
        "m" 'tmm-menubar)))
 

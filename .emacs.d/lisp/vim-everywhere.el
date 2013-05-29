@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.6
-;; Last-Updated: Tue May 28 12:23:09 2013 (+0200)
+;; Last-Updated: Wed May 29 15:48:10 2013 (+0200)
 ;;           By:
-;;     Update #: 302
+;;     Update #: 324
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -71,7 +71,7 @@
 ;;   (load-library "color-theme-autoloads"))
 
 
-;;; PREAMBULE
+;;; VIPER CASE IF REQUIRED
 (defvar viper-custom-file-name nil
   "Viper file name")
 (defvar viper-toggle-key nil
@@ -86,31 +86,80 @@
         (setq viper-custom-file-name (convert-standard-filename default-conf))))))
 (setq viper-toggle-key "\C-x\C-z" ; no more C-z -- 'minimize' then works on Mac
       viper-mode t)
-(require 'viper)
-
 (eval-after-load "viper"
   '(progn
      ;; 0- tweaks
      (define-key viper-vi-global-user-map [(control kp-delete)] nil)
-     ;; - ruby case
+     ;; 1- ruby case
      (add-to-list 'viper-vi-state-mode-list 'ruby-mode)
-     ;; - autopair case
+     ;; 2- autopair case
      (eval-after-load "autopair"
        '(progn
           (when (locate-library "autopair-viper-compat")
             (require 'autopair-viper-compat))))
+     ;; 3- additional keyboard bindings
+     (define-key viper-vi-global-user-map [(kp-delete)] 'viper-forward-char)
+     (define-key viper-insert-basic-map [(kp-delete)] 'viper-delete-char)
+     (define-key viper-vi-global-user-map [(control backspace)] 'viper-backward-word)
+     (define-key viper-insert-basic-map [(control backspace)] 'viper-delete-backward-word)
+     ;; idea: http://stackoverflow.com/users/2797/sebastien-roccaserra
+     (define-key viper-vi-global-user-map "/"        'isearch-forward-regexp)
+     (define-key viper-vi-global-user-map "?"        'isearch-backward-regexp)
+     (define-key viper-vi-global-user-map "\C-wh"    'windmove-left)
+     (define-key viper-vi-global-user-map "\C-wj"    'windmove-down)
+     (define-key viper-vi-global-user-map "\C-wk"    'windmove-up)
+     (define-key viper-vi-global-user-map "\C-wl"    'windmove-right)
+     (define-key viper-vi-global-user-map "\C-wv"    '(lambda () (interactive)
+                                                        (split-window-horizontally)
+                                                        (other-window 1)
+                                                        (switch-to-buffer (other-buffer))))
+     (define-key viper-insert-basic-map "\C-e" nil) ; IMPORTANT: in order to use ASCII C-a/C-e in insert mode
+     (define-key viper-vi-basic-map "\C-e" 'viper-scroll-up-one)
+     (push '("only"  (delete-other-windows)) ex-token-alist) ; on  in Evil
+     (push '("close" (delete-window))        ex-token-alist) ; clo in Evil
+     (define-key viper-vi-global-user-map " d" 'viper-kill-buffer)
+     (when *i-am-a-terminator*
+       ;; global-unset-key "\C-h"
+       (define-key viper-vi-global-user-map "\C-h" 'viper-backward-char)
+       (define-key viper-insert-global-user-map "\C-h" 'viper-delete-backward-char))
+     ;; 4- colorize <> modes
+     (setq viper-vi-state-id
+           (concat (propertize "<V>" 'face 'font-lock-string-face) " ")
+           viper-insert-state-id
+           (concat (propertize "<I>" 'face 'font-lock-string-face) " ")
+           viper-replace-state-id
+           (concat (propertize "<R>" 'face 'font-lock-string-face) " "))
+     (require-if-located 'hi-lock)
+     (setq viper-emacs-state-id
+           (concat (propertize "<E>" 'face 'hi-red-b) " "))
+     (put 'viper-mode-string 'risky-local-variable t)))
 
-     ;; 1- Evil
-     (when (locate-library "evil")
-        (require 'evil))
-     ;; add C-w outside Evil -- eg. C-w C-w -> other-window
-     (eval-after-load "evil"
+;;; EVIL (VIPER FREE)
+(require-if-located 'evil)
+;; add C-w outside Evil -- eg. C-w C-w -> other-window
+(eval-after-load "evil"
+  '(progn
+     ;; 1- boot Evil & friends properly
+     (if-bound-call viper-go-away)      ; FIXME: missing hooks in Evil? to shutdown viper on turn-on
+     (require-if-installed 'evil-leader)
+     (eval-after-load "evil-leader"
+       ;; cf. 'SHORTCUTS to customize 'EVIL-LEADER
        '(progn
-          (fset 'evil-like-window-map (copy-keymap evil-window-map))
-          (eval-after-load "dired"
-            '(define-key dired-mode-map "\C-w" 'evil-like-window-map))
-          (eval-after-load "ibuffer"
-            '(define-key ibuffer-mode-map "\C-w" 'evil-like-window-map))))
+          (evil-leader/set-leader ",")  ; default is ,
+          (global-evil-leader-mode)))
+     (require-if-installed 'evil-surround :library 'surround)
+     (eval-after-load "surround"
+       '(global-surround-mode 1))
+     (require-if-installed 'evil-numbers)
+     (eval-after-load "evil-numbers"
+       '(progn
+          (define-key evil-normal-state-map "\C-c+" 'evil-numbers/inc-at-pt)
+          (define-key evil-normal-state-map "\C-c-" 'evil-numbers/dec-at-pt)))
+     (fset 'evil-like-window-map (copy-keymap evil-window-map))
+     (eval-after-load "dired"
+       '(define-key dired-mode-map "\C-w" 'evil-like-window-map))
+     (eval-after-load "ibuffer"
+       '(define-key ibuffer-mode-map "\C-w" 'evil-like-window-map))
 
      ;; 2- parenface to add a default color to parentheses as Vim does
      (if (locate-library "hl-line+")
@@ -121,7 +170,7 @@
      (when (locate-library "parenface")
        (require 'parenface))
 
-     ;; 3- nothing to add (mis)match parentheses -- 'show-parens
+     ;; 3- TODO: nothing to add (mis)match parentheses -- check 'show-parens
      ;;    so there's no need to add 'mic-paren
 
      ;; 4- line numbering
@@ -201,51 +250,30 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
                                     1 font-lock-warning-face prepend)))))
 
      ;; 6- additional keyboard bindings
-     (define-key viper-vi-global-user-map [(kp-delete)] 'viper-forward-char)
-     (define-key viper-insert-basic-map [(kp-delete)] 'viper-delete-char)
-     (define-key viper-vi-global-user-map [(control backspace)] 'viper-backward-word)
-     (define-key viper-insert-basic-map [(control backspace)] 'viper-delete-backward-word)
-     ;; idea: http://stackoverflow.com/users/2797/sebastien-roccaserra
-     (define-key viper-vi-global-user-map "/"        'isearch-forward-regexp)
-     (define-key viper-vi-global-user-map "?"        'isearch-backward-regexp)
-     (define-key viper-vi-global-user-map "\C-wh"    'windmove-left)
-     (define-key viper-vi-global-user-map "\C-wj"    'windmove-down)
-     (define-key viper-vi-global-user-map "\C-wk"    'windmove-up)
-     (define-key viper-vi-global-user-map "\C-wl"    'windmove-right)
-     (define-key viper-vi-global-user-map "\C-wv"    '(lambda () (interactive)
-                                                        (split-window-horizontally)
-                                                        (other-window 1)
-                                                        (switch-to-buffer (other-buffer))))
-     (define-key viper-insert-basic-map "\C-e" nil) ; IMPORTANT: in order to use ASCII C-a/C-e in insert mode
-     (define-key viper-vi-basic-map "\C-e" 'viper-scroll-up-one) ; should be defined anywayi
-     (eval-after-load "evil"
-       '(progn
-          (define-key viper-insert-basic-map (kbd "C-,") 'evil-copy-from-below)
-          (define-key evil-visual-state-map "F" 'viper-find-char-backward)
-          (define-key evil-visual-state-map "t" 'viper-goto-char-forward)
-          (define-key evil-visual-state-map "T" 'viper-goto-char-backward)
-          (define-key evil-visual-state-map "e" '(lambda ()
-                                                   (interactive)
-                                                   (viper-end-of-word 1)
-                                                   (viper-forward-char 1)))))
-     (push '("only"  (delete-other-windows)) ex-token-alist)
-     (push '("close" (delete-window))        ex-token-alist)
-     (define-key viper-vi-global-user-map " d" 'viper-kill-buffer)
-     (when *i-am-a-terminator*
-       ;; global-unset-key "\C-h"
-       (define-key viper-vi-global-user-map "\C-h" 'viper-backward-char)
-       (define-key viper-insert-global-user-map "\C-h" 'viper-delete-backward-char))
-
-     ;; 7- colorize <> modes
-     (setq viper-vi-state-id
-           (concat (propertize "<V>" 'face 'font-lock-string-face) " ")
-           viper-insert-state-id
-           (concat (propertize "<I>" 'face 'font-lock-string-face) " ")
-           viper-replace-state-id
-           (concat (propertize "<R>" 'face 'font-lock-string-face) " "))
-     (require 'hi-lock)
-     (setq viper-emacs-state-id (concat (propertize "<E>" 'face 'hi-red-b) " "))
-     (put 'viper-mode-string 'risky-local-variable t)
+     ;; NOTE: Evil manages C-h correctly
+     (define-key evil-insert-state-map (kbd "C-,") 'evil-copy-from-below)
+     (define-key evil-visual-state-map "F" 'evil-find-char-backward)
+     (define-key evil-visual-state-map "t" 'evil-forward-char-forward)
+     (define-key evil-visual-state-map "T" 'evil-backward-char)
+     (define-key evil-visual-state-map "e" '(lambda ()
+                                              (interactive)
+                                              (evil-forward-word-end)
+                                              (evil-forward-char)))
+     (define-key evil-normal-state-map " d" 'kill-buffer)
+     
+     ;; 7- colorize status bar
+     (lexical-let ((default-color (cons (face-background 'mode-line)
+                                        (face-foreground 'mode-line))))
+       (add-hook 'post-command-hook
+                 (lambda ()
+                   (let ((color (cond ((minibufferp) default-color)
+                                      ((evil-insert-state-p) '("#e80000" . "#ffffff"))
+                                      ((evil-visual-state-p) '("#666666" . "#ffffff"))
+                                      ((evil-emacs-state-p)  '("#444488" . "#ffffff"))
+                                      ((buffer-modified-p)   '("#006fa0" . "#ffffff"))
+                                      (t default-color))))
+                     (set-face-background 'mode-line (car color))
+                     (set-face-foreground 'mode-line (cdr color))))))
 
      ;; choose a theme according to your Vim setup -- ~/.vimrc by default
      (defvar *color-theme-header* "color-theme-vim-"
@@ -293,7 +321,7 @@ TODO: case of '''colorscheme' this'' where this is
              ;; locate used colorscheme in your .vimrc
              (with-temp-buffer
                (insert-file-contents vimfile)
-               (end-of-buffer)                       ; backward searching
+               (goto-char (point-max))                       ; backward searching
                (makunbound 'vim-colorscheme-used)
                (while (not (boundp 'vim-colorscheme-used))
                  (let ((mat

@@ -17,7 +17,14 @@
                                                    (expand-file-name mars/personal-data
                                                                      mars/local-root-dir)))
 (setq el-get-sources '((:name evil
-                          :features nil)     ; let 'VIM-EVERYWHERE configure 'EVIL
+                              :features nil)
+                       (:name evil-leader
+                              :features nil)
+                       (:name evil-surround
+                              :features nil
+                              :post-init nil)
+                       (:name evil-numbers
+                              :features nil) ; let 'VIM-EVERYWHERE configure 'EVIL
                        (:name bbdb
                               :branch "v2.x"
                               :build `("autoconf" ,(concat "./configure --with-emacs=" el-get-emacs)

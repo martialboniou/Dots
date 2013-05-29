@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Wed Feb 15 15:34:06 2012 (+0100)
+;; Last-Updated: Wed May 29 15:56:59 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 180
+;;     Update #: 183
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -90,7 +90,7 @@
 
 ;; C-z case
 (global-unset-key (kbd "C-z"))      ; ELSCREEN or other packages may use it
-(global-unset-key (kbd "C-x C-z"))  ; reserved for viper-mode
+(global-unset-key (kbd "C-x C-z"))  ; reserved for viper-mode or Evil
 
 ;; M-: alias (useful for NO-WINDOW-SYSTEM)
 (bind-key "<f2>:" #'eval-expression)
@@ -104,6 +104,18 @@
         "C-:"    smex
         "<f2>X"  smex-major-mode-commands
         "M-X"    smex-major-mode-commands))))
+
+;; EVIL-LEADER case
+(eval-after-load "evil-leader"
+  '(progn
+     (evil-leader/set-leader ",")
+     (evil-leader/set-key
+       "f" 'ido-recentf-file-name-history
+       "F" 'ido-find-file
+       "b" 'ido-switch-buffer
+       "B" 'ibuffer
+       "k" 'kill-buffer
+       "m" 'tmm-menubar)))
 
 (when *i-am-a-terminator*
   (bind-keys

@@ -79,6 +79,7 @@
 
 (eval-after-load "behave"
   '(progn
+     ;; change mode-line color by evil state in 'VIM-EVERYWHERE
      ;; normal case -> no Vim-like behavior -> color-theme & mic-paren
      (unless *i-am-a-vim-user*          ; 'VIM-EVERYWHERE loads its own colorscheme and parens' support
        (require 'mic-paren)             ; faces for (mis)matching parentheses
@@ -94,7 +95,8 @@
        '(paren-face-mismatch ((t (:inherit show-paren-mismatch-face))))
        '(paren-face-no-match ((((class color) (background dark)) (:inherit paren-face :background "IndianRed4"))
                   (((class color) (background light))(:inherit paren-face :background "IndianRedD1"))))
-       ;; viper using inheritance
+       ;; Evil using inheritance
+       ;; viper using inheritance (prefer Evil)
        '(viper-minibuffer-emacs ((((class color)) (:inherit font-lock-warning-face))))
        '(viper-minibuffer-insert ((((class color)) (:inherit default))))
        '(viper-minibuffer-vi ((((class color)) (:inherit font-lock-builtin-face))))

@@ -31,9 +31,8 @@
 (defvar mars/packages '(el-get
                         color-theme
                         escreen
-                        ;; vimpulse
-                        ;; vimpulse-surround
-                        evil
+                        evil-leader     ; install evil & undo-tree
+                        evil-surround
                         keats
                         shen-mode
                         haskellmode-emacs
@@ -57,7 +56,6 @@
                         markdown-mode
                         magit
                         ;; darcsum
-                        ;; undo-tree ; installed with evil
                         header2
                         git-emacs
                         gist

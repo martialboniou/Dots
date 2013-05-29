@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.15
-;; Last-Updated: Tue Jan 31 16:23:23 2012 (+0100)
+;; Last-Updated: Wed May 29 12:47:53 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 284
+;;     Update #: 289
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -65,7 +65,7 @@
 ;;; RETRO-COMPATIBILITIES
 ;;
 (unless (fboundp 'cl-flet)
-  (defalias 'cl-flet 'flet))
+  (defalias 'cl-flet 'flet)) ;; ERROR: not permutable
 
 ;;; ESSENTIAL UTILITIES
 ;;;
@@ -73,6 +73,23 @@
   "If `FORM' is bound as a function, call it with `ARGS'."
   `(if (fboundp ',form)
        (,form ,@args)))
+
+(defun require-if-located (symbol &optional message) ; UNTESTED
+  "If library is located, require it."
+  (if (locate-library (symbol-name symbol))
+      (require symbol)
+    (when message
+      (message message))))
+
+(cl-defun require-if-installed (package &key message library) ; UNTESTED
+  "If the package is installed with el-get, require it with its package name or another one (like library's built-in autoloads)."
+  (if (fboundp 'el-get-package-is-installed)
+        (if (el-get-package-is-installed package)
+            (let ((psymbol (if library library package)))
+              (require psymbol))
+          (when message
+            (message message)))
+    (message "defs: REQUIRE-IF-INSTALLED requires el-get but it is not installed")))
 
 (defun mars/generate-mode-hook-list (modes)
   "Create a quoted list of hooks."

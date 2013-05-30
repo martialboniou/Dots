@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 21:14:44 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: Thu Feb 23 18:35:31 2012 (+0100)
+;; Last-Updated: Thu May 30 18:14:29 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 54
+;;     Update #: 59
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -102,7 +102,8 @@
 
 ;; MWEB
 (unless nxhtml-env
-  (load-library "mweb-example-config"))
+  (when (locate-library "mweb-example-config")
+    (load-library "mweb-example-config")))
 
 ;;; JS (was ESPRESSO)
 (unless (or (> emacs-major-version 23)
@@ -114,10 +115,11 @@
   (imenu-add-menubar-index))
 ;; lintnode -> flymake-jslint
 (when (boundp 'lintnode-rep)
-  (when (file-directory-p lintnode-rep)
+  (when (file-accessible-directory-p lintnode-rep)
     (add-to-list 'load-path lintnode-rep)
-    (mars/autoload '(("flymake-jslint" lintnode-hook)))
-    (add-lambda-hook 'js-mode-hook (lintnode-hook))))
+    (when (locate-library "flymake-jslint")
+      (mars/autoload '(("flymake-jslint" lintnode-hook)))
+      (add-hook 'js-mode-hook #'lintnode-hook))))
 
 (eval-after-load "flymake-jslint"
   '(progn
@@ -173,7 +175,7 @@
                          extensions)))
           (add-php-flymake-masks "\\.php$" "\\.module$" "\\.install$" "\\.inc$" "\\.engine$")))))
 
-;;; NXHTML - not recommended
+;;; NXHTML - prefer MULTI-MODE-WEB but provide 'ERT2
 (when nxhtml-env
   (nxhtml-loader))                      ; defined in `confs/defs'
 (eval-after-load "nxhtml-mumamo-mode"

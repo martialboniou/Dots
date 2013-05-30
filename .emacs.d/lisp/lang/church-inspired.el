@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:38:43 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Mar 21 14:45:54 2012 (+0100)
+;; Last-Updated: Thu May 30 17:54:00 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 25
+;;     Update #: 26
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -92,12 +92,12 @@
 
 ;;; PROLOG
 ;;
-(setq prolog-system 'yap)
-(setq auto-mode-alist
-      (append '(("\\.pl$" . prolog-mode) ; WARNING: Perl (FIXME: find header like prolog.vim?)
-                ("\\.yap$" . prolog-mode)
-                ("\\.mcy$" . mercury-mode)) ; or 'm' but Obj-C/matlab/Mathematica...
-              auto-mode-alist))
+(when (locate-library "prolog-mode")
+  (add-to-list 'auto-mode-alist '("\\.pl$"  . prolog-mode)) ; WARNING: Perl (FIXME: find header like prolog.vim?)
+  ;; TODO: add .pro, .swi and .P extensions
+  (add-to-list 'auto-mode-alist '("\\.yap$" . prolog-mode)))
+(when (locate-library "mercury-mode")
+  (add-to-list 'auto-mode-alist '("\\.mcy$" . mercury-mode))) ; or `.m' but Obj-C/matlab/Mathematica...
 (eval-after-load "prolog"
   '(progn
      (setq prolog-system

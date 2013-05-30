@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
 ;; Version:
-;; Last-Updated: Tue May 28 22:56:40 2013 (+0200)
+;; Last-Updated: Thu May 30 15:35:43 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 160
+;;     Update #: 165
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -96,9 +96,18 @@
                                         ; on a full system (*= yasnippet
                                         ; and your personal expansions).
   '(progn
-     (eval-after-load "vimpulse"
+     (eval-after-load "evil"
+       '(setq evil-complete-next-func #'hippie-expand))
+     (eval-after-load "vimpulse"        ; DEPRECATED
        '(progn
-          (defalias 'vimpulse-abbrev-expand-before 'hippie-expand))) ; in order to use C-p thru Vim emulation
+          (defalias 'vimpulse-abbrev-expand-before 'hippie-expand)
+          (defadvice hippie-expand (around minibuffer-case (arg) activate)
+            "Add minibuffer case. Inspired by `vimpulse-abbrev-expand-before'."
+            (interactive "P")
+            (if (minibufferp)           ; no need in Evil b/c evil-complete checks it first
+                (minibuffer-complete)
+              (progn
+                ad-do-it))))) ; in order to use C-p thru vimpulse
      (setq hippie-expand-try-functions-list
            '(try-expand-all-abbrevs
              try-expand-dabbrev
@@ -114,13 +123,7 @@
              try-expand-list-all-buffers
              try-expand-whole-kill))
      (setq hippie-expand-verbose t)     ; FIXME: for debug only
-     (defadvice hippie-expand (around minibuffer-case (arg) activate)
-       "Add minibuffer case. Inspired by `vimpulse-abbrev-expand-before'."
-       (interactive "P")
-       (if (minibufferp)
-           (minibuffer-complete)
-         (progn
-           ad-do-it)))
+    
      ;; paredit
      (eval-after-load "paredit"
        '(progn

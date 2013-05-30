@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:40:26 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Mar 21 13:51:41 2012 (+0100)
+;; Last-Updated: Thu May 30 18:02:14 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 55
+;;     Update #: 57
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -53,10 +53,12 @@
 (unintern 'one-language-spoken obarray)
 
 ;;; HASKELL MODE
-(setq haskell-program-name mars/haskell-program-name)
+(eval-after-load "haskell-mode"
+  '(setq haskell-program-name mars/haskell-program-name))
 
 ;;; SHEN MODE
-(add-to-list 'auto-mode-alist '("\\.shen\\'" . shen-mode))
+(when (locate-library "shen-mode")
+  (add-to-list 'auto-mode-alist '("\\.shen\\'" . shen-mode)))
 (eval-after-load "shen-mode"
   '(progn
      (eval-after-load "paredit"

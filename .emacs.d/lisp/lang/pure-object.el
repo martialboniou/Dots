@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Mar  5 23:58:09 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Jan 25 11:00:38 2012 (+0100)
+;; Last-Updated: Thu May 30 15:38:48 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 27
+;;     Update #: 29
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -51,19 +51,17 @@
 
 ;;; GNU SMALLTALK
 ;;
-(require 'smalltalk-mode-init)
+(require-if-located 'smalltalk-mode-init)
 
 ;;; RUBY
 ;;
 ;; - Rinari Is Not A Rails IDE
-(when (el-get-package-is-installed "rinari")
+(when (locate-library "rinari")
   (add-lambda-hook 'ruby-mode-hook
     (defadvice ruby-mode-set-encoding
       (around ruby-mode-set-encoding-disable activate) nil))
-  (mars/add-hooks (mars/generate-mode-hook-list '(rhtml ruby))
-                  #'(lambda ()
-                      ;; autoloaded interactive function
-                      (rinari-launch))))
+  (mars/add-hooks (mars/generate-mode-hook-list '(rhtml ruby)) #'rinari-launch))
+
 ;; - ruby electric
 ;; NOTE: AUTOPAIR case is managed in 'CODE
 

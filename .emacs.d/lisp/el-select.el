@@ -35,7 +35,8 @@
                         evil-surround
                         keats
                         shen-mode
-                        haskellmode-emacs
+                        ;; haskellmode-emacs
+                        haskell-mode
                         pylookup
                         pymacs
                         mailcrypt
@@ -64,7 +65,9 @@
                         switch-window
                         cycle-buffer
                         js-comint
+                        textile-mode
                         yaml-mode
+                        haml-mode
                         emms            ; install emacs-w3m
                         sunrise-commander
                         bbdb

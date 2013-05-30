@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:02:05 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Nov 14 14:13:48 2011 (+0100)
+;; Last-Updated: Thu May 30 17:36:33 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 33
+;;     Update #: 44
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -51,7 +51,7 @@
 
 
 ;;; TEXTILE
-(add-to-list 'auto-mode-alist '("\\.textile\\'" . textile-mode))
+;; nothing - el-get setup is complete
 
 ;;; YAML-MODE
 ;; not a markup actually!
@@ -62,22 +62,21 @@
                     (define-key yaml-mode-map "\C-m" 'newline-and-indent)))))
 
 ;;; HAML (XHTML Abstraction Markup Language)
-(add-to-list 'auto-mode-alist '("\\.haml$" . haml-mode))
 (eval-after-load "haml-mode"
   '(progn
      (add-hook 'haml-mode-hook
-               '(lambda ()
-                  (setq indent-tabs-mode nil) ; uses spaces (no tabs)
-                  (define-key haml-mode-map "\C-m" 'newline-and-indent)))))
+               #'(lambda ()
+                   (setq indent-tabs-mode nil) ; uses spaces (no tabs)
+                   (define-key haml-mode-map "\C-m" 'newline-and-indent)))))
 
 ;;; AUCTEX
-(require 'tex-site nil t)
-(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
-(setq TeX-source-correlate-method 'synctex)
-(setq TeX-synctex-tex-flags (format "--synctex=1 --servername=%s" (user-login-name)))
+(require-if-located 'tex-site)          ; AUCTEX autoloads
 (eval-after-load "tex-site"
   '(progn
-     (require 'tex-style nil t)
+     (require 'preview-latex)           ; PREVIEW autoloads
+     (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
+     (setq TeX-source-correlate-method 'synctex)
+     (setq TeX-synctex-tex-flags (format "--synctex=1 --servername=%s" (user-login-name)))
      (setq TeX-PDF-mode t)              ; pdflatex as default
      (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
      ;; (add-hook 'LaTeX-mode-hook 'turn-on-auto-fill) ; auto fill if you wish
@@ -88,9 +87,9 @@
                                     (setq TeX-close-quote "~»")))
      ;; OSX users should use Skim.app instead of Preview.app
      (when (eq system-type 'darwin)
-       (add-hook 'LaTeX-mode-hook (lambda ()
-                                    (add-to-list 'TeX-expand-list
-                                                 '("%q" skim-make-url))))
+       (add-hook 'LaTeX-mode-hook #'(lambda ()
+                                      (add-to-list 'TeX-expand-list
+                                                   '("%q" skim-make-url))))
        (defun skim-make-url ()
          (concat (TeX-current-line)
                  " "

@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version:
-;; Last-Updated: Wed Mar 21 14:11:23 2012 (+0100)
+;; Last-Updated: Thu May 30 16:42:10 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 150
+;;     Update #: 154
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -178,7 +178,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 ;;
 (when (eq system-type 'darwin)
   (setq ns-command-modifier 'meta
-	ns-option-modifier nil))	; Option works as compose key too
+        ns-option-modifier nil))        ; Option works as compose key too
 
 ;;; NOTEBOOK CONTEXT
 ;; touch ~/.notebook if your computer need low resolution screen setup
@@ -298,6 +298,12 @@ named FUEL must be found in the `misc/fuel' subdirectory.")
  "`slime-helper' directory.")
 (defvar spelling-tool-name nil
   "The default program for spell checking. May be set to NIL.")
+(defvar mars/texmf-dir (let ((texmf-dir (getenv "TEXMF_DIR")))
+                         (cond ((not (or (null texmf-dir) (string= "" texmf-dir))) texmf-dir)
+                               ((eq 'darwin system-type) "/usr/local/texlive/texmf-local")
+                               ((not (member system-type '(ms-dos windows-nt))) "/usr/share/texmf-texlive") ; Linux, BSD, Cygwin...
+                               (t "")))
+  "The default location of `TEXMF_DIR' for Auctex installer.")
 
 ;;; SPECIFICS (<data>/sys/vars-<hostname>.el or <data>/vars-<hostname>.el)
 ;; DEPRECATED

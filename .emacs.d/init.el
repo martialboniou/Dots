@@ -32,8 +32,21 @@
                               :build `("autoconf" ,(concat "./configure --with-emacs=" el-get-emacs)
                                        "make clean" "rm -f lisp/bbdb-autoloads.el"
                                        "make autoloadsc info")
-                  :features bbdb-autoloads
+                              :features bbdb-autoloads
                               :info "texinfo")
+                       (:name auctex
+                              :branch "release_11_87"
+                              :build `(("./autogen.sh")
+                                       ("./configure"
+                                        ,(if (or (string= "" mars/texmf-dir)
+                                                 (null (file-accessible-directory-p mars/texmf-dir)))
+                                             "--without-texmf-dir"
+                                           (concat "--with-texmf-dir=" (expand-file-name mars/texmf-dir)))
+                                        "--with-lispdir=`pwd`"
+                                        ,(concat "--with-emacs=" el-get-emacs))
+                                       "make lisp docs"
+                                       "cd preview && make lisp && cd ..")
+                              :load nil) ; let 'WIKI-WIKI launch 'TEX-SITE
                        (:name emms
                               :info nil ; TODO: 2013-05-23 fix info file
                               :build `(("make" ,(format "EMACS=%s" el-get-emacs)

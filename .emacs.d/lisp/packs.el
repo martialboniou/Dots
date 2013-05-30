@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.5-dying-code
-;; Last-Updated: Fri Jan 27 14:15:08 2012 (+0100)
+;; Last-Updated: Thu May 30 16:09:40 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 525
+;;     Update #: 526
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -103,35 +103,16 @@
                                                            (install . "sed 's/\\\(load-path nil)\\\).*\\\(\\\" > ecb-compile-script\\\)/\\1(setq ecb-version-check nil)\\2/' Makefile > Makefile.tmp && mv Makefile.tmp Makefile && sed 's/echo \\\"\\\(load-file \\\\\\\"\\\$\\\(CEDET\\\)\\\/common\\\/cedet.el\\\\\\\"\\\)\\\"' Makefile > Makefile.tmp && Makefile.tmp Makefile && make CEDET=$(dirname `pwd`)/cedet && make autoloads EBATCH=\"emacs -batch -no-site-file -eval \\\"(add-to-list 'load-path \\\\\\\".\\\\\\\")\\\"\"") ; FIXME: assume cedet is in the same directory / windows users should use GNU bash / the first command disables compatibility check for CEDET; TODO: test it on Win32/64
                                                            (nosearch . ("ecb-images" "html"))
                                                            (noauto . ".")))
-                                    ;; (apel               . ((get . "git clone git://github.com/wanderlust/apel.git")
-                                    ;;                        (install . "make")))
-                                    ;; (flim               . ((get . "git clone git://github.com/wanderlust/flim.git")
-                                    ;;                        (install . "make LISPDIR=..")
-                                    ;;                        (nosearch . "tests")))
-                                    ;; (semi               . ((get . "git clone git://github.com/wanderlust/semi.git")
-                                    ;;                        (install . "make LISPDIR=..")))
-                                    ;; (wanderlust         . ((get     . "cvs -d :pserver:anonymous@cvs.m17n.org:/cvs/root checkout wanderlust")
-                                    ;;                        ;; (get . "git clone git://github.com/wanderlust/wanderlust.git") ; is out of sync and induces error on emacs 24
-                                    ;;                        (install . "echo \"(setq load-path (append (list \\\"$PWD/../apel\\\" \\\"$PWD/../flim\\\" \\\"$PWD/../semi\\\") load-path))(setq wl-install-utils t)\" > WL-CFG;make") ; let wl, elmo & utils *uninstalled*
-                                    ;;                        (nosearch . ("doc" "etc" "samples" "tests"))))
                                     (vm                 . ((get . "bzr branch lp:vm") ; REQUESTED
                                                            (install . "autoconf; ./configure; make")
                                                            (nosearch . ("autom4te.cache" "info" "pixmaps" "src"))))
                                     ;; stable org-mode
-                                    ;; (org-mode           . ((get . "git clone git://orgmode.org/org-mode.git")
-                                    ;;                        (install . "make; emacs-compile-directory contrib/lisp") ; compile contrib too
-                                    ;;                        ;; (install . "git checkout --track -b stable origin/maint; git fetch; make; emacs-compile-directory contrib/lisp")
-                                    ;;                        (nosearch . ("BUGFIXING" "EXPERIMENTAL" "UTILITIES" "contrib/babel" "contrib/doc" "contrib/odt" "contrib/scripts" "doc" "testing"))))
-                                    ;; TODO: nxhtml may be not used anymore (installer will be maintained to use `ert2' in `confs/elisp' and configuration will be available if required)
                                     ;; (nxhtml             . ((get . "bzr branch lp:nxhtml")
                                     ;;                        ;; the following version is not fully compatible with 23 due to deprecated face + a bug I found about remove-hooking Viper in `util/mumamo'
                                     ;;                        ;; (get . "curl http://ourcomments.org/Emacs/DL/elisp/nxhtml/zip/nxhtml-2.08-100425.zip > _nxhtml.zip; unzip _nxhtml.zip; rm _nxhtml.zip") ; `unzip' is not pipe-friendly
                                     ;;                        (install . "cd util; sed \"/remove-hook 'text-mode-hook 'viper-mode/d\" mumamo.el > mumamo_tmp.el; mv mumamo_tmp.el mumamo.el; cd ..; emacs-compile-directory;cd nxhtml;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";cd ../related;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";cd ../util;emacs-compile-directory -eval \"(add-to-list 'load-path \\\"..\\\")\";")
                                     ;;                        (nosearch . ("alts" "etc" "nxhtml" "related" "tests" "util" ".bzr"))
                                                            ;; (noauto . ".")))
-                                    ;; (emacs-w3m          . ((get . "cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot checkout emacs-w3m")
-                                    ;;                        (install . "emacs -batch -q -no-site-file -l w3mhack.el NONE -f w3mhack-nonunix-install")
-                                    ;;                        (nosearch . ("attic" "autom4te.cache" "doc" "icons" "icons30" "patches" "shimbun"))))
                                     ;; (xwl-elisp          . ((get     . "git clone git://github.com/xwl/xwl-elisp.git")
                                     ;;                        (install . "make byte-compile"))) ; TODO: http://xwl.appspot.com/ (william xu) / include smart-operator
                                     ;; (pp-c-l . ((get . "git clone https://github.com/martialboniou/pp-c-l.git")))

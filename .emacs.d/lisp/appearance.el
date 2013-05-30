@@ -41,12 +41,13 @@
 
      ;; PRETTY-LAMBDA
      ;; replace LAMBDA -> λ
-     (setq pretty-lambda-auto-modes '(lisp-mode
-                      scheme-mode
-                      emacs-lisp-mode
-                      python-mode))
-     (when (el-get-package-is-installed "pretty-lambdada")
-       (pretty-lambda-for-modes))))
+     (eval-after-load "el-get"
+       '(when (el-get-package-is-installed "pretty-lambdada")
+	  (pretty-lambda-for-modes)
+	  (setq pretty-lambda-auto-modes '(lisp-mode
+					   scheme-mode
+					   emacs-lisp-mode
+					   python-mode))))))
 
 ;;; FANCY
 ;;

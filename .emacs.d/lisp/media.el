@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Jan 19 20:16:06 2008
 ;; Version: 0.3
-;; Last-Updated: Mon Nov  7 18:00:41 2011 (+0100)
+;; Last-Updated: Thu May 30 19:46:05 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 116
+;;     Update #: 122
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -137,178 +137,178 @@
 ;;; EMMS 3
 ;;
 (when (locate-library "emms")
-  (setq emms-path (file-name-directory (locate-library "emms"))
-        emms-bin-path (expand-file-name "../src" emms-path))
-  (eval-after-load "emms"
-    '(progn
-       (display-time)
-       ;; (setq default-file-name-coding-system 'utf-8) ; maybe not correct
-       (emms-devel)                            ; emms-smart-browse on <F2>
-       (emms-default-players)
+  (let* ((emms-path (file-name-directory (locate-library "emms")))
+         (emms-bin-path (expand-file-name "../src" emms-path)))
+    (eval-after-load "emms"
+      '(progn
+         (display-time)
+         ;; (setq default-file-name-coding-system 'utf-8) ; maybe not correct
+         (emms-devel)                            ; emms-smart-browse on <F2>
+         (emms-default-players)
 
-       ;; fix processes for `emms-stream-info'
-       (eval-after-load "emms-stream-info"
-         '(progn
-            ;; - mplayer need cache or "Icy Info" field may not be reached
-            (defun emms-stream-info-mplayer-backend (url)
-              "Backend command for running mplayer on URL. NEED CACHE"
-              (condition-case excep
-                  (call-process "mplayer" nil t nil
-                                "-endpos" "0" "-vo" "null" "-ao" "null"
-                                url)
-                (file-error
-                 (error "Could not find the mplayer backend binary"))))
-            ;; - vlc requires vlc://quit to properly end
-            (defun emms-stream-info-vlc-backend (url)
-              "Backend command for running VLC on URL."
-              (condition-case excep
-                  (call-process "vlc" nil t nil
-                                "-vvv" "--intf" "dummy" "--stop-time" "1" "--noaudio"
-                                url "vlc://quit")
-                (file-error
-                 (error "Could not find the VLC backend binary"))))))
+         ;; fix processes for `emms-stream-info'
+         (eval-after-load "emms-stream-info"
+           '(progn
+              ;; - mplayer need cache or "Icy Info" field may not be reached
+              (defun emms-stream-info-mplayer-backend (url)
+                "Backend command for running mplayer on URL. NEED CACHE"
+                (condition-case excep
+                    (call-process "mplayer" nil t nil
+                                  "-endpos" "0" "-vo" "null" "-ao" "null"
+                                  url)
+                  (file-error
+                   (error "Could not find the mplayer backend binary"))))
+              ;; - vlc requires vlc://quit to properly end
+              (defun emms-stream-info-vlc-backend (url)
+                "Backend command for running VLC on URL."
+                (condition-case excep
+                    (call-process "vlc" nil t nil
+                                  "-vvv" "--intf" "dummy" "--stop-time" "1" "--noaudio"
+                                  url "vlc://quit")
+                  (file-error
+                   (error "Could not find the VLC backend binary"))))))
 
-       ;; use the script by Fang Lungang to create cover_small/cover_med
+         ;; use the script by Fang Lungang to create cover_small/cover_med
 
-       ;; emms: customization
-       ;; (add-to-list 'emms-info-functions 'emms-info-mpd)
-       ;; (setq emms-player-list 'emms-player-mpd)
+         ;; emms: customization
+         ;; (add-to-list 'emms-info-functions 'emms-info-mpd)
+         ;; (setq emms-player-list 'emms-player-mpd)
 
-       ;; need compiled libtag-based binary using: make emms-print-metadata
-       (setq exec-path (append (list emms-bin-path "~/.tools/bin" "/opt/local/bin" "/sw/bin") exec-path))
-       (require 'emms-info-libtag)
-       (setq emms-info-functions '(emms-info-libtag))
-       ;; (setq emms-player-list 'emms-player-mpd)
+         ;; need compiled libtag-based binary using: make emms-print-metadata
+         (setq exec-path (append (list emms-bin-path) exec-path))
+         (require-if-located 'emms-info-libtag)
+         (eval-after-load "emms-info-libtag"
+           '(setq emms-info-functions '(emms-info-libtag)))
+         ;; (setq emms-player-list 'emms-player-mpd)
 
-       ;; Custom variables
+         ;; Custom variables
 
-       (setq emms-info-asynchronously t)
-       (setq emms-mode-line-mode-line-function
-             (lambda nil
-               (let ((track (emms-playlist-current-selected-track)))
-                 (let ((title (emms-track-get track 'info-title)))
-                   (let ((name (emms-track-get track 'name)))
-                     (if (not (null title))
-                         (format emms-mode-line-format title)
-                       (if (not (null (string-match "^url: " (emms-track-simple-description track))))
-                           (format emms-mode-line-format "Internet Radio")
-                         (setq name2 (replace-regexp-in-string ".*\/" "" name))
-                         (format emms-mode-line-format name2))))))))
-       (emms-mode-line-disable)
-       (emms-mode-line-enable)
-       (setq emms-track-description-function
-             (lambda (track)
-               (let ((artist (emms-track-get track 'info-artist))
-                     (album  (emms-track-get track 'info-album))
-                     (number (emms-track-get track 'info-tracknumber))
-                     (title  (emms-track-get track 'info-title)))
-                 (if (and artist album title)
-                     (if number
-                         (format "%s: %s - [%03d] %s" artist album (string-to-int number) title)
-                       (format "%s: %s - %s" artist album title))
-                   (emms-track-simple-description track)))))
-       ;; (set-face-attribute 'emms-playlist-track-face    nil :font "DejaVu Sans-10")
-       ;; (set-face-attribute 'emms-playlist-selected-face nil :background "White" :foreground "Firebrick")
-       ;; Initialization
-       (define-emms-simple-player mplayer-mp3 '(file url)
-         "\\.[mM][pP][23]$" "mplayer")
+         (setq emms-info-asynchronously t)
+         (setq emms-mode-line-mode-line-function
+               (lambda nil
+                 (let ((track (emms-playlist-current-selected-track)))
+                   (let ((title (emms-track-get track 'info-title)))
+                     (let ((name (emms-track-get track 'name)))
+                       (if (not (null title))
+                           (format emms-mode-line-format title)
+                         (if (not (null (string-match "^url: " (emms-track-simple-description track))))
+                             (format emms-mode-line-format "Internet Radio")
+                           (setq name2 (replace-regexp-in-string ".*\/" "" name))
+                           (format emms-mode-line-format name2))))))))
+         (emms-mode-line-disable)
+         (emms-mode-line-enable)
+         (setq emms-track-description-function
+               (lambda (track)
+                 (let ((artist (emms-track-get track 'info-artist))
+                       (album  (emms-track-get track 'info-album))
+                       (number (emms-track-get track 'info-tracknumber))
+                       (title  (emms-track-get track 'info-title)))
+                   (if (and artist album title)
+                       (if number
+                           (format "%s: %s - [%03d] %s" artist album (string-to-int number) title)
+                         (format "%s: %s - %s" artist album title))
+                     (emms-track-simple-description track)))))
+         ;; (set-face-attribute 'emms-playlist-track-face    nil :font "DejaVu Sans-10")
+         ;; (set-face-attribute 'emms-playlist-selected-face nil :background "White" :foreground "Firebrick")
+         ;; Initialization
+         (define-emms-simple-player mplayer-mp3 '(file url)
+           "\\.[mM][pP][23]$" "mplayer")
 
-       (define-emms-simple-player mplayer-ogg '(file)
-         (regexp-opt '(".ogg" ".OGG" ".FLAC" ".flac" )) "mplayer")
+         (define-emms-simple-player mplayer-ogg '(file)
+           (regexp-opt '(".ogg" ".OGG" ".FLAC" ".flac" )) "mplayer")
 
-       (define-emms-simple-player mplayer-playlist '(streamlist)
-         "http://" "mplayer" "-playlist")
+         (define-emms-simple-player mplayer-playlist '(streamlist)
+           "http://" "mplayer" "-playlist")
 
-       (define-emms-simple-player mplayer-list '(file url)
-         (regexp-opt '(".m3u" ".pls")) "mplayer" "-playlist")
+         (define-emms-simple-player mplayer-list '(file url)
+           (regexp-opt '(".m3u" ".pls")) "mplayer" "-playlist")
 
-       (define-emms-simple-player mplayer-video '(file url)
-         (regexp-opt '(".ogg" ".mp3" ".wav" ".mpg" ".mpeg" ".wmv"
-                       ".wma" ".mov" ".avi" ".divx" ".ogm" ".asf"
-                       ".mkv" "http://")) "mplayer")
+         (define-emms-simple-player mplayer-video '(file url)
+           (regexp-opt '(".ogg" ".mp3" ".wav" ".mpg" ".mpeg" ".wmv"
+                         ".wma" ".mov" ".avi" ".divx" ".ogm" ".asf"
+                         ".mkv" "http://")) "mplayer")
 
-       (setq emms-player-list '(emms-player-mplayer-mp3
-                                emms-player-mplayer-ogg
-                                emms-player-mplayer-playlist
-                                emms-player-mplayer-video
-                                emms-player-mplayer-list
-                                ))
+         (setq emms-player-list '(emms-player-mplayer-mp3
+                                  emms-player-mplayer-ogg
+                                  emms-player-mplayer-playlist
+                                  emms-player-mplayer-video
+                                  emms-player-mplayer-list
+                                  ))
 
-       ;; When asked for emms-play-directory,
-       ;; always start from this one
-       (setq emms-source-file-default-directory "~/Music/"
-             emms-stream-default-list '(       ; Metal Rules
-                                        ("Metal On: The Thrasher"
-                                         "http://94.23.244.89:8006" 1 url)
-                                        ("2LATE2HEALMETALRADIO"
-                                         "http://listen.radionomy.com/2late2heal-metal-radio" 1 url)
-                                        ("Metal On: The Brutal"
-                                         "http://94.23.244.89:8004" 1 url)
-                                        ("DEATH.FM"
-                                         "http://hi1.death.fm:8211" 1 url)
-                                        ("H4XED"
-                                         "http://sc-01.h4xed.us:7080" 1 url)
-                                        ("Metal-Only"
-                                         "http://listen.radionomy.com/metal-only" 1 url)
-                                        ("DarkSoul 7 Extreme Metal Radio"
-                                         "http://www.darksoul7.com:8000" 1 url)
-                                        ("James Bond"
-                                         "http://www.somafm.com/secretagent.pls" 1 streamlist)))))
-  ;; Type M-x emms-add-all to add all music in your ~/Music directory.
+         ;; When asked for emms-play-directory,
+         ;; always start from this one
+         (setq emms-source-file-default-directory "~/Music/"
+               emms-stream-default-list '(       ; Metal Rules
+                                          ("Metal On: The Thrasher"
+                                           "http://94.23.244.89:8006" 1 url)
+                                          ("2LATE2HEALMETALRADIO"
+                                           "http://listen.radionomy.com/2late2heal-metal-radio" 1 url)
+                                          ("Metal On: The Brutal"
+                                           "http://94.23.244.89:8004" 1 url)
+                                          ("DEATH.FM"
+                                           "http://hi1.death.fm:8211" 1 url)
+                                          ("H4XED"
+                                           "http://sc-01.h4xed.us:7080" 1 url)
+                                          ("Metal-Only"
+                                           "http://listen.radionomy.com/metal-only" 1 url)
+                                          ("DarkSoul 7 Extreme Metal Radio"
+                                           "http://www.darksoul7.com:8000" 1 url)
+                                          ("James Bond"
+                                           "http://www.somafm.com/secretagent.pls" 1 streamlist)))
+         ;; Type M-x emms-add-all to add all music in your ~/Music directory.
 
-  (defun mars/emms-any-streams ()
-    (interactive)
-    (if (boundp 'anything-c-source-emms-streams)
-        (anything-emms)
-      (emms-streams)))
+         (defun mars/emms-any-streams ()
+           (interactive)
+           (if (boundp 'anything-c-source-emms-streams)
+               (anything-emms)
+             (emms-streams)))
 
-  (defun mars/safe-emms-playlists ()
-    (require 'emms)
-    (let ((buf (emms-playlist-buffer-list)))
-      (and buf
-           (plain-buffer-list buf))))
+         (defun mars/safe-emms-playlists ()
+           (let ((buf (emms-playlist-buffer-list)))
+             (and buf
+                  (plain-buffer-list buf))))
 
-  (defun mars/safe-emms-start-stop ()
-    (interactive)
-    (condition-case nil
-        (if (mars/safe-emms-playlists)
-            (emms-pause)                ; try pause/resume
-          (error "no playlist"))
-      (error
-       (progn
-         ;; remove the buffer created by 'EMMS-PAUSE
-         (mapc
-          #'(lambda (elt) (kill-buffer elt))
-          (mars/safe-emms-playlists))
-         (require 'emms-history)
-         (emms-history-load)            ; try to restore history
-         ;; fetch the last living playlist saved in history
-         (let ((last-loaded-emms-playlist
-                (car (mars/safe-emms-playlists))))
-           (if (null last-loaded-emms-playlist)
-               (emms)                   ; emms if nothing in history
-             (if (null emms-player-playing-p) ; if stopped or paused
-                 (save-current-buffer
-                   (set-buffer last-loaded-emms-playlist)
-                   (condition-case nil
-                       ;; try a smart start of the current or next track
-                       (emms-playlist-mode-play-smart)
-                     (error
-                      (flet ((info-emms-unable-to-play
-                              (which-track)
-                              (message "Information: [mars] emms: unable to play the %s track in the last playlist saved in history" which-track)))
-                        (info-emms-unable-to-play "next")
-                        (emms-playlist-mode-first)
+         (defun mars/safe-emms-start-stop ()
+           (interactive)
+           (condition-case nil
+               (if (mars/safe-emms-playlists)
+                   (emms-pause)                ; try pause/resume
+                 (error "no playlist"))
+             (error
+              (progn
+                ;; remove the buffer created by 'EMMS-PAUSE
+                (mapc
+                 #'(lambda (elt) (kill-buffer elt))
+                 (mars/safe-emms-playlists))
+                (require 'emms-history)
+                (emms-history-load)            ; try to restore history
+                ;; fetch the last living playlist saved in history
+                (let ((last-loaded-emms-playlist
+                       (car (mars/safe-emms-playlists))))
+                  (if (null last-loaded-emms-playlist)
+                      (emms)                   ; emms if nothing in history
+                    (if (null emms-player-playing-p) ; if stopped or paused
+                        (save-current-buffer
+                          (set-buffer last-loaded-emms-playlist)
+                          (condition-case nil
+                              ;; try a smart start of the current or next track
+                              (emms-playlist-mode-play-smart)
+                            (error
+                             (flet ((info-emms-unable-to-play
+                                     (which-track)
+                                     (message "Information: [mars] emms: unable to play the %s track in the last playlist saved in history" which-track)))
+                               (info-emms-unable-to-play "next")
+                               (emms-playlist-mode-first)
+                               (condition-case nil
+                                   ;; try a smart start of the very first track
+                                   (emms-playlist-mode-play-smart)
+                                 (error
+                                  (info-emms-unable-to-play "first")
+                                  (emms))))))) ; else open a default playlist to load
+                      (when emms-player-paused-p
                         (condition-case nil
-                            ;; try a smart start of the very first track
-                            (emms-playlist-mode-play-smart)
-                          (error
-                           (info-emms-unable-to-play "first")
-                           (emms))))))) ; else open a default playlist to load
-               (when emms-player-paused-p
-                 (condition-case nil
-                     (emms-pause)
-                   (error (emms))))))))))))
+                            (emms-pause)
+                          (error (emms)))))))))))))))
 
 (provide 'media)
 

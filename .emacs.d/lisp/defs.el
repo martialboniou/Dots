@@ -61,11 +61,13 @@
 ;;
 (unless (boundp 'mars/eternal-buffer-list)
     (setq mars/eternal-buffer-list '("*scratch*")))
+
+(eval-when-compile (require 'cl))
 
 ;;; RETRO-COMPATIBILITIES
 ;;
-(unless (fboundp 'cl-flet)
-  (defalias 'cl-flet 'flet)) ;; ERROR: not permutable
+;; (unless (fboundp 'cl-flet)
+;;   (defalias 'cl-flet 'flet)) ;; ERROR: not permutable
 
 ;;; ESSENTIAL UTILITIES
 ;;;
@@ -81,7 +83,7 @@
     (when message
       (message message))))
 
-(cl-defun require-if-installed (package &key message library) ; UNTESTED
+(defun* require-if-installed (package &key message library) ; UNTESTED
   "If the package is installed with el-get, require it with its package name or another one (like library's built-in autoloads)."
   (if (fboundp 'el-get-package-is-installed)
         (if (el-get-package-is-installed package)

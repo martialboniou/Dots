@@ -1,7 +1,7 @@
 (require 'noaccess)
 (require 'vars)
 (require 'defs)
-;;(require 'el-select) ; TEMPORARY OUT (no vendor / el-get managed in init.el)
+(require 'el-select)
 
 ;;; GENERATE LOAD PATH (add your 'SITE-LISP)
 ;;

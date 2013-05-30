@@ -22,21 +22,42 @@
                                                                      mars/local-root-dir)))
 
 (setq el-get-sources '((:name evil
-                              :features nil) ; let 'VIM-EVERYWHERE do the loading
-                       (:name nxhtml
-                              :load nil))) ; choose 'NXHTML or 'MULTI-WEB-MODE
-                                           ; in 'WEB-PROGRAMMING
+                              :features nil)
+                       (:name evil-leader ; installs evil & undo-tree
+                              :features nil)
+                       (:name evil-surround
+                              :features nil
+                              :post-init nil)
+                       (:name evil-numbers
+                              :features nil) ; let 'VIM-EVERYWHERE configure 'EVIL
+                       (:name highlight-parentheses
+                              :features nil) ; HIGHLIGHT-PARENTHESES-MODE is autoloaded
+                       (:name bbdb           ; BBDB for wanderlust
+                              :branch "v2.x"
+                              :build `("autoconf" ,(concat "./configure --with-emacs=" el-get-emacs)
+                                       "make clean" "rm -f lisp/bbdb-autoloads.el"
+                                       "make autoloadsc info")
+                              :features bbdb-autoloads
+                              :info "texinfo")
+                       (:name emms      ; installs emacs-w3m
+                              :info nil ; TODO: 2013-05-23 fix info file
+                              :build `(("make" ,(format "EMACS=%s" el-get-emacs)
+                                        ,(format "SITEFLAG=\\\"--no-site-file -L %s/emacs-w3m/ \\\"" el-get-dir)
+                                        "autoloads" "lisp" "emms-print-metadata"))
+                              :features nil) ; let 'MEDIA configure 'EMMS
+                       (:name git-emacs
+                              :features nil)
+;                       (:name nxhtml
+;                              :load nil)
+)) ; choose 'NXHTML or 'MULTI-WEB-MODE in 'WEB-PROGRAMMING
 ;; :name ropemacs :build '(("python" "setup.py" "install" "||" "sudo" "python" "setup.py" "install"))
 
 (defvar mars/packages '(el-get
                         color-theme
                         escreen
-                        evil-leader     ; install evil & undo-tree
-                        evil-surround
                         keats
                         shen-mode
                         ;; haskellmode-emacs
-                        haskell-mode
                         pylookup
                         pymacs
                         mailcrypt
@@ -52,7 +73,6 @@
                         org-mode
                         howm
                         remember
-                        revive-plus
                         multi-web-mode
                         markdown-mode
                         magit
@@ -60,7 +80,6 @@
                         header2
                         filladapt
                         hideshowvis
-                        git-emacs
                         gist
                         switch-window
                         cycle-buffer
@@ -68,13 +87,12 @@
                         textile-mode
                         yaml-mode
                         haml-mode
-                        emms            ; install emacs-w3m
                         sunrise-commander
-                        bbdb
-                        wanderlust))
-
-(defvar mars/personal-recipes '(yas-jit) ; my version loads 'YASNIPPET
-  )
+                        wanderlust
+                        ;; from .emacs.d/data/Recipes
+                        yas-jit         ; installs yasnippet
+                        revive-plus
+                        haskell-mode))
 
 (condition-case nil
     (progn
@@ -91,22 +109,34 @@
       ;(add-to-list 'el-get-sources '(:name inf-ruby-bond
       ;                                     :depends nil)
       ; ) ; use RINARI's INF-RUBY
-      (setq mars/packages (nconc mars/packages '(ruby-electric))))
+      ;; TODO: restore ruby-electric or create a new rcp
+      ;; (setq mars/packages (nconc mars/packages '(ruby-electric)))
+      )
   (error (message "el-select: yasnippet won't be compiled and rinari and other packages for ruby won't be installed without rake, a simple ruby build program.")))
 
 (condition-case nil
     (progn
       (el-get-executable-find "latex")
-      (add-to-list 'el-get-sources '(:name "auctex"
-                                           :build `("./autogen.sh" ,(concat "./configure --with-lispdir=`pwd` --with-emacs=" el-get-emacs " --with-texmf-dir=" (let ((texmf-dir (getenv "TEXMF_DIR"))) (when (or (null texmf-dir) (string= texmf-dir "")) (setq texmf-dir (if (eq system-type 'gnu/linux) "/usr/share/texmf-texlive" "/usr/local/texlive/texmf-local"))) texmf-dir)) "make"))))
-  (error (message "el-select: AUCTeX won't be installed without TeXLive or any modern LaTeX distribution.")))
+      (add-to-list 'el-get-sources '(:name auctex
+                                           :branch "release_11_87"
+                                           :build `(("./autogen.sh")
+                                                    ("./configure"
+                                                     ,(if (or (string= "" mars/texmf-dir)
+                                                              (null (file-accessible-directory-p mars/texmf-dir)))
+                                                          "--without-texmf-dir"
+                                                        (concat "--with-texmf-dir=" (expand-file-name mars/texmf-dir)))
+                                                     "--with-lispdir=`pwd`"
+                                                     ,(concat "--with-emacs=" el-get-emacs))
+                                                    "make lisp docs"
+                                                    "cd preview && make lisp && cd ..")
+                                           :load nil))) ; let 'WIKI-WIKI launch 'TEX-SITE
+  (error (message "el-select: AUCTeX won't be automatically installed without TeXLive or any modern LaTeX distribution.")))
 
 (setq mars/packages
   (nconc mars/packages
          (mapcar #'el-get-source-name el-get-sources)))
 
 (el-get 'sync mars/packages)
-;; (el-get 'sync mars/personal-recipes)
 (el-get 'wait)
 
 (provide 'el-select)            ; required by 'ADAPTER

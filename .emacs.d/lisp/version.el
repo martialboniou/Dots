@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Mar 12 21:26:30 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Nov  3 16:19:24 2011 (+0100)
+;; Last-Updated: Thu May 30 18:50:01 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 11
+;;     Update #: 13
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -49,7 +49,8 @@
 (require 'adapter)
 
 ;;; GIT-EMACS
-(load-library "git-emacs-autoloads")
+(when (locate-library "git-emacs")
+  (load-library "git-emacs-autoloads"))
 
 ;;; MAGIT
 ;; BEWARE: *impossible* to manage huge projects

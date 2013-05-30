@@ -80,12 +80,14 @@
 ;;
 (bind-key "<kp-delete>" 'delete-char)
 ;; try 'REDO+ iff no 'UNDO-TREE
-(unless (el-get-package-is-installed "undo-tree") ; display tree by using C-x u
-  (condition-case nil
-      (require 'redo+)
-    (error (message "behave: install undo-tree or at least redo+ to get a better undo support")))
-  (eval-after-load "redo"
-    '(progn (setq undo-no-redo t))))
+(eval-after-load "el-get"
+  '(progn
+     (unless (el-get-package-is-installed "undo-tree") ; display tree by using C-x u
+       (condition-case nil
+	   (require 'redo+)
+	 (error (message "behave: install undo-tree or at least redo+ to get a better undo support")))
+       (eval-after-load "redo"
+	 '(progn (setq undo-no-redo t))))))
 
 ;;; MODAL EDITING incl. COLOR-THEME & PARENS
 ;;
@@ -224,8 +226,12 @@ Example: (MAJOR-MODE . (CHESS-MASTER-MODE MAIL-DRAFT-MODE).")
 (eval-after-load "ibuffer"
   '(define-key ibuffer-mode-map (kbd "'") 'kill-all-dired-buffers))
 ;; - anything
-(when (el-get-package-is-installed "anything")
-  (require 'anything-match-plugin))
+(eval-after-load "el-get"
+  '(when (el-get-package-is-installed "anything")
+     (if (locate-library "anything-match-plugin")
+	 (require 'anything-match-plugin) ; loads 'ANYTHING
+       (require "anything"))
+     (require-if-located "anything-config")))
 (eval-after-load "anything-config"
   '(progn
      (defvar mars/anything-pers-action-binding "C-."

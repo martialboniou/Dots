@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu May 30 11:32:42 2013 (+0200)
+;; Last-Updated: Thu May 30 13:12:56 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 592
+;;     Update #: 614
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -340,19 +340,19 @@ Move point to the beginning of the line, and run the normal hook
      (eval-after-load "desktop"
       '(progn
          (push '(ecb-minor-mode nil) desktop-minor-mode-table)))))
-(defun mars/toggle-ecb ()
+(defun mars/toggle-ecb ()               ; make a better script w/o 'IF-BOUND-CALL
   (interactive)
   (if (ecb-activated)
       (if (ecb-activated-in-this-frame)
           (when (y-or-n-p "Stop ecb? ")
-            (ecb-deactivate))
+            (if-bound-call ecb-deactivate))
         (when (y-or-n-p "Switch ecb to this current frame? ")
           (let ((frm (selected-frame)))
-            (ecb-deactivate)
+            (if-bound-call ecb-deactivate)
             (select-frame-set-input-focus frm)
-            (ecb-activate))))
+            (if-bound-call ecb-activate))))
     (when (y-or-n-p "Start ecb? ")
-      (ecb-activate))))
+      (if-bound-call ecb-activate))))
 
 ;;; TEMPORARY LIST OF LANGAGES WITH LISP PARENS
 ;; TODO: to 'VARS ?
@@ -410,12 +410,14 @@ Move point to the beginning of the line, and run the normal hook
      (setq autopair-autowrap t)))
 
 ;;; PAREDIT + HIGHLIGHT-PARENTHESES
-(when (el-get-package-is-installed "paredit")
-  (add-lambda-hook lispem-hooks
-    (enable-paredit-mode)))
-(when (el-get-package-is-installed "highlight-parentheses-mode")
-  (add-lambda-hook lispem-hooks
-    (highlight-parentheses-mode t)))
+(if (fboundp 'enable-paredit-mode)
+    (add-lambda-hook lispem-hooks
+      (enable-paredit-mode))
+  (message "code: paredit is not installed."))
+(if (fboundp 'highlight-parentheses-mode)
+    (add-lambda-hook lispem-hooks
+      (highlight-parentheses-mode t))
+  (message "code: highlight-parentheses is not installed."))
 (eval-after-load "paredit"
   '(progn
      ;; autopair case (ie deactivate AUTOPAIR when PAREDIT is turned on)
@@ -475,15 +477,18 @@ Move point to the beginning of the line, and run the normal hook
 ;;; ELDOC
 (mars/add-hooks (mars/generate-mode-hook-list
                  '(emacs-lisp lisp-interactive ielm)) #'turn-on-eldoc-mode)
-;; TODO: ? (when (el-get-package-is-installed "c-eldoc") (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode))
+
+;;; C-ELDOC (an alternative to CEDET for C code)
+(when (el-get-package-is-installed "c-eldoc")
+  (add-hook 'c-mode-hook #'c-turn-on-eldoc-mode))
+(eval-after-load "c-eldoc"
+  '(setq c-eldoc-includes "-I/opt/local/include/ -I/usr/local/include/ -I/usr/brewery/include/ -I/usr/include/ -I./ -I../"))
 
 ;;; COMINT
-(eval-after-load "comint"
-  '(progn
-     (define-key comint-mode-map (kbd "M-<up>") 'comint-next-input)
-     (define-key comint-mode-map (kbd "M-<down>") 'comint-previous-input)
-     (define-key comint-mode-map [down] 'comint-next-matching-input-from-input)
-     (define-key comint-mode-map [up] 'comint-previous-matching-input-from-input)))
+(define-key comint-mode-map (kbd "M-<up>") 'comint-next-input)
+(define-key comint-mode-map (kbd "M-<down>") 'comint-previous-input)
+(define-key comint-mode-map [down] 'comint-next-matching-input-from-input)
+(define-key comint-mode-map [up] 'comint-previous-matching-input-from-input)
 
 ;;; CHEAT
 (eval-after-load "anything"
@@ -519,16 +524,16 @@ Move point to the beginning of the line, and run the normal hook
                                   '((emacs-lisp . t)
                                     (ruby . t)))))
 
-;;; VISUALIZE CALL TREE
-(setq sct-graphviz-dir (expand-file-name
-                        "Graphviz"
-                        (expand-file-name "Temporary"
-                                          (expand-file-name mars/personal-data
-                                                            mars/local-root-dir))))
+;;; TODO: REPLACE W/ A NEWEST VERSION - VISUALIZE CALL TREE
+;; (defvar sct-graphviz-dir
+;;   (expand-file-name "Graphviz"
+;;                     (expand-file-name "Temporary"
+;;                                       (expand-file-name mars/personal-data
+;;                                                         mars/local-root-dir))))
 
-(defun mars/simple-call-tree-view ()
-  (interactive)
-  (sct-graphviz))
+;; (defun mars/simple-call-tree-view ()
+;;   (interactive)
+;;   (if-bound-call sct-graphviz))
 ;;(car-safe "/Users/mars/.emacs.d/data/Temporary/Graphviz/code.el.png")
 
 ;;; LANGUAGES

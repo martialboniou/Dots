@@ -25,6 +25,8 @@
                               :post-init nil)
                        (:name evil-numbers
                               :features nil) ; let 'VIM-EVERYWHERE configure 'EVIL
+                       (:name highlight-parentheses-mode
+                              :features nil) ; HIGHLIGHT-PARENTHESES-MODE is autoloaded
                        (:name bbdb           ; BBDB for wanderlust
                               :branch "v2.x"
                               :build `("autoconf" ,(concat "./configure --with-emacs=" el-get-emacs)

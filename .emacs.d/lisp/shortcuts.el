@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Wed May 29 20:38:49 2013 (+0200)
+;; Last-Updated: Thu May 30 12:51:48 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 186
+;;     Update #: 187
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -286,7 +286,7 @@
                                   (whitespace-mode                  . "<f1>")
                                   (mars/save-n-purge-code           . "<f4>")
                                   (mars/simple-call-tree-view       . "<f5>")
-                                  (anything-simple-call-tree        . prev)
+                                  ; (anything-simple-call-tree        . prev)
                                   (anything-browse-code             . id) ; faster than ecb
                                   (mars/toggle-ecb                  . next)
                                   (cycle-ispell-languages           . "<f2>"))

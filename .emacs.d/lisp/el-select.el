@@ -58,6 +58,7 @@
                         ;; darcsum
                         header2
                         filladapt
+                        hideshowvis
                         git-emacs
                         gist
                         switch-window

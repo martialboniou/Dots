@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed May 29 21:23:17 2013 (+0200)
+;; Last-Updated: Thu May 30 11:32:42 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 581
+;;     Update #: 592
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:
@@ -60,6 +60,9 @@
 (eval-when-compile (require-if-located 'ecb)
                    (unless (fboundp #'autopair-mode)
                      (defun autopair-mode (arg) nil)))
+
+(defun require-for-code (package)
+  (require-if-located package (format "code: %s required" (symbol-name package))))
 
 ;;; LANGUAGES' CONFIGURATION PATH
 (defvar lang-rep
@@ -123,11 +126,13 @@
        :init-value t
        :group 'hideshow
        :version "23.0")
+     (unless (el-get-package-is-installed "hideshowvis")
+         (defun hideshowvis-enable () (message "code: hideshowvis is recommended and not installed.")))
      (defun turn-on-hs-if-desired ()
        (when (cond ((eq hs-global-modes t)
                     t)
                    ((eq (car-safe hs-global-modes) 'not)
-                    (not (memq major-(mark)ode (cdr hs-global-modes))))
+                    (not (memq major-mode (cdr hs-global-modes))))
                    (t (memq major-mode hs-global-modes)))
          (let (inhibit-quit)
            (unless hs-minor-mode
@@ -230,9 +235,9 @@ Move point to the beginning of the line, and run the normal hook
      (setq senator-minor-mode-name "SN"
            semantic-imenu-auto-rebuild-directory-indexes nil)
      (global-srecode-minor-mode 1)           ; template insertion menu
-     (require 'semantic-decorate-include)
+     (require-for-code 'semantic-decorate-include)
      ;; smart completions
-     (require 'semantic-ia)
+     (require-for-code 'semantic-ia)
      (setq-mode-local c-mode semanticdb-find-default-throttle
                       '(project unloaded system recursive))
      (setq-mode-local c++-mode semanticdb-find-default-throttle
@@ -240,7 +245,7 @@ Move point to the beginning of the line, and run the normal hook
      (setq-mode-local erlang-mode semanticdb-find-default-throttle
                       '(project unloaded system recursive))
      ;; gcc
-     (require 'semantic-gcc)
+     (require-for-code 'semantic-gcc)
      (defun mars/semantic-add-system-include (list symbol)
        (mapc '(lambda (x)
                 (when (stringp x)
@@ -250,7 +255,7 @@ Move point to the beginning of the line, and run the normal hook
        (mars/semantic-add-system-include c-include-path 'c-mode))
      (unless (null cpp-include-path)    ; defined in <conf>/vars
        (mars/semantic-add-system-include c-include-path 'c++-mode))
-     (require 'eassist)
+     (require-for-code 'eassist)
      ;; general bindings [semantic-ia]
      (defun alexott/cedet-hook ()
        (local-set-key [(control return)] 'semantic-ia-complete-symbol-menu)
@@ -284,34 +289,38 @@ Move point to the beginning of the line, and run the normal hook
      ;;     (global-semantic-folding-mode 1) ; FIXME: no more
      (defun mars/Qt ()                  ; TODO: temp var for test => to move to vars-<specific>.el
        (setq qt4-base-dir "/Library/Frameworks/QtCore.framework/Headers"))
-     (defun mars/semantic-tags ()
-       ;; GNU global support
-       (require 'semanticdb-global)
-       (semanticdb-enable-gnu-global-databases 'c-mode)
-       (semanticdb-enable-gnu-global-databases 'c++-mode)
-       ;; ectags
-       (require 'semanticdb-ectag)
-       (let ((c-includes '("/opt/local/include" "/usr/local/include"))) ; FIXME: go to vars.el
-         (mapc (lambda (x)
-                 (semantic-add-system-include x 'c-mode)
-                 (semantic-add-system-include x 'c++-mode))
-               c-includes)))
+     
+     (require-for-code 'semanticdb-global)
+     (require-for-code 'semanticdb-ectag)
+     ;; GNU global support
+     (eval-after-load "semanticdb-global"
+       '(progn
+          (semanticdb-enable-gnu-global-databases 'c-mode)
+          (semanticdb-enable-gnu-global-databases 'c++-mode)
+          (eval-after-load "semanticdb-ectag"
+            '(progn
+               (let ((c-includes '("/opt/local/include" "/usr/local/include" "/usr/brewery/include"))) ; FIXME: go to vars.el
+                 (mapc (lambda (x)
+                         (semantic-add-system-include x 'c-mode)
+                         (semantic-add-system-include x 'c++-mode))
+                       c-includes))))))
      ;; ecb or build autoloads via Makefile
-     (condition-case err
-         (require 'ecb-autoloads)
-       (error (progn
-                (message "code: ecb autoloads error: %s" err)
-                (let ((ecb-dir (locate-library "ecb")))
-                  (if ecb-dir
-                      (with-temp-buffer
-                        (condition-case errare
-                            (progn
-                              (cd (file-name-directory ecb-dir))
-                              (execvp "make" "autoloads")
-                              (require 'ecb-autoloads))
-                          (error
-                           (message "code: make autoloads error: %s" errare))))
-                    (message "code: ecb not found")))))))) ; ecb is out of <site-lisp>/loaddefs
+     (when (locate-library "ecb-autoloads")
+       (condition-case err
+           (require 'ecb-autoloads)
+         (error (progn
+                  (message "code: ecb autoloads error: %s" err)
+                  (let ((ecb-dir (locate-library "ecb")))
+                    (if ecb-dir
+                        (with-temp-buffer
+                          (condition-case errare
+                              (progn
+                                (cd (file-name-directory ecb-dir))
+                                (execvp "make" "autoloads")
+                                (require 'ecb-autoloads))
+                            (error
+                             (message "code: make autoloads error: %s" errare))))
+                      (message "code: ecb not found"))))))))) ; ecb is out of <site-lisp>/loaddefs
 
 ;;; ECB
 (defun ecb-activated ()
@@ -397,13 +406,15 @@ Move point to the beginning of the line, and run the normal hook
        (set (make-local-variable 'autopair-handle-action-fns)
             (list #'autopair-default-handle-action
                   #'autopair-latex-mode-paired-delimiter-action)))
-     (require 'auto-pair+)
+     (require-if-located 'auto-pair+)
      (setq autopair-autowrap t)))
 
 ;;; PAREDIT + HIGHLIGHT-PARENTHESES
 (when (el-get-package-is-installed "paredit")
   (add-lambda-hook lispem-hooks
-    (paredit-mode +1)
+    (enable-paredit-mode)))
+(when (el-get-package-is-installed "highlight-parentheses-mode")
+  (add-lambda-hook lispem-hooks
     (highlight-parentheses-mode t)))
 (eval-after-load "paredit"
   '(progn
@@ -464,7 +475,7 @@ Move point to the beginning of the line, and run the normal hook
 ;;; ELDOC
 (mars/add-hooks (mars/generate-mode-hook-list
                  '(emacs-lisp lisp-interactive ielm)) #'turn-on-eldoc-mode)
-;; TODO: ? (require 'c-eldoc)(add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
+;; TODO: ? (when (el-get-package-is-installed "c-eldoc") (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode))
 
 ;;; COMINT
 (eval-after-load "comint"

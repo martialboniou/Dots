@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri May 31 16:56:01 2013 (+0200)
+;; Last-Updated: Fri May 31 23:05:04 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 617
+;;     Update #: 619
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -411,12 +411,10 @@ Move point to the beginning of the line, and run the normal hook
 
 ;;; PAREDIT + HIGHLIGHT-PARENTHESES
 (if (fboundp 'enable-paredit-mode)
-    (add-lambda-hook lispem-hooks
-      (enable-paredit-mode))
+    (mars/add-hooks lispem-hooks #'enable-paredit-mode)
   (message "code: paredit is not installed."))
 (if (fboundp 'highlight-parentheses-mode)
-    (add-lambda-hook lispem-hooks
-      (highlight-parentheses-mode t))
+    (mars/add-hooks lispem-hooks #'(lambda () (highlight-parentheses-mode t)))
   (message "code: highlight-parentheses is not installed."))
 (eval-after-load "paredit"
   '(progn

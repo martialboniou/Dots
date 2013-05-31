@@ -1,3 +1,6 @@
+
+
+
 Installation
 ============
 
@@ -48,7 +51,7 @@ To install `haskell`, I don't recommend you to install the `ghc` package and try
 Now you can install:
 
 * *Bazaar* and *Mercurial* (`hg` command) via `python` manager:
-    
+
     $ pip install bzr; pip install mercurial
 
 * `darcs` distributed RCS via `cabal`, the `haskell` package manager:
@@ -64,7 +67,7 @@ Now you can install:
 In order to get perfect colors everywhere, please compile your Emacs 23.2+ with the following `configure` options:
 
     $ ./configure --without-dbus --with-ns --disable-ns-self-contained
-    
+
 after having replaced all references (methods/variables) from `*Calibrated*` to `*Device*` (especially the method `#colorWithCalibratedRed:green:blue:alpha:`) in the `src/nsterm.m` file.
 
 Windows users

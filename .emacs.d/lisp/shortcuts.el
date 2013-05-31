@@ -3,15 +3,15 @@
 ;; Filename: shortcuts.el
 ;; Description: Global Keybindings
 ;; Author: Martial Boniou
-;; Maintainer: 
+;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
-;; Version: 
+;; Version:
 ;; Last-Updated: Fri May 31 17:04:40 2013 (+0200)
 ;;           By: Martial Boniou
 ;;     Update #: 188
-;; URL: 
-;; Keywords: 
-;; Compatibility: 
+;; URL:
+;; Keywords:
+;; Compatibility:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -66,7 +66,7 @@
    "C-c l"     org-store-link ; [default]
    "C-x C-b"   ido-switch-buffer        ; switch buffer on "C-x C-b" (faster than typing "C-x b") [but use [(jxb)] in `sticky-control']
    "C-x b"     ibuffer                  ; nice buffer browser (a la `dired') [but use [(jxjb)] in `sticky-control']
-   "C-p"       hippie-expand            ; like Vim next-expansion key
+   "C-p"       hippie-expand            ; like Vim previous expansion key
    "C-c _ w"   whitespace-mode
    "C-c _ t"   whitespace-toggle-options
    "C-c = w"   global-whitespace-mode

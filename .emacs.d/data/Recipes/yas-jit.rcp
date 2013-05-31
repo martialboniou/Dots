@@ -1,6 +1,0 @@
-(:name yas-jit
-:description "Load Yasnippets on demand"
-:auto-generated t
-:type emacswiki
-:depends yasnippet
-:website "https://raw.github.com/emacsmirror/emacswiki.org/master/yas-jit.el")

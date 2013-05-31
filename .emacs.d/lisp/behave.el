@@ -229,9 +229,9 @@ Example: (MAJOR-MODE . (CHESS-MASTER-MODE MAIL-DRAFT-MODE).")
 (eval-after-load "el-get"
   '(when (el-get-package-is-installed "anything")
      (if (locate-library "anything-match-plugin")
-     (require 'anything-match-plugin) ; loads 'ANYTHING
-       (require "anything"))
-     (require-if-located "anything-config")))
+	 (require 'anything-match-plugin) ; loads 'ANYTHING
+       (require 'anything))
+     (require-if-located 'anything-config)))
 (eval-after-load "anything-config"
   '(progn
      (defvar mars/anything-pers-action-binding "C-."

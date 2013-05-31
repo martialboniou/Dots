@@ -30,6 +30,8 @@
                               :post-init nil)
                        (:name evil-numbers
                               :features nil) ; let 'VIM-EVERYWHERE configure 'EVIL
+                       (:name yasnippet
+                              :features nil) ; let 'RECTIFY configure 'YASNIPPET
                        (:name ace-jump-mode
                               :after (progn
                                        (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
@@ -50,6 +52,8 @@
                                        "make autoloadsc info")
                               :features bbdb-autoloads
                               :info "texinfo")
+                       (:name haskell-mode
+                              :build (("make")))
                        (:name emms      ; installs emacs-w3m
                               :info nil ; TODO: 2013-05-23 fix info file
                               :build `(("make" ,(format "EMACS=%s" el-get-emacs)
@@ -101,18 +105,17 @@
                         sunrise-commander
                         wanderlust
                         ;; from .emacs.d/data/Recipes
-                        yas-jit         ; installs yasnippet
-                        revive-plus
-                        haskell-mode))
+                        revive-plus))
 
 (condition-case nil
     (progn
       ;; TODO: find a way to install RINARI correctly
       (el-get-executable-find "rake")
+      nil
       ;; YASNIPPET install is ugly (requires python *and* ruby)
       ;; check pygments module is installed
-      (add-to-list 'el-get-sources '(:name yasnippet
-                                           :build '("rake compile")))
+      ;; (add-to-list 'el-get-sources '(:name yasnippet
+      ;;                                      :build '("rake compile")))
       ;;(add-to-list 'el-get-sources '(:name rinari
       ;;                                     :build '(("git" "submodule" "init")
       ;;                                              ("git" "submodule" "update")
@@ -146,7 +149,10 @@
 (setq mars/packages
   (nconc mars/packages
          (mapcar #'el-get-source-name el-get-sources)))
-(setq mars/packages nil)
+
+(unless *i-want-full-ammo*
+  (setq mars/packages nil))             ; no packages unless `*i-want-full-ammo*'
+
 (el-get 'sync mars/packages)
 (el-get 'wait)
 

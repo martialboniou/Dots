@@ -1,17 +1,17 @@
 ;;; www.el ---
 ;;
 ;; Filename: www.el
-;; Description:
+;; Description: 
 ;; Author: Martial Boniou
-;; Maintainer:
+;; Maintainer: 
 ;; Created: Wed Feb 23 13:08:32 2011 (+0100)
-;; Version:
-;; Last-Updated: Thu Nov  3 16:22:21 2011 (+0100)
+;; Version: 0.2
+;; Last-Updated: Fri May 31 17:08:30 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 28
-;; URL:
-;; Keywords:
-;; Compatibility:
+;;     Update #: 29
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

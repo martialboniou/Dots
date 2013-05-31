@@ -43,11 +43,11 @@
      ;; replace LAMBDA -> λ
      (eval-after-load "el-get"
        '(when (el-get-package-is-installed "pretty-lambdada")
-	  (pretty-lambda-for-modes)
-	  (setq pretty-lambda-auto-modes '(lisp-mode
-					   scheme-mode
-					   emacs-lisp-mode
-					   python-mode))))))
+          (pretty-lambda-for-modes)
+          (setq pretty-lambda-auto-modes '(lisp-mode
+                                           scheme-mode
+                                           emacs-lisp-mode
+                                           python-mode))))))
 
 ;;; FANCY
 ;;
@@ -108,7 +108,7 @@
        ;; dark background friend ido colors
        '(ido-only-match ((((class color) (background dark)) (:foreground "#00cd00"))  ; green3
                  (((class color) (background light)) (:foreground "#228b22")))) ; ForestGreen
-       '(ido-subdir ((((class color) (background dark)) (:foreground "#cd0000")) 
+       '(ido-subdir ((((class color) (background dark)) (:foreground "#cd0000"))
              (((class color) (background light)) (:foreground "#8b2222"))))
        ;; anything using inheritance
        '(anything-M-x-key-face ((t (:inherit font-lock-reference-face :underline t))))
@@ -125,7 +125,7 @@
        ;; obvious trailing whitespace
        ;; '(trailing-whitespace ((((class color) (background dark))
        ;;                         (:background "gray90" :strike-through "red1"))
-       ;;                        (((class color) (background light))   
+       ;;                        (((class color) (background light))
        ;;                         (:background "gray10" :strike-through "red1"))))
        ;; no more flashy background in MuMaMo
        '(mumamo-background-chunk-major ((((class color) (min-colors 88)

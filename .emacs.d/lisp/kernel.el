@@ -40,7 +40,7 @@
 
 ;; bytecompile via the locally defined `auto-byte-compile' boolean
 (put 'auto-byte-compile 'safe-local-variable #'booleanp)
-;; --> on save for any file in emacs-lisp-mode having `auto-byte-compile' 
+;; --> on save for any file in emacs-lisp-mode having `auto-byte-compile'
 ;; sets to true in:
 ;; 1- local variables defined in the heading/ending comments
 ;; 2- `.dir-locals.el' file located at the root directory of the file

@@ -1,4 +1,4 @@
-;;; formats.el --- 
+;;; formats.el ---
 ;; 
 ;; Filename: formats.el
 ;; Description: Formats, styles, encodings, spelling and image support
@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Nov 24 15:00:47 2011 (+0100)
+;; Last-Updated: Fri May 31 16:57:55 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 118
+;;     Update #: 120
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -114,25 +114,43 @@ remove whitespace and save the current buffer."
 ;;; DELETE TRAILING WHITESPACE
 ;;
 (defalias 'dtw 'delete-trailing-whitespace)
-(defadvice delete-trailing-whitespace (after advising-deletion nil activate)
-  "Advise trailing whitespace deletion."
-  (message "Trailing whitespace deleted"))
-;; header case (to keep header2 whitespaces untouched)
-(defun delete-trailing-whitespace ()
+;; header case (to keep HEADER2 whitespaces untouched)
+(defun delete-trailing-whitespace (&optional start end)
   "Delete all the trailing whitespace EXCEPT those in an header.
 Header2's elements may have a whitespace that should not be removed.
 Otherwise the update regexps won't match."
-  (interactive "*")
+  (interactive (progn
+                 (barf-if-buffer-read-only)
+                 (if (use-region-p)
+                     (list (region-beginning) (region-end))
+                   (list nil nil))))
   (save-match-data
     (save-excursion
-      (goto-char (point-min))
-      (comment-forward (point-max)) ; avoid header comment
-      (while (re-search-forward "\\s-$" nil t)
-        (skip-syntax-backward "-" (save-excursion (forward-line 0) (point)))
-        (save-match-data
-          (if (looking-at ".*\f")
-              (goto-char (match-end 0))))
-        (delete-region (point) (match-end 0))))))
+      (let ((end-marker (copy-marker (or end (point-max))))
+            (start (or start (point-min))))
+        (goto-char start)
+        ;; Avoid header so walk from the first non-comment region
+        (when (mars/point-in-comment)
+          (goto-char (line-beginning-position))
+          (comment-forward (point-max))
+          (progn (backward-word) (forward-word))) ; trick to check between comment and block
+        (while (re-search-forward "\\s-$" end-marker t)
+          (skip-syntax-backward "-" (line-beginning-position))
+          ;; Don't delete formfeeds, even if they are considered whitespace.
+          (if (looking-at-p ".*\f")
+              (goto-char (match-end 0)))
+          (delete-region (point) (match-end 0)))
+        ;; Delete trailing empty lines.
+        (goto-char end-marker)
+        (when (and (not end)
+                   delete-trailing-lines
+                   ;; Really the end of buffer.
+                   (= (point-max) (1+ (buffer-size)))
+                   (<= (skip-chars-backward "\n") -2))
+          (delete-region (1+ (point)) end-marker))
+        (set-marker end-marker nil))))
+  ;; Return nil for the benefit of `write-file-functions'.
+  nil)
 
 ;;; STYLE OBSOLETE
 ;;

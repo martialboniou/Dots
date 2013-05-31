@@ -1,17 +1,17 @@
 ;;; gtd.el ---
 ;;
 ;; Filename: gtd.el
-;; Description:
+;; Description: Organize Life & Ideas with Emacs
 ;; Author: Martial Boniou
-;; Maintainer:
+;; Maintainer: 
 ;; Created: Tue Feb 22 11:31:42 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: Tue May 28 11:52:26 2013 (+0200)
+;; Last-Updated: Fri May 31 16:59:03 2013 (+0200)
 ;;           By:
-;;     Update #: 91
-;; URL:
-;; Keywords:
-;; Compatibility:
+;;     Update #: 92
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -87,8 +87,9 @@
        (define-key org-agenda-keymap   "\C-p" 'previous-line))))
 
 ;; viper compatibility setup
-(if (boundp 'viper-version)
-    (define-key viper-vi-global-user-map "C-c /" 'org-sparse-tree))
+(eval-after-load "viper"
+  '(if (boundp 'viper-version)
+       (define-key viper-vi-global-user-map "C-c /" 'org-sparse-tree)))
 
 ;; agenda & remember setup
 (add-hook 'remember-mode-hook #'org-remember-apply-template)

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 21:14:44 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: Thu May 30 18:14:29 2013 (+0200)
+;; Last-Updated: Fri May 31 17:20:30 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 59
+;;     Update #: 60
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -123,7 +123,7 @@
 
 (eval-after-load "flymake-jslint"
   '(progn
-     (setq lintnode-location lintnode-rep 
+     (setq lintnode-location lintnode-rep
            lintnode-node-program (if (and (boundp 'js-comint-program-name)
                                           (file-executable-p js-comint-program-name))
                                      js-comint-program-name
@@ -199,5 +199,3 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; web-programming.el ends here
-
-

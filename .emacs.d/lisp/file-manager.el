@@ -5,13 +5,13 @@
 ;; Author: Martial Boniou
 ;; Maintainer: Martial Boniou
 ;; Created: Sat Feb 19 11:17:32 2011 (+0100)
-;; Version: 0.8.2-sr
-;; Last-Updated: Mon Nov 14 20:12:05 2011 (+0100)
+;; Version: 0.8.3
+;; Last-Updated: Fri May 31 17:16:43 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 93
-;; URL:
-;; Keywords:
-;; Compatibility:
+;;     Update #: 94
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

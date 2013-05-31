@@ -1,17 +1,17 @@
 ;;; vim-everywhere.el ---
 ;;
 ;; Filename: vim-everywhere.el
-;; Description: Vim emulation setup
+;; Description: Vim Emulation Setup
 ;; Author: Martial Boniou
-;; Maintainer:
+;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
-;; Version: 0.6
-;; Last-Updated: Wed May 29 17:59:21 2013 (+0200)
-;;           By:
-;;     Update #: 334
-;; URL:
-;; Keywords:
-;; Compatibility:
+;; Version: 0.6.1
+;; Last-Updated: Fri May 31 17:05:59 2013 (+0200)
+;;           By: Martial Boniou
+;;     Update #: 336
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

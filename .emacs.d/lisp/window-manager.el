@@ -1,17 +1,17 @@
 ;;; window-manager.el ---
 ;;
 ;; Filename: window-manager.el
-;; Description: buffers/windows management
+;; Description: Buffers & Windows Management
 ;; Author: Martial Boniou
 ;; Maintainer: Martial Boniou
 ;; Created: Sat Feb 19 11:17:32 2011 (+0100)
 ;; Version: 0.8.1
-;; Last-Updated: Sun Nov 27 22:14:38 2011 (+0100)
+;; Last-Updated: Fri May 31 17:07:44 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 82
-;; URL:
-;; Keywords:
-;; Compatibility:
+;;     Update #: 83
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

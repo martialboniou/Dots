@@ -1,17 +1,17 @@
 ;;; shortcuts.el ---
 ;;
 ;; Filename: shortcuts.el
-;; Description:
+;; Description: Global Keybindings
 ;; Author: Martial Boniou
-;; Maintainer:
+;; Maintainer: 
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
-;; Version:
-;; Last-Updated: Thu May 30 12:51:48 2013 (+0200)
+;; Version: 
+;; Last-Updated: Fri May 31 17:04:40 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 187
-;; URL:
-;; Keywords:
-;; Compatibility:
+;;     Update #: 188
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -266,11 +266,11 @@
   (interactive)
   (condition-case err
       (call-interactively 'revive-plus:toggle-single-window)
-    (error (if (el-get-package-is-installed "revive-plus")
+    (error (if (locate-library "revive+")
                (progn
                  (message "shortcuts: %s" err)
                  (require 'revive+))
-             (message "shortcuts: please, el-get install revive-plus")))))
+             (message "shortcuts: revive-plus is recommended and not installed.")))))
 (mars/build-ordered-function-keys "f5"
                                   (mars/toggle-single-window . id)
                                   (cycle-buffer-backward            . next)

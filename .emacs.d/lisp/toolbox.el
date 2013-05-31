@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Mon Mar 14 20:02:00 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Nov  3 16:19:09 2011 (+0100)
+;; Last-Updated: Fri May 31 17:13:28 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 8
+;;     Update #: 9
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -48,12 +48,15 @@
 (require 'preamble)
 
 ;;; KEATS
-(require 'keats)
-(require 'keats-interactive)
-(custom-set-variables '(keats-file (expand-file-name
-                                    (concat (file-name-as-directory mars/local-root-dir)
-                                            (file-name-as-directory mars/personal-data)
-                                            "cheatsheets"))))
+
+(require-if-located 'keats)
+(eval-after-load "keats"
+  '(progn
+     (require 'keats-interactive)
+     (custom-set-variables '(keats-file (expand-file-name
+                                         (concat (file-name-as-directory mars/local-root-dir)
+                                                 (file-name-as-directory mars/personal-data)
+                                                 "cheatsheets"))))))
 
 (provide 'toolbox)
 

@@ -1,17 +1,17 @@
 ;;; media.el ---
 ;;
 ;; Filename: media.el
-;; Description:
+;; Description: 
 ;; Author: Martial Boniou
-;; Maintainer:
+;; Maintainer: 
 ;; Created: Sat Jan 19 20:16:06 2008
 ;; Version: 0.3
-;; Last-Updated: Thu May 30 19:46:05 2013 (+0200)
+;; Last-Updated: Fri May 31 17:12:54 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 122
-;; URL:
-;; Keywords:
-;; Compatibility:
+;;     Update #: 123
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -55,9 +55,6 @@
 
 (require 'www)
 (require 'preamble)
-
-(when (locate-library "emms")
-  (eval-when-compile (require 'emms)))
 
 ;;; IMAGE-MODE
 ;;
@@ -139,11 +136,11 @@
 (when (locate-library "emms")
   (let* ((emms-path (file-name-directory (locate-library "emms")))
          (emms-bin-path (expand-file-name "../src" emms-path)))
+    (if-bound-call emms-devel)      ; CHECK: emms-start-browse on <F2>
     (eval-after-load "emms"
       '(progn
          (display-time)
          ;; (setq default-file-name-coding-system 'utf-8) ; maybe not correct
-         (emms-devel)                            ; emms-smart-browse on <F2>
          (emms-default-players)
 
          ;; fix processes for `emms-stream-info'

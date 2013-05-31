@@ -30,6 +30,17 @@
                               :post-init nil)
                        (:name evil-numbers
                               :features nil) ; let 'VIM-EVERYWHERE configure 'EVIL
+                       (:name ace-jump-mode
+                              :after (progn
+                                       (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+                                       (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
+                                       (eval-after-load "evil-mode"
+                                         '(define-key evil-normal-state-map
+                                            (kbd "SPC") 'ace-jump-mode))
+                                       (eval-after-load "viper"
+                                         '(define-key viper-vi-global-user-map
+                                            (kbd "SPC") 'ace-jump-mode)))
+                              :features nil) ; let 'BEHAVE configure 'ACE-JUMP-MODE
                        (:name highlight-parentheses
                               :features nil) ; HIGHLIGHT-PARENTHESES-MODE is autoloaded
                        (:name bbdb           ; BBDB for wanderlust
@@ -135,9 +146,8 @@
 (setq mars/packages
   (nconc mars/packages
          (mapcar #'el-get-source-name el-get-sources)))
-
+(setq mars/packages nil)
 (el-get 'sync mars/packages)
 (el-get 'wait)
 
 (provide 'el-select)            ; required by 'ADAPTER
-

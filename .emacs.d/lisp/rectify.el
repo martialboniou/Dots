@@ -1,17 +1,17 @@
 ;;; rectify.el ---
 ;;
 ;; Filename: rectify.el
-;; Description: corrects and expands
+;; Description: Script correctors & expanders
 ;; Author: Martial Boniou
-;; Maintainer:
+;; Maintainer: 
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
-;; Version:
-;; Last-Updated: Thu May 30 15:35:43 2013 (+0200)
+;; Version: 
+;; Last-Updated: Fri May 31 17:01:59 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 165
-;; URL:
-;; Keywords:
-;; Compatibility:
+;;     Update #: 167
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

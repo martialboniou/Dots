@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 23:42:52 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu May 30 18:17:02 2013 (+0200)
+;; Last-Updated: Fri May 31 17:19:48 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 138
+;;     Update #: 139
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -76,7 +76,7 @@
             (add-to-list 'flymake-allowed-file-name-masks
                          '("\\.py\\'" flymake-pyflakes-init))))) ; this hook-function should be set in `confs/rectify'
      (flet ((py-msg-advise (app) (message (format "python-357: missing application to complete python support:\n\tpip install %s" (prin1-to-string app)))))
-       
+
        ;; ipython - interactive python toolkit
        ;; (if (executable-find "ipython")
        ;;     ;; (require 'ipython) ; for old python-mode

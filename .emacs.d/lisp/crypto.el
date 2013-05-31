@@ -3,15 +3,15 @@
 ;; Filename: crypto.el
 ;; Description: Encryption & cracking tool
 ;; Author: Martial Boniou
-;; Maintainer:
+;; Maintainer: 
 ;; Created: Wed Mar  2 16:19:50 2011 (+0100)
-;; Version:
-;; Last-Updated: Thu Nov  3 13:17:58 2011 (+0100)
+;; Version: 
+;; Last-Updated: Fri May 31 16:54:42 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 31
-;; URL:
-;; Keywords:
-;; Compatibility:
+;;     Update #: 34
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -49,7 +49,7 @@
 
 ;;; CPT
 (when (locate-library "ps-ccrypt")
-  (require 'ps-ccrypt))			; ccrypt 1.9 needed
+  (require 'ps-ccrypt))                 ; ccrypt 1.9 needed
 
 ;;; GPG
 (unless (fboundp 'epa-decrypt-region)
@@ -65,15 +65,16 @@
           (setq org-tags-exclude-from-inheritance (quote ("crypt")))))))
 
 ;;; HEXVIEW
-(defun mars/hexedit ()
-  (interactive)
-  (let ((file (buffer-file-name (current-buffer))))
-    (if (or (and file (file-exists-p file))
-            (and (eq major-mode 'dired-mode)
-                 (setq file (condition-case nil (dired-get-filename) (error nil)))
-                 (not (with-temp-buffer (condition-case nil (cd file) (error nil))))))
-        (hexview-find-file file)
-      (call-interactively 'hexview-find-file))))
+(when (locate-library "hexview-mode")
+  (defun mars/hexedit ()
+    (interactive)
+    (let ((file (buffer-file-name (current-buffer))))
+      (if (or (and file (file-exists-p file))
+              (and (eq major-mode 'dired-mode)
+                   (setq file (condition-case nil (dired-get-filename) (error nil)))
+                   (not (with-temp-buffer (condition-case nil (cd file) (error nil))))))
+          (if-bound-call hexview-find-file file)
+        (call-interactively 'hexview-find-file)))))
 
 (provide 'crypto)
 

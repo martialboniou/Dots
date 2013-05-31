@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:40:26 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu May 30 18:02:14 2013 (+0200)
+;; Last-Updated: Fri May 31 17:18:45 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 57
+;;     Update #: 58
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -63,7 +63,7 @@
   '(progn
      (eval-after-load "paredit"
        '(progn
-          ;; disable paredit-semicolon to type final 
+          ;; disable paredit-semicolon to type final
           ;; disable paredit-backslash to type comment end tag normally
           (defun shen-paredit-mode-hook ()
             (define-key paredit-mode-map "\\" (lambda ()

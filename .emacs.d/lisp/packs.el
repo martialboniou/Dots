@@ -3,15 +3,15 @@
 ;; Filename: packs.el
 ;; Description: Maintain/install packages
 ;; Author: Martial Boniou
-;; Maintainer:
+;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.5-dying-code
-;; Last-Updated: Thu May 30 16:09:40 2013 (+0200)
+;; Last-Updated: Fri May 31 17:00:35 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 526
-;; URL:
-;; Keywords:
-;; Compatibility:
+;;     Update #: 527
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

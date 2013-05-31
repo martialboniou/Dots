@@ -2,17 +2,17 @@
 ;;; init.el
 ;;
 ;; Filename: init.el
-;; Description: fichier de configuration Emacs (cf. Compatibility)
+;; Description: Emacs Setup
 ;; Author: Martial Boniou
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
-;; Version: 5.0
-;; Last-Updated: Mon Dec 19 15:03:35 2011 (+0100)
+;; Version: 5.1
+;; Last-Updated: Fri May 31 17:15:50 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 2069
+;;     Update #: 2070
 ;; URL: https://github.com/martialboniou/Dots.git
 ;; Keywords: .emacs, init
-;; Compatibility: C-\ is linked to Esc-map
+;; Compatibility: 
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -45,7 +45,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 
-(add-to-list 'load-path (expand-file-name "lisp" 
+(add-to-list 'load-path (expand-file-name "lisp"
                           (file-name-directory load-file-name)))
 (delete-dups load-path)
 
@@ -56,13 +56,6 @@
 ;;; SERVER
 ;;
 (start-named-server user-login-name)
-
-;;; REVIVE
-;;
-(when (el-get-package-is-installed "revive-plus")
-  (eval-when-compile (require 'revive+))
-  (setq revive-plus:all-frames t)
-  (revive-plus:minimal-setup))
 
 ;;; ALL THE FUN
 ;; these packages are not loaded when Emacs boots from `kernel'

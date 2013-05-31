@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 0.8
-;; Last-Updated: Wed May 29 20:39:57 2013 (+0200)
+;; Last-Updated: Fri May 31 17:00:08 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 110
+;;     Update #: 111
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -50,8 +50,7 @@
 (require 'preamble)
 (require 'behave)                       ; to control frame deletion
 
-(eval-when-compile (require 'sendmail)
-                   (require 'wl))
+(eval-when-compile (require 'sendmail))
 
 ;; TODO: REPLACE #'BBDB-VCARD-IMPORT BY #'trebb/BBDB-VCARD
 (let* ((init-file-name (format "%s.wl" user-login-name))
@@ -77,10 +76,11 @@
       (setq wl-resource-rep (file-name-directory wl-lib)))
     (when (and (not (null wl-resource-rep))
                (file-exists-p wl-resource-rep))
-      (setq wl-icon-directory
-            (expand-file-name "icons"
-                              (el-get-package-directory "wanderlust"))))))
+      (eval-after-load "wl"
+        '(setq wl-icon-directory
+               (expand-file-name "icons" (el-get-package-directory "wanderlust")))))))
 
+;; WL-DRAFT ~ 'MARS/DRAFT-EMAIL
 (eval-after-load "wl-draft"
   '(progn
      (when (boundp 'mail-user-agent)
@@ -94,8 +94,16 @@
          'mail-send-hook))
      (setq confirm-frame-action-buffer-alist 
            (append '((major-mode . (wl-draft-mode)))
-                   confirm-frame-action-buffer-alist))))
+                   confirm-frame-action-buffer-alist))
 
+     (defun mars/draft-email ()
+       "Open an email draft on the default Wanderlust posting user."
+       (interactive)
+       (wl-draft (list (cons 'To "")))
+       (run-hooks 'wl-mail-setup-hook)
+       (mail-position-on-field "To"))))
+
+;; WL ~ 'MARS/WL
 (eval-after-load "wl"
   '(progn
      (unless window-system
@@ -350,25 +358,18 @@
                                     (sign    . mc-sign-message))
                      (wl-summary-mode (decrypt . mc-wl-decrypt-message)
                                       (verify  . mc-wl-verify-signature))))
-                   mc-modes-alist)))))))
+                   mc-modes-alist)))))
 
-(defun mars/draft-email ()
-  "Open an email draft on the default Wanderlust posting user."
-  (interactive)
-  (wl-draft (list (cons 'To "")))
-  (run-hooks 'wl-mail-setup-hook)
-  (mail-position-on-field "To"))
-
-(defun mars/wl ()
-  "Open Wanderlust in another frame."
-  (interactive)
-  (if (null window-system)
-      (if (< (length (window-list nil -1 nil)) 2)
-          (wl)
-        (when (y-or-n-p "Would you like to start Wanderlust here? ")
-          (delete-other-windows)
-          (wl)))
-    (wl-other-frame)))
+     (defun mars/wl ()
+       "Open Wanderlust in another frame."
+       (interactive)
+       (if (null window-system)
+           (if (< (length (window-list nil -1 nil)) 2)
+               (wl)
+             (when (y-or-n-p "Would you like to start Wanderlust here? ")
+               (delete-other-windows)
+               (wl)))
+         (wl-other-frame)))))
 
 (provide 'mail)
 

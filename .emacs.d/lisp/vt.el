@@ -3,15 +3,15 @@
 ;; Filename: vt.el
 ;; Description: Virtual Terminal
 ;; Author: Martial Boniou
-;; Maintainer:
+;; Maintainer: 
 ;; Created: Wed Feb 23 13:14:51 2011 (+0100)
-;; Version:
-;; Last-Updated: Thu May 30 18:55:20 2013 (+0200)
+;; Version: 
+;; Last-Updated: Fri May 31 17:06:28 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 19
-;; URL:
-;; Keywords:
-;; Compatibility:
+;;     Update #: 20
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

@@ -1,17 +1,17 @@
 ;;; vars.el ---
 ;;
 ;; Filename: vars.el
-;; Description:
+;; Description: 
 ;; Author: Martial Boniou
-;; Maintainer:
+;; Maintainer: 
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
-;; Version:
-;; Last-Updated: Thu May 30 16:42:10 2013 (+0200)
+;; Version: 
+;; Last-Updated: Fri May 31 17:13:55 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 154
-;; URL:
-;; Keywords:
-;; Compatibility:
+;;     Update #: 155
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -182,7 +182,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 
 ;;; NOTEBOOK CONTEXT
 ;; touch ~/.notebook if your computer need low resolution screen setup
-(defvar *mars/notebook-context* 
+(defvar *mars/notebook-context*
     (file-readable-p (expand-file-name ".notebook" "~"))
   "If true, this computer has low resolution. Useful for graphics & font settings.")
 
@@ -191,7 +191,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 (defvar c-include-path nil "Additional include path for C programs.")
 (defvar cpp-include-path nil "Additional include path for C++ programs")
 (let ((data-dir (expand-file-name mars/personal-data mars/local-root-dir)))
-  (mapc (lambda (x) 
+  (mapc (lambda (x)
           (let ((newdir (expand-file-name data-dir)))
         (unless (file-exists-p newdir)
           (make-directory newdir t))))
@@ -208,7 +208,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
     (unless (fboundp 'flet) (require 'cl)) ; elisp obviously needs R*RS | CL standard
     (flet ((cachize (file-or-dir &optional obsolete-file-or-dir)
                     ;; generate name of a specific file or directory in cache
-                    (let ((full-path (expand-file-name file-or-dir 
+                    (let ((full-path (expand-file-name file-or-dir
                                                        data-cache)))
                       ;; try to copy/purge obsolete file or directory content
                       ;; in a safe way; useful when the emacs' boot doesn't
@@ -233,7 +233,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
                                              "~/.emacs.d/last-wconf")
         desktop-dir data-cache
         desktop-base-file-name "desktop"
-        desktop-base-lock-name (format "%s%s.lock" 
+        desktop-base-lock-name (format "%s%s.lock"
                                        (if (memq system-type '(ms-dos windows-nt cygwin)) "_" ".")
                                        desktop-base-file-name) ; TODO: add a fun in defs named `prefix-hidden-file'
         ido-save-directory-list-file (cachize "ido-last")
@@ -281,7 +281,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 (if (member system-type '(windows-nt ms-dos))
          (setq ssl-program-name "openssl"
                ssl-program-arguments '("s_client" "-host" host "-port" service)) ; "-verify" "O" "-CApath" "/usr/lib/ssl/certs" "-quiet"
-         (setq ssl-program-name "gnutls-cli" 
+         (setq ssl-program-name "gnutls-cli"
                ssl-program-arguments '("-p" service host)))
 (defvar w3m-program-name "w3m"
   "The current program name of ye goo' olde W3M.")
@@ -307,7 +307,7 @@ named FUEL must be found in the `misc/fuel' subdirectory.")
 
 ;;; SPECIFICS (<data>/sys/vars-<hostname>.el or <data>/vars-<hostname>.el)
 ;; DEPRECATED
-(let ((sys-rep (expand-file-name 
+(let ((sys-rep (expand-file-name
                 "sys"
                 (expand-file-name mars/personal-data mars/local-root-dir))))
   (unless (file-exists-p sys-rep)
@@ -324,4 +324,3 @@ named FUEL must be found in the `misc/fuel' subdirectory.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; vars.el ends here
-

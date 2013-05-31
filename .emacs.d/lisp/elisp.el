@@ -1,17 +1,17 @@
 ;;; elisp.el ---
 ;;
 ;; Filename: elisp.el
-;; Description:
+;; Description: 
 ;; Author: Martial Boniou
-;; Maintainer:
+;; Maintainer: 
 ;; Created: Wed Feb 23 10:19:49 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Nov  3 13:24:48 2011 (+0100)
+;; Last-Updated: Fri May 31 17:11:52 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 33
-;; URL:
-;; Keywords:
-;; Compatibility:
+;;     Update #: 39
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -179,13 +179,13 @@ in `util/ourcomments-util' of the `nxhtml' package."
 (defun mars/emacs-Q (&optional init-file args)
   (interactive "FInit file: \nsArguments: ")
   (flet ((check-valid-string (x) (and init-file (not (eq (string-match x "") 0)))))
-    (eval 
+    (eval
      `(apply 'mars/run-emacs nil "-Q" "--debug-init" ,@(when (check-valid-string init-file) `("--load" ,init-file)) ,(when (check-valid-string args) args)))))
 
 (defun mars/emacs-q (&optional init-file args)
   (interactive "FInit file: \nsArguments: ")
   (flet ((check-valid-string (x) (and init-file (not (eq (string-match x "") 0)))))
-    (eval 
+    (eval
      `(apply 'mars/run-emacs nil "-q" ,@(when (check-valid-string init-file) `("--load" ,init-file)) ,(when (check-valid-string args) args)))))
 
 (defun mars/vars-heading ()

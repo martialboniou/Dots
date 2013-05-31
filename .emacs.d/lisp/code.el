@@ -1,17 +1,17 @@
 ;;; code.el ---
 ;;
 ;; Filename: code.el
-;; Description:
+;; Description: Development kit
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu May 30 15:36:13 2013 (+0200)
+;; Last-Updated: Fri May 31 16:56:01 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 615
+;;     Update #: 617
 ;; URL: 
 ;; Keywords: 
-;; Compatibility:
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -289,7 +289,7 @@ Move point to the beginning of the line, and run the normal hook
      ;;     (global-semantic-folding-mode 1) ; FIXME: no more
      (defun mars/Qt ()                  ; TODO: temp var for test => to move to vars-<specific>.el
        (setq qt4-base-dir "/Library/Frameworks/QtCore.framework/Headers"))
-     
+
      (require-for-code 'semanticdb-global)
      (require-for-code 'semanticdb-ectag)
      ;; GNU global support
@@ -361,7 +361,7 @@ Move point to the beginning of the line, and run the normal hook
 
 ;;; ELECTRIC-DOT-AND-DASH
 ;; aka electric-dot-and-slash here
-(require-if-installed 'electric-dot-and-dash) 
+(require-if-installed 'electric-dot-and-dash)
 (eval-after-load "electric-dot-and-dash"
   '(mars/add-hooks lispem-hooks #'(lambda ()
                                     (local-set-key "." 'electric-dot-and-dash-dot)
@@ -520,7 +520,7 @@ Move point to the beginning of the line, and run the normal hook
 ;;; ORG BABEL
 (eval-after-load "org"
   '(progn
-     (org-babel-do-load-languages 'org-babel-load-languages 
+     (org-babel-do-load-languages 'org-babel-load-languages
                                   '((emacs-lisp . t)
                                     (ruby . t)))))
 

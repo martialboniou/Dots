@@ -3,15 +3,15 @@
 ;; Filename: defs.el
 ;; Description: utility functions
 ;; Author: Martial Boniou
-;; Maintainer:
+;; Maintainer: 
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.15
-;; Last-Updated: Wed May 29 12:47:53 2013 (+0200)
+;; Last-Updated: Fri May 31 16:56:35 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 289
-;; URL:
-;; Keywords:
-;; Compatibility:
+;;     Update #: 290
+;; URL: 
+;; Keywords: 
+;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -296,7 +296,7 @@ file; display a message otherwise."
     `(progn
        ,@(mapcar
           #'(lambda (x)
-              `(unless 
+              `(unless
                    (fboundp ',x)
                  (defun ,x ()
                    (interactive)
@@ -469,7 +469,7 @@ none (and not makeable). If `GENERAL' is true, it will refer to or creates
 a simple `custom.el'."
        (expand-file-name
         (if general "custom.el"
-          (format "%s-%s-%s.el" 
+          (format "%s-%s-%s.el"
                   (which-emacs-i-am)
                   (number-to-string emacs-major-version)
                   (replace-regexp-in-string "/" "-" (symbol-name system-type))))
@@ -477,7 +477,7 @@ a simple `custom.el'."
          subdirectory-in-data
          (expand-file-name
           mars/personal-data mars/local-root-dir))))
-     
+
      (defun safe-build-custom-file (subdirectory-in-data &optional general) ; UNTESTED
        (let ((file (build-custom-file-name subdirectory-in-data general)))
      (if (file-exists-p file)
@@ -502,7 +502,7 @@ a simple `custom.el'."
      ;; - byte compile
      (defun auto-byte-compile-file-maybe () ; UNTESTED
        (interactive)
-       (when (and auto-byte-compile 
+       (when (and auto-byte-compile
                   buffer-file-name)
          (byte-recompile-file buffer-file-name nil 0)))
 
@@ -518,10 +518,10 @@ a simple `custom.el'."
                     (when (or (not (file-exists-p byte-file))
                               (file-newer-than-file-p
                                file byte-file))
-                      (when (with-temp-buffer 
+                      (when (with-temp-buffer
                               (insert-file-contents file t)
                               (normal-mode t)
-                              (let ((definition (assoc 'auto-byte-compile 
+                              (let ((definition (assoc 'auto-byte-compile
                                                        file-local-variables-alist)))
                                 (if definition
                                     (cdr definition)
@@ -775,7 +775,7 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
   (end-of-line)
   (insert " ")                          ; needed to prevent backward-delete-char-hungry not to be too hungry FIXME: replace those two lines
   (backward-delete-char-hungry 1)       ; delete trailing space between the eol and the last word
-  
+
   (insert "\n"
           (make-string (- (point-at-eol)
                           (point-at-bol))
@@ -796,6 +796,16 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
       "*Delete all spaces and tabs after point."
       (interactive "*")
       (delete-region (point) (progn (skip-chars-forward " \t") (point))))
+
+(defun mars/point-in-comment ()              ; UNTESTED
+  "Determine if the point is inside a comment. As the first comment character is not a comment, we check the next point (idea by http://www.emacswiki.org/emacs/BackToIndentationOrBeginning).
+"
+  (interactive)
+  (let ((point-type (syntax-ppss-context (syntax-ppss)))
+        (next-point-type (save-excursion
+                           (syntax-ppss-context (syntax-ppss (+ (point) 1))))))
+    (when (or (eq 'comment point-type)
+              (eq 'comment next-point-type)) t)))
 
 ;;; whack whitespace until the next word
 (defun whack-whitespace (&optional arg)
@@ -890,18 +900,18 @@ this method to convert it."
    ((= c ?s)
     (if sq-state
     (progn
-      (ucs-insert #x2019)
+      (insert (decode-char 'ucs #x2019))
       (setq sq-state 'nil))
-      (ucs-insert #x2018)
+      (insert (decode-char 'ucs #x2018))
       (setq sq-state 't)))
    ((= c ?d)
     (if dq-state
     (progn
-      (ucs-insert #x201d)
+      (insert (decode-char 'ucs #x201d))
       (setq dq-state 'nil))
-      (ucs-insert #x201c)
-      (setq dq-state 't)))
-   ((= c ?') (ucs-insert #x2019))
+    (insert (decode-char 'ucs #x201c))
+    (setq dq-state 't)))
+   ((= c ?') (insert (decode-char 'ucs #x2019)))
    ((= c ?a)
     (progn
       (if (> (current-column) 0) (newline-and-indent))
@@ -914,8 +924,8 @@ this method to convert it."
       (backward-char 11)))
    ((= c ?&) (insert "&amp;"))
    ((= c ?<) (insert "&lt;"))
-   ((= c ?-) (ucs-insert #x2014))
-   ((= c ?.) (ucs-insert #xb7))))
+   ((= c ?-) (insert (decode-char 'ucs #x2014)))
+   ((= c ?.) (insert (decode-char 'ucs #xb7)))))
 
 (defun fix-and-indent ()                ; UNTESTED
   "Clean up the code"

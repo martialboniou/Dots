@@ -83,7 +83,7 @@
      ;; change mode-line color by evil state in 'VIM-EVERYWHERE
      ;; normal case -> no Vim-like behavior -> color-theme & mic-paren
      (unless *i-am-a-vim-user*          ; 'VIM-EVERYWHERE loads its own colorscheme and parens' support
-       (require 'mic-paren)             ; faces for (mis)matching parentheses
+       (require-if-located 'mic-paren)  ; faces for (mis)matching parentheses
        (eval-after-load "color-theme" '(color-theme-ld-dark))
        (eval-after-load "mic-paren"   '(paren-activate)))
      ;; colors out of theme

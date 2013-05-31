@@ -29,30 +29,54 @@ Vim 7
 
 *Need some tidy up*
 
-Gnu Emacs 23.2+ or 24
----------------------
+GNU Emacs 24.3
+--------------
 
-All scripts in `.emacs.d` are tested on Emacs 23.3 and Emacs 24.0.90.
+All scripts in `.emacs.d` are currently tested on Emacs 24.3. **Ensure your LOAD-PATH know this path:** `~/.emacs.d/lisp` to be able to launch partial setup (see my `zsh` setup).
 
 A great monothread OS for manipulating files, code, versioning tools, email but a poor editor compared to Vim. Fortunately Vimpulse gives us a better Emacs with modal edition mixed with the powertools of Emacs.
 
-A lot of work is needed to enhance the portability but some snippets may be useful for you if you need to set some packages up. My daily tools are:
+The first Emacs is launched, Emacs asks at startup about:
 
-* `vimpulse`
-* [`sticky-control`](http://www.cs.utoronto.ca/~ryanjohn/sticky-control.el) (excellent after a [yubitsume](http://en.wikipedia.org/wiki/Yubitsume))
+* your environment of typing: *Vim-like* or *Emacs*. If *Vim-like* is emulated, *Evil* is used by default and the other tools are customized to work with this environment;
+* your keyboard: *Dvorak* or *Qwerty*. If *Dvorak* is chosen, a new keybinding appears for copy/paste. This keybinding is based upon the Oracle/Sun 5/6 keyboards' extra keys' order (on the left part of the keyboard): `C-; C-;` stands for `kill-region` (`CUT`), `C-; C-a` stands for `yank` (`PASTE`) and eventually `C-; C-'` stands for `copy-region-as-kill` (`COPY`);
+* your use of `C-w` and `C-h` for deletion as on ANSI terminals: if true, those keybindings behave for delete a word and a character, respectively. The `C-w` keybinding is normally used to cut a region: alternatively, a *Vim-like* will use the *Vi* keybindings in *Evil* normal mode; a `CUA` user will use the delayed `C-x` keybinding; a *Dvorak* typist will use the new `C-; C-;` keybinding; and others would like to create their own keybindings (by default `C-x 6 ;` should be available);
+* your need of packages: *Full install* or *None*. If you want the complete installation, the system will install the recommended packages to optimize the use of this setup. Otherwise, no `el-get` packages will be installed (useful for custom/testing/offline session). If you want a *Vim-like* environement at startup and *None* of the recommended packages, be careful that you will need to `M-x el-get-install` the package named `evil`.
+
+Once your Emacs is launched, a file `.emacs.d/data/.launched` is created to register your choice. If you want to change, you may delete it. If you want another setup for one specific session, you may force *Emacs* to be launched with other options using:
+
+* `*vim-now*` boolean to enable/disable the *Vim-like* setup;
+* `*dvorak-now*` boolean to enable/disable the *Dvorak* keyboard setup;
+* `*term-now*` boolean to enable/disable the `C-w` & `C-h` as deletion keybindings;
+* `*full-ammo-now*` boolean to enable/disable the full `el-get-sources` install.
+
+Those forcing options may be set at the heading of the `init.el` file in the `.emacs.d/` directory by using `defvar`.
+
+A minimal setup may be launched any time by running explicitly the `kernel` script (Emacs will detect an abnormal startup and won't require additional setup):
+
+    $ emacs -q -l kernel
+
+Other partial setup may be launched by this method: `mail` will load every `org` and `wl` (wanderlust) configuration files, `peyton-jones-family` and `rectify` together should run a good environment uniquely enhanced to develop programs based on *ML* with snippets and flymake shortcuts... You also may force options in command line. Say, we want *minimal setup with Vim-like environement*:
+
+    $ emacs -q -e "(defvar *vim-now* t)" -l kernel
+
+It works even if your initial statement was not to let `vim` emulation to run. A simpler approach would be to load `vim-everywhere`:
+
+    $ emacs -q -l vim-everywhere
+
+The following list is some of my recommended `el-get` packages (or, if unreachable, those provided by programs in `vendor`directory or better, in the `emacs-revival` archive):
+
+* `evil` and `undo-tree`
 * `ido`
-* `undo-tree` (use `C-x u` to display tree)
 * `org-agenda` on `org-mode` 7+
 * `remember`
-* `semantic` (from `cedet`)
 * `wanderlust`
-* `wdired` (an *editable* `dired`; some wrappers in `lisp` for `viper`/`vimpulse` case)
+* `wdired` (an *editable* `dired`; some wrappers in `lisp` for `viper` or `evil` case)
 * `anything`
 * `ibuffer` (a `dired` for buffers)
 * `yasnippet`
 * `auto-complete`
 * `hippie-expand` (on `C-p`)
-* `nxhtml` (`js` (previously known as `espresso`) should be used as `js2-mode` doesn't work with `mmm-mode`)
 
 Some packages may also be useful in order to help this configuration to work fine. For example:
 
@@ -63,15 +87,13 @@ Some packages may also be useful in order to help this configuration to work fin
 * `newsticker`: to read RSS (not optimal for instance);
 * `multi-term`: to manage multiple `term` windows on POSIX systems.
 
-`anything` is not as fast/smart as `ido` but it's very useful for displaying a one shot buffer. For example, type `<f5><f8>` to display a list including: 
+`anything` is not as fast/smart as `ido` but it's very useful for displaying a one shot buffer. For example, type `<f5><f8>` to display a list including:
 
 * current buffers;
 * recently open files;
 * all files and directory in the current.
 
 See `.emacs.d/lisp/shortcuts.el` for good ideas of bindings especially for buffer/window/frame navigation using tiling/cycling (thing about larswm or [Xmonad](http://xmonad.org/tour.html)) or for `<f5>`-`<f8>` keys (`<f5><f5>` toggle the current frame from multiple buffers to a single view on the current buffer via `revive.el`).
-
-The current version should match **24.0** and need a major 23 if possible. (I recommend to use an `emacs` 23.2 or more because some radical changes where made in the byte-code after `emacs` 23.1.)
 
 Read `.emacs.d/lisp/vars.el` to configure your path. Remember this! By default, `.emacs` makes Emacs to:
 
@@ -90,7 +112,7 @@ Here, `require` is often avoided because automagically generated `autoload`s and
 
 `.emacs.d/lisp/vim-everywhere` is a bit special and hard to understand. It is here to:
 
-* load `viper` and `vimpulse`
+* load `evil-mode`
 * extend the fringe to display line numbering
 * extend colors with `font-lock-number-face` and `hl-line+`
 * colorize keywords like **FIXME:**... and global line `<.>` viper state
@@ -101,7 +123,8 @@ Here, `require` is often avoided because automagically generated `autoload`s and
 Final Thoughts
 ==============
 
-I'll do a blog for all this ASAP.
+I'll do a blog for all this one day.
 
 * **TODO:** bindings map database for my bindings in and out of the shell, Emacs and Vim (useful in Mac OS X and Xmonad/Gnome context).
 * **TODO:** snippets database in another project to organize some tidbits and hacks used in those kind of dotfiles. For instance, read `chit` files with ruby [`chit`](https://github.com/libin/chit) (ruby 1.9.2 required).
+* **COMING-SOON:** split the `.emacs.d` and `.vim` from `Dots` to other tiny projects.

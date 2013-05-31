@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.15
-;; Last-Updated: Fri May 31 16:56:35 2013 (+0200)
+;; Last-Updated: Fri May 31 18:53:22 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 290
+;;     Update #: 291
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -122,7 +122,7 @@
   `(progn
      ,@(mapcar (lambda (x)
                  `(when (boundp ',(car x))
-                    (setq ,(cdr x) ,(car x))))
+                     (setq ,(cdr x) ,(car x))))
                conses)))
 
 (defun safe-autoloads-load (loaddefs)   ; UNTESTED

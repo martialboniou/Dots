@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri May 31 17:13:55 2013 (+0200)
+;; Last-Updated: Fri May 31 18:49:42 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 155
+;;     Update #: 162
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -47,11 +47,12 @@
 
 ;;; *MOOD*
 ;;
-;; create *vim-now*/*dvorak-now*/*term-now* to force new vim/dvorak/term options
-;; remove .emacs.d/data/.launched to reset vim/dvorak/term options at startup
+;; create *vim-now*/*dvorak-now*/*term-now*/*full-ammo-now* to force new 
+;; vim/dvorak/term/el-get-sources options
+;; remove .emacs.d/data/.launched to reset vim/dvorak/term/el-get-sources options at startup
 ;;
 (defvar *i-am-a-vim-user* t
-  "If true, Emacs will be Vimpyrized. (ViViVi, the beast.)
+  "If true, Emacs will be Vimpyrized using `evil-mode'. (ViViVi, the beast.)
 Set the boolean *vim-now* to shortcut this variable.")
 (defvar *i-am-a-dvorak-typist* t
   "If true, additional Dvorak-friendly keybindings.
@@ -68,6 +69,11 @@ recommended to boot CEDET faster.")
 (defvar *i-am-an-emacsen-dev* t
   "If true, ELISP helpers will be loaded providing tools
 to easily visualize ELISP macro expansions.")
+(defvar *i-want-full-ammo* t
+  "If true, use a recommended package list to use as `el-get-sources'.
+Otherwise, `el-get' doesn't install any third party extension (you may
+want this in a minimal/offline Emacs install). (See `el-select' file
+for more info.)")
 (defvar *i-might-be-a-saiki-komon* nil
   "If true, display an organizer window at startup.
 A `saiki-komon' is a clan administrator inside gang
@@ -125,7 +131,9 @@ over a frame.")
         (setq *i-am-a-dvorak-typist* nil))
       (unless (y-or-n-p "C-h & C-w for deletion [new cut-paste]? ")
         (setq *i-am-a-terminator* nil))
-      (with-temp-file
+      (unless (y-or-n-p "Do you want a complete installation of recommended packages? ")
+        (setq *i-want-full-ammo* nil))
+       (with-temp-file
           first-file
         (progn
           (insert (concat
@@ -135,13 +143,16 @@ over a frame.")
                    (unless *i-am-a-dvorak-typist*
                      "(when (eq *i-am-a-dvorak-typist* t) (setq *i-am-a-dvorak-typist* nil))\n")
                    (unless *i-am-a-terminator*
-                     "(when (eq *i-am-a-terminator* t) (setq *i-am-a-terminator* nil))\n"))))))))
+                     "(when (eq *i-am-a-terminator* t) (setq *i-am-a-terminator* nil))\n")
+                   (unless *i-want-full-ammo*
+                     "(when (eq *i-want-full-ammo* t) (setq *i-want-full-ammo* nil)\n"))))))))
 ;; force vim/dvorak/term options via special vars
 (eval-after-load "defs"
   '(progn
      (mars/force-options (*vim-now*    . *i-am-a-vim-user*)
              (*dvorak-now* . *i-am-a-dvorak-typist*)
-             (*term-now*   . *i-am-a-terminator*))))
+             (*term-now*   . *i-am-a-terminator*)
+             (*full-ammo-now* . *i-want-full-ammo*))))
 
 ;;; MINGW/MSYS COMPATIBILITY
 ;;

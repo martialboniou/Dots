@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.15
-;; Last-Updated: Fri May 31 18:53:22 2013 (+0200)
+;; Last-Updated: Mon Jun  3 20:56:32 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 291
+;;     Update #: 294
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -597,6 +597,12 @@ the personal Emacs Lisp configuration directory."
 
 (defmacro disable-eyecandies (&rest modes) ; UNTESTED
   `(progn ,@(mapcar #'(lambda (x) `(if-bound-call ,x -1)) modes)))
+
+ (defmacro mars/activate-state-in-modes (modes context activator &rest state) ; UNTESTED
+   `(eval-after-load ',context
+      '(progn
+         ,@(mapcar #'(lambda (x)
+                       `(,activator ,x ,@state)) modes)))) ; see. 'VIM-EVERYWHERE
 
 (defun swap-windows ()                  ; UNUSED
  "If you have 2 windows, it swaps them."

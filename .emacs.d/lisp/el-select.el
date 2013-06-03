@@ -86,7 +86,7 @@
                         dired-details
                         dired-plus
                         org-mode
-                        howm
+                        ;; howm ; corrupted tar
                         remember
                         multi-web-mode
                         markdown-mode

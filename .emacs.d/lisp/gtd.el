@@ -6,12 +6,12 @@
 ;; Maintainer: 
 ;; Created: Tue Feb 22 11:31:42 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: Fri May 31 16:59:03 2013 (+0200)
-;;           By:
-;;     Update #: 92
+;; Last-Updated: Mon Jun  3 18:24:43 2013 (+0200)
+;;           By: Martial Boniou
+;;     Update #: 94
 ;; URL: 
 ;; Keywords: 
-;; Compatibility: 
+;; Compatibility:  
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -211,4 +211,3 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; gtd.el ends here
-

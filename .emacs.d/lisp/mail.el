@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 0.8
-;; Last-Updated: Fri May 31 17:00:08 2013 (+0200)
+;; Last-Updated: Mon Jun  3 17:51:52 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 111
+;;     Update #: 118
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -51,6 +51,10 @@
 (require 'behave)                       ; to control frame deletion
 
 (eval-when-compile (require 'sendmail))
+
+;; temporary deactivate gnutls.c from Emacs
+(unless (< emacs-major-version 24)
+  (defalias 'gnutls-available-p 'ignore)) ; ensure external gnutls-cli (see. your init/<username>.wl.el)
 
 ;; TODO: REPLACE #'BBDB-VCARD-IMPORT BY #'trebb/BBDB-VCARD
 (let* ((init-file-name (format "%s.wl" user-login-name))
@@ -130,6 +134,33 @@
      (when (and (locate-library "bbdb-wl")    ; TODO: upgrade
                 (locate-library "bbdb-hooks")) ; check BBDB is currently v2 (bbdb3-wl is alpha on 2013-05-25)
        (require 'bbdb-wl))
+
+     ;; 
+     (defun wl-biff-start ()
+       (require 'timer)
+       (when wl-biff-check-folder-list
+         (if wl-biff-use-idle-timer
+             (if (get 'wl-biff 'timer)
+                 (progn (timer-set-idle-time (get 'wl-biff 'timer)
+                                             wl-biff-check-interval t)
+                        (timer-activate-when-idle (get 'wl-biff 'timer)))
+               (put 'wl-biff 'timer
+                    (run-with-idle-timer
+                     wl-biff-check-interval t 'wl-biff-event-handler)))
+           (if (get 'wl-biff 'timer)
+               (progn
+                 (timer-set-time (get 'wl-biff 'timer)
+                                 (timer-next-integral-multiple-of-time
+                                  (current-time) wl-biff-check-interval)
+                                 wl-biff-check-interval)
+                 (timer-activate (get 'wl-biff 'timer)))
+             (put 'wl-biff 'timer
+                  (run-at-time
+                   (timer-next-integral-multiple-of-time
+                    (current-time) wl-biff-check-interval)
+                   wl-biff-check-interval
+                   'wl-biff-event-handler))))))
+;;     (defun wl-biff-start () nil)
 
      ;; PGP
      ;; (mars/autoload "pgg"

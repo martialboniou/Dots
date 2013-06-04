@@ -6,16 +6,16 @@
 ;; Maintainer: 
 ;; Created: Tue Feb 22 11:31:42 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: Mon Jun  3 18:24:43 2013 (+0200)
+;; Last-Updated: Tue Jun  4 17:37:58 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 94
+;;     Update #: 121
 ;; URL: 
 ;; Keywords: 
-;; Compatibility:  
+;; Compatibility:  ORG 8.0 pre or more
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Commentary: OrgMode / Remember /
+;;; Commentary: OrgMode
 ;;
 ;;
 ;;
@@ -66,7 +66,7 @@
 (eval-after-load "org"
   '(progn
      ;; auto archiving setup: 'ARCHIVE-DONE-TASKS needed to clean up
-     (eval-after-load "org-wiegley-ext"
+     (eval-after-load "org-wiegley-ext" ; TODO: upgrade for 2013 org
        '(setq org-my-archive-expiry-days 45))
      (add-to-list 'safe-local-variable-values '(after-save-hook archive-done-tasks)) ; add: -*- after-save-hook (archive-done-tasks) -*- in your Org files to archive automatically (ie. all DONE|DEFERRED|CANCELLED tasks go to the archive file if date exceeds 45 days)
      (if (fboundp 'org-wiegley-ext)
@@ -92,7 +92,7 @@
        (define-key viper-vi-global-user-map "C-c /" 'org-sparse-tree)))
 
 ;; agenda & remember setup
-(add-hook 'remember-mode-hook #'org-remember-apply-template)
+;; (add-hook 'remember-mode-hook #'org-remember-apply-template)
 (custom-set-variables
  '(org-directory *notes-dir*)
  '(org-default-notes-file (expand-file-name "Notes.org"
@@ -126,14 +126,15 @@
                 (org-agenda-skip-entry-if (quote scheluded) (quote deadline)
                                           (quote regexp) "<[^\n]+>")))
              (org-agenda-overriding-header "Unscheduled TODO entries: "))))))
- '(org-remember-store-without-prompt t)
- '(org-remember-templates
-   (quote ((116 "* TODO %?\n  %u" "~/.emacs.d/data/Notes/Todo.org" "Tasks") ; 116 => ?t
-           (110 "* %u %?" "~/.emacs.d/data/Notes/Notes.org" "Notes")        ; 110 => ?n
-           (115 "* %u %?" "~/.emacs.d/data/Notes/Iris.gpg"  "Notes"))))     ; 115 => ?s [encrypted]
-                                        ; 105 => ?i
- '(remember-annotation-functions (quote (org-remember-annotation)))
- '(remember-handler-functions (quote (org-remember-handler))))
+ ;; '(org-remember-store-without-prompt t)
+ ;; '(org-remember-templates
+ ;;   (quote ((116 "* TODO %?\n  %u" "~/.emacs.d/data/Notes/Todo.org" "Tasks") ; 116 => ?t
+ ;;           (110 "* %u %?" "~/.emacs.d/data/Notes/Notes.org" "Notes")        ; 110 => ?n
+ ;;           (115 "* %u %?" "~/.emacs.d/data/Notes/Iris.gpg"  "Notes"))))     ; 115 => ?s [encrypted]
+ ;;                                        ; 105 => ?i
+ ;; '(remember-annotation-functions (quote (org-remember-annotation)))
+ ;; '(remember-handler-functions (quote (org-remember-handler)))
+)
 
 ;; capture setup
 (eval-after-load "org-capture"
@@ -144,34 +145,50 @@
               "* %a\nAdded: %U\nComments: %i%?")
              ("b" "Simple Bookmark" entry
               (file+headline org-default-notes-file "Simple Bookmarks")
-              "* %a\n\n%i%?")))))
-;; use the following bookmarklet:
-;; javascript:location.href='org-protocol:/capture:/l/'+encodeURIComponent(location.href)+'/'+encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection())
-
-;; DELETE-FRAME w/o alert in remember case
-(when (locate-library "org-remember")
-  (require 'org-remember))
-(eval-after-load "remember"
-  '(progn
+              "* %a\n\n%i%?")
+             ("t" "Todo" entry
+              (file+headline (car org-agenda-files) "Tasks")
+              "* TODO  %?\n  %u")
+             ("n" "Notes" entry
+              (file+headline org-default-notes-file "Notes")
+              "* %u %?")
+             ("s" "Top Secret" entry
+              (file+headline (expand-file-name "Iris.gpg"
+                                               org-directory) "Notes")
+              "* %u %?")))
+     ;; DELETE-FRAME w/o alert in * Remember * frame case
+     (defun current-frame-is-remember ()
+       "Answers true if the frame is named * Remember *."
+       (equal "* Remember *" (frame-parameter nil 'name)))
+     (defun current-frame-is-not-remember () (not (current-frame-is-remember)))
      ;; http://metajack.im/2008/12/30/gtd-capture-with-emacs-orgmode
-     (defadvice remember-finalize (after delete-remember-frame activate)
-       "Advise remember-finalize to close the frame if it is the remember frame"
-       (if (equal "remember" (frame-parameter nil 'name))
-           (delete-frame)))
-     (defadvice remember-destroy (after delete-remember-frame activate)
-       "Advise remember-destroy to close the frame if it is the rememeber frame"
-       (if (equal "remember" (frame-parameter nil 'name))
-           (delete-frame)))
-     ;; single window
-     (add-hook 'remember-mode-hook #'delete-other-windows)))
+     (defadvice org-capture-finalize (after delete-remember-frame (&optional stay-with-capture) activate)
+       "Advise org-capture-finalize to close the frame if it is the remember frame"
+       (when (current-frame-is-remember) (delete-frame)))
+     (defadvice org-capture-kill (after delete-remember-frame activate)
+       "Advise org-capture-kill to close the frame if it is the remember frame"
+       (when (current-frame-is-remember) (delete-frame)))
+     ;; single window FIXME: in remember-frame only!!
+     (add-hook 'org-capture-mode-hook #'delete-other-windows)
+     ;; 1- capture link/bookmark with global capture (C-c c or org-protocol external bookmarklet)
+     (global-set-key (kbd "C-c c") 'org-capture)
+     ;; javascript:location.href='org-protocol:/capture:/l/'+encodeURIComponent(location.href)+'/'+encodeURIComponent(document.title)+'/'+encodeURIComponent(window.getSelection())
+     (setq org-capture-templates-contexts '(("l" (current-frame-is-not-remember))
+                                            ("b" (current-frame-is-not-remember))))
+     ;; 2- capture notes with `make-remember-frame' ([f8-f7] see 'SHORTCUTS)
+     ;; 3- capture todos in either way
+     (add-to-list 'org-capture-templates-contexts
+                  '("n" (current-frame-is-remember)))
+     (add-to-list 'org-capture-templates-contexts
+                  '("s" (current-frame-is-remember)))))
 
 ;; additional interactive for agenda & remember
 (defun make-remember-frame ()
-  "Create a new frame and run org-remember."
+  "Create a new frame and run `org-capture' for TODOs only."
   (interactive)
-  (make-frame '((name . "remember") (width . 80) (height . 10)))
-  (select-frame-by-name "remember")
-  (org-remember))
+  (make-frame '((name . "* Remember *") (width . 80) (height . 10)))
+  (select-frame-by-name "* Remember *")
+  (org-capture))
 
 (defun jump-to-org-agenda ()
   (interactive)

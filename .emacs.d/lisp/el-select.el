@@ -87,7 +87,7 @@
                         dired-plus
                         org-mode
                         ;; howm ; corrupted tar
-                        remember
+                        ;; remember
                         multi-web-mode
                         markdown-mode
                         magit

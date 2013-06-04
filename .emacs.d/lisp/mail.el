@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 0.8
-;; Last-Updated: Mon Jun  3 17:51:52 2013 (+0200)
+;; Last-Updated: Tue Jun  4 10:41:22 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 118
+;;     Update #: 119
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -389,18 +389,19 @@
                                     (sign    . mc-sign-message))
                      (wl-summary-mode (decrypt . mc-wl-decrypt-message)
                                       (verify  . mc-wl-verify-signature))))
-                   mc-modes-alist)))))
+                   mc-modes-alist)))))))
 
-     (defun mars/wl ()
-       "Open Wanderlust in another frame."
-       (interactive)
-       (if (null window-system)
-           (if (< (length (window-list nil -1 nil)) 2)
-               (wl)
-             (when (y-or-n-p "Would you like to start Wanderlust here? ")
-               (delete-other-windows)
-               (wl)))
-         (wl-other-frame)))))
+(when (locate-library "wl")
+  (defun mars/wl ()
+    "Open Wanderlust in another frame."
+    (interactive)
+    (if (null window-system)
+        (if (< (length (window-list nil -1 nil)) 2)
+            (wl)
+          (when (y-or-n-p "Would you like to start Wanderlust here? ")
+            (delete-other-windows)
+            (wl)))
+      (wl-other-frame))))
 
 (provide 'mail)
 

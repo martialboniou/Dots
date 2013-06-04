@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.6.1
-;; Last-Updated: Mon Jun  3 20:58:38 2013 (+0200)
+;; Last-Updated: Tue Jun  4 12:05:00 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 348
+;;     Update #: 373
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -84,9 +84,9 @@
     (let ((default-conf (conf-locate "default.viper")))
       (when default-conf
         (setq viper-custom-file-name (convert-standard-filename default-conf))))))
-(setq viper-toggle-key "\C-x\C-z" ; no more C-z -- 'minimize' then works on Mac
-      viper-mode t)
-(eval-after-load "viper"
+;; (setq viper-toggle-key "\C-x\C-z" ; no more C-z -- 'minimize' then works on Mac
+;;       viper-mode t)
+(eval-after-load "viper"                ; UNUSED but kept for 'viper user
   '(progn
      ;; 0- tweaks
      (define-key viper-vi-global-user-map [(control kp-delete)] nil)
@@ -142,6 +142,23 @@
      ;; 1- boot Evil & friends properly
      (if-bound-call viper-go-away)      ; FIXME: missing hooks in Evil? to shutdown viper on turn-on
      (evil-mode 1)
+     ;; enable C-x C-z as evil-mode toggle key
+     (when (window-system)
+       (eval-after-load "escreen"
+         '(progn
+            (evil-set-toggle-key "C-x C-z") ; unset C-z
+            (setq escreen-prefix-char "\C-z")
+            ;; fast escreen keybindings for Dvorak typists
+            ;; (using bottom right diamond combination)
+            (when *i-am-a-dvorak-typist*
+              (define-key escreen-map (kbd "C--") 'escreen-goto-next-screen)
+              (define-key escreen-map "\C-v" 'escreen-goto-prev-screen)
+              (define-key escreen-map "\C-s" 'escreen-menu))
+            (global-set-key escreen-prefix-char 'escreen-prefix)))
+       (eval-after-load "elscreen"
+         '(progn
+            (evil-set-toggle-key "C-x C-z") ; unset C-z
+            (elscreen-set-prefix-key "\C-z"))))
      (require-if-installed 'evil-leader)
      (eval-after-load "evil-leader"
        ;; cf. 'SHORTCUTS to customize 'EVIL-LEADER
@@ -158,18 +175,15 @@
           (define-key evil-normal-state-map "\C-c+" 'evil-numbers/inc-at-pt)
           (define-key evil-normal-state-map "\C-c-" 'evil-numbers/dec-at-pt)))
      ;; manage special modes where Emacs state should be activated
-     (defmacro mars/omit-evil-in-modes (&rest context-mode-alist)
+     (defmacro mars/set-evil-emacs-in-modes (&rest mode-list)
        `(progn
           ,@(mapcar #'(lambda (x)
-                        `(mars/activate-state-in-modes  ,(cadr x)
-                                                       ,(car x)
-                                                       evil-set-initial-state
-                                                       'emacs))
-                    context-mode-alist)))
-    
-     (mars/omit-evil-in-modes (wl ('wl-folder-mode 'wl-summary-mode))
-                              (magit ('magit-status-mode 'magit-log-edit-mode))
-                              (shell-mode ('shell-mode)))
+                        `(evil-set-initial-state ',x 'emacs)) mode-list)))
+     (mars/set-evil-emacs-in-modes wl-summary-mode
+                                   shell-mode eshell-mode
+                                   magit-status-mode magit-log-edit-mode)
+     (eval-after-load "wl-folder"       ; FIXME: evil-set-initial-state fails!
+       `(add-hook 'wl-folder-mode-hook #'evil-emacs-state))
      ;; manage special modes where 'C-w' should be activated
      (fset 'evil-like-window-map (copy-keymap evil-window-map))
      (defmacro mars/activate-C-w-in-modes (&rest context-mode-alist)
@@ -283,7 +297,7 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
                                               (evil-forward-word-end)
                                               (evil-forward-char)))
      (define-key evil-normal-state-map " d" 'kill-buffer)
-     
+
      ;; 7- colorize status bar
      (lexical-let ((default-color (cons (face-background 'mode-line)
                                         (face-foreground 'mode-line))))

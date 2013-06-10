@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri May 31 23:05:04 2013 (+0200)
+;; Last-Updated: Mon Jun 10 17:00:43 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 619
+;;     Update #: 620
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -361,7 +361,7 @@ Move point to the beginning of the line, and run the normal hook
 
 ;;; ELECTRIC-DOT-AND-DASH
 ;; aka electric-dot-and-slash here
-(require-if-installed 'electric-dot-and-dash)
+(require-if-located 'electric-dot-and-dash)
 (eval-after-load "electric-dot-and-dash"
   '(mars/add-hooks lispem-hooks #'(lambda ()
                                     (local-set-key "." 'electric-dot-and-dash-dot)

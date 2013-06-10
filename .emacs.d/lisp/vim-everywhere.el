@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.6.1
-;; Last-Updated: Mon Jun 10 13:19:06 2013 (+0200)
+;; Last-Updated: Mon Jun 10 17:01:58 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 376
+;;     Update #: 377
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -159,17 +159,17 @@
          '(progn
             (evil-set-toggle-key "C-x C-z") ; unset C-z
             (elscreen-set-prefix-key "\C-z"))))
-     (require-if-installed 'evil-leader)
+     (require-if-located 'evil-leader)
      (eval-after-load "evil-leader"
        ;; cf. 'SHORTCUTS to customize 'EVIL-LEADER
        '(progn
           ;; FIXME: https://github.com/cofi/evil-leader/issues/7
           (add-hook 'emacs-startup-hook 'global-evil-leader-mode)
           (evil-leader/set-leader ","))) ; default is ,
-     (require-if-installed 'evil-surround :library 'surround)
+     (require-if-located 'evil-surround :library 'surround)
      (eval-after-load "surround"
        '(global-surround-mode 1))
-     (require-if-installed 'evil-numbers)
+     (require-if-located 'evil-numbers)
      (eval-after-load "evil-numbers"
        '(progn
           (define-key evil-normal-state-map "\C-c+" 'evil-numbers/inc-at-pt)

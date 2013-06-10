@@ -5,10 +5,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
-;; Version: 0.15
-;; Last-Updated: Mon Jun 10 11:55:10 2013 (+0200)
+;; Version: 0.16
+;; Last-Updated: Mon Jun 10 17:02:07 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 296
+;;     Update #: 297
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -78,16 +78,6 @@
       (require symbol)
     (when message
       (message message))))
-
-(defun* require-if-installed (package &key message library) ; UNTESTED
-  "If the package is installed with el-get, require it with its package name or another one (like library's built-in autoloads)."
-  (if (fboundp 'el-get-package-is-installed)
-        (if (el-get-package-is-installed package)
-            (let ((psymbol (if library library package)))
-              (require psymbol))
-          (when message
-            (message message)))
-    (message "defs: REQUIRE-IF-INSTALLED requires el-get but it is not installed")))
 
 (defun mars/generate-mode-hook-list (modes)
   "Create a quoted list of hooks."

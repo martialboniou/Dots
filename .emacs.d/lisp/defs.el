@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.15
-;; Last-Updated: Mon Jun  3 20:56:32 2013 (+0200)
+;; Last-Updated: Mon Jun 10 11:55:10 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 294
+;;     Update #: 296
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -21,8 +21,9 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change Log:
-;;
+;;; Change Log: require cl-lib (either from 24.3+ recommended GNU Emacs
+;;              or using `el-get-install' in 'EL-SELECT to install
+;;              compatibility script)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -63,11 +64,6 @@
     (setq mars/eternal-buffer-list '("*scratch*")))
 
 (eval-when-compile (require 'cl))
-
-;;; RETRO-COMPATIBILITIES
-;;
-;; (unless (fboundp 'cl-flet)
-;;   (defalias 'cl-flet 'flet)) ;; ERROR: not permutable
 
 ;;; ESSENTIAL UTILITIES
 ;;;
@@ -303,17 +299,18 @@ file; display a message otherwise."
                    (message "%s: function missing." ,(symbol-name x)))))
           source-funs))))
 
-(defun crazycode/indent-and-complete () ; UNTESTED
-  "Indent line and Complete if point is at end of left a leave word."
-  (interactive)
-  (cond
-   ;; hippie-expand
-   ((looking-at "\\_>")
-    ;; skip message output
-    (flet ((message (format-string &rest args) nil))
-      (hippie-expand nil))))
-  ;; always indent line
-  (indent-for-tab-command)) ; for example, for Ruby indent issues
+(eval-after-load "cl-lib"
+  '(defun crazycode/indent-and-complete () ; UNTESTED
+     "Indent line and Complete if point is at end of left a leave word."
+     (interactive)
+     (cond
+      ;; hippie-expand
+      ((looking-at "\\_>")
+       ;; skip message output
+       (cl-flet ((message (format-string &rest args) nil))
+         (hippie-expand nil))))
+     ;; always indent line
+     (indent-for-tab-command))) ; for example, for Ruby indent issues
 
 (defun my-tab-expansion-switcher ()     ; UNTESTED
   (local-set-key [tab] 'indent-or-expand))

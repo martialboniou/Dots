@@ -19,7 +19,7 @@
  '(max-mini-window-height 0.1)
  '(focus-follows-mouse nil)
  '(mac-allow-anti-aliasing t))
-(mouse-avoidance-mode 'jump)
+(mouse-avoidance-mode 'cat-and-mouse)
 ;; - translucent emacs window
 (when (and window-system
            (> emacs-major-version 23))
@@ -30,9 +30,8 @@
      ;; PRETTY
      ;; pretty control-l
      (when (locate-library "pp-c-l")
-       (require 'pp-c-l))
-     (eval-after-load 'pp-c-l
-       '(pretty-control-l-mode 1))
+       (require 'pp-c-l)
+       (pretty-control-l-mode 1))
 
      ;; ALIAS-MINOR-MODES TODO: merge to appearance.el
      ;; shorten indicator in mode-line

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Thu Nov 17 17:30:20 2011 (+0100)
 ;; Version: 0.6.2
-;; Last-Updated: Fri May 31 16:55:00 2013 (+0200)
+;; Last-Updated: Mon Jun 10 16:03:01 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 12
+;;     Update #: 14
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -47,7 +47,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
-
 
 (require 'adapter)
 
@@ -229,7 +228,7 @@ Example: (MAJOR-MODE . (CHESS-MASTER-MODE MAIL-DRAFT-MODE).")
 (eval-after-load "el-get"
   '(when (el-get-package-is-installed "anything")
      (if (locate-library "anything-match-plugin")
-	 (require 'anything-match-plugin) ; loads 'ANYTHING
+     (require 'anything-match-plugin) ; loads 'ANYTHING
        (require 'anything))
      (require-if-located 'anything-config)))
 (eval-after-load "anything-config"

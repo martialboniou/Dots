@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.6.1
-;; Last-Updated: Tue Jun  4 12:05:00 2013 (+0200)
+;; Last-Updated: Mon Jun 10 13:19:06 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 373
+;;     Update #: 376
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -333,11 +333,11 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
          (if (or (null theme-name)
                  (< (length theme-name) 2))
            ""                                ; no short name
-           (flet ((replace-underscore (string-to-replace)
-                                      (replace-regexp-in-string
-                                       (char-to-string ?_)
-                                       (char-to-string ?-)
-                                       (remove-last-unwanted-char string-to-replace))))
+           (cl-flet ((replace-underscore (string-to-replace)
+                                         (replace-regexp-in-string
+                                          (char-to-string ?_)
+                                          (char-to-string ?-)
+                                          (remove-last-unwanted-char string-to-replace))))
              (concat *color-theme-header* (replace-underscore theme-name)))))
 
        (defun colorscheme-to-color-theme (colorscheme-name)

@@ -16,11 +16,13 @@
 
 (unless (boundp 'el-get-recipe-path)
  (error "el-get is not installed"))
-
+
+;;; MY PERSONAL RECIPE DIRECTORY
 (add-to-list 'el-get-recipe-path (expand-file-name "Recipes"
                                                    (expand-file-name mars/personal-data
                                                                      mars/local-root-dir)))
-
+
+;;; MY INSTALL WISHES
 (setq el-get-sources '((:name evil
                               :features nil)
                        (:name evil-leader ; installs evil & undo-tree
@@ -62,74 +64,14 @@
                               :features nil) ; let 'MEDIA configure 'EMMS
                        (:name git-emacs
                               :features nil)
-;                       (:name nxhtml
-;                              :load nil)
-)) ; choose 'NXHTML or 'MULTI-WEB-MODE in 'WEB-PROGRAMMING
+                                        ;                       (:name nxhtml
+                                        ;                              :load nil)
+                       )) ; choose 'NXHTML or 'MULTI-WEB-MODE in 'WEB-PROGRAMMING
 ;; :name ropemacs :build '(("python" "setup.py" "install" "||" "sudo" "python" "setup.py" "install"))
-
-(defvar mars/packages '(el-get
-                        color-theme
-                        escreen
-                        keats
-                        shen-mode
-                        ;; haskellmode-emacs
-                        pylookup
-                        pymacs
-                        mailcrypt
-                        auto-complete
-                        ac-slime
-                        redshank
-                        smex
-                        anything
-                        bookmark+
-                        auto-pair-plus
-                        dired-details
-                        dired-plus
-                        org-mode
-                        ;; howm ; corrupted tar
-                        ;; remember
-                        multi-web-mode
-                        markdown-mode
-                        magit
-                        ;; darcsum
-                        header2
-                        filladapt
-                        hideshowvis
-                        gist
-                        switch-window
-                        cycle-buffer
-                        js-comint
-                        textile-mode
-                        yaml-mode
-                        haml-mode
-                        sunrise-commander
-                        wanderlust
-                        ;; from .emacs.d/data/Recipes
-                        revive-plus))
-
+;; latex case
 (condition-case nil
     (progn
-      ;; TODO: find a way to install RINARI correctly
-      (el-get-executable-find "rake")
-      nil
-      ;; YASNIPPET install is ugly (requires python *and* ruby)
-      ;; check pygments module is installed
-      ;; (add-to-list 'el-get-sources '(:name yasnippet
-      ;;                                      :build '("rake compile")))
-      ;;(add-to-list 'el-get-sources '(:name rinari
-      ;;                                     :build '(("git" "submodule" "init")
-      ;;                                              ("git" "submodule" "update")
-      ;;                                              ))) ; doc:install_info OBSOLETE b/c no ginstall-info revision
-      ;(add-to-list 'el-get-sources '(:name inf-ruby-bond
-      ;                                     :depends nil)
-      ; ) ; use RINARI's INF-RUBY
-      ;; TODO: restore ruby-electric or create a new rcp
-      ;; (setq mars/packages (nconc mars/packages '(ruby-electric)))
-      )
-  (error (message "el-select: yasnippet won't be compiled and rinari and other packages for ruby won't be installed without rake, a simple ruby build program.")))
-
-(condition-case nil
-    (progn
+      ;; FIXME: ConTeXt and other case
       (el-get-executable-find "latex")
       (add-to-list 'el-get-sources '(:name auctex
                                            :branch "release_11_87"
@@ -145,13 +87,82 @@
                                                     "cd preview && make lisp && cd ..")
                                            :load nil))) ; let 'WIKI-WIKI launch 'TEX-SITE
   (error (message "el-select: AUCTeX won't be automatically installed without TeXLive or any modern LaTeX distribution.")))
+;; ruby case
+(condition-case nil ;; TODO: ruby compilation case
+    (progn
+      ;; TODO: find a way to install RINARI correctly
+      (el-get-executable-find "rake")
+      nil
+      ;; YASNIPPET install is ugly (requires python *and* ruby)
+      ;; check pygments module is installed
+      ;; (add-to-list 'el-get-sources '(:name yasnippet
+      ;;                                      :build '("rake compile")))
+      ;;(add-to-list 'el-get-sources '(:name rinari
+      ;;                                     :build '(("git" "submodule" "init")
+      ;;                                              ("git" "submodule" "update")
+      ;;                                              ))) ; doc:install_info OBSOLETE b/c no ginstall-info revision
+                                        ;(add-to-list 'el-get-sources '(:name inf-ruby-bond
+                                        ;                                     :depends nil)
+                                        ; ) ; use RINARI's INF-RUBY
+      ;; TODO: restore ruby-electric or create a new rcp
+      ;; (setq mars/packages (nconc mars/packages '(ruby-electric)))
+      )
+  (error (message "el-select: yasnippet won't be compiled and rinari and other packages for ruby won't be installed without rake, a simple ruby build program.")))
+
+;;; MY PACKAGE
+(defvar mars/packages nil
+  "List of highly recommended package name.")
 
-(setq mars/packages
-  (nconc mars/packages
-         (mapcar #'el-get-source-name el-get-sources)))
-
-(unless *i-want-full-ammo*
-  (setq mars/packages nil))             ; no packages unless `*i-want-full-ammo*'
+;;; IMPORTANT: cl-lib is required if this Emacs is a pre-24.3 release
+(let ((cl-lib-uninstalled (null (locate-library "cl-lib"))))
+  (if *i-want-full-ammo*
+      (setq mars/packages (when cl-lib-uninstalled '(cl-lib))) ; no package unless `*i-want-full-ammo*'
+    (progn
+      (setq mars/packages '(el-get
+                            color-theme
+                            escreen
+                            keats
+                            shen-mode
+                            ;; haskellmode-emacs
+                            pylookup
+                            pymacs
+                            mailcrypt
+                            auto-complete
+                            ac-slime
+                            redshank
+                            smex
+                            anything
+                            bookmark+
+                            auto-pair-plus
+                            dired-details
+                            dired-plus
+                            org-mode
+                            ;; howm ; corrupted tar
+                            ;; remember
+                            multi-web-mode
+                            markdown-mode
+                            magit
+                            ;; darcsum
+                            header2
+                            filladapt
+                            pp-c-l
+                            hideshowvis
+                            gist
+                            switch-window
+                            cycle-buffer
+                            js-comint
+                            textile-mode
+                            yaml-mode
+                            haml-mode
+                            sunrise-commander
+                            wanderlust
+                            ;; from .emacs.d/data/Recipes
+                            revive-plus))
+      (when cl-lib-uninstalled (add-to-list 'mars/packages 'cl-lib))
+      ;; merge EL-GET-SOURCE with MARS/PACKAGE
+      (setq mars/packages
+            (nconc mars/packages
+                   (mapcar #'el-get-source-name el-get-sources))))))
 
 (el-get 'sync mars/packages)
 (el-get 'wait)

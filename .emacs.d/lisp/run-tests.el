@@ -1,4 +1,5 @@
 ;; unit test library
+;; tested on GNU Emacs 24.3
 (require 'ert)
 
 ;; settings
@@ -11,8 +12,8 @@
 ;; utilities
 (defun trap-messages (body)
   "Don't display messages."
-   (require 'cl)
-   (flet ((message (format-string &rest args) nil))
+   (require 'cl-lib)
+   (cl-flet ((message (format-string &rest args) nil))
      (funcall body)))
 (defun safe-funcall (function)
   (condition-case nil

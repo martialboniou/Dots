@@ -2,6 +2,8 @@
 
 (provide 'booting)
 
+(eval-when-compile (require 'cl))
+
 (require 'appearance)
 
 (require 'packs)

@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Fri May 31 17:04:40 2013 (+0200)
+;; Last-Updated: Mon Jun 10 12:50:14 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 188
+;;     Update #: 190
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -200,14 +200,14 @@
      '(zorg . `a')                        binds Fx-A  to #'ZORG
      '(baz . id)                          binds Fx-Fx to #'BAZ
   "
-  (flet ((funkey-assoc-p (fun) (and (consp fun) (or (stringp (cdr fun)) ; OBSOLETE: replace flet
+  (cl-flet ((funkey-assoc-p (fun) (and (consp fun) (or (stringp (cdr fun))
                                                        (symbolp (cdr fun))))))
     (let ((key (if (= (string-to-char function-key) 60)
                    function-key
                  (concat "<" function-key ">")))
           (num 0)
           (acc)
-          (lists (partition-on-predicate 'funkey-assoc-p funs)))
+          (lists (partition-on-predicate #'funkey-assoc-p funs)))
       (dolist (elt (cadr lists) acc)
         (if (> num 8)
             (setq num 0)

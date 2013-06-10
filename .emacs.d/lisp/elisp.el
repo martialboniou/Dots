@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 10:19:49 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri May 31 17:11:52 2013 (+0200)
+;; Last-Updated: Mon Jun 10 12:43:49 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 39
+;;     Update #: 42
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -67,7 +67,7 @@
 
 (defun elisp-macroexpand-all (form)
   (interactive (list (form-at-point 'sexp)))
-  (elisp-pp (cl-macroexpand-all form)))
+  (elisp-pp (macroexpand-all form)))
 
 (defun elisp-push-point-marker ()
   (cond ((featurep 'xemacs)
@@ -178,13 +178,13 @@ in `util/ourcomments-util' of the `nxhtml' package."
 
 (defun mars/emacs-Q (&optional init-file args)
   (interactive "FInit file: \nsArguments: ")
-  (flet ((check-valid-string (x) (and init-file (not (eq (string-match x "") 0)))))
+  (cl-flet ((check-valid-string (x) (and init-file (not (eq (string-match x "") 0)))))
     (eval
      `(apply 'mars/run-emacs nil "-Q" "--debug-init" ,@(when (check-valid-string init-file) `("--load" ,init-file)) ,(when (check-valid-string args) args)))))
 
 (defun mars/emacs-q (&optional init-file args)
   (interactive "FInit file: \nsArguments: ")
-  (flet ((check-valid-string (x) (and init-file (not (eq (string-match x "") 0)))))
+  (cl-flet ((check-valid-string (x) (and init-file (not (eq (string-match x "") 0)))))
     (eval
      `(apply 'mars/run-emacs nil "-q" ,@(when (check-valid-string init-file) `("--load" ,init-file)) ,(when (check-valid-string args) args)))))
 

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Jan 19 20:16:06 2008
 ;; Version: 0.3
-;; Last-Updated: Fri May 31 17:12:54 2013 (+0200)
+;; Last-Updated: Mon Jun 10 12:45:25 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 123
+;;     Update #: 124
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -291,9 +291,9 @@
                               ;; try a smart start of the current or next track
                               (emms-playlist-mode-play-smart)
                             (error
-                             (flet ((info-emms-unable-to-play
-                                     (which-track)
-                                     (message "Information: [mars] emms: unable to play the %s track in the last playlist saved in history" which-track)))
+                             (cl-flet ((info-emms-unable-to-play
+                                        (which-track)
+                                        (message "Information: [mars] emms: unable to play the %s track in the last playlist saved in history" which-track)))
                                (info-emms-unable-to-play "next")
                                (emms-playlist-mode-first)
                                (condition-case nil

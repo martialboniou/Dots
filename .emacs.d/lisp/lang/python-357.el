@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 23:42:52 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri May 31 17:19:48 2013 (+0200)
+;; Last-Updated: Mon Jun 10 12:44:45 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 139
+;;     Update #: 140
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -61,8 +61,6 @@
      (custom-set-variables '(indent-tabs-mode nil))
 ;;     (define-key python-mode-map (kbd "RET") 'newline-and-indent)
      ;; customize according to installed EGGs' binaries
-     (unless (fboundp 'flet)
-       (require 'cl))
      ;; inform flymake about pyflakes
       (eval-after-load "flymake"
        '(progn
@@ -75,7 +73,7 @@
                 (list "pyflakes" (list local-file))))
             (add-to-list 'flymake-allowed-file-name-masks
                          '("\\.py\\'" flymake-pyflakes-init))))) ; this hook-function should be set in `confs/rectify'
-     (flet ((py-msg-advise (app) (message (format "python-357: missing application to complete python support:\n\tpip install %s" (prin1-to-string app)))))
+     (cl-flet ((py-msg-advise (app) (message (format "python-357: missing application to complete python support:\n\tpip install %s" (prin1-to-string app)))))
 
        ;; ipython - interactive python toolkit
        ;; (if (executable-find "ipython")

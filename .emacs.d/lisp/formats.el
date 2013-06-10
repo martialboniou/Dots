@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri May 31 16:57:55 2013 (+0200)
+;; Last-Updated: Thu Jun  6 13:05:12 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 120
+;;     Update #: 123
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -186,7 +186,7 @@ Otherwise the update regexps won't match."
   ;; run FLYSPELL if `spell-checker-name' is the name of an executable
   (defvar spell-checker-text-hooks (mars/generate-mode-hook-list '(latex markdown))
         "List of major mode hooks for text typing where FLYSPELL will be loaded.") ; TODO: VARS
-  (defvar spell-checker-prog-hooks (cons 'c-mode-common-hook 
+  (defvar spell-checker-prog-hooks (cons 'c-mode-common-hook
                                          (mars/generate-mode-hook-list '(emacs-lisp shen scheme clojure scala java ruby python factor js)))
     "List of major mode hook for programming languages where FLYSPELL will be loaded.") ; TODO: VARS
   (if (executable-find (symbol-name spell-checker-name))

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Tue Feb 22 11:31:42 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: Tue Jun  4 17:37:58 2013 (+0200)
+;; Last-Updated: Mon Jun 10 18:04:57 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 121
+;;     Update #: 123
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:  ORG 8.0 pre or more
@@ -50,12 +50,8 @@
 
 ;;; ORG MODE
 ;; (from 'Using Org Mode as a Day Planner' by John Wiegley)
-(defvar *notes-dir* (expand-file-name
-                     "Notes"
-                     (expand-file-name mars/personal-data
-                                       mars/local-root-dir)))
+(defvar *notes-dir* (joindirs mars/local-root-dir mars/personal-data "Notes"))
 
-;(condition-case nil
 (require 'org-loaddefs)
 (require 'org-protocol)
 

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.16
-;; Last-Updated: Mon Jun 10 17:02:07 2013 (+0200)
+;; Last-Updated: Mon Jun 10 17:56:17 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 297
+;;     Update #: 304
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -204,6 +204,17 @@ ROOT                        => ROOT"
 
 (defun value-alist (key alist)          ; UNTESTED
   (cdr (assoc key alist)))
+
+(defun joindirs (root &rest dirs)
+  "Joins a series of directories together, like Python's os.path.join,
+  (dotemacs-joindirs \"/tmp\" \"a\" \"b\" \"c\") => /tmp/a/b/c. Code by
+  dbr@stackoverflow (neverfear.org).
+"
+  (if (not dirs)
+      (expand-file-name root)
+    (apply #'joindirs
+           (expand-file-name (car dirs) root)
+           (cdr dirs))))
 
 (defun dont-kill-emacs ()               ; UNTESTED
   "Disallow emacs to kill on the dangerous C-x C-c command."
@@ -454,16 +465,14 @@ a sound to be played.
        "A custom file for different emacsen and system version or `NIL' if
 none (and not makeable). If `GENERAL' is true, it will refer to or creates
 a simple `custom.el'."
-       (expand-file-name
-        (if general "custom.el"
-          (format "%s-%s-%s.el"
-                  (which-emacs-i-am)
-                  (number-to-string emacs-major-version)
-                  (replace-regexp-in-string "/" "-" (symbol-name system-type))))
-        (expand-file-name
-         subdirectory-in-data
-         (expand-file-name
-          mars/personal-data mars/local-root-dir))))
+       (joindirs mars/local-root-dir
+                 mars/personal-data
+                 subdirectory-in-data
+                 (if general "custom.el"
+                   (format "%s-%s-%s.el"
+                           (which-emacs-i-am)
+                           (number-to-string emacs-major-version)
+                           (replace-regexp-in-string "/" "-" (symbol-name system-type))))))
 
      (defun safe-build-custom-file (subdirectory-in-data &optional general) ; UNTESTED
        (let ((file (build-custom-file-name subdirectory-in-data general)))

@@ -60,6 +60,13 @@
     (safe-unintern 'foobar)
     (safe-unintern 'foo-alist)))
 
+(ert-deftest joindirs-simple-test ()
+  (should (string= (joindirs "~") (expand-file-name "~")))
+  (should (string= (joindirs "~" ".emacs.d") (expand-file-name ".emacs.d" "~")))
+  (should (string= (joindirs "~" ".emacs.d" "lisp") (expand-file-name "lisp"
+                                                                      ".emacs.d"
+                                                                      "~"))))
+
 (defun quux-fundamental-buffer-context (body)
   (unwind-protect
       (progn

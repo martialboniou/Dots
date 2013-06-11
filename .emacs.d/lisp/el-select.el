@@ -2,9 +2,7 @@
 ;;
 (require 'noaccess)
 
-(add-to-list 'load-path (expand-file-name "el-get"
-                          (expand-file-name "el-get"
-                            (expand-file-name mars/local-root-dir))))
+(add-to-list 'load-path (joindirs mars/local-root-dir "el-get" "el-get"))
 
 (unless (require 'el-get nil 'noerror)
   (with-current-buffer
@@ -18,9 +16,7 @@
  (error "el-get is not installed"))
 
 ;;; MY PERSONAL RECIPE DIRECTORY
-(add-to-list 'el-get-recipe-path (expand-file-name "Recipes"
-                                                   (expand-file-name mars/personal-data
-                                                                     mars/local-root-dir)))
+(add-to-list 'el-get-recipe-path (joindirs mars/local-root-dir mars/personal-data "Recipes"))
 
 ;;; MY INSTALL WISHES
 (setq el-get-sources '((:name evil

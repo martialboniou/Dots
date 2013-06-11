@@ -40,7 +40,7 @@
 
      ;; PRETTY-LAMBDA
      ;; replace LAMBDA -> λ
-     (eval-after-load "el-get"
+     (eval-after-load "adapter"
        '(when (el-get-package-is-installed "pretty-lambdada")
           (pretty-lambda-for-modes)
           (setq pretty-lambda-auto-modes '(lisp-mode

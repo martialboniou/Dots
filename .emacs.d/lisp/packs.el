@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.5-dying-code
-;; Last-Updated: Fri May 31 17:00:35 2013 (+0200)
+;; Last-Updated: Mon Jun 10 18:24:26 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 527
+;;     Update #: 530
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -199,9 +199,7 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
       (let (broken-packages
             broken-tags
             (site-lisp-path (mapcar #'(lambda (x)
-                                        (expand-file-name
-                                         x
-                                         (expand-file-name mars/local-root-dir)))
+                                        (expand-file-name x mars/local-root-dir))
                                     mars/site-lisp-path))
             executables-in-play)      ; list of binaries used in the current package
         (mapc #'(lambda (x)
@@ -248,12 +246,11 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
                                       (when (stringp tag-dirs)
                                         (setq tag-dirs (list tag-dirs)))
                                       (mapc #'(lambda (dir)
-                                                (let* ((dirname (expand-file-name dir
-                                                                                  (expand-file-name
-                                                                                   pkg-dir (car site-lisp-path))))
-                                                      (file-tag (expand-file-name (format ".%s"
-                                                                                          (symbol-name tag))
-                                                                                  dirname)))
+                                                (let* ((dirname (joindirs (car site-lisp-path)
+                                                                          pkg-dir dir))
+                                                       (file-tag (joindirs dirname
+                                                                           (format ".%s"
+                                                                                   (symbol-name tag)))))
                                                   (condition-case err
                                                       (progn
                                                         (message "create: %s" file-tag)
@@ -265,18 +262,17 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
                                                                    broken-tags)))))
                                             tag-dirs))))))
                             ;; add new directory tree to `load-path'
-                            (mars/add-to-load-path (expand-file-name
-                                                    pkg-dir
-                                                    (car site-lisp-path))))
+                            (mars/add-to-load-path (joindirs (car site-lisp-path)
+                                                             pkg-dir)))
                             (setq renew-autoloads-at-startup t)
                             (message "packs: %s installed" (car x)))))
               mars/site-lisp-package-tree)
         (when (or broken-packages broken-tags)
           (message "%S" broken-packages )
           (message "%S" broken-tags )
-         (with-temp-file (expand-file-name ".packs-errors.log"
-                                           (expand-file-name mars/personal-data
-                                                             mars/local-root-dir))
+         (with-temp-file (joindirs mars/local-root-dir
+                                   mars/personal-data
+                                   ".packs-errors.log")
            (insert ";; -*- emacs-lisp: t; no-byte-compile: t -*-\n")
            (mapc #'(lambda (x)
                      (unless (null x)
@@ -288,8 +284,7 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
         (when (and (not only-mark)
                    renew-autoloads-at-startup) ; generate AUTOLOADS
           (let ((mars/loaddefs
-                 (expand-file-name "loaddefs.el"
-                                   (car site-lisp-path))))
+                 (joindirs (car site-lisp-path) "loaddefs.el")))
             (load "update-auto-loads")
             (update-autoloads-in-package-area)
             (safe-autoloads-load mars/loaddefs)))

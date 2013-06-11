@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 0.8
-;; Last-Updated: Mon Jun 10 17:01:19 2013 (+0200)
+;; Last-Updated: Mon Jun 10 18:08:47 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 120
+;;     Update #: 122
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -60,19 +60,15 @@
 (let* ((init-file-name (format "%s.wl" user-login-name))
        (init (or (conf-locate init-file-name)
                  (conf-locate "default.wl")))
-       (folder-directory (expand-file-name
-                          "wl"
-                          (expand-file-name mars/personal-data
-                                            mars/local-root-dir)))
-       (folder (convert-standard-filename (expand-file-name
-                                           (format "%s.folders" user-login-name)
-                                           folder-directory))))
+       (folder-directory (joindirs mars/local-root-dir mars/personal-data "wl"))
+       (folder (convert-standard-filename (joindirs folder-directory
+                                                    (format "%s.folders" user-login-name)))))
   (when init
     (when (file-exists-p init)
       (setq wl-init-file (convert-standard-filename init))))
   (if (file-exists-p folder)
       (setq wl-folders-file (convert-standard-filename folder))
-    (let ((default-wl-fldr (expand-file-name "default.folders" folder-directory)))
+    (let ((default-wl-fldr (joindirs folder-directory "default.folders")))
       (when (file-exists-p default-wl-fldr)
         (setq wl-folders-file (convert-standard-filename default-wl-fldr)))))
   (let ((wl-lib (locate-library "wl")) wl-resource-rep)
@@ -82,7 +78,8 @@
                (file-exists-p wl-resource-rep))
       (eval-after-load "wl"
         '(setq wl-icon-directory
-               (expand-file-name "icons" (el-get-package-directory "wanderlust")))))))
+               (joindirs (el-get-package-directory "wanderlust")
+                         "icons"))))))
 
 ;; WL-DRAFT ~ 'MARS/DRAFT-EMAIL
 (eval-after-load "wl-draft"
@@ -115,7 +112,7 @@
      ;; Maildir => <~Mail>/Maildir
      (when elmo-localdir-folder-path
        (setq elmo-maildir-folder-path 
-             (expand-file-name "Maildir" elmo-localdir-folder-path))) 
+             (joindirs elmo-localdir-folder-path "Maildir"))) 
      ;; imapfilter
      (when (and (file-readable-p "~/.imapfilter/config.lua")
                 (executable-find "imapfilter"))

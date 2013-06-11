@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Jan 19 20:16:06 2008
 ;; Version: 0.3
-;; Last-Updated: Mon Jun 10 12:45:25 2013 (+0200)
+;; Last-Updated: Mon Jun 10 18:16:45 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 124
+;;     Update #: 125
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -135,7 +135,7 @@
 ;;
 (when (locate-library "emms")
   (let* ((emms-path (file-name-directory (locate-library "emms")))
-         (emms-bin-path (expand-file-name "../src" emms-path)))
+         (emms-bin-path (joindirs (file-name-directory (directory-file-name emms-path)) "src")))
     (if-bound-call emms-devel)      ; CHECK: emms-start-browse on <F2>
     (eval-after-load "emms"
       '(progn

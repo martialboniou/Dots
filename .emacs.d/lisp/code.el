@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Jun 10 17:00:43 2013 (+0200)
+;; Last-Updated: Mon Jun 10 17:46:14 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 620
+;;     Update #: 622
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -67,7 +67,7 @@
 ;;; LANGUAGES' CONFIGURATION PATH
 (defvar lang-rep
   (condition-case nil
-      (expand-file-name "lang" (file-name-directory load-file-name))
+      (joindirs (file-name-directory load-file-name) "lang")
     (error (progn (message "code: unable to locate a lang directory") nil)))
   "Programming languages' configuration repository.")
 
@@ -524,10 +524,7 @@ Move point to the beginning of the line, and run the normal hook
 
 ;;; TODO: REPLACE W/ A NEWEST VERSION - VISUALIZE CALL TREE
 ;; (defvar sct-graphviz-dir
-;;   (expand-file-name "Graphviz"
-;;                     (expand-file-name "Temporary"
-;;                                       (expand-file-name mars/personal-data
-;;                                                         mars/local-root-dir))))
+;;   (joindirs mars/local-root-dir mars/personal-data "Temporary" "Graphviz"))
 
 ;; (defun mars/simple-call-tree-view ()
 ;;   (interactive)

@@ -166,7 +166,7 @@
           ;; FIXME: https://github.com/cofi/evil-leader/issues/7
           (add-hook 'emacs-startup-hook 'global-evil-leader-mode)
           (evil-leader/set-leader ","))) ; default is ,
-     (require-if-located 'evil-surround :library 'surround)
+     (require-if-located 'surround)	 ; via evil-surround
      (eval-after-load "surround"
        '(global-surround-mode 1))
      (require-if-located 'evil-numbers)

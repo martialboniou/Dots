@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Thu Nov 17 17:30:20 2011 (+0100)
 ;; Version: 0.6.2
-;; Last-Updated: Mon Jun 10 16:03:01 2013 (+0200)
+;; Last-Updated: Mon Jun 10 18:44:09 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 14
+;;     Update #: 19
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -135,10 +135,7 @@ Example: (MAJOR-MODE . (CHESS-MASTER-MODE MAIL-DRAFT-MODE).")
 
 ;; - path
 (unless desktop-dir
-  (setq desktop-dir (expand-file-name
-                     "desktop"
-                     (expand-file-name mars/personal-data
-                                       mars/local-root-dir))))
+  (setq desktop-dir (joindirs mars/local-root-dir mars/personal-data "desktop")))
 (unless (file-exists-p desktop-dir)
   (make-directory desktop-dir t))
 (setq desktop-path (list desktop-dir)
@@ -146,10 +143,7 @@ Example: (MAJOR-MODE . (CHESS-MASTER-MODE MAIL-DRAFT-MODE).")
 ;; - directories
 (defmacro define-local-temporary-directory (local-work-directory-symbol)
   "Define the best temporary directory for registering files and sessions."
-  (let ((local-tmp-dir (expand-file-name
-                        "Temporary"
-                        (expand-file-name mars/personal-data
-                                          mars/local-root-dir))))
+  (let ((local-tmp-dir (joindirs mars/local-root-dir mars/personal-data "Temporary")))
     (let ((dir-symbol (intern (format "%s-dir"
                                       (symbol-name
                                        local-work-directory-symbol)))))
@@ -163,12 +157,9 @@ Example: (MAJOR-MODE . (CHESS-MASTER-MODE MAIL-DRAFT-MODE).")
                                           (symbol-name
                                            local-work-directory-symbol)))
                                  local-tmp-dir))
-          (let ((name (expand-file-name
-                       (user-login-name)
-                       (expand-file-name
-                        (format "emacs_%ss"
-                                (symbol-name local-work-directory-symbol))
-                        mars/temporary-dir))))
+          (let ((name (joindirs mars/temporary-dir
+                                (format "emacs_%ss" (symbol-name local-work-directory-symbol))
+                                (user-login-name))))
             `(progn
                (setq ,dir-symbol ,name)
                (message ,(format "Beware: your autosave directory named `%s' may be publicly accessed. Be sure to make it hidden to other users." name)))))))))
@@ -176,7 +167,7 @@ Example: (MAJOR-MODE . (CHESS-MASTER-MODE MAIL-DRAFT-MODE).")
 (define-local-temporary-directory session)  ; .saves-<pid>-<hostname>
 (define-local-temporary-directory backup)   ; !<backup-directory>!<backup-file>!.~<index>~
 (setq auto-save-file-name-transforms `(("\\([^/]*/\\)*\\(.*\\)" ,(expand-file-name "\\2" autosave-dir) nil))
-      auto-save-list-file-prefix (expand-file-name ".saves-" session-dir)
+      auto-save-list-file-prefix (joindirs session-dir ".saves-")
       backup-directory-alist (list (cons "." backup-dir)))
 ;; - desktop load
 (when (featurep 'emacs-normal-startup)
@@ -188,8 +179,8 @@ Example: (MAJOR-MODE . (CHESS-MASTER-MODE MAIL-DRAFT-MODE).")
       (desktop-save-mode 1)
     (error (message (format "behave: %s" err)))))
 (make-directory autosave-dir t)         ; be sure it exists
-(setq the-desktop-file (expand-file-name desktop-base-file-name desktop-dir)
-      the-desktop-lock (expand-file-name desktop-base-lock-name desktop-dir))
+(setq the-desktop-file (joindirs desktop-dir desktop-base-file-name)
+      the-desktop-lock (joindirs desktop-dir desktop-base-lock-name))
 (defun desktop-in-use-p ()
   (and (file-exists-p the-desktop-file) (file-exists-p the-desktop-lock)))
 (defadvice desktop-owner (after pry-from-cold-dead-hands activate)
@@ -294,13 +285,12 @@ the should-be-forbidden C-z.")
        (interactive "p")
        (let ((recently-killed-list (copy-sequence recentf-list))
              (buffer-files-list
-              (delq nil (mapcar (lambda (buf)
-                                  (when (buffer-file-name buf)
-                                    (expand-file-name (buffer-file-name buf)))) (buffer-list)))))
-         (mapc
-          (lambda (buf-file)
-            (setq recently-killed-list
-                  (delq buf-file recently-killed-list)))
+              (delq nil (mapcar #'(lambda (buf)
+                                    (when (buffer-file-name buf)
+                                      (expand-file-name (buffer-file-name buf)))) (buffer-list)))))
+         (mapc #'(lambda (buf-file)
+                   (setq recently-killed-list
+                         (delq buf-file recently-killed-list)))
           buffer-files-list)
          ;; (message "echo: %s" (prin1-to-string
          ;;                      (reduce 'cons recently-killed-list
@@ -316,7 +306,7 @@ the should-be-forbidden C-z.")
        (interactive)
        (let* ((all-files
                (remove-duplicates
-                (mapcar 'expand-file-name
+                (mapcar #'expand-file-name
                         file-name-history) :test 'string=)) ; remove dups after expanding
               (file-assoc-list (mapcar (lambda (x) (cons (file-name-nondirectory x) x)) all-files))
               (filename-list (remove-duplicates (mapcar 'car file-assoc-list) :test 'string=))

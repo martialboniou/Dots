@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Jun 10 12:55:56 2013 (+0200)
+;; Last-Updated: Tue Jun 11 11:43:14 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 166
+;;     Update #: 181
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -52,7 +52,9 @@
 ;; vim/dvorak/term/el-get-sources options
 ;; remove .emacs.d/data/.launched to reset vim/dvorak/term/el-get-sources options at startup
 ;;
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl-lib))
+
+(require 'defs)
 
 (defvar *i-am-a-vim-user* t
   "If true, Emacs will be Vimpyrized using `evil-mode'. (ViViVi, the beast.)
@@ -121,9 +123,7 @@ over a frame.")
 
 ;;; FIRST TIME
 ;;
-(let ((first-file (expand-file-name
-                   ".launched"
-                   (expand-file-name mars/personal-data mars/local-root-dir))))
+(let ((first-file (joindirs mars/local-root-dir mars/personal-data ".launched")))
   (if (file-exists-p first-file)
       (load-file first-file)
     (progn
@@ -204,101 +204,99 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 ;;
 (defvar c-include-path nil "Additional include path for C programs.")
 (defvar cpp-include-path nil "Additional include path for C++ programs")
-(let ((data-dir (expand-file-name mars/personal-data mars/local-root-dir)))
-  (mapc #'(lambda (x)
-	    (let ((newdir (expand-file-name data-dir)))
-	      (unless (file-exists-p newdir)
-		(make-directory newdir t))))
-    '("cache/semanticdb"
-      "cache/bookmark"
-      "cache/newsticker/cache"
-      "cache/newsticker/images"
-      "cache/newsticker/groups"
-      "cache/emms"
-      "cache/eshell"
-      "cache/image-dired"
-      "Notes" "Insert" "BBDB" "elmo"))
-  (let* ((data-cache (expand-file-name "cache" data-dir))
-	 (essential-data '((desktop-dir data-cache)
-			   (desktop-base-file-name "desktop")
-			   (desktop-base-lock-name (format "%s%s.lock"
-							   (if (memq system-type
-								     '(ms-dos
-								       windows-nt
-								       cygwin)) "_" ".")
-							   desktop-base-file-name)) ; TODO: add a fun in defs named `prefix-hidden-file'
-			   (org-diary-agenda-file (expand-file-name "Diary.org"
-								    (expand-file-name "Notes" data-dir)))
-			   (auto-insert-directory (expand-file-name "Insert" data-dir))
-			   (bbdb-file (expand-file-name (format "%s.bbdb" (user-login-name))
-							(expand-file-name "BBDB" data-dir)))
-			   (elmo-msgdb-directory (expand-file-name "elmo" data-dir))
-			   (wl-temporary-file-directory (expand-file-name "Downloads" "~"))))
-	 (essential-cached-files '((revive-plus:wconf-archive-file "wconf-archive" "~/.emacs.d/wconf-archive")
-				   
-				   (revive-plus:last-wconf-file "last-wconf" "~/.emacs.d/last-wconf")
-				   (anything-c-adaptive-history-file "anything-c-adaptive-history-file")
-				   (emms-directory "emms" "~/.emacs.d/emms")
-				   (ido-save-directory-list-file "ido-last")
-				   (savehist-file "history")
-				   (recentf-save-file "recentf")
-				   (image-dired-dir "image-dired")
-				   (bookmark-default-file "bookmark/emacs.bmk")
-				   (bmkp-bmenu-commands-file "bookmark/bmenu-commands.el")
-				   (bmkp-bmenu-state-file "bookmark/bmenu-state.el")
-				   (newsticker-cache-filename "newsticker/cache")
-				   (newsticker-imagecache-dirname "newsticker/images")
-				   (newsticker-groups-filename "newsticker/groups")
-				   (tramp-persistency-file-name "tramp")
-				   (ac-comphist-file "ac-comphist.dat")
-				   (eshell-directory-name "eshell") ; force it to be a directory
-				   (semanticdb-default-save-directory "semanticdb")
-				   (ede-project-placeholder-cache-file "projects.ede")
-				   (ecb-tip-of-the-day-file "ecb-tip-of-day.el")))
-	 (data-as-directory '(eshell-directory-name))
-	 (cachize-fn #'(lambda (file-or-dir &optional obsolete-file-or-dir)
-			 ;; generate name of a specific file or directory in cache
-			 (let ((full-path (expand-file-name file-or-dir
-							    data-cache)))
-			   ;; try to copy/purge obsolete file or directory content
-			   ;; in a safe way; useful when the emacs' boot doesn't
-			   ;; include this file
-			   (when (and obsolete-file-or-dir
-				      (file-exists-p obsolete-file-or-dir))
-			     (unless (file-exists-p full-path)
-			       (if (file-directory-p obsolete-file-or-dir)
-				   (copy-directory obsolete-file-or-dir
-						   full-path t t t)
-				 (let ((new-dir (file-name-directory full-path)))
-				   (unless (file-directory-p new-dir)
-				     (make-directory new-dir t))
-				   (copy-file obsolete-file-or-dir full-path))))
-			     (if (file-directory-p obsolete-file-or-dir)
-				 (delete-directory obsolete-file-or-dir t)
-			       (delete-file obsolete-file-or-dir)))
-			   full-path))))
-	 ;; set data
-	 (mapc #'(lambda (ed)
-		   (destructuring-bind (variable path-name) ed
-		     (when (and (symbolp variable) (stringp path-name))
-		       (set variable path-name))))
-	       essential-data)
-	 ;; set cache files (and reset default ones if any)
-	 (mapc #'(lambda (ecf)
-	 	   (destructuring-bind (variable path-name &optional obsolete-path-name) ecf
-	 	     (when (and (symbolp variable) (stringp path-name))
-	 	       (set variable (funcall cachize-fn path-name obsolete-path-name)))))
-	       essential-cached-files)
-	 ;; special case: ensure `data-as-directory' files are in directory form
-	 (mapc #'(lambda (pvar)
-	 	   (when (and (symbolp pvar) (boundp pvar) (stringp (symbol-value pvar)))
-	 	     (set pvar (file-name-as-directory (symbol-value pvar)))))
-	       data-as-directory)))
-           ;; FIXME: temporary hack to auto-remove the default `auto-save-list'
-           ;; (let ((auto-save-folder (expand-file-name "Autosaves"
-           ;;                                           (expand-file-name "Temporary" data-dir))))
-           ;;   (when (file-directory-p auto-save-folder)
-           ;;     (cachize auto-save-folder "~/.emacs.d/auto-save-list"))))))
+(eval-after-load "adapter"              ; IMPORTANT: set those data path when `cl-lib' is installed (retrocompatibility) [required by `cl-reduce' and installed by `el-get' via EL-SELECT in WALKER launched by ADAPTER or installed by another system in ADAPTER like PACKS or eventually installed by default in the current global site-lisp of any GNU Emacs 24.3+]
+  '(let ((data-dir (joindirs mars/local-root-dir mars/personal-data)))
+     ;; ensure data directories exist
+     (mapc #'(lambda (dirs)
+               (let ((newpath (cl-reduce #'joindirs (cons data-dir (listify dirs)))))
+                 (unless (file-exists-p newpath)
+                   (make-directory newpath t))))
+           '(("cache" "semanticdb")
+             ("cache" "bookmark")
+             ("cache" "newsticker" "images")
+             ("cache" "newsticker" "groups")
+             ("cache" "emms")
+             ("cache" "eshell")
+             ("cache" "image-dired")
+             "Notes" "Insert" "BBDB" "elmo"))
+     ;; change essential data and cache path to be located in `mars/personal-data'
+     (let* ((data-cache (expand-file-name "cache" data-dir))
+            (essential-data `((desktop-dir ,data-cache)
+                              (desktop-base-file-name "desktop")
+                              (desktop-base-lock-name ,(format "%s%s.lock"
+                                                               (if (memq system-type
+                                                                         '(ms-dos
+                                                                           windows-nt
+                                                                           cygwin)) "_" ".")
+                                                               "desktop")) ; TODO: add a fun in defs named `prefix-hidden-file'
+                              (org-diary-agenda-file ,(joindirs data-dir "Notes" "Diary.org"))
+                              (auto-insert-directory ,(joindirs data-dir "Insert"))
+                              (bbdb-file ,(joindirs data-dir "BBDB" (format "%s.bbdb" (user-login-name))))
+                              (elmo-msgdb-directory ,(joindirs data-dir "elmo"))
+                              (wl-temporary-file-directory ,(joindirs "~" "Downloads"))))
+            ;; NOTE: `essential-cached-files' has the form '((VARS NAME-IN-DATA-DIR PREVIOUS-PATH-TO-DELETE) ...)
+            (essential-cached-files '((revive-plus:wconf-archive-file "wconf-archive" "~/.emacs.d/wconf-archive")
+                                      
+                                      (revive-plus:last-wconf-file "last-wconf" "~/.emacs.d/last-wconf")
+                                      (anything-c-adaptive-history-file "anything-c-adaptive-history-file")
+                                      (emms-directory "emms" "~/.emacs.d/emms")
+                                      (ido-save-directory-list-file "ido-last")
+                                      (savehist-file "history")
+                                      (recentf-save-file "recentf")
+                                      (image-dired-dir "image-dired")
+                                      (bookmark-default-file "bookmark/emacs.bmk")
+                                      (bmkp-bmenu-commands-file "bookmark/bmenu-commands.el")
+                                      (bmkp-bmenu-state-file "bookmark/bmenu-state.el")
+                                      (newsticker-cache-filename "newsticker/cache")
+                                      (newsticker-imagecache-dirname "newsticker/images")
+                                      (newsticker-groups-filename "newsticker/groups")
+                                      (tramp-persistency-file-name "tramp")
+                                      (ac-comphist-file "ac-comphist.dat")
+                                      (eshell-directory-name "eshell") ; force it to be a directory
+                                      (semanticdb-default-save-directory "semanticdb")
+                                      (ede-project-placeholder-cache-file "projects.ede")
+                                      (ecb-tip-of-the-day-file "ecb-tip-of-day.el")))
+            ;; NOTE: `data-as-directory' contains pathname variables that need a directory identifier (say, '/')
+            (data-as-directory '(eshell-directory-name))
+            (cachize-fn #'(lambda (file-or-dir &optional obsolete-file-or-dir)
+                            ;; generate name of a specific file or directory in cache
+                            (let ((full-path (expand-file-name file-or-dir
+                                                               data-cache)))
+                              ;; try to copy/purge obsolete file or directory content
+                              ;; in a safe way; useful when the emacs' boot doesn't
+                              ;; include this file
+                              (when (and obsolete-file-or-dir
+                                         (file-exists-p obsolete-file-or-dir))
+                                (unless (file-exists-p full-path)
+                                  (if (file-directory-p obsolete-file-or-dir)
+                                      (copy-directory obsolete-file-or-dir
+                                                      full-path t t t)
+                                    (let ((new-dir (file-name-directory full-path)))
+                                      (unless (file-directory-p new-dir)
+                                        (make-directory new-dir t))
+                                      (copy-file obsolete-file-or-dir full-path))))
+                                (if (file-directory-p obsolete-file-or-dir)
+                                    (delete-directory obsolete-file-or-dir t)
+                                  (delete-file obsolete-file-or-dir)))
+                              full-path))))
+       ;; - then set path variable
+       (mapc #'(lambda (ed)
+                 (cl-destructuring-bind (variable path-name) ed
+                   (message (format "%s" path-name))
+                   (when (and (symbolp variable) (stringp path-name))
+                     (set variable path-name))))
+             essential-data)
+       ;; - and set cache files (and reset default ones if any)
+       (mapc #'(lambda (ecf)
+                 (cl-destructuring-bind (variable path-name &optional obsolete-path-name) ecf
+                   (when (and (symbolp variable) (stringp path-name))
+                     (set variable (funcall cachize-fn path-name obsolete-path-name)))))
+             essential-cached-files)
+       ;; special case: ensure `data-as-directory' files are in directory form
+       (mapc #'(lambda (pvar)
+                 (when (and (symbolp pvar) (boundp pvar) (stringp (symbol-value pvar)))
+                   (set pvar (file-name-as-directory (symbol-value pvar)))))
+             data-as-directory))))
 
 ;;; PROGRAM NAMES
 ;;
@@ -339,17 +337,14 @@ named FUEL must be found in the `misc/fuel' subdirectory.")
 
 ;;; SPECIFICS (<data>/sys/vars-<hostname>.el or <data>/vars-<hostname>.el)
 ;; DEPRECATED
-(let ((sys-rep (expand-file-name
-                "sys"
-                (expand-file-name mars/personal-data mars/local-root-dir))))
+(let ((sys-rep (joindirs mars/local-root-dir mars/personal-data "sys")))
   (unless (file-exists-p sys-rep)
     (make-directory sys-rep))
   (condition-case nil
-      (load-file (expand-file-name
-                  (format "vars-%s-%s.el"
-                          (downcase system-name)
-                          (symbol-name system-type))
-                  sys-rep))
+      (load-file (joindirs sys-rep
+                           (format "vars-%s-%s.el"
+                                   (downcase system-name)
+                                   (symbol-name system-type))))
     (error nil)))
 
 (provide 'vars)

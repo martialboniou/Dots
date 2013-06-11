@@ -7,9 +7,9 @@
 ;; Maintainer: Martial Boniou (hondana.net/about)
 ;; Created: Wed Nov 18 11:53:01 2006
 ;; Version: 5.1
-;; Last-Updated: Fri May 31 17:15:50 2013 (+0200)
+;; Last-Updated: Tue Jun 11 13:52:15 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 2070
+;;     Update #: 2071
 ;; URL: https://github.com/martialboniou/Dots.git
 ;; Keywords: .emacs, init
 ;; Compatibility: 
@@ -45,8 +45,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 
-(add-to-list 'load-path (expand-file-name "lisp"
-                          (file-name-directory load-file-name)))
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+
 (delete-dups load-path)
 
 (provide 'emacs-normal-startup)

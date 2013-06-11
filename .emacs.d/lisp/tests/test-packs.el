@@ -13,6 +13,6 @@
 
 ;;; TEST RUNNER
 ;;
-(ert-run-tests-batch-and-exit)
+; (ert-run-tests-batch)
 
 (provide 'test-defs)

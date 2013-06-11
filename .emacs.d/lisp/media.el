@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Jan 19 20:16:06 2008
 ;; Version: 0.3
-;; Last-Updated: Mon Jun 10 18:16:45 2013 (+0200)
+;; Last-Updated: Tue Jun 11 18:52:13 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 125
+;;     Update #: 128
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -234,24 +234,24 @@
 
          ;; When asked for emms-play-directory,
          ;; always start from this one
-         (setq emms-source-file-default-directory "~/Music/"
+         (setq emms-source-file-default-directory (joindirs "~" "Music")
                emms-stream-default-list '(       ; Metal Rules
                                           ("Metal On: The Thrasher"
                                            "http://94.23.244.89:8006" 1 url)
-                                          ("2LATE2HEALMETALRADIO"
-                                           "http://listen.radionomy.com/2late2heal-metal-radio" 1 url)
+                                          ("2Late2Heal"
+                                           "http://listen.radionomy.com/2late2healradio-001" 1 url)
+                                          ("ThrashZoneRadio"
+                                           "http://listen.radionomy.com/thrash-zone-radio" 1 url)
+                                          ("PowerMetal.cl"
+                                           "http://listen.radionomy.com/powermetalcl" 1 url)
                                           ("Metal On: The Brutal"
                                            "http://94.23.244.89:8004" 1 url)
-                                          ("DEATH.FM"
-                                           "http://hi1.death.fm:8211" 1 url)
+                                          ("Metal On: The Heavy"
+                                           "http://94.23.244.89:8002" 1 url)
                                           ("H4XED"
                                            "http://sc-01.h4xed.us:7080" 1 url)
-                                          ("Metal-Only"
-                                           "http://listen.radionomy.com/metal-only" 1 url)
                                           ("DarkSoul 7 Extreme Metal Radio"
-                                           "http://www.darksoul7.com:8000" 1 url)
-                                          ("James Bond"
-                                           "http://www.somafm.com/secretagent.pls" 1 streamlist)))
+                                           "http://www.darksoul7.com:8000" 1 url)))
          ;; Type M-x emms-add-all to add all music in your ~/Music directory.
 
          (defun mars/emms-any-streams ()

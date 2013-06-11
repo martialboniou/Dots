@@ -1,6 +1,7 @@
 ;; unit test library
 ;; tested on GNU Emacs 24.3
 (require 'ert)
+(require 'cl-lib)
 
 ;; settings
 (set 'message-log-max nil)              ; no *Messages* > faster

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Jun 11 11:43:14 2013 (+0200)
+;; Last-Updated: Tue Jun 11 12:59:39 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 181
+;;     Update #: 189
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -152,10 +152,11 @@ over a frame.")
 ;; force vim/dvorak/term options via special vars
 (eval-after-load "defs"
   '(progn
-     (mars/force-options (*vim-now*    . *i-am-a-vim-user*)
-             (*dvorak-now* . *i-am-a-dvorak-typist*)
-             (*term-now*   . *i-am-a-terminator*)
-             (*full-ammo-now* . *i-want-full-ammo*))))
+     (mars/force-options
+      (*vim-now*       . *i-am-a-vim-user*)
+      (*dvorak-now*    . *i-am-a-dvorak-typist*)
+      (*term-now*      . *i-am-a-terminator*)
+      (*full-ammo-now* . *i-want-full-ammo*))))
 
 ;;; MINGW/MSYS COMPATIBILITY
 ;;
@@ -214,7 +215,6 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
            '(("cache" "semanticdb")
              ("cache" "bookmark")
              ("cache" "newsticker" "images")
-             ("cache" "newsticker" "groups")
              ("cache" "emms")
              ("cache" "eshell")
              ("cache" "image-dired")
@@ -235,33 +235,33 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
                               (elmo-msgdb-directory ,(joindirs data-dir "elmo"))
                               (wl-temporary-file-directory ,(joindirs "~" "Downloads"))))
             ;; NOTE: `essential-cached-files' has the form '((VARS NAME-IN-DATA-DIR PREVIOUS-PATH-TO-DELETE) ...)
-            (essential-cached-files '((revive-plus:wconf-archive-file "wconf-archive" "~/.emacs.d/wconf-archive")
+            (essential-cached-files `((revive-plus:wconf-archive-file "wconf-archive" ,(joindirs user-emacs-directory "wconf-archive"))
                                       
-                                      (revive-plus:last-wconf-file "last-wconf" "~/.emacs.d/last-wconf")
+                                      (revive-plus:last-wconf-file "last-wconf" ,(joindirs user-emacs-directory "last-wconf"))
+                                      (emms-directory "emms" ,(joindirs user-emacs-directory "emms"))
+                                      (image-dired-dir "image-dired")
+                                      (eshell-directory-name "eshell") ; force it to be a directory
+                                      (newsticker-imagecache-dirname ("newsticker" "images"))
+                                      (newsticker-cache-filename ("newsticker" "cache"))
+                                      (newsticker-groups-filename ("newsticker" "groups"))
+                                      (bookmark-default-file ("bookmark" "emacs.bmk"))
+                                      (bmkp-bmenu-commands-file ("bookmark" "bmenu-commands.el"))
+                                      (bmkp-bmenu-state-file ("bookmark" "bmenu-state.el"))
                                       (anything-c-adaptive-history-file "anything-c-adaptive-history-file")
-                                      (emms-directory "emms" "~/.emacs.d/emms")
                                       (ido-save-directory-list-file "ido-last")
                                       (savehist-file "history")
                                       (recentf-save-file "recentf")
-                                      (image-dired-dir "image-dired")
-                                      (bookmark-default-file "bookmark/emacs.bmk")
-                                      (bmkp-bmenu-commands-file "bookmark/bmenu-commands.el")
-                                      (bmkp-bmenu-state-file "bookmark/bmenu-state.el")
-                                      (newsticker-cache-filename "newsticker/cache")
-                                      (newsticker-imagecache-dirname "newsticker/images")
-                                      (newsticker-groups-filename "newsticker/groups")
                                       (tramp-persistency-file-name "tramp")
                                       (ac-comphist-file "ac-comphist.dat")
-                                      (eshell-directory-name "eshell") ; force it to be a directory
                                       (semanticdb-default-save-directory "semanticdb")
                                       (ede-project-placeholder-cache-file "projects.ede")
                                       (ecb-tip-of-the-day-file "ecb-tip-of-day.el")))
-            ;; NOTE: `data-as-directory' contains pathname variables that need a directory identifier (say, '/')
+            ;; NOTE: `data-as-directory' contains pathname variables that need a path separator (say, '/')
             (data-as-directory '(eshell-directory-name))
             (cachize-fn #'(lambda (file-or-dir &optional obsolete-file-or-dir)
                             ;; generate name of a specific file or directory in cache
-                            (let ((full-path (expand-file-name file-or-dir
-                                                               data-cache)))
+                            (let ((full-path (cl-reduce #'joindirs
+                                                        (cons data-cache (listify file-or-dir)))))
                               ;; try to copy/purge obsolete file or directory content
                               ;; in a safe way; useful when the emacs' boot doesn't
                               ;; include this file
@@ -296,7 +296,8 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
        (mapc #'(lambda (pvar)
                  (when (and (symbolp pvar) (boundp pvar) (stringp (symbol-value pvar)))
                    (set pvar (file-name-as-directory (symbol-value pvar)))))
-             data-as-directory))))
+             data-as-directory)
+       (message "vars: variables set and cache directory built."))))
 
 ;;; PROGRAM NAMES
 ;;
@@ -316,12 +317,12 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 (defvar w3m-program-name "w3m"
   "The current program name of ye goo' olde W3M.")
 (setq w3m-command w3m-program-name)     ; required by `anything-config'
-(defvar lintnode-rep "~/Dynamics/javascript/lintnode"
+(defvar lintnode-rep (joindirs "~" "Dynamics" "javascript" "lintnode")
   "The `flymake-jslint' repository to use node.js with Emacs. Recommended
 installation: npm install express connect-form haml underscore .")
 (defvar js-comint-program-name "node"
   "The default JavaScript console.")
-(defvar factorcode-source-rep "~/Dynamics/factor/src/factor"
+(defvar factorcode-source-rep (joindirs "~" "Dynamics" "factor" "src" "factor")
   "The up-to-date factor source repository. The Emacs environment
 named FUEL must be found in the `misc/fuel' subdirectory.")
 (defvar mars/quicklisp-slime-rep (expand-file-name ".quicklisp" "~")

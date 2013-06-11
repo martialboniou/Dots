@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.16
-;; Last-Updated: Mon Jun 10 17:56:17 2013 (+0200)
+;; Last-Updated: Tue Jun 11 13:07:25 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 304
+;;     Update #: 306
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -254,24 +254,6 @@ current line."
        (or (eobp) (not (= ?w (char-syntax (char-after))))))
       (dabbrev-expand arg)
       (indent-according-to-mode)))
-
-(defun name-conf-file (name)            ; UNTESTED & OBSOLETE
-  "Generates a complete name for a configuration file according to the `Emacs' version."
-  (let ((root-filename (format "~/.emacs-%s" name))
-        (subdir        "~/.emacs.d/")
-        (x-subdir      "~/.xemacs/"))
-    (cond
-     ((file-exists-p root-filename) root-filename)
-     ((and (not (featurep 'xemacs))
-           (file-directory-p (if (boundp 'user-emacs-directory)
-                                 user-emacs-directory
-                               subdir)))
-      (concat (if (boundp 'user-emacs-directory)
-                  user-emacs-directory
-                subdir) name))
-     ((and (featurep 'xemacs) (file-directory-p x-subdir))
-      (concat x-subdir name))
-     (t root-filename))))
 
 (defmacro defun-dummy (configuration-case &rest source-funs) ; UNTESTED
   "Creates dummy functions if not bound and associates a possible
@@ -744,14 +726,6 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
   (let ((code (list 'lambda)))
     (setcdr code `(() (,function) (remove-hook ',hook ',code ',local)))
     (add-hook hook code append local))) ; XEmacs compatible hook management
-
-;;; find-file with automake directory DEPRECATED (b/c ido M-m)
-;; (defadvice find-file (before make-directory-maybe (filename &optional wildcards) activate)
-;;   "Create parent directory if not exists while visiting file."
-;;   (unless (file-exists-p filename)
-;;     (let ((dir (file-name-directory filename)))
-;;       (unless (file-exists-p dir)
-;;         (make-directory dir)))))
 
 ;;; Three functions using mars/title-as-markdown-title
 (defun mars/markdown-header-first ()

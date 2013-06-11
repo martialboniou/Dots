@@ -36,10 +36,10 @@
 (ert-deftest mars/force-options-simple-test ()
   (unwind-protect
       (progn
-    (defvar *old-foo* 'bar)
-    (defvar *new-foo* 'foo)
-    (should (eq (mars/force-options (*new-foo* . *old-foo*)) 'foo))
-    (should (eq *old-foo* *new-foo*)))
+        (defvar *old-foo* 'bar)
+        (defvar *new-foo* 'foo)
+        (should (eq (mars/force-options (*new-foo* . *old-foo*)) 'foo))
+        (should (eq *old-foo* *new-foo*)))
     (safe-unintern '*old-foo*)
     (safe-unintern '*new-foo*)))
 
@@ -63,9 +63,9 @@
 (ert-deftest joindirs-simple-test ()
   (should (string= (joindirs "~") (expand-file-name "~")))
   (should (string= (joindirs "~" ".emacs.d") (expand-file-name ".emacs.d" "~")))
-  (should (string= (joindirs "~" ".emacs.d" "lisp") (expand-file-name "lisp"
-                                                                      ".emacs.d"
-                                                                      "~"))))
+  (should (string= (joindirs "~" ".emacs.d" "lisp") (expand-file-name "lisp" (expand-file-name
+                                                                              ".emacs.d"
+                                                                              "~")))))
 
 (defun quux-fundamental-buffer-context (body)
   (unwind-protect
@@ -140,8 +140,8 @@ SYMBOL-FLAG whether it's a list of strings or symbols."
     (setq num 1))
   (let (list)
     (while (> num 0)
-      (add-to-list 
-       'list 
+      (add-to-list
+       'list
        (cond ((= num 1) (if symbol-flag 'foo "foo"))
              ((= num 2) (if symbol-flag 'bar "bar"))
              ((= num 3) (if symbol-flag 'baz "baz"))
@@ -158,7 +158,7 @@ by restoring single window frame."
         (progn
           (mapc #'(lambda (x)
                     (generate-new-buffer x))
-                foos)        
+                foos)
           (switch-to-buffer (car foos))
           (delete-other-windows)
           (mapc #'(lambda (x)
@@ -239,24 +239,19 @@ by restoring single window frame."
   (should (string= (trim-string "that's all folks!") "that's all folks!"))
   (should (string= (trim-string "  that\t's all \nfolks!\n \t ") "that\t's all \nfolks!")))
 
-(if (file-exists-p (expand-file-name "vendor/README" (file-name-directory load-file-name)))
-    (progn
-      (ert-deftest elisp-files-in-below-directory-posix-test ()
-        (should
-         (equal
-          (sort (elisp-files-in-below-directory (expand-file-name
-                                                 "vendor"
-                                                 (file-name-directory load-file-name)))
-                #'string<)
-          (mapcar
-           #'(lambda (file)
-               (expand-file-name file
-                                 (expand-file-name
-                                  "vendor"
-                                  (file-name-directory load-file-name))))
-           '("file0.el" "pack1/file1.el" "pack1/third-party/file2.el"
-             "pack2/file3.el" "pack2/file4.el" "pack2/file5.el"))))))
-  (message "You must run this test with a Bourne shell script from the root directory to test."))
+(ert-deftest elisp-files-in-below-directory-posix-test ()
+  (let ((rdm (expand-file-name "vendor/README" (file-name-directory (symbol-file 'windows-context)))))
+    (if (file-exists-p rdm)
+        (let ((vendor-dir (file-name-directory rdm)))
+          (should (equal
+                   (sort (elisp-files-in-below-directory vendor-dir)
+                         #'string<)
+                   (mapcar
+                    #'(lambda (file)
+                        (expand-file-name file vendor-dir))
+                    '("file0.el" "pack1/file1.el" "pack1/third-party/file2.el"
+                      "pack2/file3.el" "pack2/file4.el" "pack2/file5.el")))))
+      (message "You must run this test with a Bourne shell script from the root directory to test."))))
 
 (defun mars/markdown-text-zone-context (longline test)
   "If LONGLINE is T, add trailing whitespace to the title."
@@ -289,8 +284,7 @@ by restoring single window frame."
                                                (t char))))) ; check the underlining
                 (forward-line -1)       ; go back to the first line
                 (should (string= (buffer-substring (point-at-bol) (point-at-eol))
-                                 "My Title From Hell"))) ; check trailing space if any
-      ))
+                                 "My Title From Hell"))))) ; check trailing space if any
 
 (ert-deftest mars/markdown-header-complete-test ()
   (window-context
@@ -300,7 +294,7 @@ by restoring single window frame."
                    (with-current-buffer buf
                      (mars/markdown-text-zone-context
                       longline-case
-                      #'(lambda ()  
+                      #'(lambda ()
                           (mars/markdown-test-template
                            buf 'first)
                           (mars/markdown-test-template
@@ -341,7 +335,7 @@ by restoring single window frame."
 
 (ert-deftest whack-whitespace-cr-case-test ()
   (whack-whitespace-template
-   #'(lambda ()  
+   #'(lambda ()
        (whack-whitespace t)       ; normal case
        (should (string=
                 (buffer-substring (point-min) (point-max))
@@ -382,10 +376,5 @@ by restoring single window frame."
                   "This is my line 1.\nThis is my line 3."))
          ;; check we're on the same column/line
          (should (= (point) pos))))))
-
-
-;;; TEST RUNNER
-;;
-(ert-run-tests-batch-and-exit)
 
 (provide 'test-defs)

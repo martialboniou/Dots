@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 0.8
-;; Last-Updated: Mon Jun 10 18:08:47 2013 (+0200)
+;; Last-Updated: Tue Jun 11 13:17:06 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 122
+;;     Update #: 123
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -114,7 +114,7 @@
        (setq elmo-maildir-folder-path 
              (joindirs elmo-localdir-folder-path "Maildir"))) 
      ;; imapfilter
-     (when (and (file-readable-p "~/.imapfilter/config.lua")
+     (when (and (file-readable-p (joindirs "~" ".imapfilter" "config.lua"))
                 (executable-find "imapfilter"))
        (add-to-list 'wl-folder-check-entity-pre-hook
                     (lambda ()

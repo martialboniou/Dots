@@ -13,13 +13,11 @@ touch tests/vendor/pack2/file4.el
 touch tests/vendor/pack2/and_now_something.txt
 touch tests/vendor/pack2/different.txt
 touch tests/vendor/pack2/file5.el
-mkdir tests/vendor/pack3 # empty bag
+mkdir tests/vendor/pack3
 touch tests/vendor/file0.el
 
 # tests
-EMACSLOADPATH=.:$EMACSLOADPATH
-emacs -batch -l tests/test-defs.el
-emacs -batch -l tests/test-packs.el
+emacs -batch -L tests -l test-defs -l test-packs -f ert-run-tests-batch-and-exit
 
 # tidy up
 rm tests/vendor/pack1/third-party/*.*

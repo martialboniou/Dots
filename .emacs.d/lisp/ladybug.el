@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 26 00:15:15 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri May 31 16:59:40 2013 (+0200)
+;; Last-Updated: Wed Jun 12 14:09:29 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 15
+;;     Update #: 32
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -48,113 +48,25 @@
 (require 'elisp)
 (require 'preamble)
 
-;;; http://www.emacswiki.org/emacs/DrewsElispLibraries
-;; > [new:MartialBoniou:2011-02-25 22:49 UTC]
-;; > Hi Drew. I notice a bug in my emacs: Gnu Emacs 23.2.92.1. The 'switch-to-buffer in autofit-frame.el (used by dired-details+) is blocked when I switch from some buffers (for example, from Customize, if I quit I get a 'buffer is nil' message. I did this:
-;; > <pre>
-;; > (setq buffer (if buffer (get-buffer-create buffer)
-;; > (other-buffer))) ; If string arg, convert to buffer.
-;; > </pre>
-;; > Thanks for your packages and everything you do for free software. -Martial
-;; > [new:DrewAdams:2011-02-26 01:36 UTC]
-;; > Thanks for your report and fix, Martial. Looks like they allowed a `nil' ##BUFFER## arg starting with Emacs 22! Better late than never. Thx -- DrewAdams
-;; > ----
-;; (eval-after-load "autofit-frame"
-;;   '(progn
-;;      (defun switch-to-buffer (buffer &optional norecord)
-;;        (interactive
-;;         (list (read-buffer "Switch to buffer: "
-;;                            (if (fboundp 'another-buffer) ; In `misc-fns.el'.
-;;                                (another-buffer nil t)
-;;                              (other-buffer (current-buffer))))))
-;;        (setq buffer (if buffer (get-buffer-create buffer)
-;;                       (other-buffer))) ; If string arg, convert to buffer.
-;;        (let ((orig-buf (current-buffer)))
-;;          (prog1 (if (window-dedicated-p (selected-window))
-;;                     (switch-to-buffer-other-window buffer)
-;;                   (old-switch-to-buffer buffer norecord))
-;;            (and (one-window-p t)
-;;                 (not (eq buffer orig-buf))     ; Don't resize if same buffer.
-;;                 autofit-frames-flag
-;;            (fit-frame)))))))
-;; 
-;; (defun my-minibuffer-minor-mode ()
-;;   (when (fboundp my-minibuffer-minor-mode)
-;;     (funcall (symbol-function my-minibuffer-minor-mode))))
-;; (add-hook 'minibuffer-setup-hook 'my-minibuffer-minor-mode)
-;; ;;(add-hook 'minibuffer-exit-hook 'my-minibuffer-minor-mode)
-;; (defadvice anything (around set-major-mode activate)
-;;   (let ((my-minibuffer-minor-mode 'my-anything-minibuffer-mode))
-;;     ad-do-it))
-;; (easy-mmode-define-minor-mode my-anything-minibuffer-mode
-;;                               "Anything MiniBuffer Mode"
-;;                               nil
-;;                               " Anything MiniBuffer"
-;;                               '())
-;; (vimpulse-map ";" 'viper-ex)
-;; (vimpulse-map ":" 'anything-M-x)
-;; (vimpulse-map "?" 'describe-bindings)
-;; (vimpulse-map "l" 'forward-char)
-;; (vimpulse-map "h" 'backward-char)
-;; (vimpulse-map "F" 'find-file)
-;; (vimpulse-map "f" 'jaunte)
-;; (vimpulse-map "m" 'hs-toggle-hiding)
-;; (vimpulse-map "M" 'my-toggle-hideshow-all)
-;; (vimpulse-map " " 'anything)
-;; (vimpulse-map "\C-r" 'anything-recentf)
-;; (vimpulse-map "\C-y" 'yas/insert-snippet)
-;; (vimpulse-map "\C-j" 'yafastnav-jump-to-forward)
-;; (vimpulse-map "b" '(lambda ()
-;;                      (interactive)
-;;                      (anything 'anything-c-source-elscreen)
-;;                      ))
-;; 
-;; (vimpulse-map "!" '(lambda ()
-;;                      (interactive)
-;;                      (anything 'anything-c-source-shell-command)
-;;                      ))
-;; 
-;; (vimpulse-map "\C-s" 'anything-c-moccur-occur-by-moccur) ;バッファ内検索
-;; (vimpulse-map "td" 'elscreen-kill)
-;; (vimpulse-map "tt" '(lambda ()
-;;                      (interactive)
-;;           (elscreen-create)
-;;           (anything-recentf)
-;;  ))
-;; (vimpulse-map "H" 'elscreen-previous)
-;; (vimpulse-map "L" 'elscreen-next)
-;; (define-key viper-minibuffer-map "\C-g" 'keyboard-escape-quit)
-;; (define-key viper-insert-global-user-map "\C-g" 'viper-exit-insert-state)
-;; (define-key viper-insert-global-user-map "\C-h" 'delete-backward-char)
-;; (define-key viper-insert-global-user-map "\C-b" 'backward-char)
-;; (define-key viper-insert-global-user-map "\C-f" 'forward-char)
-;; (define-key viper-insert-global-user-map "\C-n" 'next-line)
-;; (define-key viper-insert-global-user-map "\C-p" 'previous-line)
-;; (define-key viper-insert-global-user-map "\C-a" 'move-beginning-of-line)
-;; (define-key viper-insert-global-user-map "\C-e" 'end-of-line)
-;; (define-key viper-insert-global-user-map "\C-h" 'delete-backward-char)
-;; (define-key viper-insert-global-user-map "\C-i" 'yas/expand)
-;; (define-key viper-insert-global-user-map "\C-y" 'yas/insert-snippet)
-;; (define-key vimpulse-visual-basic-map "v" 'end-of-line)
-;; (define-key vimpulse-visual-basic-map ";" 'comment-dwim)
-;; 
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'insert-state "\C-n" 'anything-next-line)
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'insert-state "\C-p" 'anything-previous-line)
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'insert-state "\C-f" 'anything-next-page)
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'insert-state "\C-b" 'anything-previous-page)
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'insert-state "\C-l" 'anything-force-update)
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'vi-state "o" 'anything-follow-mode)
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'vi-state "j" 'anything-next-line)
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'vi-state "k" 'anything-previous-line)
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'vi-state "\C-f" 'anything-next-page)
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'vi-state "\C-b" 'anything-previous-page)
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'vi-state "\C-l" 'anything-force-update)
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'vi-state "}" 'anything-next-source)
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'vi-state "{" 'anything-previous-source)
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'vi-state "gg" 'anything-beginning-of-buffer)
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'vi-state "G" 'anything-end-of-buffer)
-;; (vimpulse-define-key 'my-anything-minibuffer-mode 'vi-state "/" 'anything-isearch)
+(eval-when-compile (require 'ert))
 
+;;; MARS/AUTO-TEST
+(defun mars/auto-test ()
+  (interactive)
+  (let ((tests-dir (joindirs user-emacs-directory "lisp" "tests")))
+     (if (not (file-accessible-directory-p tests-dir))
+         (message "ladybug: no tests for this version.")
+       (let ((tests-files (mapcar #'file-name-sans-extension
+                                  (mapcar #'file-name-nondirectory
+                                          (elisp-files-in-below-directory tests-dir)))))
+         (if (null tests-files)
+             (message "ladybug: no test files to run for this version.")
+           (let ((emacs-run-cli (append '(mars/run-emacs nil "-Q" "-L" tests-dir)
+                                        (cl-mapcan #'(lambda (a) (list "-l" a)) tests-files))))
+             (eval (append emacs-run-cli '("-eval" "(call-interactively #'(lambda () (interactive) (ert-run-tests-interactively t \"*scratch*\")))")))))))))
+;
+;;; HIGHLIGHT-PARENTHESES
+;; OBSOLETE
 ;; (eval-after-load "highlight-parentheses"
 ;;   '(progn
 ;;      (when (assoc 'highlight-parentheses-mode minor-mode-alist)

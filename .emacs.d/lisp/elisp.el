@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 10:19:49 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Jun 10 12:43:49 2013 (+0200)
+;; Last-Updated: Wed Jun 12 11:52:46 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 42
+;;     Update #: 43
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -158,7 +158,6 @@
 (defun mars/run-emacs (save-output &rest args)
   "Start `emacs'. Inspired by the function named `emacs' seen
 in `util/ourcomments-util' of the `nxhtml' package."
-  (interactive)
   (recentf-save-list)
   (let* ((out-buf (when save-output
                     (get-buffer-create "call-process emacs output")))
@@ -176,17 +175,11 @@ in `util/ourcomments-util' of the `nxhtml' package."
     (message "Started 'emacs%s' => %s%s" args-text ret fin-msg)
     ret))
 
-(defun mars/emacs-Q (&optional init-file args)
-  (interactive "FInit file: \nsArguments: ")
-  (cl-flet ((check-valid-string (x) (and init-file (not (eq (string-match x "") 0)))))
+(defun mars/boot-emacs (&optional args)
+  (interactive "sArguments: ")
+  (cl-flet ((check-valid-string (x) (and x (not (eq (string-match x "") 0)))))
     (eval
-     `(apply 'mars/run-emacs nil "-Q" "--debug-init" ,@(when (check-valid-string init-file) `("--load" ,init-file)) ,(when (check-valid-string args) args)))))
-
-(defun mars/emacs-q (&optional init-file args)
-  (interactive "FInit file: \nsArguments: ")
-  (cl-flet ((check-valid-string (x) (and init-file (not (eq (string-match x "") 0)))))
-    (eval
-     `(apply 'mars/run-emacs nil "-q" ,@(when (check-valid-string init-file) `("--load" ,init-file)) ,(when (check-valid-string args) args)))))
+     `(apply 'mars/run-emacs nil ,(when (check-valid-string args) args)))))
 
 (defun mars/vars-heading ()
   (interactive)

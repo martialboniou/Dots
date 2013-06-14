@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Thu Nov 17 17:30:20 2011 (+0100)
 ;; Version: 0.6.2
-;; Last-Updated: Mon Jun 10 18:44:09 2013 (+0200)
+;; Last-Updated: Fri Jun 14 16:54:28 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 19
+;;     Update #: 20
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -361,7 +361,7 @@ the should-be-forbidden C-z.")
 
 ;;; ACE-JUMP-MODE
 ;;  don't let el-get feature ace-jump-mode
-;;  but let it post-initialize key bindings (cf. 'EL-SELECT)
+;;  but let it post-initialize key bindings (cf. 'PACKS-EL-GET)
 (unless (locate-library "ace-jump-mode")
   (message "behave: ace-jump-mode is recommended but not installed."))
 

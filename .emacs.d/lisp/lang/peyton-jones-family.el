@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:40:26 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri May 31 17:18:45 2013 (+0200)
+;; Last-Updated: Thu Jun 13 11:08:33 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 58
+;;     Update #: 60
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -61,6 +61,7 @@
   (add-to-list 'auto-mode-alist '("\\.shen\\'" . shen-mode)))
 (eval-after-load "shen-mode"
   '(progn
+     (require-if-located 'inf-shen)     ; inferior mode
      (eval-after-load "paredit"
        '(progn
           ;; disable paredit-semicolon to type final

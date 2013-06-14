@@ -1,7 +1,8 @@
 (require 'noaccess)
 (require 'vars)
 (require 'defs)
-(require 'el-select)
+(require 'packs-el-get)
+(require 'packs-melpa)
 
 ;;; GENERATE LOAD PATH (add your 'SITE-LISP)
 ;;

@@ -1,4 +1,4 @@
-;;; EL-GET SELECT
+;;; PACKS EL-GET
 ;;
 (require 'noaccess)
 
@@ -16,9 +16,11 @@
  (error "el-get is not installed"))
 
 ;;; MY PERSONAL RECIPE DIRECTORY
+;;
 (add-to-list 'el-get-recipe-path (joindirs mars/local-root-dir mars/personal-data "Recipes"))
 
 ;;; MY INSTALL WISHES
+;;
 (setq el-get-sources '((:name evil
                               :features nil)
                        (:name evil-leader ; installs evil & undo-tree
@@ -82,7 +84,7 @@
                                                     "make lisp docs"
                                                     "cd preview && make lisp && cd ..")
                                            :load nil))) ; let 'WIKI-WIKI launch 'TEX-SITE
-  (error (message "el-select: AUCTeX won't be automatically installed without TeXLive or any modern LaTeX distribution.")))
+  (error (message "packs-el-get: AUCTeX won't be automatically installed without TeXLive or any modern LaTeX distribution.")))
 ;; ruby case
 (condition-case nil ;; TODO: ruby compilation case
     (progn
@@ -101,20 +103,21 @@
                                         ;                                     :depends nil)
                                         ; ) ; use RINARI's INF-RUBY
       ;; TODO: restore ruby-electric or create a new rcp
-      ;; (setq mars/packages (nconc mars/packages '(ruby-electric)))
+      ;; (setq mars/el-get-packages (nconc mars/el-get-packages '(ruby-electric)))
       )
-  (error (message "el-select: yasnippet won't be compiled and rinari and other packages for ruby won't be installed without rake, a simple ruby build program.")))
+  (error (message "packs-el-get: yasnippet won't be compiled and rinari and other packages for ruby won't be installed without rake, a simple ruby build program.")))
 
-;;; MY PACKAGE
-(defvar mars/packages nil
-  "List of highly recommended package name.")
+;;; MY EL-GET PACKAGE
+;;
+(defvar mars/el-get-packages nil
+  "List of highly recommended el-get recipes.")
 
 ;;; IMPORTANT: cl-lib is required if this Emacs is a pre-24.3 release
 (let ((cl-lib-uninstalled (null (locate-library "cl-lib"))))
   (if *i-want-full-ammo*
-      (setq mars/packages (when cl-lib-uninstalled '(cl-lib))) ; no package unless `*i-want-full-ammo*'
+      (setq mars/el-get-packages (when cl-lib-uninstalled '(cl-lib))) ; no package unless `*i-want-full-ammo*'
     (progn
-      (setq mars/packages '(el-get
+      (setq mars/el-get-packages '(el-get
                             color-theme
                             escreen
                             keats
@@ -154,13 +157,13 @@
                             wanderlust
                             ;; from .emacs.d/data/Recipes
                             revive-plus))
-      (when cl-lib-uninstalled (add-to-list 'mars/packages 'cl-lib))
-      ;; merge EL-GET-SOURCE with MARS/PACKAGE
-      (setq mars/packages
-            (nconc mars/packages
+      (when cl-lib-uninstalled (add-to-list 'mars/el-get-packages 'cl-lib))
+      ;; merge EL-GET-SOURCE with MARS/EL-GET-PACKAGE
+      (setq mars/el-get-packages
+            (nconc mars/el-get-packages
                    (mapcar #'el-get-source-name el-get-sources))))))
 
-(el-get 'sync mars/packages)
+(el-get 'sync mars/el-get-packages)
 (el-get 'wait)
 
-(provide 'el-select)            ; required by 'ADAPTER
+(provide 'packs-el-get)                 ; required by 'ADAPTER

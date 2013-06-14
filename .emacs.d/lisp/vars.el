@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Jun 11 12:59:39 2013 (+0200)
+;; Last-Updated: Fri Jun 14 16:52:47 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 189
+;;     Update #: 192
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -22,8 +22,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log: require cl-lib (either from 24.3+ recommended GNU Emacs
-;;              or using `el-get-install' in 'EL-SELECT to install
-;;              compatibility script)
+;;              or using `el-get' or `melpa' to install compatibility
+;;              script)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -75,10 +75,11 @@ recommended to boot CEDET faster.")
   "If true, ELISP helpers will be loaded providing tools
 to easily visualize ELISP macro expansions.")
 (defvar *i-want-full-ammo* t
-  "If true, use a recommended package list to use as `el-get-sources'.
-Otherwise, `el-get' doesn't install any third party extension (you may
-want this in a minimal/offline Emacs install). (See `el-select' file
-for more info.)")
+  "If true, use a recommended package list to use as `el-get-sources'
+and `my-melpa-packages'. Otherwise, `el-get' and `melpa' doesn't install
+any third party extension (you may want this in a minimal/offline
+Emacs install). (See `packs-el-get.el' and `packs-melpa.el' files for
+more info.)")
 (defvar *i-might-be-a-saiki-komon* nil
   "If true, display an organizer window at startup.
 A `saiki-komon' is a clan administrator inside gang
@@ -205,7 +206,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 ;;
 (defvar c-include-path nil "Additional include path for C programs.")
 (defvar cpp-include-path nil "Additional include path for C++ programs")
-(eval-after-load "adapter"              ; IMPORTANT: set those data path when `cl-lib' is installed (retrocompatibility) [required by `cl-reduce' and installed by `el-get' via EL-SELECT in WALKER launched by ADAPTER or installed by another system in ADAPTER like PACKS or eventually installed by default in the current global site-lisp of any GNU Emacs 24.3+]
+(eval-after-load "adapter"              ; IMPORTANT: set those data path when `cl-lib' is installed (retrocompatibility) [required by `cl-reduce' and installed by `el-get' via PACKS-EL-GET in WALKER launched by ADAPTER or installed by another system in ADAPTER like PACKS or PACKS-MELPA or eventually installed by default in the current global site-lisp of any GNU Emacs 24.3+]
   '(let ((data-dir (joindirs mars/local-root-dir mars/personal-data)))
      ;; ensure data directories exist
      (mapc #'(lambda (dirs)

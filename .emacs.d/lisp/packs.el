@@ -6,19 +6,16 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.5-dying-code
-;; Last-Updated: Mon Jun 10 18:24:26 2013 (+0200)
+;; Last-Updated: Fri Jun 14 16:54:58 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 530
+;;     Update #: 532
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Commentary: populate site-lisp (install if unchecked) + elpa
-;;              (nothing yet!)
-;;
-;; TODO: declared OBSOLETE soon //==> 'EL-SELECT (using el-get)
+;;; Commentary: MELPA + EL-GET + VENDOR (UNUSED)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

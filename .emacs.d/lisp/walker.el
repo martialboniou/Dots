@@ -2,7 +2,7 @@
 (require 'vars)
 (require 'defs)
 (require 'packs-el-get)
-(require 'packs-melpa)
+;; (require 'packs-melpa)
 
 ;;; GENERATE LOAD PATH (add your 'SITE-LISP)
 ;;

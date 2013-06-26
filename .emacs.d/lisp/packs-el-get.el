@@ -30,6 +30,8 @@
                               :post-init nil)
                        (:name evil-numbers
                               :features nil) ; let 'VIM-EVERYWHERE configure 'EVIL
+                       (:name multi-term
+                              :features nil)
                        (:name yasnippet
                               :features nil) ; let 'RECTIFY configure 'YASNIPPET
                        (:name ace-jump-mode

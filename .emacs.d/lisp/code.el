@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Jun 10 17:46:14 2013 (+0200)
+;; Last-Updated: Tue Jun 25 10:41:31 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 622
+;;     Update #: 627
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -324,7 +324,7 @@ Move point to the beginning of the line, and run the normal hook
 
 ;;; ECB
 (defun ecb-activated ()
-  (when (boundp 'ecb-activated-window-configuration)
+  (if (boundp 'ecb-activated-window-configuration)
     (not (null ecb-activated-window-configuration))))
 (defun ecb-activated-in-this-frame ()
   (and (ecb-activated)
@@ -342,17 +342,19 @@ Move point to the beginning of the line, and run the normal hook
          (push '(ecb-minor-mode nil) desktop-minor-mode-table)))))
 (defun mars/toggle-ecb ()               ; make a better script w/o 'IF-BOUND-CALL
   (interactive)
-  (if (ecb-activated)
-      (if (ecb-activated-in-this-frame)
-          (when (y-or-n-p "Stop ecb? ")
-            (if-bound-call ecb-deactivate))
-        (when (y-or-n-p "Switch ecb to this current frame? ")
-          (let ((frm (selected-frame)))
-            (if-bound-call ecb-deactivate)
-            (select-frame-set-input-focus frm)
-            (if-bound-call ecb-activate))))
-    (when (y-or-n-p "Start ecb? ")
-      (if-bound-call ecb-activate))))
+  (if (locate-library "ecb")
+      (if (ecb-activated)
+          (if (ecb-activated-in-this-frame)
+              (when (y-or-n-p "Stop ecb? ")
+                (if-bound-call ecb-deactivate))
+            (when (y-or-n-p "Switch ecb to this current frame? ")
+              (let ((frm (selected-frame)))
+                (if-bound-call ecb-deactivate)
+                (select-frame-set-input-focus frm)
+                (if-bound-call ecb-activate))))
+        (when (y-or-n-p "Start ecb? ")
+          (if-bound-call ecb-activate)))
+    (message "code: please install ECB first.")))
 
 ;;; TEMPORARY LIST OF LANGAGES WITH LISP PARENS
 ;; TODO: to 'VARS ?

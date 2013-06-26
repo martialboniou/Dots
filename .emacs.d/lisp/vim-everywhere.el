@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.6.1
-;; Last-Updated: Mon Jun 10 17:01:58 2013 (+0200)
+;; Last-Updated: Tue Jun 25 11:30:25 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 377
+;;     Update #: 378
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -166,7 +166,7 @@
           ;; FIXME: https://github.com/cofi/evil-leader/issues/7
           (add-hook 'emacs-startup-hook 'global-evil-leader-mode)
           (evil-leader/set-leader ","))) ; default is ,
-     (require-if-located 'surround)	 ; via evil-surround
+     (require-if-located 'surround)      ; via evil-surround
      (eval-after-load "surround"
        '(global-surround-mode 1))
      (require-if-located 'evil-numbers)
@@ -180,6 +180,7 @@
           ,@(mapcar #'(lambda (x)
                         `(evil-set-initial-state ',x 'emacs)) mode-list)))
      (mars/set-evil-emacs-in-modes wl-summary-mode
+                                   bbdb-mode
                                    shell-mode eshell-mode
                                    magit-status-mode magit-log-edit-mode)
      (eval-after-load "wl-folder"       ; FIXME: evil-set-initial-state fails!

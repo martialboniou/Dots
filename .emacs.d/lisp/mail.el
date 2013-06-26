@@ -1,48 +1,48 @@
-;;; mail.el --- 
-;; 
+;;; mail.el ---
+;;
 ;; Filename: mail.el
-;; Description: 
+;; Description:
 ;; Author: Martial Boniou
-;; Maintainer: 
+;; Maintainer:
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 0.8
-;; Last-Updated: Tue Jun 11 13:17:06 2013 (+0200)
+;; Last-Updated: Tue Jun 25 20:47:58 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 123
-;; URL: 
-;; Keywords: 
-;; Compatibility: 
-;; 
+;;     Update #: 126
+;; URL:
+;; Keywords:
+;; Compatibility:
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Commentary: Wanderlust
-;; 
-;; 
-;; 
+;;
+;;
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
-;; 
-;; 
+;;
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (require 'www)
@@ -93,7 +93,7 @@
          'wl-draft-send
          'wl-draft-kill
          'mail-send-hook))
-     (setq confirm-frame-action-buffer-alist 
+     (setq confirm-frame-action-buffer-alist
            (append '((major-mode . (wl-draft-mode)))
                    confirm-frame-action-buffer-alist))
 
@@ -111,8 +111,8 @@
        (setq wl-demo-display-logo nil))
      ;; Maildir => <~Mail>/Maildir
      (when elmo-localdir-folder-path
-       (setq elmo-maildir-folder-path 
-             (joindirs elmo-localdir-folder-path "Maildir"))) 
+       (setq elmo-maildir-folder-path
+             (joindirs elmo-localdir-folder-path "Maildir")))
      ;; imapfilter
      (when (and (file-readable-p (joindirs "~" ".imapfilter" "config.lua"))
                 (executable-find "imapfilter"))
@@ -122,17 +122,25 @@
                       (if (eq (call-process "imapfilter") 0)
                           (message "imapfilter ran fine.")
                         (message "error running imapfilter!")))))
-     ;; w3m
+     ;; W3M
      (when (executable-find w3m-program-name)
+      (when (locate-library "octet")
        (require 'octet)                 ; w3m octet for handling attachments
-       (octet-mime-setup))
-     (require-if-located 'filladapt)
+       (octet-mime-setup))              ; TODO: add a (ctree-set-calist-with-default 'mime-acting-condition... to play url externally too
+      (require-if-located 'mime-w3m))
+
+     ;; MIME
      (load "mime-setup")
+
+     ;; filladapt
+     (require-if-located 'filladapt)
+
+     ;; BBDB
      (when (and (locate-library "bbdb-wl")    ; TODO: upgrade
                 (locate-library "bbdb-hooks")) ; check BBDB is currently v2 (bbdb3-wl is alpha on 2013-05-25)
        (require 'bbdb-wl))
 
-     ;; 
+     ;; biff
      (defun wl-biff-start ()
        (require 'timer)
        (when wl-biff-check-folder-list
@@ -173,7 +181,7 @@
      ;;     (when bbdb-buf
      ;;       (kill-buffer bbdb-buf)))
      ;;   (bbdb-save-db nil))
-     
+
      ;; (remove-hook 'wl-exit-hook 'bbdb-wl-exit-2) ; kill BBDB buffer on wl quit
 
      ;; IMPORTANT: remove wl-biff from local-modeline and set it globally
@@ -242,7 +250,7 @@
            '((mode . "play")
              (type . application)(subtype . pdf)
              (method . my-mime-save-content-find-file)))
-          ;; IMPORTANT: hack needed not to truncate lines in MIME-VIEW          
+          ;; IMPORTANT: hack needed not to truncate lines in MIME-VIEW
           (add-hook 'mime-view-mode-hook #'no-line-wrap-this-buffer) ; defined in <confs/defs.el>
           (add-hook 'wl-message-redisplay-hook #'no-line-wrap-this-buffer-internal)))
      ;; BBDB
@@ -255,7 +263,7 @@
                 signature-use-bbdb t
                 bbdb-elided-display t
                 bbdb-always-add-address t
-                bbdb-wl-folder-regexp "^[^+.]"  ; get addresses anything but local or maildirs
+                bbdb-wl-folder-regexp "^[^+.]"  ; get addresses anything but local MH or maildirs
                 bbdb-wl-ignore-folder-regexp "^@" ; ignoring `@-' too
                 bbdb-use-alternate-names t    ; use AKA
                 bbdb-message-caching-enabled t ; be fast
@@ -361,6 +369,15 @@
           ;; mu-cite (citation/heading/signature) & PGP mailcrypt
           ;; (require 'mu-cite)
           )) ; 'EVAL-AFTER-LOAD for 'BBDB-WL
+
+     ;; mu as search engine
+     (when (executable-find "mu")
+       (elmo-search-register-engine
+        'mu 'local-file
+        :prog "mu"
+        :args '("find" pattern "-o" "plain" "-f" "l")
+        :charset 'utf-8)
+       (setq elmo-search-default-engine 'mu))
 
      ;; mailcrypt // thanks to <http://box.matto.nl/wanderlustgpg.html>
      (when (locate-library "mailcrypt")

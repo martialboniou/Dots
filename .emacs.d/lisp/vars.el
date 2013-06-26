@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri Jun 14 16:52:47 2013 (+0200)
+;; Last-Updated: Tue Jun 25 11:57:02 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 192
+;;     Update #: 194
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -302,6 +302,12 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 
 ;;; PROGRAM NAMES
 ;;
+(defvar mars/external-browser-name (cond ((eq system-type 'darwin) "open")
+                                         ((eq system-type 'windows) "explorer.exe")
+                                         ((eq window-system 'x) "xdg-open")
+                                         ((executable-find "w3m") "w3m")
+                                         (t "lynx"))
+  "External Web browser name.")         ; FIXME: UNUSED
 (defvar mars/haskell-program-name "ghci"
   "Haskell interpreter fullname.")
 (defvar mars/common-lisp-program-name "sbcl"

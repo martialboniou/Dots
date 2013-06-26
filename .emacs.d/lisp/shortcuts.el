@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Mon Jun 10 12:50:14 2013 (+0200)
+;; Last-Updated: Tue Jun 25 10:16:47 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 190
+;;     Update #: 202
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -257,7 +257,6 @@
   ("gtd"            . (make-remember-frame mars/today-calendar mars/two-days-calendar mars/unscheduled-tasks))
   ("mail"           . (mars/draft-email mars/wl))
   ("crypto"         . mars/hexedit))
-(defun-dummy nil undo-kill-buffer ibuffer cycle-buffer cycle-buffer-backward cycle-ispell-languages)
 
 ;;; SPECIAL KEYS
 ;;
@@ -272,14 +271,20 @@
                  (require 'revive+))
              (message "shortcuts: revive-plus is recommended and not installed.")))))
 (mars/build-ordered-function-keys "f5"
-                                  (mars/toggle-single-window . id)
-                                  (cycle-buffer-backward            . next)
-                                  (cycle-buffer                     . prev)
+                                  (mars/toggle-single-window        . id)
                                   (delete-window                    . "<end>") ; C-<end> may be used too
                                   (kill-this-buffer                 . "<f1>")
                                   ((lambda () (interactive)
-                                     (undo-kill-buffer ()))         . "<f2>")
-                                  (anything                         . "<f8>"))
+                                     (undo-kill-buffer ()))         . "<f2>"))
+(eval-after-load "anything"
+  '(mars/build-ordered-function-keys "f5"
+                                     (anything                      . "<f8>")))
+(unless (locate-library "anything") (message "installing anything is recommended."))
+(eval-after-load "cycle-buffer"
+  '(mars/build-ordered-function-keys "f5"
+                                     (cycle-buffer-backward            . next)
+                                     (cycle-buffer                     . prev)))
+(unless (locate-library "cycle-buffer") (message "installing cycle-buffer is recommended."))
 (mars/build-windows-archiver-function-keys "f6")
 ;; <f7> => hack tools
 (mars/build-ordered-function-keys "f7" compile elisp-macroexpand describe-unbound-keys mars/hexedit
@@ -287,9 +292,14 @@
                                   (mars/save-n-purge-code           . "<f4>")
                                   (mars/simple-call-tree-view       . "<f5>")
                                   ; (anything-simple-call-tree        . prev)
-                                  (anything-browse-code             . id) ; faster than ecb
-                                  (mars/toggle-ecb                  . next)
-                                  (cycle-ispell-languages           . "<f2>"))
+                                  (mars/toggle-ecb                  . next))
+(eval-after-load "anything-config"
+  '(mars/build-ordered-function-keys "f7"
+                                     (anything-browse-code          . id))) ; faster than ecb
+(unless (locate-library "anything-config") (message "installing anything-config is recommended."))
+(eval-after-load "ispell"
+  '(mars/build-ordered-function-keys "f7"
+                                     (cycle-ispell-languages        . "<f2>")))
 ;; <f8> => daily tasks
 (global-unset-key [f8])
 (mars/build-ordered-function-keys "f8" mars/emms-any-streams
@@ -334,28 +344,35 @@
    ;; - Scroll horizontally
    "<f2><prior>"  scroll-right
    "<f2><next>"   scroll-left
-   ;; - Swap buffers: M-<up> etc.
-   "M-<up>"       buf-move-up
-   "M-<down>"     buf-move-down
-   "M-<right>"    buf-move-right
-   "M-<left>"     buf-move-left
    ;; - Rotate all buffers: M-S-<up> | M-S-<down>
    "M-S-<down>"   (lambda () (interactive) (mars/rotate-windows 'down))
    "M-S-<up>"     (lambda () (interactive) (mars/rotate-windows 'up))
    "<f2><end>"    (lambda () (interactive) (mars/rotate-windows 'down))
-   "<f2><home>"   (lambda () (interactive) (mars/rotate-windows 'up))
-   ;; - Tile
-   "M-S-<left>"   (lambda () (interactive) ; left favorite layouts
-                    (tiling-cycle 3 mars-tiling-favorite-main-layouts))
-   "<f2><kp-delete>" (lambda () (interactive) ; '<f2>C-d' for 2C-two-columns
+   "<f2><home>"   (lambda () (interactive) (mars/rotate-windows 'up))))
+
+;; - Tile
+(eval-after-load "mars-tiling"
+  '(bind-keys
+    '("M-S-<left>"   (lambda () (interactive) ; left favorite layouts
                        (tiling-cycle 3 mars-tiling-favorite-main-layouts))
-   "M-S-<right>"  (lambda () (interactive) ; right favorite layouts
-                    (tiling-cycle 3 mars-tiling-favorite-secondary-layouts))
-   "M-S-<end>"    tiling-cycle)) ; accepts prefix number
+      "<f2><kp-delete>" (lambda () (interactive) ; '<f2>C-d' for 2C-two-columns
+                          (tiling-cycle 3 mars-tiling-favorite-main-layouts))
+      "M-S-<right>"  (lambda () (interactive) ; right favorite layouts
+                       (tiling-cycle 3 mars-tiling-favorite-secondary-layouts))
+      "M-S-<end>"    tiling-cycle)))
+(unless (locate-library "mars-tiling") (message "installing mars-tiling is recommended."))
+;; - Swap buffers: M-<up> ...
+(eval-after-load "buffer-move"
+  '(bind-keys
+    '("M-<up>"       buf-move-up
+      "M-<down>"     buf-move-down
+      "M-<right>"    buf-move-right
+      "M-<left>"     buf-move-left)))
+(unless (locate-library "buffer-move") (message "installing buffer-move is recommended."))
 
 ;; escreen keybindings
 ;; NOTE: the use of <f2> doesn't impact 2C-two-columns keybindings
-(eval-after-load "escreen-setup"
+(eval-after-load "escreen"
   '(progn
      (defmacro escreen-keybindings-builder (super)
        "Builds keybindings for ESCREEN. SUPER may be a Meta key.

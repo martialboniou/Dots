@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 13:08:32 2011 (+0100)
 ;; Version: 0.2
-;; Last-Updated: Fri May 31 17:08:30 2013 (+0200)
+;; Last-Updated: Tue Jun 25 14:04:18 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 29
+;;     Update #: 40
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -50,7 +50,7 @@
 ;;; W3M
 (eval-after-load "w3m"
   '(progn
-     (setq w3m-home-page "http://www.google.fr"
+     (setq w3m-home-page "http://www.google.fr" ; or MOM
            w3m-cookie-accept-bad-cookies t
            w3m-toggle-inline-image t
            w3m-cookie-file (concat (file-name-as-directory mars/local-root-dir)

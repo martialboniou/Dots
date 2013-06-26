@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Jun  6 13:05:12 2013 (+0200)
+;; Last-Updated: Tue Jun 25 10:07:34 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 123
+;;     Update #: 124
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -60,8 +60,7 @@
   (set-selection-coding-system encoding)
   (prefer-coding-system encoding)
   (set-language-environment (symbol-name encoding)))
-
-
+
 ;;; SWITCH ENCODINGS
 ;;
 (setq *supported-encodings* '(utf-8 latin-1))

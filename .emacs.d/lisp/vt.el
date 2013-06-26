@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 13:14:51 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri May 31 17:06:28 2013 (+0200)
+;; Last-Updated: Wed Jun 26 12:57:04 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 20
+;;     Update #: 25
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -64,6 +64,23 @@
        (interactive)
        (term-send-raw-string "\C-H"))
 
+     (defun term-switch-to-shell-mode ()
+       (interactive)
+       (if (equal major-mode 'term-mode)
+           (progn
+             (shell-mode)
+             (set-process-filter  (get-buffer-process (current-buffer)) 'comint-output-filter )
+             (local-set-key (kbd "C-j") 'term-switch-to-shell-mode)
+             (compilation-shell-minor-mode 1)
+             (comint-send-input))
+         (progn
+           (compilation-shell-minor-mode -1)
+           (font-lock-mode -1)
+           (set-process-filter  (get-buffer-process (current-buffer)) 'term-emulate-terminal)
+           (term-mode)
+           (term-char-mode)
+           (term-send-raw-string (kbd "C-l")))))
+
      (dolist
          (bind '(;; ("C-W"     . term-send-forward-word)
                  ;; ("C-w"           . term-send-backward-word)
@@ -78,22 +95,22 @@
                  ("<S-left>"      . multi-term-prev)
                  ("<S-right>"     . multi-term-next)
                  ("C-v"           . term-paste)
-                 ("C-`" . (lambda () (interactive) (term-send-raw-string "\C- ")))
-                 ))
+                 ("C-j"           . term-switch-to-shell-mode)
+                 ("C-`"           . (lambda () (interactive) (term-send-raw-string "\C- ")))))
        (add-to-list 'term-bind-key-alist bind))))
 ;; (setq system-uses-terminfo nil) ; if problem with $TERM
-
+
 ;;; SHELL MODE
 ;;
 (add-hook 'shell-mode-hook #'ansi-color-for-comint-mode-on)
-
+
 ;;; ESHELL MODE
 ;;
 (add-lambda-hook 'eshell-mode-hook
   (setenv "PATH" (mapconcat (lambda (dir) (or dir ".")) exec-path path-separator))
   (when (boundp 'eshell-path-env)
     (setq eshell-path-env (getenv "PATH"))))
-
+
 ;;; SH FILES
 ;;
 (add-to-list 'auto-mode-alist '("\\.[zk]sh$" . sh-mode))

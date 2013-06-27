@@ -47,7 +47,9 @@
                               :features nil) ; let 'BEHAVE configure 'ACE-JUMP-MODE
                        (:name highlight-parentheses
                               :features nil) ; HIGHLIGHT-PARENTHESES-MODE is autoloaded
-                       (:name bbdb           ; BBDB for wanderlust
+                       (:name chopper
+                              :post-init nil) ; use personal keybindings windows & buffers chops
+                       (:name bbdb            ; BBDB for wanderlust
                               :branch "v2.x"
                               :build `("autoconf" ,(concat "./configure --with-emacs=" el-get-emacs)
                                        "make clean" "rm -f lisp/bbdb-autoloads.el"

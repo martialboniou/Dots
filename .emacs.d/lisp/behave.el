@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Thu Nov 17 17:30:20 2011 (+0100)
 ;; Version: 0.6.2
-;; Last-Updated: Fri Jun 14 16:54:28 2013 (+0200)
+;; Last-Updated: Thu Jun 27 10:36:53 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 20
+;;     Update #: 21
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -367,7 +367,10 @@ the should-be-forbidden C-z.")
 
 ;;; ESCREEN
 (require-if-located 'escreen)
-(eval-after-load "escreen" '(escreen-install))
+(eval-after-load "escreen"
+  '(progn
+     (escreen-install)
+     (require-if-located 'escreen-fancy-display-numbers)))
 
 ;;; REVIVE
 (when (locate-library "revive+")

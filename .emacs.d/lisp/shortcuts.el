@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Tue Jun 25 10:16:47 2013 (+0200)
+;; Last-Updated: Thu Jun 27 11:16:40 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 202
+;;     Update #: 211
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -276,15 +276,15 @@
                                   (kill-this-buffer                 . "<f1>")
                                   ((lambda () (interactive)
                                      (undo-kill-buffer ()))         . "<f2>"))
-(eval-after-load "anything"
-  '(mars/build-ordered-function-keys "f5"
-                                     (anything                      . "<f8>")))
-(unless (locate-library "anything") (message "installing anything is recommended."))
-(eval-after-load "cycle-buffer"
-  '(mars/build-ordered-function-keys "f5"
-                                     (cycle-buffer-backward            . next)
-                                     (cycle-buffer                     . prev)))
-(unless (locate-library "cycle-buffer") (message "installing cycle-buffer is recommended."))
+(if (locate-library "anything")
+    (mars/build-ordered-function-keys "f5"
+                                      (anything                      . "<f8>"))
+  (message "installing anything is recommended."))
+(if (locate-library "cycle-buffer")
+    (mars/build-ordered-function-keys "f5"
+                                      (cycle-buffer-backward            . next)
+                                      (cycle-buffer                     . prev))
+  (message "installing cycle-buffer is recommended."))
 (mars/build-windows-archiver-function-keys "f6")
 ;; <f7> => hack tools
 (mars/build-ordered-function-keys "f7" compile elisp-macroexpand describe-unbound-keys mars/hexedit
@@ -293,13 +293,13 @@
                                   (mars/simple-call-tree-view       . "<f5>")
                                   ; (anything-simple-call-tree        . prev)
                                   (mars/toggle-ecb                  . next))
-(eval-after-load "anything-config"
-  '(mars/build-ordered-function-keys "f7"
-                                     (anything-browse-code          . id))) ; faster than ecb
-(unless (locate-library "anything-config") (message "installing anything-config is recommended."))
-(eval-after-load "ispell"
-  '(mars/build-ordered-function-keys "f7"
-                                     (cycle-ispell-languages        . "<f2>")))
+(if (locate-library "anything-config")
+    (mars/build-ordered-function-keys "f7"
+                                      (anything-browse-code          . id)) ; faster than ecb
+  (message "installing anything-config is recommended."))
+(when (locate-library "ispell")
+  (mars/build-ordered-function-keys "f7"
+                                    (cycle-ispell-languages        . "<f2>")))
 ;; <f8> => daily tasks
 (global-unset-key [f8])
 (mars/build-ordered-function-keys "f8" mars/emms-any-streams
@@ -322,18 +322,10 @@
    ;; - Split windows
    "C-S-<left>"   (lambda () (interactive)
                     (split-window-horizontally)
-                    (previous-buffer))
-   "C-S-<right>"  (lambda () (interactive)
-                    (split-window-horizontally)
-                    (buf-move-right)
-                    (previous-buffer))
+                    (previous-buffer))  ; right requires BUFFER-MOVE
    "C-S-<up>"     (lambda () (interactive)
                     (split-window-vertically)
-                    (previous-buffer))
-   "C-S-<down>"   (lambda () (interactive)
-                    (split-window-vertically)
-                    (buf-move-down)
-                    (previous-buffer))
+                    (previous-buffer))  ; down requires BUFFER-MOVE
    ;; - Delete the current window
    "C-<end>"      delete-window         ; <f5><end> may be used too
    ;; - Resize windows
@@ -349,25 +341,32 @@
    "M-S-<up>"     (lambda () (interactive) (mars/rotate-windows 'up))
    "<f2><end>"    (lambda () (interactive) (mars/rotate-windows 'down))
    "<f2><home>"   (lambda () (interactive) (mars/rotate-windows 'up))))
-
 ;; - Tile
-(eval-after-load "mars-tiling"
-  '(bind-keys
-    '("M-S-<left>"   (lambda () (interactive) ; left favorite layouts
-                       (tiling-cycle 3 mars-tiling-favorite-main-layouts))
-      "<f2><kp-delete>" (lambda () (interactive) ; '<f2>C-d' for 2C-two-columns
-                          (tiling-cycle 3 mars-tiling-favorite-main-layouts))
-      "M-S-<right>"  (lambda () (interactive) ; right favorite layouts
-                       (tiling-cycle 3 mars-tiling-favorite-secondary-layouts))
-      "M-S-<end>"    tiling-cycle)))
-(unless (locate-library "mars-tiling") (message "installing mars-tiling is recommended."))
+(if (locate-library "mars-tiling")
+    (bind-keys
+     '("M-S-<left>"   (lambda () (interactive) ; left favorite layouts
+                        (tiling-cycle 3 mars-tiling-favorite-main-layouts))
+       "<f2><kp-delete>" (lambda () (interactive) ; '<f2>C-d' for 2C-two-columns
+                           (tiling-cycle 3 mars-tiling-favorite-main-layouts))
+       "M-S-<right>"  (lambda () (interactive) ; right favorite layouts
+                        (tiling-cycle 3 mars-tiling-favorite-secondary-layouts))
+       "M-S-<end>"    tiling-cycle))
+  (message "installing mars-tiling is recommended."))
 ;; - Swap buffers: M-<up> ...
 (eval-after-load "buffer-move"
   '(bind-keys
     '("M-<up>"       buf-move-up
       "M-<down>"     buf-move-down
       "M-<right>"    buf-move-right
-      "M-<left>"     buf-move-left)))
+      "M-<left>"     buf-move-left
+      "C-S-<right>"  (lambda () (interactive)
+                       (split-window-horizontally)
+                       (buf-move-right)
+                       (previous-buffer))
+      "C-S-<down>"   (lambda () (interactive)
+                       (split-window-vertically)
+                       (buf-move-down)
+                       (previous-buffer)))))
 (unless (locate-library "buffer-move") (message "installing buffer-move is recommended."))
 
 ;; escreen keybindings
@@ -403,10 +402,9 @@ In this case, type \"M-\" as argument."
      (define-key paredit-mode-map (kbd "<f2>9") #'paredit-backward-slurp-sexp))) ; \C-\(
 
 ;; remember keybindings (use <f8><f7> or "C-c C-r" to open in another frame)
-(eval-after-load "remember"
-  '(bind-keys
-    '("C-c C-r" make-remember-frame
-      "C-c r"   make-remember-frame)))
+(bind-keys
+ '("C-c C-r" make-remember-frame
+   "C-c r"   make-remember-frame))
 
 ;; flymake keybindings
 (eval-after-load "flymake"

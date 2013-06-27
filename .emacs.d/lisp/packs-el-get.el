@@ -150,6 +150,7 @@
                             hideshowvis
                             gist
                             switch-window
+                            buffer-move
                             cycle-buffer
                             js-comint
                             textile-mode

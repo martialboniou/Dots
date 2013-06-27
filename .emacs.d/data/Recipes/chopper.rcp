@@ -1,6 +1,7 @@
 (:name chopper
        :description "Interactive binary search for a line within a window or a buffer"
        :type github
+       :pkgname "martialboniou/chopper"
        :features chopper
        :post-init (eval-after-load 'chopper
                     '(progn

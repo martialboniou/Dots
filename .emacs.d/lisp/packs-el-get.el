@@ -30,6 +30,8 @@
                               :post-init nil)
                        (:name evil-numbers
                               :features nil) ; let 'VIM-EVERYWHERE configure 'EVIL
+                       (:name autopair
+                              :features nil)
                        (:name multi-term
                               :features nil)
                        (:name yasnippet
@@ -165,7 +167,8 @@
                             sunrise-commander
                             wanderlust
                             ;; from .emacs.d/data/Recipes
-                            revive-plus))
+                            revive-plus
+                            mwe-log-commands))
       (when cl-lib-uninstalled (add-to-list 'mars/el-get-packages 'cl-lib))
       ;; merge EL-GET-SOURCE with MARS/EL-GET-PACKAGE
       (setq mars/el-get-packages

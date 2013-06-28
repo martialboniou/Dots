@@ -123,6 +123,8 @@
     (progn
       (setq mars/el-get-packages '(el-get
                             color-theme
+                            linum+
+                            hl-line+
                             escreen
                             keats
                             shen-mode
@@ -158,6 +160,7 @@
                             textile-mode
                             yaml-mode
                             haml-mode
+                            hexview-mode ; my own recipe to autoload it
                             sunrise-commander
                             wanderlust
                             ;; from .emacs.d/data/Recipes

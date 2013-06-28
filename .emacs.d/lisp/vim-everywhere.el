@@ -5,10 +5,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
-;; Version: 0.6.1
-;; Last-Updated: Tue Jun 25 11:30:25 2013 (+0200)
+;; Version: 0.6.2-linum-settings
+;; Last-Updated: Fri Jun 28 16:25:23 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 378
+;;     Update #: 383
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -205,15 +205,39 @@
        (progn
          (defface hl-line '((t (:background "grey10"))) "Dummy hl-line.")
          (setq hl-line-face 'hl-line)))
-     (when (locate-library "parenface")
-       (require 'parenface))
+     (require-if-located 'parenface)
 
      ;; 3- TODO: nothing to add (mis)match parentheses -- check 'show-parens
      ;;    so there's no need to add 'mic-paren
 
      ;; 4- line numbering
-     (when (locate-library "linum-settings")
-       (require 'linum-settings))       ; WARNING: multi-web-mode tags' mode must be linum-ed
+     (require-if-located 'linum+)
+     (eval-after-load "linum"
+       '(progn
+          (defun am-add-hooks (hooks function &optional append local)
+            "Call `add-hook' on hook list HOOKS use arguments FUNCTION, APPEND, LOCAL.
+
+HOOKS can be one list or just a hook."
+            (if (listp hooks)
+                (mapc
+                 `(lambda (hook)
+                    (add-hook hook ',function append local))
+                 hooks)
+              (add-hook hooks function append local)))
+          (am-add-hooks
+           `(find-file-hook help-mode-hook Man-mode-hook log-view-mode-hook chart-mode-hook
+                            compilation-mode-hook gdb-mode-hook lisp-interaction-mode-hook
+                            browse-kill-ring-mode-hook completion-list-mode-hook hs-hide-hook
+                            inferior-ruby-mode-hook custom-mode-hook Info-mode-hook
+                            svn-log-edit-mode-hook package-menu-mode-hook dired-mode-hook
+                            apropos-mode-hook svn-log-view-mode-hook diff-mode-hook
+                            emacs-lisp-mode-hook ibuffer-mode-hook html-mode-hook
+                            w3m-mode-hook data-debug-hook debugger-mode-hook text-mode-hook
+                            color-theme-mode-hook semantic-symref-results-mode-hook
+                            sh-mode-hook groovy-mode-hook)
+           (lambda()
+             (unless (eq major-mode 'image-mode)
+               (linum-on))))))
 
      ;; 5- colorize numbers, todos & warnings
      (defface font-lock-number-face

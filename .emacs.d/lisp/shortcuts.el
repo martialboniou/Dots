@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Thu Jun 27 11:16:40 2013 (+0200)
+;; Last-Updated: Fri Jun 28 16:15:59 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 211
+;;     Update #: 212
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -81,6 +81,7 @@
                                         ; - files in `default-directory' (not present in `anything-mini')
    "C-c C-9"   anything-imenu           ; IMPORTANT: useful for fast code navigation (unless `ecb')
                                         ;            anything-browse-code map on [<f7><f7>] too
+   "C-x N"     linum
    "C-<f10>"   tmm-menubar))              ; key-controlled menu (`<f10>' is default but awkward on OSX/Gnome) IMPORTANT: remember this for `no-window-system' session
 
 ;; C-\\ as <meta> everywhere (except anywhere `viper-mode' rewrites it)

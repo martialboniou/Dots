@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 23:42:52 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Jun 10 12:44:45 2013 (+0200)
+;; Last-Updated: Fri Jun 28 15:28:41 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 140
+;;     Update #: 141
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -80,9 +80,9 @@
        ;;     ;; (require 'ipython) ; for old python-mode
        ;;     (py-msg-advise 'ipython))
        (eval-after-load "ipython"
-         '(progn
-            (use-anything-show-completion #'anything-ipython-complete
-                                          '(length initial-pattern))))
+         '(eval-after-load "anything-ipython"
+            '(use-anything-show-completion #'anything-ipython-complete
+                                           '(length initial-pattern))))
        ;; pep8 - style checker
        ;; (unless (executable-find "pep8")
        ;;   (py-msg-advise 'pep8))

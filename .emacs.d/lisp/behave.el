@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Thu Nov 17 17:30:20 2011 (+0100)
 ;; Version: 0.6.2
-;; Last-Updated: Thu Jun 27 10:36:53 2013 (+0200)
+;; Last-Updated: Fri Jun 28 16:46:01 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 21
+;;     Update #: 22
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -386,8 +386,8 @@ the should-be-forbidden C-z.")
 
 ;;; VT100 KEYS
 (when (and (null window-system)
-           (locate-library "lk201"))
-  (require 'lk201))
+           (locate-library "term/lk201"))
+  (load "term/lk201"))
 (eval-after-load "lk201" '(terminal-init-lk201))
 
 (provide 'behave)

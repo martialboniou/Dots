@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 0.8
-;; Last-Updated: Tue Jun 25 20:47:58 2013 (+0200)
+;; Last-Updated: Fri Jun 28 10:55:31 2013 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 126
+;;     Update #: 127
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -284,8 +284,6 @@
                 bbdb-ignore-some-messages-alist '(("From" . "no.?reply\\|DAEMON\\|daemon\\|facebookmail\\|twitter")))
           (add-hook 'bbdb-notice-hook #'bbdb-auto-notes-hook)
           (add-hook 'wl-mail-setup-hook #'bbdb-insinuate-sendmail)
-          ;; citation
-          ;; (add-hook 'mail-citation-hook #'cite-cite)
           ;; vCard case
           (when (and (locate-library "ch6-bbdb-import-csv-buffer")
                      (locate-library "bbdb-vcard-import"))

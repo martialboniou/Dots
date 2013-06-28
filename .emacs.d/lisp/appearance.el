@@ -36,7 +36,7 @@
      ;; ALIAS-MINOR-MODES TODO: merge to appearance.el
      ;; shorten indicator in mode-line
      (when (fboundp 'alias-minor-modes)
-       (alias-minor-modes '(undo-tree UT abbrev Ab autopair AP paredit PE flymake FM)))
+       (alias-minor-modes '(undo-tree UT abbrev Ab autopair AP paredit PE flymake FM mouse-embrace ME)))
 
      ;; PRETTY-LAMBDA
      ;; replace LAMBDA -> λ

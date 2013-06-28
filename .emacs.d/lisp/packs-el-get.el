@@ -139,6 +139,7 @@
                             anything
                             bookmark+
                             auto-pair-plus
+                            mouse-embrace ; use C-c e to toggle; C-S-mouse-3 to configure; mouse-3 to paste surrounding a selection
                             dired-details
                             dired-plus
                             org-mode

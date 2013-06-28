@@ -6,4 +6,4 @@
                     (autoload 'mouse-embrace-mode "mouse-embrace" "Minor Mode to embrace text with mouse selections")
                     (global-set-key [(control c) (e)] 'mouse-embrace-mode)
                     (eval-after-load "mouse-embrace"
-                      '(define-key mouse-embrace-mode-map [(C-S-down-mouse-2)] 'mouse-embrace-choose-text))))
+                      '(define-key mouse-embrace-mode-map [(C-S-down-mouse-3)] 'mouse-embrace-choose-text))))

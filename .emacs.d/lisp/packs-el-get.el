@@ -20,8 +20,9 @@
 (add-to-list 'el-get-recipe-path (joindirs mars/local-root-dir mars/personal-data "Recipes"))
 
 ;;; MY INSTALL WISHES
-;;
+;; (executable-find "latex")
 (setq el-get-sources '((:name evil
+			      :build `(("make" "all" ,(when (executable-find "texi2pdf") "info")))
                               :features nil)
                        (:name evil-leader ; installs evil & undo-tree
                               :features nil)
@@ -30,6 +31,8 @@
                               :post-init nil)
                        (:name evil-numbers
                               :features nil) ; let 'VIM-EVERYWHERE configure 'EVIL
+		       (:name buffer-move
+			      :post-init nil)
                        (:name autopair
                               :features nil)
                        (:name multi-term
@@ -64,7 +67,8 @@
                               :info nil ; TODO: 2013-05-23 fix info file
                               :build `(("make" ,(format "EMACS=%s" el-get-emacs)
                                         ,(format "SITEFLAG=\\\"--no-site-file -L %s/emacs-w3m/ \\\"" el-get-dir)
-                                        "autoloads" "lisp" "emms-print-metadata"))
+                                        "autoloads" "lisp"
+                                        ,(when (executable-find "taglib-config") "emms-print-metadata")))
                               :features nil) ; let 'MEDIA configure 'EMMS
                        (:name git-emacs
                               :features nil)
@@ -120,7 +124,7 @@
 
 ;;; IMPORTANT: cl-lib is required if this Emacs is a pre-24.3 release
 (let ((cl-lib-uninstalled (null (locate-library "cl-lib"))))
-  (if *i-want-full-ammo*
+  (if (not *i-want-full-ammo*)
       (setq mars/el-get-packages (when cl-lib-uninstalled '(cl-lib))) ; no package unless `*i-want-full-ammo*'
     (progn
       (setq mars/el-get-packages '(el-get
@@ -157,7 +161,6 @@
                             hideshowvis
                             gist
                             switch-window
-                            buffer-move
                             cycle-buffer
                             js-comint
                             textile-mode

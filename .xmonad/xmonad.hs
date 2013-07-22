@@ -93,7 +93,7 @@ mars = Confiture
      , numPadKey     = mod2Mask
      , spaceList     = [ "Code", "COED", "eDoc"] -- infinite workspace = mess
      , extraSpace    = "dECO" 
-     , logrusMax     = "urxvt"                   -- my own logrus with xft, unicode, "transparency" and xterm-256color name
+     , logrusMax     = "gnome-terminal"          -- my own logrus with xft, unicode, "transparency" and xterm-256color name; should be urxvt
      , logrusMin     = logrusMax mars
      , lockMin       = "xlock"
      , lockMax       = "xflock4 || xlock"        -- need 'apt-get install xlockmore' too

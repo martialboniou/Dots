@@ -51,7 +51,6 @@
 ;; create *vim-now*/*dvorak-now*/*term-now*/*full-ammo-now* to force new 
 ;; vim/dvorak/term/el-get-sources options
 ;; remove .emacs.d/data/.launched to reset vim/dvorak/term/el-get-sources options at startup
-;;
 (eval-when-compile (require 'cl-lib))
 
 (require 'defs)
@@ -193,8 +192,9 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 ;;; NEXTSTEP/COCOA COMPATIBILITY
 ;;
 (when (eq system-type 'darwin)
-  (setq ns-command-modifier 'meta
-        ns-option-modifier nil))        ; Option works as compose key too
+  (custom-set-variables
+   '(ns-command-modifier 'meta)
+   '(ns-option-modifier nil)))       ; Option works as compose key too
 
 ;;; NOTEBOOK CONTEXT
 ;; touch ~/.notebook if your computer need low resolution screen setup

@@ -3,6 +3,15 @@ Martialism Dot Files
 
 Everything should work with a bit of customization on Mac OS X and most of Linux distribution. I promise to test and perform enhancements this year to make those scripts easier to install (list of packages and resources). A cygwin/Windows revision may be available soon.
 
+Install
+-------
+
+Use the [easy](https://github.com/holman/dotfiles) way:
+
+    cd ~
+    git clone https://github.com/martialboniou/Dots.git .dots
+    cd !$ && script/bootstrap
+
 Zsh
 ---
 

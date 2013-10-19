@@ -3,7 +3,7 @@
 " Language: Vim
 " Maintainer: Martial
 " Creator: Martial
-" Version: 0.4.9
+" Version: 0.5.0
 " Goal: supports Shen, Haskell, common script languages (incl. VimL & CSS) edition
 "       adds snippets, completion & syntax checker
 "       extends indent, tabular & parentheses managementt (resp.for Python / Haskell / Lisp)
@@ -36,7 +36,7 @@ if !isdirectory(expand("~/.vim/bundle/vundle/.git"))
   echo "Installing Vundle..."
   echo ""
   " PUSHD/POPD/MKDIR behave the same on M$ or POSIX system
-  silent exe 'silent !pushd' . expand('~')
+  silent exe 'silent !pushd ' . expand('~')
   silent !mkdir .vim
   silent !mkdir .vim/bundle
   silent !git clone https://github.com/gmarik/vundle .vim/bundle/vundle
@@ -390,4 +390,4 @@ if v:version >= 703
   nnoremap <F3> :cal NumberToggle()<CR>
 endif
 
-" Last Modified: Tue 05 Feb 2013 14:18:36 CET
+" Last Modified: Sat 19 Oct 2013 18:50:46 CEST

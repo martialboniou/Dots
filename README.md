@@ -8,8 +8,8 @@ Install
 
 Use the [easy](https://github.com/holman/dotfiles) way:
 
-    cd ~
-    git clone https://github.com/martialboniou/Dots.git .dots
+    mkdir -p ~/Documents/Code
+    git clone https://github.com/martialboniou/Dots.git !$/Dots
     cd !$ && script/bootstrap
 
 Zsh
@@ -36,7 +36,7 @@ Notice that the numbers in front of file names show you the loading **order** li
 Vim 7
 -----
 
-*Need some tidy up*
+Tested on POSIX. The packages will be auto-installed via vundle.
 
 GNU Emacs 24.3
 --------------

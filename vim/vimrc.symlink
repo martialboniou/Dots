@@ -220,7 +220,7 @@ set guioptions-=L
 set history=1000 " boost history up
 set undolevels=1000
 set shortmess=atI " stifle many interruptive prompts
-"silent exe '!umask 027; mkdir -p ~/.vim/{backup,doc,tmp,views}
+silent exe '!umask 027; mkdir -p ~/.vim/{backup,doc,tmp,views}'
 set backupdir=~/.vim/backup " unused
 set directory=~/.vim/tmp
 "helptags ~/.vim/doc
@@ -390,4 +390,4 @@ if v:version >= 703
   nnoremap <F3> :cal NumberToggle()<CR>
 endif
 
-" Last Modified: Sat 19 Oct 2013 18:50:46 CEST
+" Last Modified: Sun 20 Oct 2013 18:23:47 CEST

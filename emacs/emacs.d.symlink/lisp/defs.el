@@ -458,24 +458,9 @@ a simple `custom.el'."
 
      (defun safe-build-custom-file (subdirectory-in-data &optional general) ; UNTESTED
        (let ((file (build-custom-file-name subdirectory-in-data general)))
-     (if (file-exists-p file)
-         file
-       (let ((custom-dir (expand-file-name (file-name-directory file))))
-         (if (file-exists-p custom-dir)
-         file            ; path exists
-           (let ((dirs-to-create (split-string custom-dir "/"))
-             (path ""))
-         (nbutlast dirs-to-create)
-         (while dirs-to-create
-           (setq path (file-name-as-directory
-                       (concat path (pop dirs-to-create))))
-           (unless (file-exists-p path)
-             (condition-case nil
-             (make-directory path)
-               (error
-            (setq dirs-to-create nil)))))
-         (when (file-exists-p custom-dir)
-           file)))))))                  ; path created
+     (unless (file-exists-p file)
+       (make-directory (file-name-directory file) t))
+     file))
 
      ;; - byte compile
      (defun auto-byte-compile-file-maybe () ; UNTESTED

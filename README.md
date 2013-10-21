@@ -41,6 +41,8 @@ Tested on POSIX. The packages will be auto-installed via vundle.
 GNU Emacs 24.3
 --------------
 
+Tested on Mountain Lion. Require CVS (if Xcode 5 CLI doesn't have it, use `brew tap martialboniou/lostplusfound && brew install cvs`).
+
 All scripts in `.emacs.d` are currently tested on Emacs 24.3. **Ensure your LOAD-PATH know this path:** `~/.emacs.d/lisp` to be able to launch partial setup (see my `zsh` setup).
 
 A great monothread OS for manipulating files, code, versioning tools, email but a poor editor compared to Vim. Fortunately Vimpulse gives us a better Emacs with modal edition mixed with the powertools of Emacs.

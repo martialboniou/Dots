@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 0.8
-;; Last-Updated: Fri Jun 28 10:55:31 2013 (+0200)
+;; Last-Updated: Fri Nov  8 16:19:59 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 127
+;;     Update #: 152
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -52,9 +52,18 @@
 
 (eval-when-compile (require 'sendmail))
 
-;; temporary deactivate gnutls.c from Emacs
-(unless (< emacs-major-version 24)
-  (defalias 'gnutls-available-p 'ignore)) ; ensure external gnutls-cli (see. your init/<username>.wl.el)
+(if (eq 'openssl (intern ssl-program-name))
+    (setq mars/private-stream-type 'ssl)
+  (progn
+    (setq mars/private-stream-type 'starttls)
+    (setq starttls-use-gnutls t)
+    (setq starttls-gnutls-program ssl-program-name)
+    (setq starttls-extra-arguments '("--insecure" "--x509cafile" "~/Documents/SSL/Certificates/Certificates.cer"))))
+
+(setq gnutls-trustfiles mars/cacert-file-name)
+
+(when (<= emacs-major-version 24)
+  (defalias 'gnutls-available-p 'ignore)) ; ensure external gnutls-cli is used (see. your init/<username>.wl.el)
 
 ;; TODO: REPLACE #'BBDB-VCARD-IMPORT BY #'trebb/BBDB-VCARD
 (let* ((init-file-name (format "%s.wl" user-login-name))
@@ -109,6 +118,13 @@
   '(progn
      (unless window-system
        (setq wl-demo-display-logo nil))
+     ;; TODO: test TLS with OpenSSL in SMTP context
+     ;; (add-hook 'wl-mail-send-pre-hook
+     ;;           (lambda () (set (make-local-variable 'ssl-program-arguments)
+     ;;                           '("s_client"
+     ;;                             "-starttls" "smtp"
+     ;;                             "-host" host
+     ;;                             "-port" port))))
      ;; Maildir => <~Mail>/Maildir
      (when elmo-localdir-folder-path
        (setq elmo-maildir-folder-path

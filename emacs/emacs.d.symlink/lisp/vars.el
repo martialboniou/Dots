@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Jun 25 11:57:02 2013 (+0200)
+;; Last-Updated: Fri Nov  8 16:00:02 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 194
+;;     Update #: 220
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -148,7 +148,7 @@ over a frame.")
                    (unless *i-am-a-terminator*
                      "(when (eq *i-am-a-terminator* t) (setq *i-am-a-terminator* nil))\n")
                    (unless *i-want-full-ammo*
-                     "(when (eq *i-want-full-ammo* t) (setq *i-want-full-ammo* nil)\n"))))))))
+                     "(when (eq *i-want-full-ammo* t) (setq *i-want-full-ammo* nil))\n"))))))))
 ;; force vim/dvorak/term options via special vars
 (eval-after-load "defs"
   '(progn
@@ -192,9 +192,18 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 ;;; NEXTSTEP/COCOA COMPATIBILITY
 ;;
 (when (eq system-type 'darwin)
-  (custom-set-variables
-   '(ns-command-modifier 'meta)
-   '(ns-option-modifier nil)))       ; Option works as compose key too
+  (progn
+    ;; .MacOSX/environment, launchctl setenv or LSEnvironment option
+    ;; are a mess; call the $SHELL instead
+    (unless (getenv "TERM_PROGRAM")
+      (let ((path (shell-command-to-string
+                   "$SHELL -cl \"printf %s \\\"\\\$PATH\\\"\"")))
+        (setenv "PATH" path)
+        (setq exec-path (split-string path path-separator))))
+    ;; meta is meta / alt as meta as always be a nonsense
+    (custom-set-variables
+     '(ns-command-modifier 'meta)
+     '(ns-option-modifier nil))))    ; Option works as compose key too
 
 ;;; NOTEBOOK CONTEXT
 ;; touch ~/.notebook if your computer need low resolution screen setup
@@ -204,6 +213,11 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 
 ;;; DATA PATH
 ;;
+(defvar mars/cacert-file-name
+  "/etc/ssl/certs/ca-certificates.crt"
+  "CA Certifications' file as required by OpenSSL or gnutls. Mac OS X users
+should change this variable to point the file with .cer extension as export by
+the application 'Keychain Acess.app'.")
 (defvar c-include-path nil "Additional include path for C programs.")
 (defvar cpp-include-path nil "Additional include path for C++ programs")
 (eval-after-load "adapter"              ; IMPORTANT: set those data path when `cl-lib' is installed (retrocompatibility) [required by `cl-reduce' and installed by `el-get' via PACKS-EL-GET in WALKER launched by ADAPTER or installed by another system in ADAPTER like PACKS or PACKS-MELPA or eventually installed by default in the current global site-lisp of any GNU Emacs 24.3+]
@@ -299,7 +313,7 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
                    (set pvar (file-name-as-directory (symbol-value pvar)))))
              data-as-directory)
        (message "vars: variables set and cache directory built."))))
-
+
 ;;; PROGRAM NAMES
 ;;
 (defvar mars/external-browser-name (cond ((eq system-type 'darwin) "open")
@@ -317,10 +331,12 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 (custom-set-variables
  '(tramp-default-method "ssh"))
 (if (member system-type '(windows-nt ms-dos))
-         (setq ssl-program-name "openssl"
-               ssl-program-arguments '("s_client" "-host" host "-port" service)) ; "-verify" "O" "-CApath" "/usr/lib/ssl/certs" "-quiet"
-         (setq ssl-program-name "gnutls-cli"
-               ssl-program-arguments '("-p" service host)))
+         (setq ssl-program-name "openssl" ; UNTESTED
+               ssl-program-arguments '("s_client" "-host" host "-port" service "-no_ssl2" "-ign_eof")) ; "-verify" "O" "-CApath" "/etc/ssl/certs" "-quiet"
+  (progn
+    (when (eq system-type 'darwin) (setq mars/cacert-file-name "~/Documents/SSL/Certificates/Certificates.cer"))
+    (setq ssl-program-name "gnutls-cli"
+          ssl-program-arguments '("-p" service "--x509cafile" mars/cacert-file-name host))))
 (defvar w3m-program-name "w3m"
   "The current program name of ye goo' olde W3M.")
 (setq w3m-command w3m-program-name)     ; required by `anything-config'

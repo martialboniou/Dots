@@ -5,10 +5,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
-;; Version: 
-;; Last-Updated: Fri Nov  8 16:00:02 2013 (+0100)
+;; Version: 0.17
+;; Last-Updated: Wed Nov 13 15:01:17 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 220
+;;     Update #: 221
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -358,6 +358,10 @@ named FUEL must be found in the `misc/fuel' subdirectory.")
                                ((not (member system-type '(ms-dos windows-nt))) "/usr/share/texmf-texlive") ; Linux, BSD, Cygwin...
                                (t "")))
   "The default location of `TEXMF_DIR' for Auctex installer.")
+(defvar mars/notifier (if (eq system-type 'darwin)
+                          (if (not (executable-find "terminal-notifier")) 'growl 'terminal-notifier)
+                        (if (eq window-system 'x) 'notify-send 'none))
+  "The UI notification daemon.")
 
 ;;; SPECIFICS (<data>/sys/vars-<hostname>.el or <data>/vars-<hostname>.el)
 ;; DEPRECATED

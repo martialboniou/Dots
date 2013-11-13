@@ -5,10 +5,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
-;; Version: 0.16
-;; Last-Updated: Tue Jun 11 13:07:25 2013 (+0200)
+;; Version: 0.17
+;; Last-Updated: Wed Nov 13 15:16:50 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 306
+;;     Update #: 309
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -371,17 +371,19 @@ of the message, MSG is the context. Optionally, you can provide an ICON and
 a sound to be played.
    libnotifyd version: djcb@http://emacs-fu.blogspot.com/2009/11/showing-pop-ups.html"
   (interactive)
-  (if (eq system-type 'darwin)          ; assume 'DARWIN is OS X
-       (shell-command
-        (format "growlnotify -a Emacs -t '%s' -m '%s' 2> /dev/null" title msg))
+  (cond
+   ((eq mars/notifier 'growl) (shell-command (format "growlnotify -a Emacs -t '%s' -m '%s' 2> /dev/null" title msg)))
+   ((eq mars/notifier 'terminal-notifier) (shell-command (format "terminal-notifier -sound default -title \"Emacs > %s\" -message \"%s\"" title msg)))
+   ((eq mars/notifier 'notify-send)
     (progn
-      (when sound (shell-command
-                   (format "mplayer -really-quiet %s 2> /dev/null" sound)))
+      (when sound
+        (shell-command
+         (format "mplayer -really-quiet %s 2> /dev/null" sound)))
       (when (eq window-system 'x)
         (shell-command (format "notify-send %s '%s' '%s'"
                                (if icon (format "-i %s" icon) "")
                                title  msg)))))
-  (message (format "%s: %s" title msg)))
+   (t (message (format "defs::notification: %s: %s" title msg)))))
 
 (defun output-to-growl (msg)            ; UNTESTED
   (let ((fname (make-temp-file "/tmp/growlXXXXXX")))

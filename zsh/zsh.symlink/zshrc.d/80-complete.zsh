@@ -1,9 +1,9 @@
 # ---[ Completition system ]-------------------------------------------
-zstyle ':completion:*' auto-description 'specify %d' 
+zstyle ':completion:*' auto-description 'specify %d'
 zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' squeeze-slashes true # remove trailing slash (useful for ln)
 zstyle ':completion:*:cd:*' ignore-parents parent pwd # cd ../<tab> doesn't show parent
-zstyle ':completion:*' insert-unambiguous true 
+zstyle ':completion:*' insert-unambiguous true
 zstyle ':completion:*' format '%d:'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
@@ -26,4 +26,20 @@ zstyle ':completion:*:cd:*' ignored-patterns '(*/)#CVS'
 zstyle ':completion:*:*:kill:*' menu yes select
 zstyle ':completion:*:kill:*' force-list always
 
+# use 'Ctrl-F' to complete menu
+# http://chneukirchen.org/blog/archive/2013/03/10-fresh-zsh-tricks-you-may-not-know.html
+zmodload zsh/complist
+zle -C complete-menu menu-select _generic
+_complete_menu()
+{
+  setopt localoptions alwayslastprompt
+  zle complete-menu
+}
+zle -N _complete_menu
+bindkey '^F' _complete_menu
+bindkey -M menuselect '^F' accept-and-infer-next-history
+bindkey -M menuselect '/' accept-and-infer-next-history
+bindkey -M menuselect '^?' undo
+bindkey -M menuselect ' ' accept-and-hold
+bindkey -M menuselect '*' history-incremental-pattern-search-forward
 

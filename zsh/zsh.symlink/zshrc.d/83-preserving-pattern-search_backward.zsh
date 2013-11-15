@@ -1,5 +1,6 @@
 # ---[ Ctrl-R to history incremental preserving pattern search backward ]--------
 autoload -Uz narrow-to-region
+# http://chneukirchen.org/blog/archive/2013/03/10-fresh-zsh-tricks-you-may-not-know.html
 function _history-incremental-preserving-pattern-search-backward
 {
   local state

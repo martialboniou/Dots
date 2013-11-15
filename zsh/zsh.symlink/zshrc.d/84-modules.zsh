@@ -8,4 +8,5 @@ zmodload -ap zsh/mapfile mapfile
 autoload -U fold map filter # functional programming
 autoload -U zmv # mv w/ pattern matching
 autoload -U canonical_readlink # $(readlink -f) everywhere
-autoload -U clearhis
+autoload -U clearhis imv
+

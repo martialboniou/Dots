@@ -6,7 +6,7 @@
 #
 # $ clearhis
 function clearhis {
-    srm $ZDOTDIR/cache/history
+    srm $HISTFILE
     srm $ZDOTDIR/cache/zdirdump
     clear
     if test -n ${TMUX}; then

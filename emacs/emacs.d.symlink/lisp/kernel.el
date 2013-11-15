@@ -99,7 +99,19 @@
 (let* ((load-time (cl-destructuring-bind (hi lo ms &optional ps) (current-time)
                     (- (+ hi lo) (+ (first emacs-load-start)
                                     (second emacs-load-start)))))
-       (load-time-msg (format "Emacs loaded in %d s" load-time)))
+       (load-time-msg (format "%s loaded in %d s%s"
+                              (cond
+                               ((featurep 'emacs-normal-startup) "Emacs")
+                               ((featurep 'peyton-jones-family) "Emacs for functional programming")
+                               ((featurep 'church-inspired) "Emacs for Lisp or Prolog")
+                               ((featurep 'python-357) "Emacs for Python")
+                               ((featurep 'pure-object) "Emacs for object-oriented programming")
+                               ((featurep 'wiki-wiki) "Emacs for Markup languages")
+                               ((featurep 'mail) "MUA-Emacs")
+                               ((featurep 'gtd) "GTD-Emacs")
+                               (t "Emacs in minimal setup"))
+                              load-time
+                              (if (null window-system) (format " in %s" (shell-command-to-string  (format "ps -p %s | tail -1 | awk '{print $2}'" (emacs-pid)))) ""))))
   (display-external-pop-up "Emacs startup" load-time-msg))
 
 (put 'narrow-to-region 'disabled nil)

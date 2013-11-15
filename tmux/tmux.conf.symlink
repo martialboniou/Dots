@@ -12,7 +12,7 @@ if '[ `uname` = Darwin ]' 'bind C-v run "reattach-to-user-namespace pbpaste | tm
 
 if '[ `uname` = Linux ]' 'bind C-c run "tmux save-buffer - | xclip -i -selection clipboard"'
 if '[ `uname` = Linux ]' 'bind C-v run "tmux set-buffer -- \"`xclip -o -selection clipboard`\"; tmux paste-buffer"'
-
+bind -n C-k clear-history
 
 # look
 set -g status-bg black

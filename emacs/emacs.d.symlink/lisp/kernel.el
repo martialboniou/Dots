@@ -96,23 +96,36 @@
       (unintern 'emacs-normal-startup obarray))))
 
 ;; load time (NOTE: ADAPTER should install `cl-lib' if not found)
-(let* ((load-time (cl-destructuring-bind (hi lo ms &optional ps) (current-time)
-                    (- (+ hi lo) (+ (first emacs-load-start)
-                                    (second emacs-load-start)))))
-       (load-time-msg (format "%s loaded in %d s%s"
-                              (cond
-                               ((featurep 'emacs-normal-startup) "Emacs")
-                               ((featurep 'peyton-jones-family) "Emacs for functional programming")
-                               ((featurep 'church-inspired) "Emacs for Lisp or Prolog")
-                               ((featurep 'python-357) "Emacs for Python")
-                               ((featurep 'pure-object) "Emacs for object-oriented programming")
-                               ((featurep 'wiki-wiki) "Emacs for Markup languages")
-                               ((featurep 'mail) "MUA-Emacs")
-                               ((featurep 'gtd) "GTD-Emacs")
-                               (t "Emacs in minimal setup"))
-                              load-time
-                              (if (null window-system) (format " in %s" (shell-command-to-string  (format "ps -p %s | tail -1 | awk '{print $2}'" (emacs-pid)))) ""))))
-  (display-external-pop-up "Emacs startup" load-time-msg))
+;; #'EMACS-INIT-TIME doesn't count time in non-`init.el' startup
+(defvar emacs-startup-time nil
+  "Display the Emacs startup time. Says if the Emacs startup time function has not been displayed if NIL.")
+(defun emacs-startup-time ()
+  (if (null emacs-startup-time) "no startup time" (format "%d seconds" emacs-startup-time)))
+(defun emacs-startup-time-display ()
+  (interactive)
+  (let ((not-displayed-yet nil))
+    (when (null emacs-startup-time)
+      (setq not-displayed-yet t)
+      (setq emacs-startup-time (cl-destructuring-bind (hi lo ms &optional ps) (current-time)
+                                 (- (+ hi lo) (+ (first emacs-load-start)
+                                                 (second emacs-load-start))))))
+    (let ((load-time-msg (format "%s loaded in %s%s"
+                                 (cond
+                                  ((featurep 'emacs-normal-startup) "Emacs")
+                                  ((featurep 'peyton-jones-family) "Emacs for functional programming")
+                                  ((featurep 'church-inspired) "Emacs for Lisp or Prolog")
+                                  ((featurep 'python-357) "Emacs for Python")
+                                  ((featurep 'pure-object) "Emacs for object-oriented programming")
+                                  ((featurep 'wiki-wiki) "Emacs for Markup languages")
+                                  ((featurep 'mail) "MUA-Emacs")
+                                  ((featurep 'gtd) "GTD-Emacs")
+                                  (t "Emacs in minimal setup"))
+                                 (emacs-startup-time)
+                                 (if (null window-system) (format " in %s" (shell-command-to-string  (format "ps -p %s | tail -1 | awk '{print $2}'" (emacs-pid)))) ""))))
+      (if not-displayed-yet
+          (display-external-pop-up "Emacs startup" load-time-msg)
+        (message load-time-msg)))))
+(add-hook 'emacs-startup-hook #'emacs-startup-time-display)
 
 (put 'narrow-to-region 'disabled nil)
 

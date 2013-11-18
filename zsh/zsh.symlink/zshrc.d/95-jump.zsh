@@ -6,5 +6,4 @@
 [[ -x `which jump-bin` ]] && [[ -a "$HOME/.jump_shell_driver" ]] && source "$HOME/.jump_shell_driver" && \
 alias j=jump && \
 alias ja='jump --add' && \
-alias jl='jump --list' && \
-alias lll='jump --list'
+alias jj='jump --list'

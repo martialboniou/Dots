@@ -22,7 +22,11 @@ nnoremap ; :
 set path=.,** " search in file's dir then current subdir
 au BufEnter * :cd %:p:h "current dir is file dir (so path != .,,**)
 if &t_Co > 2 || has("gui_running") | syntax on | endif
-if v:version >= 703 | set rnu | endif
+if v:version >= 703
+  " Inspiration RelativeNumberCurrentWindow script by Ingo Karkat
+  au VimEnter,WinEnter,BufWinEnter,FocusGained,InsertLeave * :set rnu | :set nu
+  au WinLeave,FocusLost,InsertEnter * :set rnu! | :set nu!
+endif
 set sts=2 ts=2 sw=2 et
 set laststatus=2
 
@@ -151,7 +155,7 @@ Bundle 'timestamp.vim'
 let g:timestamp_rep = '%a %d %b %Y %H:%M:%S %Z' " 24-hour clock
 if has('win32') || has('win64')
   " match non-abbreviated %Z
-  let g:timestamp_regexp = '\v\C%(<Last %([cC]hanged?|[mM]odified)\s*:\s+)@<=\a+ \d{2} \a+ \d{4} \d{2}:\d{2}:\d{2} %(\a|\s)*|TIMESTAMP'
+  let g:timestamp_regexp = '\v\C%(<Last %([cC]hanged?|[mM]odified)\s*:\s+)@<=\a+ \d{2} \a+ \d{4} \d{2}:\d{2}:\d{2} %(\a|\s)*|Tue 19 Nov 2013 18:07:31 CET'
 endif
 """ intelligent finder
 Bundle 'FuzzyFinder'
@@ -382,12 +386,4 @@ fun! s:CursorOldPosition()
 endfun
 au BufReadPost * silent! cal s:CursorOldPosition()
 
-"" toggle numbers
-if v:version >= 703
-  fun! NumberToggle()
-    if (&relativenumber == 1) | set nu | else | set rnu | endif
-  endfun
-  nnoremap <F3> :cal NumberToggle()<CR>
-endif
-
-" Last Modified: Sun 20 Oct 2013 18:23:47 CEST
+" Last Modified: Tue 19 Nov 2013 18:07:49 CET

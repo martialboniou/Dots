@@ -51,7 +51,7 @@ cal vundle#rc()
 Bundle 'gmarik/vundle'
 "" VUNDLE PACKAGES
 """ colorscheme
-Bundle 'mrtazz/molokai.vim'
+Bundle 'tomasr/molokai'
 if &t_Co>=256 || has("gui_running")
   try
     colorscheme molokai
@@ -386,4 +386,4 @@ fun! s:CursorOldPosition()
 endfun
 au BufReadPost * silent! cal s:CursorOldPosition()
 
-" Last Modified: Tue 19 Nov 2013 18:07:49 CET
+" Last Modified: Wed 20 Nov 2013 21:38:36 CET

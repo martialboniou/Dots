@@ -386,4 +386,4 @@ fun! s:CursorOldPosition()
 endfun
 au BufReadPost * silent! cal s:CursorOldPosition()
 
-" Last Modified: Wed 20 Nov 2013 21:38:36 CET
+" Last Modified: Thu 21 Nov 2013 14:25:14 CET

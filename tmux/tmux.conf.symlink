@@ -31,3 +31,11 @@ set-option -g status-right '#[fg=cyan]%a,%d-%b#[default]'
 # - urxvt 256 color may need to force a $TERM
 set -g default-terminal xterm-256color
 # - vim should use t_Co=256
+setw -g xterm-keys on
+
+# additional keys
+bind F5 resize-pane -Z
+bind C-l swap-pane -s :+.top \; rotate-window -Ut :+
+bind C-h swap-pane -s :+.bottom \; rotate-window -Dt :+
+bind l next-window
+bind h previous-window

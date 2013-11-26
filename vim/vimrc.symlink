@@ -54,7 +54,7 @@ Bundle 'gmarik/vundle'
 Bundle 'tomasr/molokai'
 if &t_Co>=256 || has("gui_running")
   try
-    colorscheme molokai
+    au VimEnter * :colorscheme molokai
   catch /^Vim\%((\a\+)\)\=:E185/
     "no way
   endtry
@@ -199,6 +199,14 @@ if s:iCanHazVundle == 0
   :BundleInstall!
 endif
 filetype plugin indent on
+
+" COLORSCHEME
+"if &term =~ \".*256color\" | set t_Co=256 | else | echo \"toto\"| endif
+" set t_Co=256
+" set bg=dark
+" let g:molokai_original = 1
+" set t_Co=256
+" colorscheme molokai
 
 " DEFAULT BEHAVIOR
 set enc=utf-8
@@ -386,4 +394,4 @@ fun! s:CursorOldPosition()
 endfun
 au BufReadPost * silent! cal s:CursorOldPosition()
 
-" Last Modified: Thu 21 Nov 2013 14:25:14 CET
+" Last Modified: Tue 26 Nov 2013 14:04:01 CET

@@ -5,7 +5,6 @@
 
 emacs_acquaint # don't start tmux in emacsen vt
 if [[ $? -eq 0 ]]; then
-
     if test -z ${TMUX}; then
         tmux $* # $* to pass args like `chdir` at startup
     fi

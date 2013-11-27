@@ -28,8 +28,10 @@ set-option -g status-right '#[fg=cyan]%a,%d-%b#[default]'
 
 # 256 colors
 # - tmux -2 should be used
-# - urxvt 256 color may need to force a $TERM
-set -g default-terminal xterm-256color
+# - the first window may be set to screen b/c of race condition
+#   (see .zsh/zshrc.d/97-tmux-session.zsh)
+CONTAINING_TERM=$TERM
+if-shell 'test `tput colors` -ge 256' 'set-option -g default-terminal "xterm-256color"'
 # - vim should use t_Co=256
 setw -g xterm-keys on
 

@@ -6,7 +6,7 @@
 " Version: 0.5.0
 " Goal: supports Shen, Haskell, common script languages (incl. VimL & CSS) edition
 "       adds snippets, completion & syntax checker
-"       extends indent, tabular & parentheses managementt (resp.for Python / Haskell / Lisp)
+"       extends indent, tabular & parentheses management (resp.for Python / Haskell / Lisp)
 "
 " hondana@gmx.com (2004-2010,2012-2013)
 "
@@ -353,6 +353,8 @@ au Filetype html,htm,xml setl listchars-=tab:>.
 au Filetype make,python,ruby setl noet
 "" TRAILING WHITESPACE KEEPER'S FAMILY
 au Filetype ruby,javascript,perl let b:noStripWhitespace=1
+"" BACKUP ISSUE
+au Filetype crontab set nobackup nowritebackup
 "" OMNIFUNC
 au Filetype html,htm,markdown setl omnifunc=htmlcomplete#CompleteTags
 au Filetype xml setl omnifunc=xmlcomplete#CompleteTags
@@ -394,4 +396,4 @@ fun! s:CursorOldPosition()
 endfun
 au BufReadPost * silent! cal s:CursorOldPosition()
 
-" Last Modified: Tue 26 Nov 2013 14:04:01 CET
+" Last Modified: Tue 26 Nov 2013 20:25:31 CET

@@ -3,12 +3,12 @@ if [[ "$SYSTEM" == "Darwin" ]]; then
   _HASKELL_PLATFORM=${HOME}/Library/Haskell/bin
   [[ -d "$_HASKELL_PLATFORM" ]] && add_path $_HASKELL_PLATFORM
   unset _HASKELL_PLATFORM
+fi
+
+CABAL_BIN=${HOME}/.cabal/bin
+if [[ -d "$CABAL_BIN" ]]; then
+  add_path "$CABAL_BIN"
+  export CABAL_BIN
 else
-  CABAL_BIN=${HOME}/.cabal/bin
-  if [[ -d "$CABAL_BIN" ]]; then
-    add_path "$CABAL_BIN"
-    export CABAL_BIN
-  else
-    unset CABAL_BIN
-  fi
+  unset CABAL_BIN
 fi

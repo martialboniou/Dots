@@ -38,7 +38,13 @@ fetch_path () {
 # MEMO: rehash
 repath () {
   local force_reload
-  export PATH=/usr/bin:/bin # ensure reset
+  if [[ "`uname -s`" == "Darwin" ]]; then
+    # IMPORTANT: ensure reset before calling `path_helper -s'
+    PATH=
+    source /etc/zshenv
+  else
+    export PATH=/usr/bin:/bin # ensure reset
+  fi
   fetch_path
   rehash
-} && repath
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 # File: checkmail
 die "A filename argument is missing!" if ($#ARGV == -1);
-exit 0 if (system "ipconfig getifaddr en0>/dev/null || ipconfig getifaddr en1>/dev/null"); # Network is unreachable!
+exit 0 if (system "/usr/sbin/ipconfig getifaddr en0>/dev/null || /usr/sbin/ipconfig getifaddr en1>/dev/null"); # Network is unreachable!
 exit 0 unless (system "ps caux | grep `whoami` | grep NotificationCenter >/dev/null") == 0; # NotificationCenter instance is missing!
 die "Module IO::Socket::SSL is missing!" unless (eval{require IO::Socket::SSL});
 die "Module Mail::IMAPClient is missing!" unless(eval{require Mail::IMAPClient});
@@ -127,4 +127,4 @@ for ( keys %{$mailservers} )
 # 1-56/5 * * * * PATH=~/.tools/bin:~/.rvm/bin:~/.rvm/gems/ruby-XXXX-MY-VERSION-XXXX/bin:/usr/local/bin:$PATH checkmail ~/.mailservers.yaml
 # */15 * * * * PATH=~/.tools/bin:~/.rvm/bin:~/.rvm/gems/ruby-XXXX-MY-VERSION-XXXX/bin:/usr/local/bin:$PATH checkmail ~/.secondary_mailservers.yaml 5
 
-# Last Modified: Wed 27 Nov 2013 10:57:17 CET
+# Last Modified: Wed 27 Nov 2013 11:57:25 CET

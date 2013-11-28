@@ -24,12 +24,15 @@ function textile-w3m () {
 
 # Mac OS X specificities first
 if [ "`uname`" = "Darwin" ]; then
-  # MPD daemon launch issue on Mac OS X 10.5 
+  # MPD daemon launch issue on Mac OS X 10.5
   #type detach &>/dev/null && alias mpd="detach mpd --no-daemon" || echo "MPD doesn't work as expected"
   SRC_HILITE_LESSPIPE=src-hilite-lesspipe.sh # port install source-highlight
   OPEN_COMMAND='open'
   export LSCOLORS=dxgxcxdxbxegedabagacad
   alias ls='ls -G' # AIX/BSD ls command
+  if (( $+commands[gtar] )); then
+    alias tar='gtar' # GNU tar = gtar
+  fi
   alias ghci='EDITOR=mvim ghci'
   alias gvim=mvim
   function wman() {

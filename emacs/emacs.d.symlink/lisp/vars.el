@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version: 0.17
-;; Last-Updated: Wed Nov 13 15:01:17 2013 (+0100)
+;; Last-Updated: Thu Nov 28 14:32:21 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 221
+;;     Update #: 222
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -340,12 +340,12 @@ the application 'Keychain Acess.app'.")
 (defvar w3m-program-name "w3m"
   "The current program name of ye goo' olde W3M.")
 (setq w3m-command w3m-program-name)     ; required by `anything-config'
-(defvar lintnode-rep (joindirs "~" "Dynamics" "javascript" "lintnode")
+(defvar lintnode-rep (joindirs "~" "Documents" "Code" "javascript" "lintnode")
   "The `flymake-jslint' repository to use node.js with Emacs. Recommended
 installation: npm install express connect-form haml underscore .")
 (defvar js-comint-program-name "node"
   "The default JavaScript console.")
-(defvar factorcode-source-rep (joindirs "~" "Dynamics" "factor" "src" "factor")
+(defvar factorcode-source-rep (joindirs "~" "Documents" "Code" "factor" "src" "factor")
   "The up-to-date factor source repository. The Emacs environment
 named FUEL must be found in the `misc/fuel' subdirectory.")
 (defvar mars/quicklisp-slime-rep (expand-file-name ".quicklisp" "~")

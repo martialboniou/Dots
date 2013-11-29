@@ -41,3 +41,5 @@ bind C-l swap-pane -s :+.top \; rotate-window -Ut :+
 bind C-h swap-pane -s :+.bottom \; rotate-window -Dt :+
 bind l next-window
 bind h previous-window
+unbind x
+bind x run "~/.tmux/zoom"

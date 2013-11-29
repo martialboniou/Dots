@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.17
-;; Last-Updated: Mon Nov 18 15:36:44 2013 (+0100)
+;; Last-Updated: Thu Nov 28 17:28:55 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 314
+;;     Update #: 315
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -202,8 +202,11 @@ ROOT                        => ROOT"
                (cons ,value (cdr (assoc ,key ,alist))))
        ,alist)))
 
-(defun value-alist (key alist)          ; UNTESTED
-  (cdr (assoc key alist)))
+(defun value-alist (key alist &optional default) ; UNTESTED
+  (let ((match (assoc key alist)))
+    (if match
+        (cdr match)
+      default)))
 
 (defun joindirs (root &rest dirs)
   "Joins a series of directories together, like Python's os.path.join,

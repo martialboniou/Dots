@@ -22,7 +22,7 @@
 ;;; MY INSTALL WISHES
 ;; (executable-find "latex")
 (setq el-get-sources '((:name evil
-			      :build `(("make" "all" ,(when (executable-find "texi2pdf") "info")))
+                              :build `(("make" "all" ,(when (executable-find "texi2pdf") "info")))
                               :features nil)
                        (:name evil-leader ; installs evil & undo-tree
                               :features nil)
@@ -31,8 +31,8 @@
                               :post-init nil)
                        (:name evil-numbers
                               :features nil) ; let 'VIM-EVERYWHERE configure 'EVIL
-		       (:name buffer-move
-			      :post-init nil)
+                       (:name buffer-move
+                              :post-init nil)
                        (:name autopair
                               :features nil)
                        (:name multi-term
@@ -128,7 +128,6 @@
       (setq mars/el-get-packages (when cl-lib-uninstalled '(cl-lib))) ; no package unless `*i-want-full-ammo*'
     (progn
       (setq mars/el-get-packages '(el-get
-                            color-theme
                             linum+
                             hl-line+
                             escreen
@@ -173,6 +172,7 @@
                             revive-plus
                             mwe-log-commands))
       (when cl-lib-uninstalled (add-to-list 'mars/el-get-packages 'cl-lib))
+      (when (< emacs-major-version 24) (add-to-list 'mars/el-get-packages 'color-theme))
       ;; merge EL-GET-SOURCE with MARS/EL-GET-PACKAGE
       (setq mars/el-get-packages
             (nconc mars/el-get-packages

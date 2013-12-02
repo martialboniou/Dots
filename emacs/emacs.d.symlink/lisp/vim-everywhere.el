@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.6.2-linum-settings
-;; Last-Updated: Fri Nov 29 14:27:11 2013 (+0100)
+;; Last-Updated: Mon Dec  2 11:36:16 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 417
+;;     Update #: 420
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -339,10 +339,11 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
                      (set-face-background 'mode-line (car color))
                      (set-face-foreground 'mode-line (cdr color))))))
 
-     (when (fboundp 'color-theme-install)
+     (unless (and (< emacs-major-version 24)
+                  (not (fboundp 'color-theme-install)))
        ;; choose a theme according to your Vim setup -- ~/.vimrc by default
-       (defvar *color-theme-header* "color-theme-vim-"
-         "The string to add as a color-theme prefix.")
+       (defvar *theme-header* "custom-vim-colorscheme-"
+         "The string to add as a custom/color-theme prefix.")
 
        (defvar *chosen-theme* nil
          "The lambda to draw.")
@@ -355,8 +356,8 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
            (setq lookup-string (substring lookup-string 0 -1)))
          lookup-string)
 
-       (defun compose-theme-name (theme-name)
-         "Make a lispian name for the color-theme function."
+       (defun compose-color-theme-name (theme-name)
+         "Make a lispian name for the color theme function."
          (if (or (null theme-name)
                  (< (length theme-name) 2))
            ""                                ; no short name
@@ -365,14 +366,14 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
                                           (char-to-string ?_)
                                           (char-to-string ?-)
                                           (remove-last-unwanted-char string-to-replace))))
-             (concat *color-theme-header* (replace-underscore theme-name)))))
+             (concat *theme-header* (replace-underscore theme-name)))))
 
        (defun colorscheme-to-color-theme (colorscheme-name)
-         " Returns a theme function in a lambda from a colorscheme name. Works
+         " Returns a color theme function in a lambda from a colorscheme name. Works
 if the function exists."
          (let ((theme (if (= (length colorscheme-name) 0)
                           nil
-                        (intern (compose-theme-name colorscheme-name)))))
+                        (intern (compose-color-theme-name colorscheme-name)))))
            (if (functionp theme)
                theme
              nil)))
@@ -434,7 +435,7 @@ TODO: case of '''colorscheme' this'' where this is
               (provide ',funsym))))
 
        ;; molokai theme (https://github.com/hbin/molokai-theme/blob/master/molokai-theme.el)
-       (defun color-theme-vim-molokai ()
+       (defun custom-vim-colorscheme-molokai ()
          (interactive)
          (let ((class '((class color) (min-colors 89)))
                ;; molokai palette

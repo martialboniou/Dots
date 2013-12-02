@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version: 0.17
-;; Last-Updated: Thu Nov 28 14:32:21 2013 (+0100)
+;; Last-Updated: Mon Dec  2 11:03:59 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 222
+;;     Update #: 223
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -244,6 +244,9 @@ the application 'Keychain Acess.app'.")
                                                                            windows-nt
                                                                            cygwin)) "_" ".")
                                                                "desktop")) ; TODO: add a fun in defs named `prefix-hidden-file'
+                              ,(unless (< emacs-major-version 24)
+                                 `(custom-theme-load-path ,(cons (joindirs data-dir "Themes")
+                                                                 custom-theme-load-path)))
                               (org-diary-agenda-file ,(joindirs data-dir "Notes" "Diary.org"))
                               (auto-insert-directory ,(joindirs data-dir "Insert"))
                               (bbdb-file ,(joindirs data-dir "BBDB" (format "%s.bbdb" (user-login-name))))

@@ -5,10 +5,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
-;; Version: 0.6.2-linum-settings
-;; Last-Updated: Tue Dec  3 19:37:04 2013 (+0100)
+;; Version: 0.7
+;; Last-Updated: Tue Dec  3 21:13:38 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 429
+;;     Update #: 439
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -371,38 +371,30 @@ TODO: case of '''colorscheme' this'' where this is
                                  (if (not (re-search-forward "\"" nil t))
                                      (setq vim-colorscheme-used str))))))
                        vim-colorscheme-used)))))))
-                 ;;       (progn
-                 ;;         (message "vim-everywhere: Vim colorscheme: not found at all")
-                 ;;         (setq vim-colorscheme-used nil)))))
-                 ;; (if (stringp vim-colorscheme-used)
-                 ;;     (let ((found-theme (colorscheme-to-color-theme vim-colorscheme-used)))
-                 ;;       (message "vim-everywhere: your Vim setting file calls \"%s\" as colorscheme" vim-colorscheme-used)
-                 ;;       (if (functionp found-theme)
-                 ;;           (progn
-                 ;;             (setq *chosen-theme* found-theme)
-                 ;;             (message "vim-everywhere: theme loading..."))
-                 ;;         (message "vim-theme::no corresponding theme found; default one loading..."))))))))
 
        ;; fetch your vim colorscheme and load a clone theme
        (let ((colorscheme (mars/extract-colorscheme-from-vimrc))
              (default-colorscheme "molokai"))
          (cl-flet ((compose-theme-name (theme-head theme-name)
                                        (if (or (null theme-name) (< (length theme-name) 2)) "" ; no short name
-                                         (concat theme-head (replace-regexp-in-string (char-to-string ?_) (char-to-string ?-) (remove-last-unwanted-char theme-name))))))
+                                         (intern (concat theme-head (replace-regexp-in-string (char-to-string ?_) (char-to-string ?-) (remove-last-unwanted-char theme-name)))))))
            (when (or (not (stringp colorscheme))
                      (= (length colorscheme) 0))
              (setq colorscheme default-colorscheme))
            (if (< emacs-major-version 24)
                (let* ((theme-header "custom-vim-colorscheme-")
-                      (theme (intern (compose-theme-name theme-header colorscheme))))
+                      (theme (compose-theme-name theme-header colorscheme)))
                  (require 'deprecated-emacs-themes)
                  (unless (functionp theme) (setq theme (intern (compose-color-theme-name theme-header default-colorscheme))))
                  (when (functionp theme)
                    (funcall theme)))
              (let ((theme-header "vim-"))
-               (load (compose-theme-name theme-header colorscheme) t)
-                 ;; else
-               )))))
+               ;; may be overload by `Custom'
+               (condition-case nil
+                   (load-theme (compose-theme-name theme-header colorscheme) t)
+                 (error (condition-case nil
+                            (load-theme (compose-theme-name theme-header default-colorscheme) t)
+                          (error (message "vim-everywhere: the default theme cannot be loaded."))))))))))
 
      ;; 8- open the current buffer in Vim (when Emacs modal editing comes short)
      (defun open-with-vim ()

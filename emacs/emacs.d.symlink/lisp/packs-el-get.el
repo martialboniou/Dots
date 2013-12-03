@@ -151,6 +151,7 @@
                             ;; howm ; corrupted tar
                             ;; remember
                             multi-web-mode
+                            rainbow-mode
                             markdown-mode
                             magit
                             ;; darcsum

@@ -40,7 +40,7 @@ for file in "${dest_files[@]}"; do
       o )
         rm -f "$file" && success "remove $file";;
       b )
-        mv "$file" "$file\.backup" && success "moved $file to $file.backup";;
+        mv "$file" "$file.backup" && success "moved $file to $file.backup";;
       s )
         skip=true;;
       * )

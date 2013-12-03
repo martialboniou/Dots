@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.17
-;; Last-Updated: Thu Nov 28 17:28:55 2013 (+0100)
+;; Last-Updated: Tue Dec  3 19:27:36 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 315
+;;     Update #: 317
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -366,6 +366,14 @@ LIMIT is the minimal buffer size to consider a buffer to be plain."
              (save-excursion (beginning-of-line) (bobp)))
     (beginning-of-line)
     (newline)))
+
+;;; remove last unwanted char
+(defun remove-last-unwanted-char (lookup-string) ; UNTESTED
+           "Remove -, _, ? or ! characters at the end of a string."
+           (while (and (> (length lookup-string) 0)
+                       (string-match-p (substring lookup-string -1) "-_?!=")) ; keep '+'
+             (setq lookup-string (substring lookup-string 0 -1)))
+           lookup-string)
 
 ;;; NOTIFIERS
 (defun display-external-pop-up (title msg &optional icon sound) ; UNTESTED

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version: 0.17
-;; Last-Updated: Mon Dec  2 11:03:59 2013 (+0100)
+;; Last-Updated: Mon Dec  2 16:58:21 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 223
+;;     Update #: 228
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -213,6 +213,9 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 
 ;;; DATA PATH
 ;;
+(unless (< emacs-major-version 24)
+  (defvar mars/custom-theme (joindirs user-emacs-directory "themes")
+    "My personal themes are here."))
 (defvar mars/cacert-file-name
   "/etc/ssl/certs/ca-certificates.crt"
   "CA Certifications' file as required by OpenSSL or gnutls. Mac OS X users
@@ -245,8 +248,7 @@ the application 'Keychain Acess.app'.")
                                                                            cygwin)) "_" ".")
                                                                "desktop")) ; TODO: add a fun in defs named `prefix-hidden-file'
                               ,(unless (< emacs-major-version 24)
-                                 `(custom-theme-load-path ,(cons (joindirs data-dir "Themes")
-                                                                 custom-theme-load-path)))
+                                 `(mars/custom-theme ,(joindirs data-dir "Themes")))
                               (org-diary-agenda-file ,(joindirs data-dir "Notes" "Diary.org"))
                               (auto-insert-directory ,(joindirs data-dir "Insert"))
                               (bbdb-file ,(joindirs data-dir "BBDB" (format "%s.bbdb" (user-login-name))))
@@ -315,6 +317,10 @@ the application 'Keychain Acess.app'.")
                  (when (and (symbolp pvar) (boundp pvar) (stringp (symbol-value pvar)))
                    (set pvar (file-name-as-directory (symbol-value pvar)))))
              data-as-directory)
+       ;; add custom theme personal path if any
+       (when (and (boundp 'custom-theme-load-path)
+                  (file-directory-p mars/custom-theme))
+         (add-to-list 'custom-theme-load-path mars/custom-theme))
        (message "vars: variables set and cache directory built."))))
 
 ;;; PROGRAM NAMES

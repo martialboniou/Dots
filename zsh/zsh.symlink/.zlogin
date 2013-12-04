@@ -1,9 +1,10 @@
-#!/usr/bin/env zsh
-# TMUX
+# .zlogin
+
+# don't start tmux in emacsen vt
+emacs_acquaint
+
 # if no session is started, start a new session
 # http://chm.duquesne.free.fr/blog
-
-emacs_acquaint # don't start tmux in emacsen vt
 if [[ $? -eq 0 ]]; then
     if test -z ${TMUX}; then
         tmux $* # $* to pass args like `chdir` at startup
@@ -30,10 +31,3 @@ if [[ $? -eq 0 ]]; then
         esac
     done
 fi
-
-case "$CONTAINING_TERM" in
-  *256color)
-    TERM=xterm-256color
-    unset CONTAINING_TERM
-    ;;
-esac

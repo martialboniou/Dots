@@ -124,7 +124,7 @@ for ( keys %{$mailservers} )
 # OH: { host: imap.gmx.com, user: oh-my-my, pass: something-base64-encoded }
 # PRIVATE: { host: imap.gmx.net, port: 45906, user: private-me, pass: something-base64-encoded, hidden: true }
 # edit crontab with:
-# 1-56/5 * * * * PATH=~/.tools/bin:~/.rvm/bin:~/.rvm/gems/ruby-XXXX-MY-VERSION-XXXX/bin:/usr/local/bin:$PATH checkmail ~/.mailservers.yaml
-# */15 * * * * PATH=~/.tools/bin:~/.rvm/bin:~/.rvm/gems/ruby-XXXX-MY-VERSION-XXXX/bin:/usr/local/bin:$PATH checkmail ~/.secondary_mailservers.yaml 5
+# 1-56/5 * * * * PATH=~/.tools/bin:/usr/local/bin:$PATH source /usr/local/share/chruby/chruby.sh && checkmail ~/.mailservers.yaml
+# */15 * * * * PATH=~/.tools/bin:/usr/local/bin:$PATH source /usr/local/share/chruby/chruby.sh && checkmail ~/.secondary_mailservers.yaml 5
 
-# Last Modified: Wed 27 Nov 2013 11:57:25 CET
+# Last Modified: Fri 06 Dec 2013 15:33:25 CET

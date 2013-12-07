@@ -1,6 +1,7 @@
 #!/bin/bash
 # create_mvim_symlinks
 # create `mvim' symlinks in `~/.tools/bin' to use vim/view/vimdiff/ex non-gui of MacVim
+# replace the 'override-system-vim' option of Homebrew's MacVim
 
 set -e
 

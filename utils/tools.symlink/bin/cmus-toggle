@@ -1,9 +1,11 @@
 #!/usr/bin/env zsh
 # cmus-toggle
 
+ORDERED_Q_TAGS=( stream title )
+
 cmus_get_info ()
 {
-  echo $(cmus-remote -Q | grep $1 | sed 's/set/tag/' | sed 's/tag//' | awk '{ $1=""; print }' | sed 's/^ *//' | sed 's/ *$//' | sed 's/"/\\"/' 2>/dev/null)
+  echo $(cmus-remote -Q | grep $1 | sed 's/^set/tag/' | sed 's/^tag//' | awk '{ $1=""; print }' | sed 's/^ *//' | sed 's/ *$//' | sed 's/"/\\"/' 2>/dev/null)
 }
 
 cmus_display ()
@@ -19,8 +21,8 @@ cmus_display_q ()
 
 cmus_display_informative_q ()
 {
-  for i in $1; do
-    Q=$(cmus_get_info $i)
+  for tag in $ORDERED_Q_TAGS; do
+    Q=$(cmus_get_info $tag)
     if [[ "$Q" != "" ]]; then
       return $(cmus_display "$Q")
     fi
@@ -30,8 +32,7 @@ cmus_display_informative_q ()
 
 cmus_display_all_info ()
 {
-  a=( stream title )
-  return $(cmus_display_informative_q $a)
+  return $(cmus_display_informative_q)
 }
 
 cmus_toggle ()

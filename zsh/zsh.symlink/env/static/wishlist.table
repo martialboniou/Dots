@@ -8,7 +8,7 @@
 $HOME/.scrubs
 $HOME/.tools
 $HOME/Library/Haskell:Darwin
-$HOME/.cabal::CABAL_BIN
+/Users/mars/.cabal::CABAL_BIN
 /Applications/Mozart.app/Contents/Resources:Darwin
 /usr/local/PEAR
 /usr/local/git
@@ -16,7 +16,6 @@ $HOME/.cabal::CABAL_BIN
 =:/usr/texbin:Darwin
 /Library/MySQL/bin:Darwin
 *:`brew --prefix`:Darwin
-`bromide --toto`
 ! you may set your unconventional homebrew directory here
 *:/usr/local
 *:/opt/local

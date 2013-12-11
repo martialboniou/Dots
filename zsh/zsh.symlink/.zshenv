@@ -21,7 +21,7 @@
 # THE SOFTWARE
 
 add_path () {
-  [[ -d "$1" ]] && path=($1 $path)
+  [[ -d "$1" ]] && path=("$1" $path)
 }
 
 absolute_path () {
@@ -43,6 +43,11 @@ _source_path () {
   fi
 }
 
+# flush path
+_flush_path () {
+  typeset -U -g PATH
+}
+
 # generate basic path from env/static
 _build_path () {
   local SYSTEM=`uname`
@@ -54,12 +59,14 @@ _build_path () {
   path=($path /usr/bin /usr/libexec /bin)
   [[ $ADMIN_ACTION -gt 0 ]] && [[ -d "/usr/sbin" ]] &&  path=($path /usr/sbin)
   [[ $ADMIN_ACTION -gt 0 ]] && [[ -d "/sbin" ]] && path=($path /sbin)
+  _flush_path
 }
 
 # complete global path from env/dynamic
 _complete_path () {
   local env_directory=${ZDOTDIR}/env/dynamic
   _source_path "$env_directory" || return 0
+  _flush_path
 }
 
 # get the full path
@@ -72,7 +79,6 @@ _fetch_path () {
     echo "PATH=${PATH}" > ${path_file}
   fi
   _complete_path
-  typeset -U -g PATH
 } && _fetch_path
 
 # MEMO: rehash

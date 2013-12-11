@@ -14,14 +14,14 @@ trim () {
   echo "$1" | sed -e 's/^ *//g' -e 's/ *$//g'
 }
 
-to_come_soon () {
+() {
   FILENAME="$DIR/wishlist.table"
+  [[ -r "$FILENAME" ]] || continue
   typeset -a lines
   typeset -a columns
   lines=( "${(f)mapfile[$FILENAME]}" )
   for (( i = ${#lines[@]}; i >= 1; i-- )); do
-    line="$lines[i]"
-    echo $line
+    line="${lines[$i]}"
     if [[ ! "$line" =~ ^\! ]]; then
       local ADMIN=0
       local FULLPATH=0
@@ -42,21 +42,19 @@ to_come_soon () {
         # permute if no action column
         variable=$os; os=$folder; folder=$action
       fi
-      [[ "$folder" == "" ]] && continue
       [[ "$os" != "" && "$SYSTEM" != "$os" ]] && continue
-      # case of folder named by command
-      [[ "$folder" =~ ^\` && "$folder" =~ \`\$ ]] &&\
-        eval "folder=$folder" 2>/dev/null || continue
+      folder=$(eval "echo \"$folder\"" 2> /dev/null) || continue # for variable or command
+      [[ "$folder" == "" ]] && continue
       [[ $ADMIN_ACTION -gt 0 && $ADMIN -gt 0 ]] && add_path "${folder}/sbin"
       [[ $FULLPATH -eq 0 ]] && folder+="/bin"
-      #[[ $variable != "" ]] &&\
-      #  echo "${variable}=\"${folder}\"" 2>/dev/null #||\
-  #      echo "wishlist: error when setting ${variable}"
-      add_path "${folder}"
+      add_path $folder
+      if [[ "$variable" != "" ]]; then
+        eval "${variable}=\"$folder\"" 2>/dev/null || echo "wishlist: error during ${variable} setting"
+      fi
     fi
   done
 }
 
 unset DIR
 
-# Last Modified: Wed 11 Dec 2013 21:18:20 CET
+# Last Modified: Wed 11 Dec 2013 22:39:47 CET

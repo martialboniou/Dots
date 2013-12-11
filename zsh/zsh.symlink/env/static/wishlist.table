@@ -12,7 +12,8 @@ $HOME/Library/Haskell:Darwin
 /Applications/Mozart.app/Contents/Resources:Darwin
 /usr/local/PEAR
 /usr/local/git
-=:/Applications/Visualworks/vw7.6nc/bin/macxx11/visual.app/Contents/MacOS:Darwin:VW_BIN
+=:$HOME/vw7.10pul/bin/macxx11/visual.app/Contents/MacOS:Darwin:VW_BIN
+=:$HOME/Documents/Code/smalltalk/cincom/vw7.10pul/bin/macxx11/visual.app/Contents/MacOS:Darwin:VW_BIN
 =:/usr/texbin:Darwin
 /Library/MySQL/bin:Darwin
 *:`brew --prefix`:Darwin

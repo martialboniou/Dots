@@ -1,13 +1,32 @@
 # .zshrc for MacOSX/ubuntu/debian
-# config,alias,dvorakize 2010 by Martial <hondana@gmx.net>
+# config,alias,dvorakize 2010 by Martial <hondana@gmx.com>
 # idea (c) 2001 by Robert Manea <rob dot manea at gmail dot com>
 #
-# installed packages: source-highlight
-# note: - dark background is the standard here
-#       - local user path for binaries/libraries is not $HOME but $HOME/.tools
-#       - dirstack is saved between sessions (only if there's directory changes
-#       during the session); use the alias 'd' to get the dirs listing
+# Copyright (c) 2005-2013 <hondana@gmx.com>
 #
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE
+#
+# required packages: source-highlight
+# note: - dark background is the standard here
+#       - dirstack is saved between sessions (only if there's directory
+#       changes during the session); use the alias 'd' to get the dirs
+#       listing
 
 # files
 ZDOT_SRC_ZSH=${ZDOTDIR}/zshrc.d

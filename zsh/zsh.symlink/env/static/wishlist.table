@@ -1,0 +1,23 @@
+! wishlist
+! comment="! like with VimL"
+! action="* or =; * adds sbin folder if possible; = sets the path as is"
+! path="A path without bin or sbin if no = action; a command if embedded in backquotes"
+! system="A specific OS case"
+! variable="A variable to set"
+! pattern=(<action>:)<path>:<system>:<variable>
+$HOME/.scrubs
+$HOME/.tools
+$HOME/Library/Haskell:Darwin
+$HOME/.cabal::CABAL_BIN
+/Applications/Mozart.app/Contents/Resources:Darwin
+/usr/local/PEAR
+/usr/local/git
+=:/Applications/Visualworks/vw7.6nc/bin/macxx11/visual.app/Contents/MacOS:Darwin:VW_BIN
+=:/usr/texbin:Darwin
+/Library/MySQL/bin:Darwin
+*:`brew --prefix`:Darwin
+`bromide --toto`
+! you may set your unconventional homebrew directory here
+*:/usr/local
+*:/opt/local
+*:/sw

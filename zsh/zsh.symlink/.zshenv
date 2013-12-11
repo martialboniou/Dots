@@ -1,18 +1,40 @@
-# .zshenv
+# .zshenv for MacOSX/ubuntu/debian
 #
+# Copyright (c) 2005-2013 <hondana@gmx.com>
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE
 
 add_path () {
-  path=($1 $path)
+  [[ -d "$1" ]] && path=($1 $path)
 }
 
 absolute_path () {
   echo $(perl -e 'use Cwd "abs_path"; print abs_path("$1");')
 }
 
-# source each file in a path
+# source one or each file in a path
 _source_path () {
-  if [[ -d "$1" ]]; then
-    foreach file in $(find $1 -type f | sort -r 2>/dev/null)
+  if [[ -f "$1" && -r "$1" ]]; then
+    source "$1"
+    return 0
+  elif [[ -d "$1" && -x "$1" ]]; then
+    foreach file in $(find $1 -name "[0-9]*.zsh" -type f | sort -r 2>/dev/null)
       source $file
     end
     return 0
@@ -42,7 +64,7 @@ _complete_path () {
 
 # get the full path
 _fetch_path () {
-  local path_file="${ZDOTDIR}/env/static/.path"
+  local path_file="${ZDOTDIR}/env/static/autoload_path"
   if [[ -a ${path_file} && "${+parameters[force_reload]}" -eq 0 ]]; then
     source ${path_file}
   else

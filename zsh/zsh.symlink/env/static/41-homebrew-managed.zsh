@@ -1,12 +1,11 @@
 () {
-  local brewery="/usr/local"
   if [[ "$SYSTEM" == "Darwin" ]]; then
-      [[ -d "/usr/brewery" ]] && brewery="/usr/brewery"
+      local brewery=`brew --prefix` || "/usr/local"
       # sbin if auth
-      [[ $ADMIN_ACTION -gt 0 ]] && [[ -d "${brewery}/sbin" ]] && add_path "${brewery}/sbin"
+      [[ $ADMIN_ACTION -gt 0 ]] && add_path "${brewery}/sbin"
       # bin if any
-      [[ -d "${brewery}/bin" ]] && add_path "${brewery}/bin"
+      add_path "${brewery}/bin"
       # python scripts first
-      [[ -d "${brewery}/share/python" ]] && add_path "${brewery}/share/python"
+      add_path "${brewery}/share/python"
   fi
 }

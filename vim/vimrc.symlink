@@ -180,6 +180,8 @@ Bundle 'maksimr/vim-jsbeautify'
 Bundle 'tmhedberg/SimpylFold'
 Bundle 'nvie/vim-flake8'
 Bundle 'davidhalter/jedi-vim'
+""" xml
+Bundle 'sukima/xmledit'
 """ html/css
 Bundle 'mattn/zencoding-vim'
 Bundle 'hail2u/vim-css3-syntax'
@@ -396,4 +398,4 @@ fun! s:CursorOldPosition()
 endfun
 au BufReadPost * silent! cal s:CursorOldPosition()
 
-" Last Modified: Tue 26 Nov 2013 20:25:31 CET
+" Last Modified: Mon 09 Dec 2013 11:07:20 CET

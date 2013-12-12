@@ -17,7 +17,8 @@ set nobackup
 set noswapfile
 set mouse=a
 set isfname+=32 "valid filename w/ space
-let mapleader=","
+let mapleader=" " "space
+let maplocalleader="," "less pinky than - on Dvorak
 nnoremap ; :
 set path=.,** " search in file's dir then current subdir
 au BufEnter * :cd %:p:h "current dir is file dir (so path != .,,**)
@@ -258,7 +259,6 @@ set cpoptions-=m
 set mat=5
 set list
 set listchars=tab:>.,trail:.,extends:#,nbsp:.
-set novisualbell
 set fo=tcrqn " see formatoptions help (auto-wraps text+comments using textwidth + auto-inserts the current comment leader + allows formatting of comments + align text)
 set ai
 set si
@@ -398,4 +398,4 @@ fun! s:CursorOldPosition()
 endfun
 au BufReadPost * silent! cal s:CursorOldPosition()
 
-" Last Modified: Mon 09 Dec 2013 11:07:20 CET
+" Last Modified: Thu 12 Dec 2013 15:19:50 CET

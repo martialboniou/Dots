@@ -128,50 +128,51 @@
       (setq mars/el-get-packages (when cl-lib-uninstalled '(cl-lib))) ; no package unless `*i-want-full-ammo*'
     (progn
       (setq mars/el-get-packages '(el-get
-                            linum+
-                            hl-line+
-                            escreen
-                            keats
-                            shen-mode
-                            ;; haskellmode-emacs
-                            pylookup
-                            pymacs
-                            mailcrypt
-                            auto-complete
-                            ac-slime
-                            redshank
-                            smex
-                            anything
-                            bookmark+
-                            auto-pair-plus
-                            mouse-embrace ; use C-c e to toggle; C-S-mouse-3 to configure; mouse-3 to paste surrounding a selection
-                            dired-details
-                            dired-plus
-                            org-mode
-                            ;; howm ; corrupted tar
-                            ;; remember
-                            multi-web-mode
-                            rainbow-mode
-                            markdown-mode
-                            magit
-                            ;; darcsum
-                            header2
-                            filladapt
-                            pp-c-l
-                            hideshowvis
-                            gist
-                            switch-window
-                            cycle-buffer
-                            js-comint
-                            textile-mode
-                            yaml-mode
-                            haml-mode
-                            hexview-mode ; my own recipe to autoload it
-                            sunrise-commander
-                            wanderlust
-                            ;; from .emacs.d/data/Recipes
-                            revive-plus
-                            mwe-log-commands))
+                                   linum-relative
+                                   linum+
+                                   hl-line+
+                                   escreen
+                                   keats
+                                   shen-mode
+                                   ;; haskellmode-emacs
+                                   pylookup
+                                   pymacs
+                                   mailcrypt
+                                   auto-complete
+                                   ac-slime
+                                   redshank
+                                   smex
+                                   anything
+                                   bookmark+
+                                   auto-pair-plus
+                                   mouse-embrace ; use C-c e to toggle; C-S-mouse-3 to configure; mouse-3 to paste surrounding a selection
+                                   dired-details
+                                   dired-plus
+                                   org-mode
+                                   ;; howm ; corrupted tar
+                                   ;; remember
+                                   multi-web-mode
+                                   rainbow-mode
+                                   markdown-mode
+                                   magit
+                                   ;; darcsum
+                                   header2
+                                   filladapt
+                                   pp-c-l
+                                   hideshowvis
+                                   gist
+                                   switch-window
+                                   cycle-buffer
+                                   js-comint
+                                   textile-mode
+                                   yaml-mode
+                                   haml-mode
+                                   hexview-mode ; my own recipe to autoload it
+                                   sunrise-commander
+                                   wanderlust
+                                   ;; from .emacs.d/data/Recipes
+                                   revive-plus
+                                   mwe-log-commands))
       (when cl-lib-uninstalled (add-to-list 'mars/el-get-packages 'cl-lib))
       (when (< emacs-major-version 24) (add-to-list 'mars/el-get-packages 'color-theme))
       ;; merge EL-GET-SOURCE with MARS/EL-GET-PACKAGE

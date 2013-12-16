@@ -1,13 +1,9 @@
 # ---[ Emacs ]---------------------------------------------------------
 
-# check if we start the shell from emacs and remember this
-emacs_acquaint(){ return 0 }
-if [[ "$TERM" == "eterm-color" ]]; then
-  TERM=xterm-256color
-  emacs_acquaint(){
-    return 1
-  }
-fi
+emacs_acquaint(){
+  [[ "$TERM" == "eterm-color" ]] && TERM=xterm-256color && return 0
+  return 1
+}
 
 # generate EMACS load-path and append your configuration directory (here .emacs.d/lisp)
 build_emacs_load_path(){

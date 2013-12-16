@@ -2,7 +2,8 @@
 #
 # for those who get hard time to run Cocoa Emacs from terminal
 # make a symlink like this:
-# $ ln -s macemacs emacs
+# $ ln -s memacs emacs
+# inspiration: mvim
 
 EMACS_PATH=/Applications/Emacs.app/Contents/MacOS/Emacs
 
@@ -12,4 +13,4 @@ else
   $EMACS_PATH "$@"
 fi
 
-# beware: not to have issue with quotes, use "$@" not $* 
+# beware: not to have issue with quotes, use "$@" not $*

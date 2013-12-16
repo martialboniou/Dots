@@ -1,9 +1,11 @@
 #!/bin/sh
 #
-# for those who get hard time to run Cocoa emacsclient from 
+# for those who get hard time to run Cocoa emacsclient from
 # terminal (sometimes b/c of older emacs from Apple in /usr/bin)
 # make a symlink like this:
-# $ ln -s macemacsclient emacsclient
+# $ ln -s memacsclient emacsclient
+# inspiration: mvim
+# only useful if a terminal emacsclient is not reachable
 
 EMACSCLIENT_PATH=/Applications/Emacs.app/Contents/MacOS/bin/emacsclient
 
@@ -13,4 +15,4 @@ else
   $EMACSCLIENT_PATH "$@"
 fi
 
-# beware: not to have issue with quotes, use "$@" not $* 
+# beware: not to have issue with quotes, use "$@" not $*

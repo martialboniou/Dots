@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Thu Nov 17 17:30:20 2011 (+0100)
 ;; Version: 0.6.2
-;; Last-Updated: Fri Jun 28 16:46:01 2013 (+0200)
+;; Last-Updated: Mon Dec 16 13:23:31 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 22
+;;     Update #: 23
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -77,7 +77,7 @@
 
 ;;; ERASING/UNDOING
 ;;
-(bind-key "<kp-delete>" 'delete-char)
+(global-bind-key "<kp-delete>" 'delete-char)
 ;; try 'REDO+ iff no 'UNDO-TREE
 (eval-after-load "el-get"
   '(progn

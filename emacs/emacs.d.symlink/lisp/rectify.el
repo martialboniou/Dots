@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Mon Jun 10 18:27:24 2013 (+0200)
+;; Last-Updated: Mon Dec 16 13:22:53 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 171
+;;     Update #: 172
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -249,7 +249,7 @@
        (interactive)
        (let ((hippie-expand-try-functions-list '(try-complete-file-name-partially try-complete-file-name)))
          (call-interactively 'hippie-expand)))
-     (bind-key "C-S-p" #'special-expand-file-name-at-point)))
+     (global-bind-key "C-S-p" #'special-expand-file-name-at-point)))
 
 ;;; YASNIPPETS / YAS-JIT
 ;; bound to 'C-p à la Vim

@@ -5,10 +5,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
-;; Version: 0.7
-;; Last-Updated: Tue Dec  3 21:13:38 2013 (+0100)
+;; Version: 0.8
+;; Last-Updated: Mon Dec 16 16:42:36 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 439
+;;     Update #: 484
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -20,6 +20,7 @@
 ;; keep (quite) same syntax highlighting everywhere
 ;; by hondana@gmx.com 2001-2013
 ;;
+;; key bindings for Evil & Evil-leader in `shortcuts.el'
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -117,7 +118,7 @@
      (define-key viper-vi-basic-map "\C-e" 'viper-scroll-up-one)
      (push '("only"  (delete-other-windows)) ex-token-alist) ; on  in Evil
      (push '("close" (delete-window))        ex-token-alist) ; clo in Evil
-     (define-key viper-vi-global-user-map " d" 'viper-kill-buffer)
+     (define-key viper-vi-global-user-map " k" 'viper-kill-buffer)
      (when *i-am-a-terminator*
        ;; global-unset-key "\C-h"
        (define-key viper-vi-global-user-map "\C-h" 'viper-backward-char)
@@ -135,6 +136,11 @@
      (put 'viper-mode-string 'risky-local-variable t)))
 
 ;;; EVIL (VIPER FREE)
+(condition-case nil
+    (global-evil-leader-mode)           ; before 'EVIL to work in all buffers
+  (error "vim-everywhere: you should install evil-leader"))
+(eval-after-load "evil-leader"
+  '(global-evil-leader-mode))
 (require-if-located 'evil)
 ;; add C-w outside Evil -- eg. C-w C-w -> other-window
 (eval-after-load "evil"
@@ -161,30 +167,68 @@
          '(progn
             (evil-set-toggle-key "C-x C-z") ; unset C-z
             (elscreen-set-prefix-key "\C-z"))))
-     (require-if-located 'evil-leader)
-     (eval-after-load "evil-leader"
-       ;; cf. 'SHORTCUTS to customize 'EVIL-LEADER
-       '(progn
-          ;; FIXME: https://github.com/cofi/evil-leader/issues/7
-          (add-hook 'emacs-startup-hook 'global-evil-leader-mode)
-          (evil-leader/set-leader ","))) ; default is ,
      (require-if-located 'surround)      ; via evil-surround
      (eval-after-load "surround"
-       '(global-surround-mode 1))
-     (require-if-located 'evil-numbers)
-     (eval-after-load "evil-numbers"
        '(progn
-          (define-key evil-normal-state-map "\C-c+" 'evil-numbers/inc-at-pt)
-          (define-key evil-normal-state-map "\C-c-" 'evil-numbers/dec-at-pt)))
+          ;; from https://github.com/cofi/dotfiles/blob/master/emacs.d/config/cofi-evil.el
+          (setq-default surround-pairs-alist '((?\( . ("("  . ")"))
+                                               (?\[ . ("["  . "]"))
+                                               (?\{ . ("{"  . "}"))
+                                               (?\) . ("("  . ")"))
+                                               (?\] . ("["  . "]"))
+                                               (?\} . ("{"  . "}"))
+                                               (?>  . ("<"  . ">"))
+                                               (?#  . ("#{" . "}"))
+                                               (?p  . ("("  . ")"))
+                                               (?b  . ("["  . "]"))
+                                               (?B  . ("{"  . "}"))
+                                               (?<  . ("<"  . ">"))
+                                               (?t  . surround-read-tags)))
+          (defun cofi/surround-add-pair (trigger begin-or-fun &optional end)
+            "Add a surround pair. If `end' is nil, `begin-or-fun' will be treated as a fun."
+            (push (cons (if (stringp trigger)
+                            (string-to-char trigger)
+                          trigger)
+                        (if end
+                            (cons begin-or-fun end)
+                          begin-or-fun))
+                  surround-pairs-alist))
+          (global-surround-mode 1)
+          (mars/add-hooks '(emacs-lisp-mode-hook lisp-mode-hook)
+                          #'(lambda () (cofi/surround-add-pair "`" "`" "'")))
+          (eval-after-load "code"
+            '(progn
+               (mars/add-hooks '(markdown-mode-hook rst-mode-hook python-mode-hook)
+                               #'(lambda () (cofi/surround-add-pair "~" "``" "``")))
+               (mars/add-hooks '(rst-mode-hook python-mode-hook)
+                               #'(lambda ()
+                                   (cofi/surround-add-pair "c" ":class:`" "`")
+                                   (cofi/surround-add-pair "f" ":func:`"  "`")
+                                   (cofi/surround-add-pair "m" ":meth:`"  "`")
+                                   (cofi/surround-add-pair "a" ":attr:`"  "`")
+                                   (cofi/surround-add-pair "e" ":exc:`"   "`")))
+               (add-lambda-hook 'LaTeX-mode-hook
+                 (cofi/surround-add-pair "~" "\\texttt{" "}")
+                 (cofi/surround-add-pair "=" "\\verb="   "=")
+                 (cofi/surround-add-pair "/" "\\emph{"   "}")
+                 (cofi/surround-add-pair "*" "\\textbf{" "}")
+                 (cofi/surround-add-pair "P" "\\("       ")"))))))
+     (require-if-located 'evil-numbers)
      ;; manage special modes where Emacs state should be activated
-     (defmacro mars/set-evil-emacs-in-modes (&rest mode-list)
+     (defmacro mars/set-evil-state-in-modes (state &rest mode-list)
        `(progn
           ,@(mapcar #'(lambda (x)
-                        `(evil-set-initial-state ',x 'emacs)) mode-list)))
-     (mars/set-evil-emacs-in-modes wl-summary-mode
-                                   bbdb-mode
-                                   shell-mode eshell-mode
-                                   magit-status-mode magit-log-edit-mode)
+                        `(evil-set-initial-state ',x ',state)) mode-list)))
+     (mars/set-evil-state-in-modes normal erc-mode)
+     (mars/set-evil-state-in-modes emacs
+                                   wl-summary-mode
+                                   bbdb-mode bc-medu-mode
+                                   ebib-entry-mode ebib-index-mode ebib-log-mode
+                                   shell-mode eshell-mode term-mode
+                                   comint-mode inferior-emacs-lisp-mode pylookup-mode
+                                   semantic-symref-results-mode rdictcc-buffer-mode
+                                   magit-status-mode magit-log-edit-mode
+                                   magit-branch-manager-mode gtags-select-mode)
      (eval-after-load "wl-folder"       ; FIXME: evil-set-initial-state fails!
        `(add-hook 'wl-folder-mode-hook #'evil-emacs-state))
      ;; manage special modes where 'C-w' should be activated
@@ -213,33 +257,30 @@
      ;;    so there's no need to add 'mic-paren
 
      ;; 4- line numbering
-     (require-if-located 'linum+)
+     (or (require-if-located 'linum-relative) ; relative numbers is the default
+         (require-if-located 'linum+)) ; remove linum-relative for smart numbers
      (eval-after-load "linum"
+       '(global-linum-mode t))      ; TODO: remove wl-summary etc...
+     ;; personal tweak I use on Vim too
+     (eval-after-load "linum-relative"
        '(progn
-          (defun am-add-hooks (hooks function &optional append local)
-            "Call `add-hook' on hook list HOOKS use arguments FUNCTION, APPEND, LOCAL.
-
-HOOKS can be one list or just a hook."
-            (if (listp hooks)
-                (mapc
-                 `(lambda (hook)
-                    (add-hook hook ',function append local))
-                 hooks)
-              (add-hook hooks function append local)))
-          (am-add-hooks
-           `(find-file-hook help-mode-hook Man-mode-hook log-view-mode-hook chart-mode-hook
-                            compilation-mode-hook gdb-mode-hook lisp-interaction-mode-hook
-                            browse-kill-ring-mode-hook completion-list-mode-hook hs-hide-hook
-                            inferior-ruby-mode-hook custom-mode-hook Info-mode-hook
-                            svn-log-edit-mode-hook package-menu-mode-hook dired-mode-hook
-                            apropos-mode-hook svn-log-view-mode-hook diff-mode-hook
-                            emacs-lisp-mode-hook ibuffer-mode-hook html-mode-hook
-                            w3m-mode-hook data-debug-hook debugger-mode-hook text-mode-hook
-                            color-theme-mode-hook semantic-symref-results-mode-hook
-                            sh-mode-hook groovy-mode-hook)
-           (lambda()
-             (unless (eq major-mode 'image-mode)
-               (linum-on))))))
+          ;; show real line number at the zero point
+          (setq linum-relative-current-symbol "")
+          (custom-set-faces
+           '(linum-relative-current-face ((t :inherit font-lock-variable-name-face :weight bold))))
+          ;; deactivate in typing states
+          (let ((states '(evil-insert-state
+                          evil-visual-state
+                          evil-replace-state)))
+            (cl-flet ((state-hookize (state-list timeline)
+                                     (mapcar #'(lambda (x)
+                                                 (intern
+                                                  (concat (symbol-name x)
+                                                          "-"
+                                                          (symbol-name timeline)
+                                                          "-hook"))) state-list)))
+              (mars/add-hooks (state-hookize states 'entry) #'(lambda () (linum-mode 0)))
+              (mars/add-hooks (state-hookize states 'exit) #'(lambda () (linum-mode 1)))))))
 
      ;; 5- colorize numbers, todos & warnings
      (defface font-lock-number-face
@@ -313,19 +354,7 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
                                  '(("\\(ERROR:\\|XXX\\|OBSOLETE\\)"
                                     1 font-lock-warning-face prepend)))))
 
-     ;; 6- additional keyboard bindings
-     ;; NOTE: Evil manages C-h correctly
-     (define-key evil-insert-state-map (kbd "C-,") 'evil-copy-from-below)
-     (define-key evil-visual-state-map "F" 'evil-find-char-backward)
-     (define-key evil-visual-state-map "t" 'evil-forward-char-forward)
-     (define-key evil-visual-state-map "T" 'evil-backward-char)
-     (define-key evil-visual-state-map "e" '(lambda ()
-                                              (interactive)
-                                              (evil-forward-word-end)
-                                              (evil-forward-char)))
-     (define-key evil-normal-state-map " d" 'kill-buffer)
-
-     ;; 7- colorize status bar
+     ;; 6- colorize status bar
      (lexical-let ((default-color (cons (face-background 'mode-line)
                                         (face-foreground 'mode-line))))
        (add-hook 'post-command-hook
@@ -343,7 +372,7 @@ ErrorMsg al alternative, Vim's WarningMsg may be mapped to this face."
                   (not (fboundp 'color-theme-install)))
        ;;(unless (< emacs-major-version 24) (custom-set-variables '(custom-safe-themes (quote ("6c61100cf9667a6bbc99933f9e49b352147ba5f6918926d317f4a327a7e7de94" default)))))
        ;; choose a theme according to your Vim setup -- ~/.vimrc by default
-      
+
        (defun mars/extract-colorscheme-from-vimrc (&optional fpath)
          "Check the contents of the vimrc file to get the same theme in emacs.
 TODO: case of '''colorscheme' this'' where this is
@@ -396,7 +425,7 @@ TODO: case of '''colorscheme' this'' where this is
                             (load-theme (compose-theme-name theme-header default-colorscheme) t)
                           (error (message "vim-everywhere: the default theme cannot be loaded."))))))))))
 
-     ;; 8- open the current buffer in Vim (when Emacs modal editing comes short)
+     ;; 7- open the current buffer in Vim (when Emacs modal editing comes short)
      (defun open-with-vim ()
        "Open current buffer with Vim. To ensure buffers synchronization, set 'GLOBAL-AUTO-REVERT-MODE to T."
        (interactive)

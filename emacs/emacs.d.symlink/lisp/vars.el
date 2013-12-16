@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version: 0.17
-;; Last-Updated: Mon Dec  2 16:58:21 2013 (+0100)
+;; Last-Updated: Mon Dec 16 16:38:40 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 228
+;;     Update #: 240
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -75,7 +75,7 @@ recommended to boot CEDET faster.")
 to easily visualize ELISP macro expansions.")
 (defvar *i-want-full-ammo* t
   "If true, use a recommended package list to use as `el-get-sources'
-and `my-melpa-packages'. Otherwise, `el-get' and `melpa' doesn't install
+and `my-melpa-packages'. Otherwise, `el-get' and `melpa' don't install
 any third party extension (you may want this in a minimal/offline
 Emacs install). (See `packs-el-get.el' and `packs-melpa.el' files for
 more info.)")
@@ -192,18 +192,20 @@ Return nil if COMMAND is not found anywhere in `exec-path'."
 ;;; NEXTSTEP/COCOA COMPATIBILITY
 ;;
 (when (eq system-type 'darwin)
-  (progn
-    ;; .MacOSX/environment, launchctl setenv or LSEnvironment option
-    ;; are a mess; call the $SHELL instead
-    (unless (getenv "TERM_PROGRAM")
-      (let ((path (shell-command-to-string
-                   "$SHELL -cl \"printf %s \\\"\\\$PATH\\\"\"")))
-        (setenv "PATH" path)
-        (setq exec-path (split-string path path-separator))))
-    ;; meta is meta / alt as meta as always be a nonsense
-    (custom-set-variables
-     '(ns-command-modifier 'meta)
-     '(ns-option-modifier nil))))    ; Option works as compose key too
+  ;; .MacOSX/environment, launchctl setenv or LSEnvironment option
+  ;; are a mess; call the $SHELL instead
+  (unless (getenv "TERM_PROGRAM")
+    (let* ((path (shell-command-to-string
+                 "$SHELL -c \"printf %s \\\"\\\$PATH\\\"\" 2>/dev/null"))
+           (new-exec-path (split-string path path-separator)))
+      (unless (null new-exec-path)
+        (setq exec-path (append new-exec-path exec-path))
+        (delete-dups exec-path)
+        (setenv "PATH" (combine-and-quote-strings exec-path ":")))))
+  ;; meta is meta / alt as meta as always be a nonsense
+  (custom-set-variables
+   '(ns-command-modifier 'meta)
+   '(ns-option-modifier nil)))     ; Option works as compose key too
 
 ;;; NOTEBOOK CONTEXT
 ;; touch ~/.notebook if your computer need low resolution screen setup
@@ -256,7 +258,7 @@ the application 'Keychain Acess.app'.")
                               (wl-temporary-file-directory ,(joindirs "~" "Downloads"))))
             ;; NOTE: `essential-cached-files' has the form '((VARS NAME-IN-DATA-DIR PREVIOUS-PATH-TO-DELETE) ...)
             (essential-cached-files `((revive-plus:wconf-archive-file "wconf-archive" ,(joindirs user-emacs-directory "wconf-archive"))
-                                      
+
                                       (revive-plus:last-wconf-file "last-wconf" ,(joindirs user-emacs-directory "last-wconf"))
                                       (emms-directory "emms" ,(joindirs user-emacs-directory "emms"))
                                       (image-dired-dir "image-dired")

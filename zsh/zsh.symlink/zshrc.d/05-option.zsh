@@ -21,12 +21,8 @@ setopt   autopushd pushdminus extendedglob rcquotes mailwarning pushdsilent push
 unsetopt BG_NICE HUP autoparamslash
 
 # Prompts
-emacs_acquaint # minimal prompt for emacsen vt 
-if [[ $? -eq 1 ]]; then
-  source $ZDOTDIR/prompts/minimal
-else
-  source $ZDOTDIR/prompts/advanced
-fi
+emacs_acquaint # minimal prompt for emacsen vt
+[[ $? -eq 0 ]] && source $ZDOTDIR/prompts/minimal || source $ZDOTDIR/prompts/advanced
 setprompt
 
 # Don't expand files matching:

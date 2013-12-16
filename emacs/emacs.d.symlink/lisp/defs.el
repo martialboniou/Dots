@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.17
-;; Last-Updated: Tue Dec  3 19:27:36 2013 (+0100)
+;; Last-Updated: Mon Dec 16 13:18:53 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 317
+;;     Update #: 320
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -181,17 +181,23 @@ ROOT                        => ROOT"
           (apply 'twb/autoload x))
         libraries-and-functions))
 
-(defmacro bind-key (key function)   ; UNTESTED
-  `(global-set-key (read-kbd-macro ,key) ,function))
+(defun bind-key (map key function)   ; UNTESTED
+  (define-key map (read-kbd-macro key) function))
 
-(defun bind-keys (bindings)     ; UNTESTED
+(defun global-bind-key (key function)  ; UNTESTED
+  (bind-key (current-global-map) key function))
+
+(defun bind-keys (map bindings)     ; UNTESTED
   "Map keys from a list."
   (if (null (cdr bindings))
       t
     (let ((key (car bindings))
           (function (cadr bindings)))
-      (bind-key key function)
-      (bind-keys (cddr bindings)))))
+      (bind-key map key function)
+      (bind-keys map (cddr bindings)))))
+
+(defun global-bind-keys (bindings)  ; UNTESTED
+  (bind-keys (current-global-map) bindings))
 
 (defmacro add-to-alist (key value alist)
   "add VALUE to an ALIST at KEY."

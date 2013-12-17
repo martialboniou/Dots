@@ -2,6 +2,16 @@
 #
 # display 2 days' org-agenda view using emacs and elinks
 
+_get_browser_cmd () {
+  local BROWSER=$(which $1 2>/dev/null)
+  [[ "$BROWSER" != "" && "$2" != "" ]] && BROWSER+=" $2"
+  echo "$BROWSER"
+}
+
+CMD=$( _get_browser_cmd "elinks" )
+[[ "$CMD" == "" ]] && CMD=$( _get_browser_cmd "w3m" "-T text/html" )
+[[ "$CMD" == "" ]] && echo "no browser found; install elinks or w3m" && exit
+
 declare -a ORG_DONE_KEYWORDS=(DONE DEFERRED CANCELLED)
 ORG_PATH="${HOME}/.emacs.d/el-get/org-mode"
 ORG_CONTRIB_PATH="${ORG_PATH}/contrib/lisp"
@@ -35,5 +45,4 @@ AGENDA=`emacs --batch --eval "(progn\
       (set-buffer (htmlize-buffer (current-buffer)))\
       (princ (buffer-string))))\
 )"`
-echo "$AGENDA" | elinks
-
+echo "$AGENDA" | $CMD

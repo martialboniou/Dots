@@ -1,9 +1,9 @@
 ! wishlist
-! comment="! like with VimL"
-! action="* or =; * adds sbin folder if possible; = sets the path as is"
+! comment="! as in Fortran 90"
+! action="* or =; * adds sbin folder if possible; = sets the path as is; optional"
 ! path="A path without bin or sbin if no = action; a command if embedded in backquotes"
-! system="A specific OS case"
-! variable="A variable to set"
+! system="A specific OS-dependent conditional case"
+! variable="A variable to set (bin only if * action)"
 ! pattern=(<action>:)<path>:<system>:<variable>
 $HOME/.scrubs
 $HOME/.tools
@@ -20,4 +20,4 @@ $HOME/Library/Haskell:Darwin
 ! you may set your unconventional homebrew directory here
 *:/usr/local
 *:/opt/local
-*:/sw
+*:/sw:Darwin

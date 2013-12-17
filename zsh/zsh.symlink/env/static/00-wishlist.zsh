@@ -49,7 +49,7 @@ trim () {
       [[ $FULLPATH -eq 0 ]] && folder+="/bin"
       add_path $folder
       if [[ "$variable" != "" ]]; then
-        eval "${variable}=\"$folder\"" 2>/dev/null || echo "wishlist: error during ${variable} setting"
+        eval "export ${variable}=\"$folder\"" 2>/dev/null || echo "wishlist: error during ${variable} setting"
       fi
     fi
   done
@@ -57,4 +57,4 @@ trim () {
 
 unset DIR
 
-# Last Modified: Wed 11 Dec 2013 22:39:47 CET
+# Last Modified: Tue 17 Dec 2013 10:55:36 CET

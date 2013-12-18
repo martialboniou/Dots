@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:40:26 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Jun 13 11:08:33 2013 (+0200)
+;; Last-Updated: Tue Dec 17 15:05:05 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 60
+;;     Update #: 61
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -67,14 +67,15 @@
           ;; disable paredit-semicolon to type final
           ;; disable paredit-backslash to type comment end tag normally
           (defun shen-paredit-mode-hook ()
-            (define-key paredit-mode-map "\\" (lambda ()
-                                             (interactive)
-                                             (cond ((eq (preceding-char) 42) (insert "\\"))
-                                                   (t (call-interactively #'paredit-backslash))))))
+            (bind-key paredit-mode-map "\\"
+                      #'(lambda ()
+                          (interactive)
+                          (cond ((eq (preceding-char) 42) (insert "\\"))
+                                (t (call-interactively #'paredit-backslash))))))
           (add-hook 'shen-mode-hook #'shen-paredit-mode-hook)
           ;; enable curlies in PAREDIT for type declarations
-          (define-key shen-mode-map "{" #'paredit-open-curly)
-          (define-key shen-mode-map "}" #'paredit-close-curly-and-newline)))))
+          (bind-key shen-mode-map "{" #'paredit-open-curly)
+          (bind-key shen-mode-map "}" #'paredit-close-curly-and-newline)))))
 
 (provide 'peyton-jones-family)
 

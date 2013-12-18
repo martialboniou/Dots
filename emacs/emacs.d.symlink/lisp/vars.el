@@ -5,10 +5,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer: 
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
-;; Version: 0.17
-;; Last-Updated: Mon Dec 16 16:38:40 2013 (+0100)
+;; Version: 0.2
+;; Last-Updated: Tue Dec 17 14:46:20 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 240
+;;     Update #: 242
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -373,6 +373,8 @@ named FUEL must be found in the `misc/fuel' subdirectory.")
                           (if (not (executable-find "terminal-notifier")) 'growl 'terminal-notifier)
                         (if (eq window-system 'x) 'notify-send 'none))
   "The UI notification daemon.")
+(eval-after-load "c-eldoc"
+  '(setq c-eldoc-includes "-I/usr/local/include/ -I/usr/include -I./ -I../"))
 
 ;;; SPECIFICS (<data>/sys/vars-<hostname>.el or <data>/vars-<hostname>.el)
 ;; DEPRECATED

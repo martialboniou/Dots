@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Jan 19 20:16:06 2008
 ;; Version: 0.3
-;; Last-Updated: Tue Jun 11 18:52:13 2013 (+0200)
+;; Last-Updated: Tue Dec 17 15:09:49 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 128
+;;     Update #: 129
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -99,8 +99,8 @@
              (image-scroll-up)
            (my-image-next-by-number))))
 
-     (define-key image-mode-map (kbd "SPC")
-       'my-image-scroll-up-or-next-by-number)))
+     (bind-key image-mode-map "SPC"
+               #'my-image-scroll-up-or-next-by-number)))
 
 ;;; EIMP
 ;;

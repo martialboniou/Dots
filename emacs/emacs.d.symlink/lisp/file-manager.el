@@ -6,9 +6,9 @@
 ;; Maintainer: Martial Boniou
 ;; Created: Sat Feb 19 11:17:32 2011 (+0100)
 ;; Version: 0.8.3
-;; Last-Updated: Fri May 31 17:16:43 2013 (+0200)
+;; Last-Updated: Tue Dec 17 14:57:40 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 94
+;;     Update #: 97
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -51,7 +51,7 @@
 (add-lambda-hook 'dired-load-hook
   (setq dired-dwim-target t)            ; easier copies in dir mode
   (require 'dired-x)
-  (define-key dired-mode-map [(control shift r)] 'dired-rar-add-files))
+  (bind-key dired-mode-map "C-S-r" #'dired-rar-add-files))
 ;; dired-details(+) [show/hide] & dired+ [colors + bonus] & wdired(-extension) [editable]
 (eval-after-load "dired"
   '(progn
@@ -77,9 +77,10 @@ open and unsaved. -- matt curtis (with enhancements by <hondana@gmx.com>"
                        (kill-buffer)))
                  (dired-get-marked-files)))))
        (define-prefix-command 'dired-do-map)
-       (define-key dired-mode-map "\C-d" 'dired-do-map)
-       (define-key dired-do-map   "\C-d" 'dired-do-command)
-       (define-key dired-do-map   "d"    'dired-apply-function)
+       (bind-key dired-mode-map "C-d" 'dired-do-map)
+       (bind-keys dired-do-map
+                  "C-d" #'dired-do-command
+                  "d"   #'dired-apply-function)
        ;; (require 'dired-aux)               ; attributes and goodies (autoloaded)
        (unless (el-get-package-is-installed "dired-details")
          (message "file-manager: dired-details is not installed."))
@@ -100,19 +101,20 @@ open and unsaved. -- matt curtis (with enhancements by <hondana@gmx.com>"
        ;;   ;; the following line forces the not-recommended vi nagivation over dired commands
        ;;   (setq mars/dired-vi-purist-map (make-sparse-keymap))
        ;;   (viper-modify-major-mode 'dired-mode 'emacs-state mars/dired-vi-purist-map)
-       ;;   (define-key mars/dired-vi-purist-map "k" 'viper-previous-line)
-       ;;   (define-key mars/dired-vi-purist-map "l" 'viper-forward-char))
+       ;;   (bind-keys mars/dired-vi-purist-map
+       ;;              "k" #'viper-previous-line
+       ;;              "l" #'viper-forward-char)
 ))
 
 ;;; WDIRED
 (eval-after-load "wdired"
   '(progn
-     (define-key dired-mode-map "r" 'wdired-change-to-wdired-mode)
-     (define-key wdired-mode-map [return] 'wdired-finish-edit)
+     (bind-key dired-mode-map "r" #'wdired-change-to-wdired-mode)
+     (bind-key wdired-mode-map "<return>" #'wdired-finish-edit)
      (setq wdired-allow-to-change-permissions t) ; allow -rwxrwxrwx changes
-     (define-key dired-mode-map
-       [menu-bar immediate wdired-change-to-wdired-mode]
-       '("Edit File Names" . wdired-change-to-wdired-mode))
+     (bind-key dired-mode-map
+               "<menu-bar> <immediate> <wdired-change-to-wdired-mode>"
+               '("Edit File Names" . wdired-change-to-wdired-mode))
      (eval-after-load "viper"
        '(progn
           (defadvice wdired-change-to-wdired-mode (after viper activate)

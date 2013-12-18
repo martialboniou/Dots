@@ -20,7 +20,8 @@
 (add-to-list 'el-get-recipe-path (joindirs mars/local-root-dir mars/personal-data "Recipes"))
 
 ;;; MY INSTALL WISHES
-;; (executable-find "latex")
+;;
+;; NOTE: use standard functions in :AFTER to be able to make a recipe from the code
 (setq el-get-sources '((:name evil
                               :build `(("make" "all" ,(when (executable-find "texi2pdf") "info")))
                               :features nil)
@@ -41,14 +42,14 @@
                               :features nil) ; let 'RECTIFY configure 'YASNIPPET
                        (:name ace-jump-mode
                               :after (progn
-                                       (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
-                                       (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
+                                       (global-set-key (kbd "C-c SPC") #'ace-jump-mode)
+                                       (define-key global-map (kbd "C-x SPC") #'ace-jump-mode-pop-mark)
                                        (eval-after-load "evil-mode"
                                          '(define-key evil-normal-state-map
-                                            (kbd "SPC") 'ace-jump-mode))
+                                            (kbd "SPC") #'ace-jump-mode))
                                        (eval-after-load "viper"
                                          '(define-key viper-vi-global-user-map
-                                            (kbd "SPC") 'ace-jump-mode)))
+                                            (kbd "SPC") #'ace-jump-mode)))
                               :features nil) ; let 'BEHAVE configure 'ACE-JUMP-MODE
                        (:name highlight-parentheses
                               :features nil) ; HIGHLIGHT-PARENTHESES-MODE is autoloaded
@@ -128,6 +129,7 @@
       (setq mars/el-get-packages (when cl-lib-uninstalled '(cl-lib))) ; no package unless `*i-want-full-ammo*'
     (progn
       (setq mars/el-get-packages '(el-get
+                                   linum-off
                                    linum-relative
                                    linum+
                                    hl-line+
@@ -158,6 +160,7 @@
                                    ;; darcsum
                                    header2
                                    filladapt
+                                   ack-and-a-half
                                    pp-c-l
                                    hideshowvis
                                    gist

@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Mon Dec 16 14:36:12 2013 (+0100)
+;; Last-Updated: Wed Dec 18 15:02:51 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 236
+;;     Update #: 242
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -52,142 +52,146 @@
 
 (require 'adapter)
 
-;;; MAIN KEYS (see 'SHORTCUTS)
+;;; EXTENSION KEYS
 ;;
-(global-bind-keys
- '("C-x C-f"   ido-recentf-file-name-history          ; IMPORTANT: C-x C-f is not `find-file' anymore (C-f to switch to `ido-find-file' only works from `ido-buffer-internal' and `ido-file-internal' derivatives.) [but use [(jxf)] in `sticky-control']
-   "C-x F"     ido-recentf
-   "C-x f"     ido-find-file ; may be called from `ido-switch-buffer' (doing C-x C-b C-f) [but use [(jxjf)] in `sticky-control']
-   "C-="       shell-command
-   "M-n"       make-frame               ; NOTE: or #'screen-create-screen if 'ESCREEN
-   "M-<f2>"    apply-macro-to-region-lines ; use F3/F4 for kmacro start/end
-   "C-c o"     anything-occur              ; TODO: or simply occur ?
-   "C-:"       anything-M-x             ; C-S-; NOTE: or #'smex if 'SMEX
-   "C-c l"     org-store-link ; [default]
-   "C-x C-b"   ido-switch-buffer        ; switch buffer on "C-x C-b" (faster than typing "C-x b") [but use [(jxb)] in `sticky-control']
-   "C-x b"     ibuffer                  ; nice buffer browser (a la `dired') [but use [(jxjb)] in `sticky-control']
-   "C-p"       hippie-expand            ; like Vim previous expansion key
-   "C-c _ w"   whitespace-mode
-   "C-c _ t"   whitespace-toggle-options
-   "C-c = w"   global-whitespace-mode
-   "C-c = t"   global-whitespace-toggle-options
-   "C-x 4 t"   transpose-buffers
-   "C-M-z"     toggle-transparency
-   "C-c C-m"   make-directory           ; or M-m in `ido'
-   "C-c C-0"   anything-mini            ; buffers (w/o `ibuffer' tags) & recentf (w/o `ido-recentf' completion)
+(bind-key (current-global-map) [kp-delete] #'delete-char)
+
+;;; MAIN KEYS
+;;
+(bind-keys (current-global-map)
+ "C-x C-f"   #'ido-recentf-file-name-history          ; IMPORTANT: C-x C-f is not `find-file' anymore (C-f to switch to `ido-find-file' only works from `ido-buffer-internal' and `ido-file-internal' derivatives.) [but use [(jxf)] in `sticky-control']
+ "C-x F"     #'ido-recentf
+ "C-x f"     #'ido-find-file ; may be called from `ido-switch-buffer' (doing C-x C-b C-f) [but use [(jxjf)] in `sticky-control']
+ "C-="       #'shell-command
+ "M-n"       #'make-frame               ; NOTE: or #'screen-create-screen if 'ESCREEN
+ "M-<f2>"    #'apply-macro-to-region-lines ; use F3/F4 for kmacro start/end
+ "C-c o"     #'anything-occur              ; TODO: or simply occur ?
+ "C-:"       #'anything-M-x             ; C-S-; NOTE: or #'smex if 'SMEX
+ "C-c l"     #'org-store-link ; [default]
+ "C-x C-b"   #'ido-switch-buffer        ; switch buffer on "C-x C-b" (faster than typing "C-x b") [but use [(jxb)] in `sticky-control']
+ "C-x b"     #'ibuffer                  ; nice buffer browser (a la `dired') [but use [(jxjb)] in `sticky-control']
+ "C-p"       #'hippie-expand            ; like Vim previous expansion key
+ "C-c _ w"   #'whitespace-mode
+ "C-c _ t"   #'whitespace-toggle-options
+ "C-c = w"   #'global-whitespace-mode
+ "C-c = t"   #'global-whitespace-toggle-options
+ "C-x 4 t"   #'transpose-buffers
+ "C-M-z"     #'toggle-transparency
+ "C-c C-m"   #'make-directory           ; or M-m in `ido'
+ "C-c C-0"   #'anything-mini            ; buffers (w/o `ibuffer' tags) & recentf (w/o `ido-recentf' completion)
                                         ; See shortcuts.el: anything on [<f5><f8>] for fast navigation in:
                                         ; - buffers (prefer `ido-switch-buffer' [C-x C-b] or `cycle-buffer' [<f5><f[4|6]>] for faster cycling)
                                         ; - recentf (prefer `ido-recentf-file-name-history' [C-x C-f] for faster finding)
                                         ; - files in `default-directory' (not present in `anything-mini')
-   "C-c C-9"   anything-imenu           ; IMPORTANT: useful for fast code navigation (unless `ecb')
+ "C-c C-9"   #'anything-imenu           ; IMPORTANT: useful for fast code navigation (unless `ecb')
                                         ;            anything-browse-code map on [<f7><f7>] too
-   "C-x N"     linum
-   "C-<f10>"   tmm-menubar))              ; key-controlled menu (`<f10>' is default but awkward on OSX/Gnome) IMPORTANT: remember this for `no-window-system' session
+ "C-x N"     #'linum
+ "C-<f10>"   #'tmm-menubar)             ; key-controlled menu (`<f10>' is default but awkward on OSX/Gnome) IMPORTANT: remember this for `no-window-system' session
 
 ;; C-\\ as <meta> everywhere (except anywhere `viper-mode' rewrites it)
 ;; NOTE: ESCREEN settings below (as 'escreen-map is C-\\)
 (fset 'new-meta-prefix (copy-keymap 'ESC-prefix))
-(global-bind-key "C-\\" #'new-meta-prefix)
+(bind-key (current-global-map) "C-\\" #'new-meta-prefix)
 
 ;; C-z case
 (global-unset-key (kbd "C-z"))      ; ELSCREEN or other packages may use it
 (global-unset-key (kbd "C-x C-z"))  ; reserved for viper-mode or Evil
 
 ;; M-: alias (useful for NO-WINDOW-SYSTEM)
-(global-bind-key "<f2>:" #'eval-expression)
+(bind-key (current-global-map) "<f2>:" #'eval-expression)
 
 ;; SMEX case
 (eval-after-load "smex"
   '(progn
-     (global-bind-keys
-      '("<f2>x"  smex
-        "M-x"    smex
-        "C-:"    smex
-        "<f2>X"  smex-major-mode-commands
-        "M-X"    smex-major-mode-commands))))
+     (bind-keys (current-global-map)
+                "<f2>x"  #'smex
+                "M-x"    #'smex
+                "C-:"    #'smex
+                "<f2>X"  #'smex-major-mode-commands
+                "M-X"    #'smex-major-mode-commands)))
 
 ;; EVIL case
 (eval-after-load "evil"
   '(progn
      ;; NOTE: Evil manages C-h correctly
      (bind-keys evil-normal-state-map
-                '("Y" (kbd "y$")
-                  "go" 'goto-char
-                  "C-t" 'transpose-chars
-                  "C-:" 'eval-expression
-                  "gH" 'evil-window-top
-                  "gL" 'evil-window-bottom
-                  "gM" 'evil-window-middle
-                  "H" 'beginning-of-line
-                  "L" 'end-of-line))
+                "Y"  (kbd "y$")
+                "go" #'goto-char
+                "C-t" #'transpose-chars
+                "C-:" #'eval-expression
+                "gH" #'evil-window-top
+                "gL" #'evil-window-bottom
+                "gM" #'evil-window-middle
+                "H" #'beginning-of-line
+                "L" #'end-of-line)
      (bind-keys evil-insert-state-map
-                '("C-," 'evil-copy-from-below
-                  "C-e" 'end-of-line))
+                "C-," #'evil-copy-from-below
+                "C-e" #'end-of-line)
      (bind-keys evil-visual-state-map
-                '("F" 'evil-find-char-backward
-                  "t" 'evil-forward-char
-                  "T" 'evil-backward-char
-                  "e" '(lambda () (interactive) (evil-forward-word-end) (evil-forward-char))))
+                "F" #'evil-find-char-backward
+                "t" #'evil-forward-char
+                "T" #'evil-backward-char
+                "e" #'(lambda () (interactive) (evil-forward-word-end) (evil-forward-char)))
      (bind-keys evil-motion-state-map
-                '("y" 'evil-yank
-                  "Y" (kbd "y$")
-                  "_" 'evil-first-non-blank
-                  "C-e" 'end-of-line
-                  "C-S-d" 'evil-scroll-up
-                  "C-S-f" 'evil-scroll-page-up
-                  "C-y" nil))
+                "y" #'evil-yank
+                "Y" (kbd "y$")
+                "_" #'evil-first-non-blank
+                "C-e" #'end-of-line
+                "C-S-d" #'evil-scroll-up
+                "C-S-f" #'evil-scroll-page-up
+                "C-y" nil)
      (mapc
       (lambda (map)
         (evil-define-key 'normal map
-          (kbd "RET") 'org-open-at-point
-          "za"        'org-cycle
-          "zA"        'org-shifttab
-          "zm"        'hide-body
-          "zr"        'show-all
-          "zo"        'show-subtree
-          "zO"        'show-all
-          "zc"        'hide-subtree
-          "zC"        'hide-all
-          (kbd "M-j") 'org-shiftleft
-          (kbd "M-k") 'org-shiftright
-          (kbd "M-H") 'org-metaleft
-          (kbd "M-J") 'org-metadown
-          (kbd "M-K") 'org-metaup
-          (kbd "M-L") 'org-metaright)
+          (kbd "RET") #'org-open-at-point
+          "za"        #'org-cycle
+          "zA"        #'org-shifttab
+          "zm"        #'hide-body
+          "zr"        #'show-all
+          "zo"        #'show-subtree
+          "zO"        #'show-all
+          "zc"        #'hide-subtree
+          "zC"        #'hide-all
+          (kbd "M-j") #'org-shiftleft
+          (kbd "M-k") #'org-shiftright
+          (kbd "M-H") #'org-metaleft
+          (kbd "M-J") #'org-metadown
+          (kbd "M-K") #'org-metaup
+          (kbd "M-L") #'org-metaright)
         (evil-define-key 'insert map
-          (kbd "M-j") 'org-shiftleft
-          (kbd "M-k") 'org-shiftright
-          (kbd "M-H") 'org-metaleft
-          (kbd "M-J") 'org-metadown
-          (kbd "M-K") 'org-metaup
-          (kbd "M-L") 'org-metaright)) '(org-mode-map orgstruct-mode-map))))
+          (kbd "M-j") #'org-shiftleft
+          (kbd "M-k") #'org-shiftright
+          (kbd "M-H") #'org-metaleft
+          (kbd "M-J") #'org-metadown
+          (kbd "M-K") #'org-metaup
+          (kbd "M-L") #'org-metaright)) '(org-mode-map orgstruct-mode-map))))
 
 ;; EVIL-NUMBERS case
 (eval-after-load "evil-numbers"
   '(bind-keys evil-normal-state-map
-              '("+" 'evil-numbers/inc-at-pt
-                "-" 'evil-numbers/dec-at-pt)))
+              "+" #'evil-numbers/inc-at-pt
+              "-" #'evil-numbers/dec-at-pt))
 
 ;; EVIL-LEADER case
 (eval-after-load "evil-leader"
   '(progn
      (evil-leader/set-leader "<SPC>")   ; my default is <Space> (, is ok too)
      (evil-leader/set-key
-       "e" 'ido-recentf-file-name-history ; memo: :e => open ,e => recently open
-       "E" 'ido-find-file
-       "<SPC>" 'ido-switch-buffer       ; memo: <Space><Space> => switch buffer (,, is ok too)
-       "i" 'ibuffer
-       "d" 'make-directory
-       "k" 'kill-buffer
-       "m" 'tmm-menubar)
-     (evil-leader/set-key-for-mode 'emacs-lisp-mode "b" 'byte-compile-file)))
+       "e" #'ido-recentf-file-name-history ; memo: :e => open ,e => recently open
+       "E" #'ido-find-file
+       "<SPC>" #'ido-switch-buffer       ; memo: <Space><Space> => switch buffer (,, is ok too)
+       "i" #'ibuffer
+       "d" #'make-directory
+       "k" #'kill-buffer
+       "m" #'tmm-menubar)
+     (evil-leader/set-key-for-mode 'emacs-lisp-mode "b" #'byte-compile-file)))
 
 ;; TERMINATOR case
 (when *i-am-a-terminator*
-  (global-bind-keys
-   '("C-x C-h"   help-command ; use F1 for contextual help / C-h being rebind
-     "C-h"       delete-backward-char
-     "C-w"       backward-kill-word)))    ; C-w as 'DELETE-BACKWARD-WORD in Vi emu
+  (bind-keys (current-global-map)
+             "C-x C-h"   #'help-command ; use F1 for contextual help / C-h being rebind
+             "C-h"       #'delete-backward-char
+             "C-w"       #'backward-kill-word))    ; C-w as 'DELETE-BACKWARD-WORD in Vi emu
 
 ;; DVORAK case
 ;; C-w may be used for 'backward-word-delete so there should be
@@ -196,14 +200,14 @@
 ;; 2- special C-; (;/'/a) for Dvorak typist (including Vim user)
 ;; 3- standard commands (x/v/c) for Qwerty typist & "terminator" (including Vim user)
 (if *i-am-a-dvorak-typist*
-    (global-bind-keys             ; Oracle/Sun Type 5/6 Keyboards extra keys' order
-     '("C-; C-'" copy-region-as-kill
-       "C-; C-a" yank
-       "C-; C-;" kill-region
-       ;; unavailable C-; in NO-WINDOW-SYSTEM => use <f2>
-       "<f2>'"   copy-region-as-kill
-       "<f2>a"   yank
-       "<f2>;"   kill-region))
+    (bind-keys (current-global-map) ; Oracle/Sun Type 5/6 Keyboards extra keys' order
+               "C-; C-'" #'copy-region-as-kill
+               "C-; C-a" #'yank
+               "C-; C-;" #'kill-region
+               ;; unavailable C-; in NO-WINDOW-SYSTEM => use <f2>
+               "<f2>'"   #'copy-region-as-kill
+               "<f2>a"   #'yank
+               "<f2>;"   #'kill-region)
   (when *i-am-a-terminator*
     (cua-mode t)))                      ; C-c/C-x got timeout in order
                                         ; to make combinations to work
@@ -378,60 +382,60 @@
 ;; - Navigating: Windmove uses C-<up> etc.
 (windmove-default-keybindings 'control)
 ;; - Split & Resize
-(global-bind-keys
- '("C-<up>"       windmove-up
-   "<f2><up>"     windmove-up
-   "<f2><down>"   windmove-down
-   "<f2><left>"   windmove-left
-   "<f2><right>"  windmove-right
-   ;; - Split windows
-   "C-S-<left>"   (lambda () (interactive)
-                    (split-window-horizontally)
-                    (previous-buffer))  ; right requires BUFFER-MOVE
-   "C-S-<up>"     (lambda () (interactive)
-                    (split-window-vertically)
-                    (previous-buffer))  ; down requires BUFFER-MOVE
-   ;; - Delete the current window
-   "C-<end>"      delete-window         ; <f5><end> may be used too
-   ;; - Resize windows
+(bind-keys (current-global-map)
+           "C-<up>"       #'windmove-up
+           "<f2><up>"     #'windmove-up
+           "<f2><down>"   #'windmove-down
+           "<f2><left>"   #'windmove-left
+           "<f2><right>"  #'windmove-right
+           ;; - Split windows
+           "C-S-<left>"   #'(lambda () (interactive)
+                              (split-window-horizontally)
+                              (previous-buffer))  ; right requires BUFFER-MOVE
+           "C-S-<up>"     #'(lambda () (interactive)
+                              (split-window-vertically)
+                              (previous-buffer))  ; down requires BUFFER-MOVE
+           ;; - Delete the current window
+           "C-<end>"      #'delete-window         ; <f5><end> may be used too
+           ;; - Resize windows
                                         ;"C-<prior>"    shrink-window-horizontally
 
                                         ;"C-<next>"     enlarge-window-horizontally
                                         ;"C-^"          enlarge-window
-   ;; - Scroll horizontally
-   "<f2><prior>"  scroll-right
-   "<f2><next>"   scroll-left
-   ;; - Rotate all buffers: M-S-<up> | M-S-<down>
-   "M-S-<down>"   (lambda () (interactive) (mars/rotate-windows 'down))
-   "M-S-<up>"     (lambda () (interactive) (mars/rotate-windows 'up))
-   "<f2><end>"    (lambda () (interactive) (mars/rotate-windows 'down))
-   "<f2><home>"   (lambda () (interactive) (mars/rotate-windows 'up))))
+           ;; - Scroll horizontally
+           "<f2><prior>"  #'scroll-right
+           "<f2><next>"   #'scroll-left
+           ;; - Rotate all buffers: M-S-<up> | M-S-<down>
+           "M-S-<down>"   #'(lambda () (interactive) (mars/rotate-windows 'down))
+           "M-S-<up>"     #'(lambda () (interactive) (mars/rotate-windows 'up))
+           "<f2><end>"    #'(lambda () (interactive) (mars/rotate-windows 'down))
+           "<f2><home>"   #'(lambda () (interactive) (mars/rotate-windows 'up)))
 ;; - Tile
 (if (locate-library "mars-tiling")
-    (global-bind-keys
-     '("M-S-<left>"   (lambda () (interactive) ; left favorite layouts
-                        (tiling-cycle 3 mars-tiling-favorite-main-layouts))
-       "<f2><kp-delete>" (lambda () (interactive) ; '<f2>C-d' for 2C-two-columns
-                           (tiling-cycle 3 mars-tiling-favorite-main-layouts))
-       "M-S-<right>"  (lambda () (interactive) ; right favorite layouts
-                        (tiling-cycle 3 mars-tiling-favorite-secondary-layouts))
-       "M-S-<end>"    tiling-cycle))
+    (bind-keys (global-current-map)
+               "M-S-<left>"   #'(lambda () (interactive) ; left favorite layouts
+                                  (tiling-cycle 3 mars-tiling-favorite-main-layouts))
+               "<f2><kp-delete>" #'(lambda () (interactive) ; '<f2>C-d' for 2C-two-columns
+                                   (tiling-cycle 3 mars-tiling-favorite-main-layouts))
+               "M-S-<right>"  #'(lambda () (interactive) ; right favorite layouts
+                                  (tiling-cycle 3 mars-tiling-favorite-secondary-layouts))
+               "M-S-<end>"    #'tiling-cycle)
   (message "installing mars-tiling is recommended."))
 ;; - Swap buffers: M-<up> ...
 (eval-after-load "buffer-move"
-  '(global-bind-keys
-    '("M-<up>"       buf-move-up
-      "M-<down>"     buf-move-down
-      "M-<right>"    buf-move-right
-      "M-<left>"     buf-move-left
-      "C-S-<right>"  (lambda () (interactive)
-                       (split-window-horizontally)
-                       (buf-move-right)
-                       (previous-buffer))
-      "C-S-<down>"   (lambda () (interactive)
-                       (split-window-vertically)
-                       (buf-move-down)
-                       (previous-buffer)))))
+  '(bind-keys (current-global-map)
+              "M-<up>"       #'buf-move-up
+              "M-<down>"     #'buf-move-down
+              "M-<right>"    #'buf-move-right
+              "M-<left>"     #'buf-move-left
+              "C-S-<right>"  #'(lambda () (interactive)
+                                 (split-window-horizontally)
+                                 (buf-move-right)
+                                 (previous-buffer))
+              "C-S-<down>"   #'(lambda () (interactive)
+                                 (split-window-vertically)
+                                 (buf-move-down)
+                                 (previous-buffer))))
 (unless (locate-library "buffer-move") (message "installing buffer-move is recommended."))
 
 ;; escreen keybindings
@@ -441,20 +445,38 @@
      (defmacro escreen-keybindings-builder (super)
        "Builds keybindings for ESCREEN. SUPER may be a Meta key.
 In this case, type \"M-\" as argument."
-       `(global-bind-keys
-         ;; - manage
-         '(,(concat super "c") escreen-create-screen
-           ,(concat super "n") escreen-create-screen
-           ,(concat super "k") escreen-kill-screen
-           ;; - Vi-like navigation
-           ,(concat super "l") escreen-goto-next-screen
-           ,(concat super "h") escreen-goto-prev-screen
-           ;; - jump
-           ,(concat super "j") escreen-goto-screen
-           ;; - print
-           ,(concat super "p") escreen-get-active-screen-numbers-with-emphasis)))
+       `(bind-keys (current-global-map)
+                   ;; - manage
+                   ,(concat super "c") #'escreen-create-screen
+                   ,(concat super "n") #'escreen-create-screen
+                   ,(concat super "k") #'escreen-kill-screen
+                   ;; - Vi-like navigation
+                   ,(concat super "l") #'escreen-goto-next-screen
+                   ,(concat super "h") #'escreen-goto-prev-screen
+                   ;; - jump
+                   ,(concat super "j") #'escreen-goto-screen
+                   ;; - print
+                   ,(concat super "p") #'escreen-get-active-screen-numbers-with-emphasis))
      (escreen-keybindings-builder "M-") ; M-n was defined for `make-frame' so it's ok!
      (escreen-keybindings-builder "<f2>"))) ; use <f2> for NO-WINDOW-SYSTEM case
+
+;; remember keybindings (use <f8><f7> or "C-c C-r" to open in another frame)
+(bind-keys (current-global-map)
+           "C-c C-r" #'make-remember-frame
+           "C-c r"   #'make-remember-frame)
+
+;; flymake keybindings
+(eval-after-load "flymake"
+  '(bind-keys (current-global-map)
+              "M-S-h" #'flymake-goto-prev-error   ; MEMO: ESCREEN Vi-like navigation
+              "M-S-l" #'flymake-goto-next-error))
+
+;; comint keybindings
+(bind-keys comint-mode-map
+           "M-<up>"   #'comint-next-input
+           "M-<down>" #'comint-previous-input
+           "<down>"   #'comint-next-matching-input-from-input
+           "<up>"     #'comint-previous-matching-input-from-input)
 
 ;; paredit keybindings
 (eval-after-load "paredit"
@@ -464,23 +486,65 @@ In this case, type \"M-\" as argument."
      (define-key paredit-mode-map (kbd "<f2>]") #'paredit-forward-barf-sexp) ; \C-\S-\]
      (define-key paredit-mode-map (kbd "<f2>[") #'paredit-backward-barf-sexp) ; \C-\S-\[
      (define-key paredit-mode-map (kbd "<f2>0") #'paredit-forward-slurp-sexp) ; \C-\)
-     (define-key paredit-mode-map (kbd "<f2>9") #'paredit-backward-slurp-sexp))) ; \C-\(
+     (define-key paredit-mode-map (kbd "<f2>9") #'paredit-backward-slurp-sexp) ; \C-\(
+     ;; delete case
+     (bind-keys paredit-mode-map
+                "<kp-delete>"   #'paredit-forward-delete
+                "<C-kp-delete>" #'paredit-forward-kill-word
+                "<C-backspace>" #'paredit-backward-kill-word)
+     ;; term case
+     (when *i-am-a-terminator*
+       (bind-keys paredit-mode-map
+                  "C-h" #'paredit-backward-delete
+                  "C-w" #'paredit-backward-kill-word))
+     ;; close parenthesis case
+     (bind-keys paredit-mode-map
+                ")"   #'paredit-close-parenthesis
+                "M-)" #'paredit-close-parenthesis-and-newline)
+     ;; viper case
+     (eval-after-load "vimpulse"
+       '(progn
+          ;; TODO: create macro to build term & close parens' cases
+          ;; keys for normal and viper cases
+          (when *i-am-a-terminator
+            (paredit-viper-add-local-keys
+             'insert-state
+             '(("\C-h" . paredit-backward-delete)
+               ("\C-w" . paredit-backward-kill-word))))
+          (paredit-viper-add-local-keys
+           'insert-state
+           '(([?\)] . paredit-close-parenthesis)
+             ([(meta ?\))] . paredit-close-parenthesis-and-newline)))))
+     ;; windmove case
+     (bind-keys paredit-mode-map
+                "C-<left>" nil ; use C-S-) instead
+                "C-<right>" nil
+                "M-<left>" nil
+                "M-<right>" nil
+                "C-M-<left>" nil
+                "C-M-<right>" nil)))
 
-;; remember keybindings (use <f8><f7> or "C-c C-r" to open in another frame)
-(global-bind-keys
- '("C-c C-r" make-remember-frame
-   "C-c r"   make-remember-frame))
-
-;; flymake keybindings
-(eval-after-load "flymake"
-  '(global-bind-keys
-    '("M-S-h" flymake-goto-prev-error   ; MEMO: ESCREEN Vi-like navigation
-      "M-S-l" flymake-goto-next-error)))
+;; elisp keybindings
+;;(eval-after-load "elisp"
+;;   (mapc #'(lambda (map)
+;;             (bind-keys
+;;              map
+;;              "C-c d" #'elisp-disassemble
+;;              "C-c m" #'elisp-macroexpand
+;;              "C-c M" #'elisp-macroexpand-all
+;;              "C-c C-c" #'compile-defun
+;;              "C-c C-k" #'elisp-bytecompile-and-load
+;;              "C-c C-l" #'load-file
+;;              "C-c p" #'pp-eval-last-sexp
+;;              "M-." #'elisp-find-definition
+;;              "M-," #'elisp-pop-found-function
+;;              "C-c <" #'list-callers)) '(emacs-lisp-mode-map lisp-interaction-mode-map))
+;;)
 
 ;; miscellaneous launcher keybindings
-(global-bind-keys
- '("C-c T" default-term
-   "C-c W" mars/wl))                    ; 'WL-OTHER-FRAME but ensure the `lisp/mail' load
+(bind-keys (current-global-map)
+ "C-c T" #'default-term
+ "C-c W" #'mars/wl)                    ; 'WL-OTHER-FRAME but ensure the `lisp/mail' load
 
 (provide 'shortcuts)
 

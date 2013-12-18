@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.17
-;; Last-Updated: Mon Dec 16 13:18:53 2013 (+0100)
+;; Last-Updated: Wed Dec 18 15:48:26 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 320
+;;     Update #: 325
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -181,24 +181,6 @@ ROOT                        => ROOT"
           (apply 'twb/autoload x))
         libraries-and-functions))
 
-(defun bind-key (map key function)   ; UNTESTED
-  (define-key map (read-kbd-macro key) function))
-
-(defun global-bind-key (key function)  ; UNTESTED
-  (bind-key (current-global-map) key function))
-
-(defun bind-keys (map bindings)     ; UNTESTED
-  "Map keys from a list."
-  (if (null (cdr bindings))
-      t
-    (let ((key (car bindings))
-          (function (cadr bindings)))
-      (bind-key map key function)
-      (bind-keys map (cddr bindings)))))
-
-(defun global-bind-keys (bindings)  ; UNTESTED
-  (bind-keys (current-global-map) bindings))
-
 (defmacro add-to-alist (key value alist)
   "add VALUE to an ALIST at KEY."
   `(if (null (assoc ,key ,alist))
@@ -292,17 +274,34 @@ file; display a message otherwise."
           source-funs))))
 
 (eval-after-load "cl-lib"
-  '(defun crazycode/indent-and-complete () ; UNTESTED
-     "Indent line and Complete if point is at end of left a leave word."
-     (interactive)
-     (cond
-      ;; hippie-expand
-      ((looking-at "\\_>")
-       ;; skip message output
-       (cl-flet ((message (format-string &rest args) nil))
-         (hippie-expand nil))))
-     ;; always indent line
-     (indent-for-tab-command))) ; for example, for Ruby indent issues
+  '(progn
+
+     (defun bind-key (map spec def)       ; UNTESTED
+       (let ((key (cl-typecase spec
+                    (vector spec)
+                    (string (read-kbd-macro spec))
+                    (t (error "wrong argument")))))
+         (define-key map key def)))
+
+     (defmacro bind-keys (map &rest bindings) ; UNTESTED
+       "Map keys from a list."
+       (when (> (length bindings) 1)
+         (message "%S" bindings)
+        `(progn
+           (bind-key ,map ,(car bindings) ,(cadr bindings))
+           (bind-keys ,map ,@(cddr bindings)))))
+
+     (defun crazycode/indent-and-complete () ; UNTESTED
+       "Indent line and Complete if point is at end of left a leave word."
+       (interactive)
+       (cond
+        ;; hippie-expand
+        ((looking-at "\\_>")
+         ;; skip message output
+         (cl-flet ((message (format-string &rest args) nil))
+           (hippie-expand nil))))
+       ;; always indent line
+       (indent-for-tab-command)))) ; for example, for Ruby indent issues
 
 (defun my-tab-expansion-switcher ()     ; UNTESTED
   (local-set-key [tab] 'indent-or-expand))
@@ -710,19 +709,20 @@ Known as FILES-IN-BELOW-DIRECTORY seen in `http://www.rattlesnake.com/intro/File
       (setq current-directory-list (cdr current-directory-list)))
     el-files-list))
 
-(defun start-named-server (name)        ; UNTESTED
+(defun start-named-server (name)        ; TODO: cleanup UNTESTED
   "Start a server named 'name' - ensure only one server of that
 `NAME' is running"
   (interactive "sServer Name: ")
   (require 'server)
-  (setq server-name name)
-  (setq mk-server-socket-file (expand-file-name name server-socket-dir))
-  (when (file-exists-p mk-server-socket-file)
-    (delete-file mk-server-socket-file)) ; TODO: check server is alive instead of crushing the previous one
-  (server-start)
-  (add-lambda-hook 'kill-emacs-hook
+  (let ((server-name name)
+        (mk-server-socket-file (expand-file-name name server-socket-dir)))
     (when (file-exists-p mk-server-socket-file)
-      (delete-file mk-server-socket-file))))
+      (delete-file mk-server-socket-file))
+    (server-start)
+    (add-hook 'kill-emacs-hook
+      `(lambda ()
+         (when (file-exists-p ,mk-server-socket-file)
+           (delete-file ,mk-server-socket-file))))))
 
 (defun add-hook-once (hook function &optional append local) ; UNTESTED
   "Same as `add-hook', but FUN is only run once.

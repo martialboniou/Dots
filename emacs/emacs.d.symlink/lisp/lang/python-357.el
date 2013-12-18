@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sun Mar  6 23:42:52 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Fri Jun 28 15:28:41 2013 (+0200)
+;; Last-Updated: Tue Dec 17 15:07:35 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 141
+;;     Update #: 143
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -59,7 +59,7 @@
        (defvar python-mode-map (copy-keymap py-mode-map)))
      ;; indent
      (custom-set-variables '(indent-tabs-mode nil))
-;;     (define-key python-mode-map (kbd "RET") 'newline-and-indent)
+;;     (bind-key python-mode-map "<return>" #'newline-and-indent)
      ;; customize according to installed EGGs' binaries
      ;; inform flymake about pyflakes
       (eval-after-load "flymake"
@@ -113,7 +113,7 @@
 ;; <C-c h> to display python lookup in python buffer
 (eval-after-load "python"
   '(progn
-     (define-key python-mode-map "\C-ch" 'pylookup-lookup)))
+     (bind-key python-mode-map "C-c h" #'pylookup-lookup)))
 
 ;; PYMACS + ROPE TODO: eval-after-load'ing correctly
 
@@ -181,7 +181,7 @@
 ;;             (set (make-local-variable 'ac-auto-start) t))
 ;;           (defadvice ac-cleanup (after advice-turn-off-auto-start activate)
 ;;             (set (make-local-variable 'ac-auto-start) nil))
-;;           (define-key python-mode-map "\t" 'ryan-python-tab)
+;;           (bind-key python-mode-map "\t" #'ryan-python-tab)
 
 ;;           )) ))
 

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 12:16:46 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Jun 25 10:07:34 2013 (+0200)
+;; Last-Updated: Tue Dec 17 14:59:14 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 124
+;;     Update #: 125
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -175,7 +175,7 @@ Otherwise the update regexps won't match."
      (point-max)
      sh-indent-command
      (buffer-name))))
-;; FIXME: (define-key c-mode-base-map [f7] 'c-reformat-buffer)
+;; FIXME: (bind-key c-mode-base-map "<f7>" #'c-reformat-buffer)
 
 ;;; FLYSPELL
 ;;
@@ -202,7 +202,7 @@ Otherwise the update regexps won't match."
   (eval-after-load "flyspell"
     '(progn
        ;; mouse-wheel makes mouse-2 a hard life nowadays
-       (define-key flyspell-mode-map [down-mouse-3] 'flyspell-correct-word) ; map correction on mouse-3
+       (bind-key flyspell-mode-map "<down-mouse-3>" #'flyspell-correct-word) ; map correction on mouse-3
       ;; dictionaries
       (eval-after-load "ispell"           ; configure flyspell even if FLYSPELL is
                                         ; muted at startup

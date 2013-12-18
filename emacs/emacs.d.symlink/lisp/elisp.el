@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 10:19:49 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Wed Jun 12 11:52:46 2013 (+0200)
+;; Last-Updated: Tue Dec 17 14:05:45 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 43
+;;     Update #: 45
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -117,23 +117,6 @@
   (let ((filename (expand-file-name buffer-file-name)))
     (with-temp-buffer
       (byte-compile-file filename t))))
-
-(defvar elisp-extra-keys
-  '(((kbd "C-c d") 'elisp-disassemble)
-    ((kbd "C-c m") 'elisp-macroexpand)
-    ((kbd "C-c M") 'elisp-macroexpand-all)
-    ((kbd "C-c C-c") 'compile-defun)
-    ((kbd "C-c C-k") 'elisp-bytecompile-and-load)
-    ((kbd "C-c C-l") 'load-file)
-    ((kbd "C-c p") 'pp-eval-last-sexp)
-    ((kbd "M-.") 'elisp-find-definition)
-    ((kbd "M-,") 'elisp-pop-found-function)
-    ((kbd "C-c <") 'list-callers)))
-
-(dolist (binding elisp-extra-keys)
-  (let ((key (eval (car binding))) (val (eval (cadr binding))))
-    (define-key emacs-lisp-mode-map key val)
-    (define-key lisp-interaction-mode-map key val)))
 
 ;;; BONUS
 ;;

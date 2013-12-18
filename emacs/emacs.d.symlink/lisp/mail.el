@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:23:21 2011 (+0100)
 ;; Version: 0.8
-;; Last-Updated: Fri Nov  8 16:19:59 2013 (+0100)
+;; Last-Updated: Tue Dec 17 15:09:03 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 152
+;;     Update #: 154
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -273,7 +273,7 @@
      (eval-after-load "bbdb-wl"
        '(progn
           (remove-hook 'wl-message-redisplay-hook #'bbdb-wl-get-update-record) ; FIXME: temporary to avoid annoying mismatch bugs
-          (define-key wl-draft-mode-map "\t" 'bbdb-complete-name) ; now TAB => BBDB
+          (bind-key wl-draft-mode-map "\t" #'bbdb-complete-name) ; now TAB => BBDB
           (setq bbdb-use-pop-up t
                 bbdb-electric-p t             ; be disposable with SPC
                 signature-use-bbdb t
@@ -435,4 +435,3 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; mail.el ends here
-

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Jun 25 10:41:31 2013 (+0200)
+;; Last-Updated: Tue Dec 17 14:46:34 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 627
+;;     Update #: 641
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -388,11 +388,12 @@ Move point to the beginning of the line, and run the normal hook
        '(progn
           ;; inform 'RUBY-ELECTRIC to ignore AUTOPAIR matching chars
           (defadvice ruby-electric-setup-keymap (around soften-rel-for-autopair nil activate)
-            (define-key ruby-mode-map " " #'ruby-electric-space)
-            (define-key ruby-mode-map "|" #'ruby-electric-bar)
-            (define-key ruby-mode-map (kbd "RET") #'ruby-electric-return)
-            (define-key ruby-mode-map (kbd "C-j") #'ruby-electric-return)
-            (define-key ruby-mode-map (kbd "C-m") #'ruby-electric-return))))
+            (bind-keys ruby-mode-map
+                       " " #'ruby-electric-space
+                       "|" #'ruby-electric-bar
+                       "RET" #'ruby-electric-return
+                       "C-j" #'ruby-electric-return
+                       "C-m" #'ruby-electric-return))))
      ;; python case
      (add-lambda-hook 'python-mode-hook
        (push '(?' . ?') (getf autopair-extra-pairs :code))
@@ -430,48 +431,18 @@ Move point to the beginning of the line, and run the normal hook
             (if (null ad-return-value)
                 (autopair-mode 1)
               (autopair-mode 0)))))
-     ;; delete case
-     (define-key paredit-mode-map [(kp-delete)] #'paredit-forward-delete)
-     (define-key paredit-mode-map [(control kp-delete)] #'paredit-forward-kill-word)
-     (define-key paredit-mode-map [(control backspace)] #'paredit-backward-kill-word)
-     ;; term case
-     (when *i-am-a-terminator*
-       (define-key paredit-mode-map (kbd "C-h") #'paredit-backward-delete)
-       (define-key paredit-mode-map (kbd "C-w") #'paredit-backward-kill-word))
-     ;; close parenthesis case
-     (define-key paredit-mode-map [?\)] #'paredit-close-parenthesis)
-     (define-key paredit-mode-map [(meta ?\))]
-       #'paredit-close-parenthesis-and-newline)
      ;; viper case
      (eval-after-load "vimpulse"
-       '(progn
-          ;; NOTE: working `PAREDIT-VIPER-COMPAT' provided
-          (add-lambda-hook 'paredit-mode-hook
-            (paredit-viper-compat)
-            ;; TODO: create macro to build term & close parens' cases
-            ;; keys for normal and viper cases
-            (when *i-am-a-terminator*
-              (paredit-viper-add-local-keys
-               'insert-state
-               '(("\C-h" . paredit-backward-delete)
-                 ("\C-w" . paredit-backward-kill-word))))
-            (paredit-viper-add-local-keys
-             'insert-state
-             '(([?\)] . paredit-close-parenthesis)
-               ([(meta ?\))] . paredit-close-parenthesis-and-newline))))))
-     ;; windmove case
-     (define-key paredit-mode-map (kbd "C-<left>")    nil) ; use C-S-) instead
-     (define-key paredit-mode-map (kbd "C-<right>")   nil)
-     (define-key paredit-mode-map (kbd "M-<left>")    nil)
-     (define-key paredit-mode-map (kbd "M-<right>")   nil)
-     (define-key paredit-mode-map (kbd "C-M-<left>")  nil)
-     (define-key paredit-mode-map (kbd "C-M-<right>") nil)
+       ;; NOTE: `PAREDIT-VIPER-COMPAT' should be provided
+       (when (functionp 'paredit-viper-compat)
+         (add-lambda-hook 'paredit-mode-hook
+           (paredit-viper-compat))))
+
      ;; no-window-system case
      ;; <C-S-*> is unavailable; use <f2>-9 and so on as defined in `shortcuts'
      ;; slime case
      (defun override-slime-repl-bindings-with-paredit ()
-       (define-key slime-repl-mode-map
-         (read-kbd-macro paredit-backward-delete-key) nil))
+       (bind-key slime-repl-mode-map paredit-backward-delete-key nil))
      (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)))
 
 ;;; ELDOC
@@ -481,14 +452,6 @@ Move point to the beginning of the line, and run the normal hook
 ;;; C-ELDOC (an alternative to CEDET for C code)
 (when (el-get-package-is-installed "c-eldoc")
   (add-hook 'c-mode-hook #'c-turn-on-eldoc-mode))
-(eval-after-load "c-eldoc"
-  '(setq c-eldoc-includes "-I/opt/local/include/ -I/usr/local/include/ -I/usr/brewery/include/ -I/usr/include/ -I./ -I../"))
-
-;;; COMINT
-(define-key comint-mode-map (kbd "M-<up>") 'comint-next-input)
-(define-key comint-mode-map (kbd "M-<down>") 'comint-previous-input)
-(define-key comint-mode-map [down] 'comint-next-matching-input-from-input)
-(define-key comint-mode-map [up] 'comint-previous-matching-input-from-input)
 
 ;;; CHEAT
 (eval-after-load "anything"

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Tue Feb 22 11:31:42 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: Mon Jun 10 18:04:57 2013 (+0200)
+;; Last-Updated: Tue Dec 17 15:03:26 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 123
+;;     Update #: 125
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:  ORG 8.0 pre or more
@@ -56,7 +56,7 @@
 (require 'org-protocol)
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
-(define-key mode-specific-map [?a] 'org-agenda)
+(bind-key mode-specific-map "a" #'org-agenda)
 
 ;; common setup
 (eval-after-load "org"
@@ -77,15 +77,16 @@
        (setq truncate-lines nil)) ; turn on soft wrapping mode for org mode
      ;; original C-n/C-p behavior kept
      (add-lambda-hook 'org-agenda-mode-hook
-       (define-key org-agenda-mode-map "\C-n" 'next-line)
-       (define-key org-agenda-keymap   "\C-n" 'next-line)
-       (define-key org-agenda-mode-map "\C-p" 'previous-line)
-       (define-key org-agenda-keymap   "\C-p" 'previous-line))))
+       (mapc #'(lambda (map)
+                 (bind-keys map
+                            "C-n" #'next-line
+                            "C-p" #'previous-line))
+             '(org-agenda-mode-map org-agenda-keymap)))))
 
 ;; viper compatibility setup
 (eval-after-load "viper"
   '(if (boundp 'viper-version)
-       (define-key viper-vi-global-user-map "C-c /" 'org-sparse-tree)))
+       (bind-key viper-vi-global-user-map "C-c /" #'org-sparse-tree)))
 
 ;; agenda & remember setup
 ;; (add-hook 'remember-mode-hook #'org-remember-apply-template)

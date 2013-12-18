@@ -3,15 +3,15 @@
 ;; Filename: vim-everywhere.el
 ;; Description: Vim Emulation Setup
 ;; Author: Martial Boniou
-;; Maintainer: 
+;; Maintainer:
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.8
-;; Last-Updated: Mon Dec 16 16:42:36 2013 (+0100)
+;; Last-Updated: Wed Dec 18 15:03:48 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 484
-;; URL: 
-;; Keywords: 
-;; Compatibility: 
+;;     Update #: 495
+;; URL:
+;; Keywords:
+;; Compatibility:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -90,7 +90,7 @@
 (eval-after-load "viper"                ; UNUSED but kept for 'viper user
   '(progn
      ;; 0- tweaks
-     (define-key viper-vi-global-user-map [(control kp-delete)] nil)
+     (bind-key viper-vi-global-user-map "C-<kp-delete>" nil)
      ;; 1- ruby case
      (add-to-list 'viper-vi-state-mode-list 'ruby-mode)
      ;; 2- autopair case
@@ -99,30 +99,32 @@
           (when (locate-library "autopair-viper-compat")
             (require 'autopair-viper-compat))))
      ;; 3- additional keyboard bindings
-     (define-key viper-vi-global-user-map [(kp-delete)] 'viper-forward-char)
-     (define-key viper-insert-basic-map [(kp-delete)] 'viper-delete-char)
-     (define-key viper-vi-global-user-map [(control backspace)] 'viper-backward-word)
-     (define-key viper-insert-basic-map [(control backspace)] 'viper-delete-backward-word)
+     (mapc #'(lambda (map)
+               (bind-keys map
+                          "<kp-delete>" #'viper-forward-char
+                          "C-<backspace>" #'viper-backward-word))
+           '(viper-vi-global-user-map viper-insert-basic-map))
      ;; idea: http://stackoverflow.com/users/2797/sebastien-roccaserra
-     (define-key viper-vi-global-user-map "/"        'isearch-forward-regexp)
-     (define-key viper-vi-global-user-map "?"        'isearch-backward-regexp)
-     (define-key viper-vi-global-user-map "\C-wh"    'windmove-left)
-     (define-key viper-vi-global-user-map "\C-wj"    'windmove-down)
-     (define-key viper-vi-global-user-map "\C-wk"    'windmove-up)
-     (define-key viper-vi-global-user-map "\C-wl"    'windmove-right)
-     (define-key viper-vi-global-user-map "\C-wv"    '(lambda () (interactive)
-                                                        (split-window-horizontally)
-                                                        (other-window 1)
-                                                        (switch-to-buffer (other-buffer))))
-     (define-key viper-insert-basic-map "\C-e" nil) ; IMPORTANT: in order to use ASCII C-a/C-e in insert mode
-     (define-key viper-vi-basic-map "\C-e" 'viper-scroll-up-one)
+     (bind-keys viper-vi-global-user-map
+                "/" #'isearch-forward-regexp
+                "?" #'isearch-backward-regexp
+                "C-w h" #'windmove-left
+                "C-w j" #'windmove-down
+                "C-w k" #'windmove-up
+                "C-w l" #'windmove-right
+                "C-w v" #'(lambda nil (interactive)
+                            (split-window-horizontally)
+                            (other-window 1)
+                            (switch-to-buffer (other-buffer))))
+     (bind-key viper-insert-basic-map "C-e" nil) ; IMPORTANT: ANSI C-a/C-e in insert mode
+     (bind-key viper-vi-basic-map "C-e" #'viper-scroll-up-one)
      (push '("only"  (delete-other-windows)) ex-token-alist) ; on  in Evil
      (push '("close" (delete-window))        ex-token-alist) ; clo in Evil
-     (define-key viper-vi-global-user-map " k" 'viper-kill-buffer)
+     (bind-key viper-vi-global-user-map " k" #'viper-kill-buffer)
      (when *i-am-a-terminator*
        ;; global-unset-key "\C-h"
-       (define-key viper-vi-global-user-map "\C-h" 'viper-backward-char)
-       (define-key viper-insert-global-user-map "\C-h" 'viper-delete-backward-char))
+       (bind-key viper-vi-global-user-map "C-h" 'viper-backward-char)
+       (bind-key viper-insert-global-user-map "C-h" 'viper-delete-backward-char))
      ;; 4- colorize <> modes
      (setq viper-vi-state-id
            (concat (propertize "<V>" 'face 'font-lock-string-face) " ")
@@ -159,10 +161,11 @@
             ;; fast escreen keybindings for Dvorak typists
             ;; (using bottom right diamond combination)
             (when *i-am-a-dvorak-typist*
-              (define-key escreen-map (kbd "C--") 'escreen-goto-next-screen)
-              (define-key escreen-map "\C-v" 'escreen-goto-prev-screen)
-              (define-key escreen-map "\C-s" 'escreen-menu))
-            (global-set-key escreen-prefix-char 'escreen-prefix)))
+              (bind-keys escreen-map
+                         "C--" #'escreen-goto-next-screen
+                         "C-v" #'escreen-goto-prev-screen
+                         "C-s" #'escreen-menu))
+            (bind-key (current-global-map) escreen-prefix-char #'escreen-prefix)))
        (eval-after-load "elscreen"
          '(progn
             (evil-set-toggle-key "C-x C-z") ; unset C-z
@@ -221,7 +224,7 @@
                         `(evil-set-initial-state ',x ',state)) mode-list)))
      (mars/set-evil-state-in-modes normal erc-mode)
      (mars/set-evil-state-in-modes emacs
-                                   wl-summary-mode
+                                   wl-summary-mode ack-and-a-half-mode grep-mode
                                    bbdb-mode bc-medu-mode
                                    ebib-entry-mode ebib-index-mode ebib-log-mode
                                    shell-mode eshell-mode term-mode
@@ -238,8 +241,8 @@
           ,@(mapcar #'(lambda (x)
                         `(mars/activate-state-in-modes ,(cadr x)
                                                        ,(car x)
-                                                       define-key
-                                                       "\C-w" 'evil-like-window-map))
+                                                       bind-key
+                                                       "C-w" 'evil-like-window-map))
                     context-mode-alist)))
      (mars/activate-C-w-in-modes (dired (dired-mode-map))
                                  (ibuffer (ibuffer-mode-map))
@@ -261,6 +264,17 @@
          (require-if-located 'linum+)) ; remove linum-relative for smart numbers
      (eval-after-load "linum"
        '(global-linum-mode t))      ; TODO: remove wl-summary etc...
+     (eval-after-load "linum-off"   ; `linum-off' should be installed
+       '(custom-set-variables
+         '(linum-disabled-modes-list '(eshell-mode
+                                       term-mode
+                                       wl-summary-mode
+                                       compilation-mode
+                                       org-mode
+                                       text-mode
+                                       ack-and-a-half-mode
+                                       grep-mode
+                                       dired-mode))))
      ;; personal tweak I use on Vim too
      (eval-after-load "linum-relative"
        '(progn
@@ -279,6 +293,7 @@
                                                           "-"
                                                           (symbol-name timeline)
                                                           "-hook"))) state-list)))
+              ;; FIXME: when switching with the mouse, the display offset creates a Visual session
               (mars/add-hooks (state-hookize states 'entry) #'(lambda () (linum-mode 0)))
               (mars/add-hooks (state-hookize states 'exit) #'(lambda () (linum-mode 1)))))))
 

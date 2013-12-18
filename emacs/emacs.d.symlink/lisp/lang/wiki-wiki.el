@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Mar 16 20:02:05 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu May 30 17:36:33 2013 (+0200)
+;; Last-Updated: Tue Dec 17 15:08:29 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 44
+;;     Update #: 45
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -59,7 +59,7 @@
     '(progn
        (add-hook 'yaml-mode-hook
                  '(lambda ()
-                    (define-key yaml-mode-map "\C-m" 'newline-and-indent)))))
+                    (bind-key yaml-mode-map "C-m" #'newline-and-indent)))))
 
 ;;; HAML (XHTML Abstraction Markup Language)
 (eval-after-load "haml-mode"
@@ -67,7 +67,7 @@
      (add-hook 'haml-mode-hook
                #'(lambda ()
                    (setq indent-tabs-mode nil) ; uses spaces (no tabs)
-                   (define-key haml-mode-map "\C-m" 'newline-and-indent)))))
+                   (bind-key haml-mode-map "C-m" #'newline-and-indent)))))
 
 ;;; AUCTEX
 (require-if-located 'tex-site)          ; AUCTEX autoloads

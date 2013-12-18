@@ -3,15 +3,15 @@
 ;; Filename: behave.el
 ;; Description: Provides Emacs main behavior
 ;; Author: Martial Boniou
-;; Maintainer: 
+;; Maintainer:
 ;; Created: Thu Nov 17 17:30:20 2011 (+0100)
 ;; Version: 0.6.2
-;; Last-Updated: Mon Dec 16 13:23:31 2013 (+0100)
+;; Last-Updated: Tue Dec 17 15:39:09 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 23
-;; URL: 
-;; Keywords: 
-;; Compatibility: 
+;;     Update #: 33
+;; URL:
+;; Keywords:
+;; Compatibility:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -77,7 +77,6 @@
 
 ;;; ERASING/UNDOING
 ;;
-(global-bind-key "<kp-delete>" 'delete-char)
 ;; try 'REDO+ iff no 'UNDO-TREE
 (eval-after-load "el-get"
   '(progn
@@ -214,7 +213,7 @@ Example: (MAJOR-MODE . (CHESS-MASTER-MODE MAIL-DRAFT-MODE).")
          global-auto-revert-mode t))
 ;; - ibuffer
 (eval-after-load "ibuffer"
-  '(define-key ibuffer-mode-map (kbd "'") 'kill-all-dired-buffers))
+  '(bind-key ibuffer-mode-map "'" #'kill-all-dired-buffers))
 ;; - anything
 (eval-after-load "el-get"
   '(when (el-get-package-is-installed "anything")
@@ -227,10 +226,10 @@ Example: (MAJOR-MODE . (CHESS-MASTER-MODE MAIL-DRAFT-MODE).")
      (defvar mars/anything-pers-action-binding "C-."
        "New binding for `anything-execute-persistent-action'. Was originally
 the should-be-forbidden C-z.")
-     (define-key anything-map (kbd "C-l") 'anything-find-files-down-one-level) ; originally C-. in 'window-system
-     (define-key anything-map (kbd "C-z") nil)
-     (define-key anything-map (read-kbd-macro mars/anything-pers-action-binding)
-       'anything-execute-persistent-action)
+     (bind-keys anything-map
+                "C-l" #'anything-find-files-down-one-level  ; originally C-. in 'window-system
+                "C-z" nil
+                mars/anything-pers-action-binding #'anything-execute-persistent-action)
      (setcdr (assoc 'persistent-help anything-c-source-advice)
              (format "Describe function / C-u %s: Toggle advice"
                      mars/anything-pers-action-binding))
@@ -239,10 +238,8 @@ the should-be-forbidden C-z.")
        '(progn
           nil
           ;; (anything-lisp-complete-symbol-set-timer 150) ; collect by 150 sec
-          ;; (define-key emacs-lisp-mode-map "\C-\M-i"
-          ;;   'anything-lisp-complete-symbol-partial-match)
-          ;; (define-key lisp-interaction-mode-map "\C-\M-i"
-          ;;   'anything-lisp-complete-symbol-partial-match)
+          ;; (bind-key emacs-lisp-mode "C-M-i" #'anything-lisp-complete-symbol-partial-match)
+          ;; (bind-key lisp-interaction-mode-map "C-M-i" #'anything-lisp-complete-symbol-partial-match)
           ;; (anything-read-string-mode 0)
           ))))
 
@@ -339,10 +336,10 @@ the should-be-forbidden C-z.")
                                           recentf-list) nil t))))
      (defmacro mars/recentf/override-keys (map)
        "Force the keys overriding in some modes."
-       (list 'lambda nil
-             (list 'define-key map (list 'kbd '"C-c C-f") ''ido-recentf-file-name-history)
-             (list 'define-key map (list 'kbd '"C-c F") ''ido-recentf)
-             (list 'define-key map (list 'kbd '"C-c C-m") ''make-directory)))
+        `(bind-keys ,map
+                    "C-c C-f" #'ido-recentf-file-name-history
+                    "C-c F" #'ido-recentf
+                    "C-c C-m" #'make-directory))
      ;; (add-lambda-hook 'emacs-startup-hook (mars/recentf/override-keys global-map))
      (eval-after-load "ibuffer"
        '(progn
@@ -354,7 +351,7 @@ the should-be-forbidden C-z.")
                 (setq default-directory
                       (with-current-buffer buf default-directory))))
             (ido-find-file-in-dir default-directory))
-          (define-key ibuffer-mode-map (kbd "C-x C-f") #'ibuffer-ido-find-file)))))
+          (bind-key ibuffer-mode-map "C-x C-f" #'ibuffer-ido-find-file)))))
 
 ;;; BOOKMARKS
 ;;  el-get features bookmark+
@@ -381,8 +378,7 @@ the should-be-forbidden C-z.")
        (revive-plus:minimal-setup))))
 
 ;;; POSIX ENVIRONMENT
-(define-key special-event-map [sigusr2]
-  #'(lambda () (interactive) (kill-emacs)))
+(bind-key special-event-map "<sigusr2>" #'kill-emacs)
 
 ;;; VT100 KEYS
 (when (and (null window-system)

@@ -3,15 +3,15 @@
 ;; Filename: rectify.el
 ;; Description: Script correctors & expanders
 ;; Author: Martial Boniou
-;; Maintainer: 
+;; Maintainer:
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
-;; Version: 
-;; Last-Updated: Mon Dec 16 13:22:53 2013 (+0100)
+;; Version:
+;; Last-Updated: Tue Dec 17 15:17:13 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 172
-;; URL: 
-;; Keywords: 
-;; Compatibility: 
+;;     Update #: 175
+;; URL:
+;; Keywords:
+;; Compatibility:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -123,7 +123,7 @@
              try-expand-list-all-buffers
              try-expand-whole-kill))
      (setq hippie-expand-verbose t)     ; FIXME: for debug only
-    
+
      ;; paredit
      (eval-after-load "paredit"
        '(progn
@@ -249,7 +249,7 @@
        (interactive)
        (let ((hippie-expand-try-functions-list '(try-complete-file-name-partially try-complete-file-name)))
          (call-interactively 'hippie-expand)))
-     (global-bind-key "C-S-p" #'special-expand-file-name-at-point)))
+     (bind-key (global-current-map) "C-S-p" #'special-expand-file-name-at-point)))
 
 ;;; YASNIPPETS / YAS-JIT
 ;; bound to 'C-p à la Vim
@@ -266,9 +266,10 @@
        '(progn
           (setq mumamo-map
                 (let ((map (make-sparse-keymap)))
-                  (define-key map [(control meta prior)] 'mumamo-backward-chunk)
-                  (define-key map [(control meta next)]  'mumamo-forward-chunk)
-                  (define-key map [tab] 'yas/expand)
+                  (bind-keys map
+                             "C-M-<prior>" #'mumamo-backward-chunk
+                             "C-M-<next>" #'mumamo-forward-chunk
+                             "<TAB>" #'yas/expand)
                   map))
           (mumamo-add-multi-keymap 'mumamo-multi-major-mode mumamo-map)))
      ;; add `yas' world to `hippie-expand'
@@ -281,14 +282,14 @@
      (eval-after-load "org"
        '(progn
           (defun mars/yas-in-org ()
-            (define-key org-mode-map (kbd "C-.") 'yas/expand)) ; IMPORTANT: if <tab> is ``locked''
+            (bind-key org-mode-map "C-." #'yas/expand)) ; IMPORTANT: if <tab> is ``locked''
           (defun yas/org-very-safe-expand ()
             (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
-          (add-lambda-hook 'org-mode-hook 
+          (add-lambda-hook 'org-mode-hook
             (make-variable-buffer-local 'yas/trigger-key)
             (setq yas/trigger-key [tab])
             (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-            (define-key yas/keymap [tab] 'yas/next-field))))
+            (bind-key yas/keymap "<TAB>" #'yas/next-field))))
      ;; - ruby
      (eval-after-load "ruby"         ; FIXME: search if ruby is ok (maybe rinari/rhtml here)
        '(progn

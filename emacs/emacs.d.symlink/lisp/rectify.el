@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 22:39:36 2011 (+0100)
 ;; Version:
-;; Last-Updated: Tue Dec 17 15:17:13 2013 (+0100)
+;; Last-Updated: Thu Dec 19 12:05:13 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 175
+;;     Update #: 177
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -249,7 +249,7 @@
        (interactive)
        (let ((hippie-expand-try-functions-list '(try-complete-file-name-partially try-complete-file-name)))
          (call-interactively 'hippie-expand)))
-     (bind-key (global-current-map) "C-S-p" #'special-expand-file-name-at-point)))
+     (bind-key (current-global-map) "C-S-p" #'special-expand-file-name-at-point)))
 
 ;;; YASNIPPETS / YAS-JIT
 ;; bound to 'C-p à la Vim
@@ -266,10 +266,9 @@
        '(progn
           (setq mumamo-map
                 (let ((map (make-sparse-keymap)))
-                  (bind-keys map
-                             "C-M-<prior>" #'mumamo-backward-chunk
-                             "C-M-<next>" #'mumamo-forward-chunk
-                             "<TAB>" #'yas/expand)
+                  (bind-key map "C-M-<prior>" #'mumamo-backward-chunk)
+                  (bind-key map "C-M-<next>"  #'mumamo-forward-chunk)
+                  (bind-key map "\t"          #'yas/expand)
                   map))
           (mumamo-add-multi-keymap 'mumamo-multi-major-mode mumamo-map)))
      ;; add `yas' world to `hippie-expand'
@@ -289,7 +288,7 @@
             (make-variable-buffer-local 'yas/trigger-key)
             (setq yas/trigger-key [tab])
             (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-            (bind-key yas/keymap "<TAB>" #'yas/next-field))))
+            (bind-key yas/keymap "\t" #'yas/next-field))))
      ;; - ruby
      (eval-after-load "ruby"         ; FIXME: search if ruby is ok (maybe rinari/rhtml here)
        '(progn

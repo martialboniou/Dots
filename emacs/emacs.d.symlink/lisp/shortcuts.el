@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:34:57 2011 (+0100)
 ;; Version:
-;; Last-Updated: Wed Dec 18 15:02:51 2013 (+0100)
+;; Last-Updated: Thu Dec 19 12:25:21 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 242
+;;     Update #: 247
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -112,7 +112,7 @@
 
 ;; EVIL case
 (eval-after-load "evil"
-  '(progn
+  `(progn
      ;; NOTE: Evil manages C-h correctly
      (bind-keys evil-normal-state-map
                 "Y"  (kbd "y$")
@@ -140,31 +140,32 @@
                 "C-S-d" #'evil-scroll-up
                 "C-S-f" #'evil-scroll-page-up
                 "C-y" nil)
-     (mapc
-      (lambda (map)
-        (evil-define-key 'normal map
-          (kbd "RET") #'org-open-at-point
-          "za"        #'org-cycle
-          "zA"        #'org-shifttab
-          "zm"        #'hide-body
-          "zr"        #'show-all
-          "zo"        #'show-subtree
-          "zO"        #'show-all
-          "zc"        #'hide-subtree
-          "zC"        #'hide-all
-          (kbd "M-j") #'org-shiftleft
-          (kbd "M-k") #'org-shiftright
-          (kbd "M-H") #'org-metaleft
-          (kbd "M-J") #'org-metadown
-          (kbd "M-K") #'org-metaup
-          (kbd "M-L") #'org-metaright)
-        (evil-define-key 'insert map
-          (kbd "M-j") #'org-shiftleft
-          (kbd "M-k") #'org-shiftright
-          (kbd "M-H") #'org-metaleft
-          (kbd "M-J") #'org-metadown
-          (kbd "M-K") #'org-metaup
-          (kbd "M-L") #'org-metaright)) '(org-mode-map orgstruct-mode-map))))
+     ,@(mapcar
+        #'(lambda (map)
+            `(progn
+               (evil-define-key 'normal ,map
+                 (kbd "RET") #'org-open-at-point
+                 "za"        #'org-cycle
+                 "zA"        #'org-shifttab
+                 "zm"        #'hide-body
+                 "zr"        #'show-all
+                 "zo"        #'show-subtree
+                 "zO"        #'show-all
+                 "zc"        #'hide-subtree
+                 "zC"        #'hide-all
+                 (kbd "M-j") #'org-shiftleft
+                 (kbd "M-k") #'org-shiftright
+                 (kbd "M-H") #'org-metaleft
+                 (kbd "M-J") #'org-metadown
+                 (kbd "M-K") #'org-metaup
+                 (kbd "M-L") #'org-metaright)
+               (evil-define-key 'insert ,map
+                 (kbd "M-j") #'org-shiftleft
+                 (kbd "M-k") #'org-shiftright
+                 (kbd "M-H") #'org-metaleft
+                 (kbd "M-J") #'org-metadown
+                 (kbd "M-K") #'org-metaup
+                 (kbd "M-L") #'org-metaright))) '(org-mode-map orgstruct-mode-map))))
 
 ;; EVIL-NUMBERS case
 (eval-after-load "evil-numbers"
@@ -411,16 +412,15 @@
            "<f2><end>"    #'(lambda () (interactive) (mars/rotate-windows 'down))
            "<f2><home>"   #'(lambda () (interactive) (mars/rotate-windows 'up)))
 ;; - Tile
-(if (locate-library "mars-tiling")
-    (bind-keys (global-current-map)
-               "M-S-<left>"   #'(lambda () (interactive) ; left favorite layouts
-                                  (tiling-cycle 3 mars-tiling-favorite-main-layouts))
-               "<f2><kp-delete>" #'(lambda () (interactive) ; '<f2>C-d' for 2C-two-columns
-                                   (tiling-cycle 3 mars-tiling-favorite-main-layouts))
-               "M-S-<right>"  #'(lambda () (interactive) ; right favorite layouts
-                                  (tiling-cycle 3 mars-tiling-favorite-secondary-layouts))
-               "M-S-<end>"    #'tiling-cycle)
-  (message "installing mars-tiling is recommended."))
+(eval-after-load "mars-tiling"
+  '(bind-keys (current-global-map)
+              "M-S-<left>"   #'(lambda () (interactive) ; left favorite layouts
+                                 (tiling-cycle 3 mars-tiling-favorite-main-layouts))
+              "<f2><kp-delete>" #'(lambda () (interactive) ; '<f2>C-d' for 2C-two-columns
+                                    (tiling-cycle 3 mars-tiling-favorite-main-layouts))
+              "M-S-<right>"  #'(lambda () (interactive) ; right favorite layouts
+                                 (tiling-cycle 3 mars-tiling-favorite-secondary-layouts))
+              "M-S-<end>"    #'tiling-cycle))
 ;; - Swap buffers: M-<up> ...
 (eval-after-load "buffer-move"
   '(bind-keys (current-global-map)
@@ -525,21 +525,18 @@ In this case, type \"M-\" as argument."
                 "C-M-<right>" nil)))
 
 ;; elisp keybindings
-;;(eval-after-load "elisp"
-;;   (mapc #'(lambda (map)
-;;             (bind-keys
-;;              map
-;;              "C-c d" #'elisp-disassemble
-;;              "C-c m" #'elisp-macroexpand
-;;              "C-c M" #'elisp-macroexpand-all
-;;              "C-c C-c" #'compile-defun
-;;              "C-c C-k" #'elisp-bytecompile-and-load
-;;              "C-c C-l" #'load-file
-;;              "C-c p" #'pp-eval-last-sexp
-;;              "M-." #'elisp-find-definition
-;;              "M-," #'elisp-pop-found-function
-;;              "C-c <" #'list-callers)) '(emacs-lisp-mode-map lisp-interaction-mode-map))
-;;)
+(eval-after-load "elisp"
+  '(bind-keys '(emacs-lisp-mode-map lisp-interaction-mode-map)
+              "C-c d" #'elisp-disassemble
+              "C-c m" #'elisp-macroexpand
+              "C-c M" #'elisp-macroexpand-all
+              "C-c C-c" #'compile-defun
+              "C-c C-k" #'elisp-bytecompile-and-load
+              "C-c C-l" #'load-file
+              "C-c p" #'pp-eval-last-sexp
+              "M-." #'elisp-find-definition
+              "M-," #'elisp-pop-found-function
+              "C-c <" #'list-callers))
 
 ;; miscellaneous launcher keybindings
 (bind-keys (current-global-map)

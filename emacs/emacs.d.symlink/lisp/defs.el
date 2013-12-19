@@ -3,15 +3,15 @@
 ;; Filename: defs.el
 ;; Description: utility functions
 ;; Author: Martial Boniou
-;; Maintainer: 
+;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.17
-;; Last-Updated: Wed Dec 18 15:48:26 2013 (+0100)
+;; Last-Updated: Thu Dec 19 11:32:17 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 325
-;; URL: 
-;; Keywords: 
-;; Compatibility: 
+;;     Update #: 328
+;; URL:
+;; Keywords:
+;; Compatibility:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -106,9 +106,9 @@
   "Initialize CDR from the value of CAR if CAR is bound.
 `CONSES' is one or many CONS of variables."
   `(progn
-     ,@(mapcar (lambda (x)
-                 `(when (boundp ',(car x))
-                     (setq ,(cdr x) ,(car x))))
+     ,@(mapcar #'(lambda (x)
+                   `(when (boundp ',(car x))
+                      (setq ,(cdr x) ,(car x))))
                conses)))
 
 (defun safe-autoloads-load (loaddefs)   ; UNTESTED
@@ -283,13 +283,16 @@ file; display a message otherwise."
                     (t (error "wrong argument")))))
          (define-key map key def)))
 
-     (defmacro bind-keys (map &rest bindings) ; UNTESTED
-       "Map keys from a list."
-       (when (> (length bindings) 1)
-         (message "%S" bindings)
-        `(progn
-           (bind-key ,map ,(car bindings) ,(cadr bindings))
-           (bind-keys ,map ,@(cddr bindings)))))
+     (defmacro bind-keys (maps &rest bindings) ; UNTESTED
+       "Map keys from a list to one or multiple KEYMAPs."
+       (if (and (listp maps) (eq (car maps) 'quote)) ; TODO: think about a smarter combinator
+           `(progn
+              ,@(mapcar #'(lambda (map)
+                            `(bind-keys ,map ,@bindings)) (cadr maps)))
+         (when (> (length bindings) 1)
+           `(progn
+              (bind-key ,maps ,(car bindings) ,(cadr bindings))
+              (bind-keys ,maps ,@(cddr bindings))))))
 
      (defun crazycode/indent-and-complete () ; UNTESTED
        "Indent line and Complete if point is at end of left a leave word."

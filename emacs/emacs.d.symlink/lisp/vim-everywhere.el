@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.8
-;; Last-Updated: Wed Dec 18 15:03:48 2013 (+0100)
+;; Last-Updated: Thu Dec 19 12:29:06 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 495
+;;     Update #: 496
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -99,11 +99,9 @@
           (when (locate-library "autopair-viper-compat")
             (require 'autopair-viper-compat))))
      ;; 3- additional keyboard bindings
-     (mapc #'(lambda (map)
-               (bind-keys map
-                          "<kp-delete>" #'viper-forward-char
-                          "C-<backspace>" #'viper-backward-word))
-           '(viper-vi-global-user-map viper-insert-basic-map))
+     (bind-keys '(viper-vi-global-user-map viper-insert-basic-map)
+                "<kp-delete>" #'viper-forward-char
+                "C-<backspace>" #'viper-backward-word)
      ;; idea: http://stackoverflow.com/users/2797/sebastien-roccaserra
      (bind-keys viper-vi-global-user-map
                 "/" #'isearch-forward-regexp

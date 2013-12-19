@@ -49,13 +49,14 @@
 (add-hook 'emacs-lisp-mode-hook #'auto-byte-compile-save-hook)
 ;; --> on kill for all initial and configuration files
 (add-lambda-hook 'kill-emacs-hook
-  (byte-compile-new-files-in-directories-maybe
-   (mapcar #'(lambda (dir)
-               (expand-file-name dir
-                                 mars/local-root-dir))
-           mars/local-conf-path))
-  (when user-init-file
-    (byte-compile-new-files-maybe user-init-file)))
+  (let ((byte-compile-warnings '(not nresolved free-vars callargs redefine obsolete noruntime cl-functions interactive-only)))
+    (byte-compile-new-files-in-directories-maybe
+     (mapcar #'(lambda (dir)
+                 (expand-file-name dir
+                                   mars/local-root-dir))
+             mars/local-conf-path))
+    (when user-init-file
+      (byte-compile-new-files-maybe user-init-file))))
 
 ;; fast kill emacs or not but confirm anyway
 (defadvice update-autoloads-in-package-area (around mars/fast-kill-version activate)

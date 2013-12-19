@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Tue Dec 17 14:46:34 2013 (+0100)
+;; Last-Updated: Thu Dec 19 11:59:55 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 641
+;;     Update #: 642
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -19,7 +19,7 @@
 ;;              cedet & ecb-autoloads / electric-dot-and-dash /
 ;;              auto-pair-plus (for non-lisp modes) / paredit (slurp & barf
 ;;              for lisp modes) + highlight-parentheses / eldoc / comint /
-;;              cheat / org-babel / simple-call-tree / `lang'
+;;              ack-and-a-half / cheat / org-babel / simple-call-tree / `lang'
 ;;
 ;;; Ideas: CEDET: https://github.com/alexott/emacs-configs/blob/master/rc/emacs-rc-cedet.el
 ;;
@@ -452,6 +452,10 @@ Move point to the beginning of the line, and run the normal hook
 ;;; C-ELDOC (an alternative to CEDET for C code)
 (when (el-get-package-is-installed "c-eldoc")
   (add-hook 'c-mode-hook #'c-turn-on-eldoc-mode))
+
+;;; ACK-AND-A-HALF
+(custom-set-variables ; don't use the project directory but ask
+ '(ack-and-a-half-root-directory-function nil))
 
 ;;; CHEAT
 (eval-after-load "anything"

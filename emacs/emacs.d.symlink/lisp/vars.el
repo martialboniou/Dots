@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version: 0.2
-;; Last-Updated: Tue Dec 17 14:46:20 2013 (+0100)
+;; Last-Updated: Thu Dec 19 14:05:44 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 242
+;;     Update #: 243
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -251,7 +251,7 @@ the application 'Keychain Acess.app'.")
                                                                "desktop")) ; TODO: add a fun in defs named `prefix-hidden-file'
                               ,(unless (< emacs-major-version 24)
                                  `(mars/custom-theme ,(joindirs data-dir "Themes")))
-                              (org-diary-agenda-file ,(joindirs data-dir "Notes" "Diary.org"))
+                              (org-directory ,(joindirs data-dir "Notes"))
                               (auto-insert-directory ,(joindirs data-dir "Insert"))
                               (bbdb-file ,(joindirs data-dir "BBDB" (format "%s.bbdb" (user-login-name))))
                               (elmo-msgdb-directory ,(joindirs data-dir "elmo"))

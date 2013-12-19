@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Thu Nov 17 17:30:20 2011 (+0100)
 ;; Version: 0.6.2
-;; Last-Updated: Tue Dec 17 15:39:09 2013 (+0100)
+;; Last-Updated: Thu Dec 19 12:02:19 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 33
+;;     Update #: 34
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -334,13 +334,6 @@ the should-be-forbidden C-z.")
                                             (replace-regexp-in-string
                                              home "~" path))
                                           recentf-list) nil t))))
-     (defmacro mars/recentf/override-keys (map)
-       "Force the keys overriding in some modes."
-        `(bind-keys ,map
-                    "C-c C-f" #'ido-recentf-file-name-history
-                    "C-c F" #'ido-recentf
-                    "C-c C-m" #'make-directory))
-     ;; (add-lambda-hook 'emacs-startup-hook (mars/recentf/override-keys global-map))
      (eval-after-load "ibuffer"
        '(progn
           (defun ibuffer-ido-find-file ()
@@ -378,7 +371,7 @@ the should-be-forbidden C-z.")
        (revive-plus:minimal-setup))))
 
 ;;; POSIX ENVIRONMENT
-(bind-key special-event-map "<sigusr2>" #'kill-emacs)
+(bind-key special-event-map [sigusr2] #'kill-emacs)
 
 ;;; VT100 KEYS
 (when (and (null window-system)

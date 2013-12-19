@@ -1,3 +1,4 @@
+;; -*- auto-byte-compile: nil -*-
 ;;; deprecated-emacs-themes.el --- 
 ;; 
 ;; Filename: deprecated-emacs-themes.el
@@ -7,9 +8,9 @@
 ;; Created: Tue Dec  3 16:31:56 2013 (+0100)
 ;; Version: 0.1
 ;; Package-Requires: (vim-everywhere)
-;; Last-Updated: Tue Dec  3 18:07:38 2013 (+0100)
+;; Last-Updated: Thu Dec 19 13:27:57 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 23
+;;     Update #: 24
 ;; URL: 
 ;; Doc URL: 
 ;; Keywords: 
@@ -388,4 +389,3 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; deprecated-emacs-themes.el ends here
-;; -*- auto-byte-compile: nil -*-

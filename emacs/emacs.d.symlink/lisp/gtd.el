@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Tue Feb 22 11:31:42 2011 (+0100)
 ;; Version: 0.3
-;; Last-Updated: Tue Dec 17 15:03:26 2013 (+0100)
+;; Last-Updated: Thu Dec 19 14:05:24 2013 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 125
+;;     Update #: 135
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility:  ORG 8.0 pre or more
@@ -50,7 +50,6 @@
 
 ;;; ORG MODE
 ;; (from 'Using Org Mode as a Day Planner' by John Wiegley)
-(defvar *notes-dir* (joindirs mars/local-root-dir mars/personal-data "Notes"))
 
 (require 'org-loaddefs)
 (require 'org-protocol)
@@ -77,11 +76,9 @@
        (setq truncate-lines nil)) ; turn on soft wrapping mode for org mode
      ;; original C-n/C-p behavior kept
      (add-lambda-hook 'org-agenda-mode-hook
-       (mapc #'(lambda (map)
-                 (bind-keys map
-                            "C-n" #'next-line
-                            "C-p" #'previous-line))
-             '(org-agenda-mode-map org-agenda-keymap)))))
+       (bind-keys '(org-agenda-mode-map org-agenda-keymap)
+                  "C-n" #'org-agenda-next-line
+                  "C-p" #'org-agenda-previous-line))))
 
 ;; viper compatibility setup
 (eval-after-load "viper"
@@ -94,6 +91,8 @@
  '(org-directory *notes-dir*)
  '(org-default-notes-file (expand-file-name "Notes.org"
                                             org-directory))
+ '(org-diary-agenda-file (expand-file-name "Diary.org"
+                                           org-directory))
  '(org-agenda-files (mapcar #'(lambda (item)
                                 (expand-file-name (format "%s.org" item)
                                                   org-directory))
@@ -122,16 +121,7 @@
               (lambda nil
                 (org-agenda-skip-entry-if (quote scheluded) (quote deadline)
                                           (quote regexp) "<[^\n]+>")))
-             (org-agenda-overriding-header "Unscheduled TODO entries: "))))))
- ;; '(org-remember-store-without-prompt t)
- ;; '(org-remember-templates
- ;;   (quote ((116 "* TODO %?\n  %u" "~/.emacs.d/data/Notes/Todo.org" "Tasks") ; 116 => ?t
- ;;           (110 "* %u %?" "~/.emacs.d/data/Notes/Notes.org" "Notes")        ; 110 => ?n
- ;;           (115 "* %u %?" "~/.emacs.d/data/Notes/Iris.gpg"  "Notes"))))     ; 115 => ?s [encrypted]
- ;;                                        ; 105 => ?i
- ;; '(remember-annotation-functions (quote (org-remember-annotation)))
- ;; '(remember-handler-functions (quote (org-remember-handler)))
-)
+             (org-agenda-overriding-header "Unscheduled TODO entries: ")))))))
 
 ;; capture setup
 (eval-after-load "org-capture"

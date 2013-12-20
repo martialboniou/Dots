@@ -88,7 +88,6 @@
 ;; agenda & remember setup
 ;; (add-hook 'remember-mode-hook #'org-remember-apply-template)
 (custom-set-variables
- '(org-directory *notes-dir*)
  '(org-default-notes-file (expand-file-name "Notes.org"
                                             org-directory))
  '(org-diary-agenda-file (expand-file-name "Diary.org"

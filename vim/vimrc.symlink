@@ -3,7 +3,7 @@
 " Language: Vim
 " Maintainer: Martial
 " Creator: Martial
-" Version: 0.5.0
+" Version: 0.5.5
 " Goal: supports Shen, Haskell, common script languages (incl. VimL & CSS) edition
 "       adds snippets, completion & syntax checker
 "       extends indent, tabular & parentheses management (resp.for Python / Haskell / Lisp)
@@ -36,19 +36,26 @@ let s:iCanHazVundle=1
 set nocompatible
 filetype off
 "" VUNDLE SYSTEM
-if !isdirectory(expand("~/.vim/bundle/vundle/.git"))
-  let s:iCanHazVundle=0
-  echo "Installing Vundle..."
-  echo ""
-  " PUSHD/POPD/MKDIR behave the same on M$ or POSIX system
-  silent exe 'silent !pushd ' . expand('~')
-  silent !mkdir .vim
-  silent !mkdir .vim/bundle
-  silent !git clone https://github.com/gmarik/vundle .vim/bundle/vundle
-  silent !popd
+if !isdirectory(expand("$HOME/.vim/bundle/vundle/.git"))
+  if system("git --version")=~"^git"
+    let s:iCanHazVundle=0
+    if has("win32") || has("win64")
+      silent! cal mkdir($HOME."/.vim")
+      silent! cal mkdir($HOME."/.vim/bundle")
+      silent! cal mkdir($HOME."/.vim/backup")
+      silent! cal mkdir($HOME."/.vim/doc")
+      silent! cal mkdir($HOME."/.vim/tmp")
+      silent! cal mkdir($HOME."/.vim/views")
+    else
+      silent exe '!umask 027; mkdir -p $HOME/.vim/{bundle,backup,doc,tmp,views}'
+    endif
+    try | cd $HOME/.vim/bundle | catch /^Vim\%((\a\+)\)\=:E344/ | finish | endtry
+    echo "Installing Vundle..." | echo ""
+    silent !git clone https://github.com/gmarik/vundle vundle
+  else | echo "Please install git on " . &shell | finish | endif
 endif
-set rtp+=~/.vim/bundle/vundle
-cal vundle#rc()
+set rtp+=$HOME/.vim/bundle/vundle
+try | cal vundle#rc() | catch /^Vim\%((\a\+)\)\=:E117/ | finish | endtry
 Bundle 'gmarik/vundle'
 "" VUNDLE PACKAGES
 """ colorscheme
@@ -129,7 +136,7 @@ let g:neocomplcache_min_syntax_length = 3
 let g:neocomplcache_lock_buffer_name_pattern = '\*ku\*'
 let g:neocomplcache_dictionary_filetype_lists = {
       \ 'default' : '',
-      \ 'vimshell' : '~/.vimshell_hist'
+      \ 'vimshell' : '$HOME/.vimshell_hist'
       \}
 if !exists('g:neocomplcache_keyword_patterns')
   let g:neocomplcache_keyword_patterns = {}
@@ -154,10 +161,7 @@ Bundle 'tomtom/tcomment_vim'
 """ timestamp changes on save (iff English time display format)
 Bundle 'timestamp.vim'
 let g:timestamp_rep = '%a %d %b %Y %H:%M:%S %Z' " 24-hour clock
-if has('win32') || has('win64')
-  " match non-abbreviated %Z
-  let g:timestamp_regexp = '\v\C%(<Last %([cC]hanged?|[mM]odified)\s*:\s+)@<=\a+ \d{2} \a+ \d{4} \d{2}:\d{2}:\d{2} %(\a|\s)*|Tue 19 Nov 2013 18:07:31 CET'
-endif
+let g:timestamp_regexp = '\v\C%(<%(Last %([cC]hanged?|modified)|Modified)\s*:\s+)@<=\S+ \d{2} \S+ \d{4} \d{2}:\d{2}:\d{2}.*|TIMESTAMP' " international pattern
 """ intelligent finder
 Bundle 'FuzzyFinder'
 Bundle 'kien/ctrlp.vim'
@@ -235,10 +239,9 @@ set guioptions-=L
 set history=1000 " boost history up
 set undolevels=1000
 set shortmess=atI " stifle many interruptive prompts
-silent exe '!umask 027; mkdir -p ~/.vim/{backup,doc,tmp,views}'
-set backupdir=~/.vim/backup " unused
-set directory=~/.vim/tmp
-"helptags ~/.vim/doc
+set backupdir=$HOME/.vim/backup " unused
+set directory=$HOME/.vim/tmp
+"helptags $HOME/.vim/doc
 set incsearch
 set ignorecase
 set smartcase
@@ -274,13 +277,13 @@ set splitbelow splitright
 " WINDOWS OS CASE
 if has('win32') || has('win64')
   " PURGE CLASSIC PATH FILE
-  set rtp-=~/vimfiles
-  set rtp+=~/.vim
+  set rtp-=$HOME/vimfiles
+  set rtp+=$HOME/.vim
   " DISPLAY BETTER DEFAULT FONT
   if has('gui_running')
     if filereadable("C:\\Windows\\Fonts\\DejaVuSansMono.ttf")
       set guifont=DejaVu_Sans_Mono:h12
-    elseif
+    else
       set guifont=Consolas:h9:cANSI
     endif
     set lines=40
@@ -309,7 +312,7 @@ cmap w!! w !sudo tee % >/dev/null
 nmap <silent> <leader>ss :cal SaveSession()<CR>
 
 " VIEW + SESSION
-set viewdir=~/.vim/views
+set viewdir=$HOME/.vim/views
 set sessionoptions=blank,buffers,curdir,globals,help,localoptions,options,resize,tabpages,winsize,folds
 if !exists("s:sessionautoloaded")
   let s:sessionautoloaded = 0
@@ -398,4 +401,7 @@ fun! s:CursorOldPosition()
 endfun
 au BufReadPost * silent! cal s:CursorOldPosition()
 
-" Last Modified: Thu 12 Dec 2013 15:19:50 CET
+" if has("win32") || has("win64")
+"   if &shell=~#'cmd.exe$'
+
+" Last Modified: Mon 23 Dec 2013 21:24:58 Paris, Madrid

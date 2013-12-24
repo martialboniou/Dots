@@ -36,10 +36,11 @@ let s:iCanHazVundle=1
 set nocompatible
 filetype off
 "" VUNDLE SYSTEM
+" Cygwin requires 'autocrlf = false' in [core] section of your .gitconfig
 if !isdirectory(expand("$HOME/.vim/bundle/vundle/.git"))
   if system("git --version")=~"^git"
     let s:iCanHazVundle=0
-    if has("win32") || has("win64")
+    if ( has("win32") || has("win64") ) && !has("win32unix")
       silent! cal mkdir($HOME."/.vim")
       silent! cal mkdir($HOME."/.vim/bundle")
       silent! cal mkdir($HOME."/.vim/backup")
@@ -404,4 +405,4 @@ au BufReadPost * silent! cal s:CursorOldPosition()
 " if has("win32") || has("win64")
 "   if &shell=~#'cmd.exe$'
 
-" Last Modified: Mon 23 Dec 2013 21:24:58 Paris, Madrid
+" Last Modified: Tue 24 Dec 2013 15:00:41 Paris, Madrid

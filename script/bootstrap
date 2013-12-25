@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 #
 # source & author: github.com/holman/dotfiles
-# bootstrap installs things.
+# bootstrap installs things
+#
+# note: symlink files are symlinked but conduit files aren't on Windows
+#       to use non-cygwin programs
 
 DOTFILES_ROOT="`pwd`"
 
 set -e
 
 echo ''
+
+CYGWIN=1 && if [ "`uname -o 2>/dev/null`" == "Cygwin" ]; then CYGWIN=0; fi
 
 info () {
   printf "  [ \033[00;34m..\033[0m ] $1"
@@ -28,7 +33,7 @@ fail () {
 }
 
 setup_gitconfig () {
-  if ! [ -f git/gitconfig.symlink ]
+  if ! [ -f git/gitconfig.conduit ]
   then
     info 'setup gitconfig'
 
@@ -43,15 +48,20 @@ setup_gitconfig () {
     user ' - What is your github author email?'
     read -e git_authoremail
 
-    sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" git/gitconfig.symlink.example > git/gitconfig.symlink
+    sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" git/gitconfig.conduit.example > git/gitconfig.conduit
 
     success 'gitconfig'
   fi
 }
 
 link_files () {
-  ln -s $1 $2
-  success "linked $1 to $2"
+  if [ $CYGWIN -eq 0 && "${1##*.}" == "conduit" ]; then
+    cp -R $1 $2
+    success "copied $1 to $2"
+  else
+    ln -s $1 $2
+    success "linked $1 to $2"
+  fi
 }
 
 install_dotfiles () {
@@ -61,7 +71,7 @@ install_dotfiles () {
   backup_all=false
   skip_all=false
 
-  for source in `find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink`
+  for source in `find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -o -name \*.conduit`
   do
     dest="$HOME/.`basename \"${source%.*}\"`"
 
@@ -126,3 +136,5 @@ install_dotfiles
 
 echo ''
 echo '  All installed!'
+
+# Last Modified: Wed 25 Dec 2013 21:02:47 CET

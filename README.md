@@ -131,11 +131,7 @@ Here, `require` is often avoided because automagically generated `autoload`s and
 * add bindings like `M-0` to open the current buffer in Vim
 
 
-Final Thoughts
-==============
+Windows compatibility
+=====================
 
-I'll do a blog for all this one day.
-
-* **TODO:** bindings map database for my bindings in and out of the shell, Emacs and Vim (useful in Mac OS X and Xmonad/Gnome context).
-* **TODO:** snippets database in another project to organize some tidbits and hacks used in those kind of dotfiles. For instance, read `chit` files with ruby [`chit`](https://github.com/libin/chit) (ruby 1.9.2 required).
-* **COMING-SOON:** split the `.emacs.d` and `.vim` from `Dots` to other tiny projects.
+*Under construction*: Cygwin should be installed in order to use symlinks and `bash` scripts correctly but the installation should be compatible with `cmd.exe`. `git` and `vim` setup uses *conduit* files (instead of *symlink*) so that the files won't be symlinked but copied on Windows system to be able to use both Cygwin and standard programs.

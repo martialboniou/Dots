@@ -8,14 +8,14 @@
 $HOME/.scrubs
 $HOME/.tools
 $HOME/Library/Haskell:Darwin
-/Users/mars/.cabal::CABAL_BIN
+$HOME/.cabal::CABAL_BIN
 /Applications/Mozart.app/Contents/Resources:Darwin
 /usr/local/PEAR
 /usr/local/git
 =:$HOME/vw7.10pul/bin/macxx11/visual.app/Contents/MacOS:Darwin:VW_BIN
 =:$HOME/Documents/Code/smalltalk/cincom/vw7.10pul/bin/macxx11/visual.app/Contents/MacOS:Darwin:VW_BIN
 =:/usr/texbin:Darwin
-/Library/MySQL/bin:Darwin
+/Library/MySQL:Darwin
 *:`brew --prefix`:Darwin
 ! you may set your unconventional homebrew directory here
 *:/usr/local

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Wed Feb 23 11:22:37 2011 (+0100)
 ;; Version: 0.2
-;; Last-Updated: Thu Dec 19 14:05:44 2013 (+0100)
+;; Last-Updated: Thu Jan 30 14:09:30 2014 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 243
+;;     Update #: 244
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -304,7 +304,6 @@ the application 'Keychain Acess.app'.")
        ;; - then set path variable
        (mapc #'(lambda (ed)
                  (cl-destructuring-bind (variable path-name) ed
-                   (message (format "%s" path-name))
                    (when (and (symbolp variable) (stringp path-name))
                      (set variable path-name))))
              essential-data)

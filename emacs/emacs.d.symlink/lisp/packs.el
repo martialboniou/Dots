@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 12:33:51 2011 (+0100)
 ;; Version: 0.5-dying-code
-;; Last-Updated: Fri Jun 14 16:54:58 2013 (+0200)
+;; Last-Updated: Thu Jan 30 14:37:06 2014 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 532
+;;     Update #: 541
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -226,10 +226,10 @@ in `.emacs'. Otherwise AUTOLOADS are generated immediately."
                                   (when install-method
                                     (condition-case nil
                                         (progn
-                                         (cd pkg-dir) ; unable to change directory if broken
-                                         (let ((install-command (cdr install-method)))
-                                           (mars/execute-commands install-command
-                                                                  executables-in-play)))
+                                          (cd pkg-dir) ; unable to change directory if broken
+                                          (let ((install-command (cdr install-method)))
+                                            (mars/execute-commands install-command
+                                                                   executables-in-play)))
                                       (error (add-to-list 'broken-packages (car x)))))))))))
                             ;; tagging
                             (let (tag-alerted)

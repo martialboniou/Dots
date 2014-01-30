@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:19:43 2011 (+0100)
 ;; Version: 0.8
-;; Last-Updated: Thu Dec 19 12:29:06 2013 (+0100)
+;; Last-Updated: Thu Jan 30 13:19:39 2014 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 496
+;;     Update #: 497
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -226,7 +226,8 @@
                                    bbdb-mode bc-medu-mode
                                    ebib-entry-mode ebib-index-mode ebib-log-mode
                                    shell-mode eshell-mode term-mode
-                                   comint-mode inferior-emacs-lisp-mode pylookup-mode
+                                   comint-mode inferior-emacs-lisp-mode
+                                   inferior-shen-mode pylookup-mode
                                    semantic-symref-results-mode rdictcc-buffer-mode
                                    magit-status-mode magit-log-edit-mode
                                    magit-branch-manager-mode gtags-select-mode)

@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Jan 19 20:16:06 2008
 ;; Version: 0.3
-;; Last-Updated: Tue Dec 17 15:09:49 2013 (+0100)
+;; Last-Updated: Sat Apr 25 18:32:51 2015 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 129
+;;     Update #: 130
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -208,7 +208,7 @@
          ;; (set-face-attribute 'emms-playlist-track-face    nil :font "DejaVu Sans-10")
          ;; (set-face-attribute 'emms-playlist-selected-face nil :background "White" :foreground "Firebrick")
          ;; Initialization
-         (define-emms-simple-player mplayer-mp3 '(file url)
+         (define-emms-simple-player mplayer '(file url)
            "\\.[mM][pP][23]$" "mplayer")
 
          (define-emms-simple-player mplayer-ogg '(file)

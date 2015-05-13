@@ -3,12 +3,12 @@
 " Language: Vim
 " Maintainer: Martial
 " Creator: Martial
-" Version: 0.5.5
+" Version: 0.6
 " Goal: supports Shen, Haskell, common script languages (incl. VimL & CSS) edition
-"       adds snippets, completion & syntax checker
+"       adds snippets, completion & syntax checker (run 'python3 -m pip install jedi')
 "       extends indent, tabular & parentheses management (resp.for Python / Haskell / Lisp)
 "
-" hondana@gmx.com (2004-2010,2012-2013)
+" hondana@gmx.com (2004-2010,2012-2013,2015)
 "
 
 " BASIC BEHAVIOR
@@ -366,7 +366,8 @@ au Filetype html,htm,markdown setl omnifunc=htmlcomplete#CompleteTags
 au Filetype xml setl omnifunc=xmlcomplete#CompleteTags
 au Filetype css setl omnifunc=csscomplete#CompleteCSS
 au Filetype javascript setl omnifunc=javascriptcomplete#CompleteJS
-au Filetype python setl omnifunc=pythoncomplete#Complete
+" JEDI-VIM (for python)
+let g:jedi#force_py_version = 3
 " + NEOCOMPLCACHE
 " if !exists('g:neocomplcache_omni_patterns')
 "   let g:neocomplcache_omni_patterns = {}

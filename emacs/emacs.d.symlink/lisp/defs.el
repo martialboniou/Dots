@@ -6,9 +6,9 @@
 ;; Maintainer:
 ;; Created: Sat Feb 19 18:12:37 2011 (+0100)
 ;; Version: 0.17
-;; Last-Updated: Thu Dec 19 11:32:17 2013 (+0100)
+;; Last-Updated: Thu Jan 30 14:46:45 2014 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 328
+;;     Update #: 331
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -156,7 +156,8 @@ twb#emacs at http://paste.lisp.org/display/43546,"
 patterns:
 ROOT (LIST PATH1 PATH2 ...) => ROOT / PATH1 & ROOT / PATH2 & ...
 ROOT                        => ROOT"
-  (let ((path (if pathname
+  (let ((current-directory default-directory)
+        (path (if pathname
                 (mapcar (lambda (x)
                           (expand-file-name x root))
                         (flatten pathname))
@@ -174,7 +175,8 @@ ROOT                        => ROOT"
                                (directory-file-name x)) load-path))
              (nconc load-path orig-load-path)))) ; reverse path construct
      path)
-    (delete-dups load-path)))
+    (delete-dups load-path)
+    (cd current-directory)))
 
 (defun mars/autoload (libraries-and-functions) ; UNTESTED
   (mapc (lambda(x)

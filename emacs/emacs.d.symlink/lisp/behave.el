@@ -5,10 +5,10 @@
 ;; Author: Martial Boniou
 ;; Maintainer:
 ;; Created: Thu Nov 17 17:30:20 2011 (+0100)
-;; Version: 0.6.2
-;; Last-Updated: Thu Dec 19 12:02:19 2013 (+0100)
+;; Version: 0.6.5
+;; Last-Updated: Thu Jan 30 14:51:15 2014 (+0100)
 ;;           By: Martial Boniou
-;;     Update #: 34
+;;     Update #: 36
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -52,6 +52,7 @@
 
 ;;; MAIN
 ;;
+(cd "~")                                ; home sweet home
 (setq standard-indent 4
       tab-width 4
       dired-use-ls-dired nil

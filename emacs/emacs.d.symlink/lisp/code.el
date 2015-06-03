@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Sat Feb 19 11:11:10 2011 (+0100)
 ;; Version: 
-;; Last-Updated: Thu Dec 19 11:59:55 2013 (+0100)
+;; Last-Updated: Sun Apr 19 20:48:27 2015 (+0200)
 ;;           By: Martial Boniou
-;;     Update #: 642
+;;     Update #: 644
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -234,7 +234,7 @@ Move point to the beginning of the line, and run the normal hook
                global-semantic-stickyfunc-mode)))
      (setq senator-minor-mode-name "SN"
            semantic-imenu-auto-rebuild-directory-indexes nil)
-     (global-srecode-minor-mode 1)           ; template insertion menu
+     ;; (global-srecode-minor-mode 1)           ; template insertion menu
      (require-for-code 'semantic-decorate-include)
      ;; smart completions
      (require-for-code 'semantic-ia)
@@ -285,7 +285,8 @@ Move point to the beginning of the line, and run the normal hook
      (custom-set-variables
       '(semantic-idle-scheduler-idle-time 3)
       '(semantic-self-insert-show-completion-function (lambda () (semantic-ia-complete-symbol-menu (point))))
-      '(global-semantic-tag-folding-mode t nil (semantic-util-modes)))
+;;      '(global-semantic-tag-folding-mode t nil (semantic-util-modes))
+)
      ;;     (global-semantic-folding-mode 1) ; FIXME: no more
      (defun mars/Qt ()                  ; TODO: temp var for test => to move to vars-<specific>.el
        (setq qt4-base-dir "/Library/Frameworks/QtCore.framework/Headers"))

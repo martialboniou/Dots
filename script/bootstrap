@@ -12,7 +12,9 @@ set -e
 
 echo ''
 
-CYGWIN=1 && if [ "`uname -o 2>/dev/null`" == "Cygwin" ]; then CYGWIN=0; fi
+SYSTEM=$(echo "`uname 2>/dev/null`" | head -c 5)
+# MINGW/MSYS case too
+CYGWIN=1 && MINGW=1 && if [[ "$SYSTEM" == "Cygwi" ]]; then CYGWIN=0; elif [[ "$SYSTEM" == "MINGW" ]]; then MINGW=0; fi
 
 info () {
   printf "  [ \033[00;34m..\033[0m ] $1"
@@ -55,9 +57,16 @@ setup_gitconfig () {
 }
 
 link_files () {
-  if [ $CYGWIN -eq 0 && "${1##*.}" == "conduit" ]; then
-    cp -R $1 $2
-    success "copied $1 to $2"
+  if [[ $CYGWIN -eq 0 || $MINGW -eq 0 ]]; then
+    if [[ "${1##*.}" == "conduit" ]]; then
+      cp -R $1 $2
+      success "copied $1 to $2"
+    elif [[ $CYGWIN -eq 0 ]]; then
+      ln -s $1 $2
+      success "linked $1 to $2"
+    else
+      info "Cannot symlink $1 on this system\n"
+    fi
   else
     ln -s $1 $2
     success "linked $1 to $2"

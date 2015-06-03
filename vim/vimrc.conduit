@@ -3,12 +3,12 @@
 " Language: Vim
 " Maintainer: Martial
 " Creator: Martial
-" Version: 0.5.5
+" Version: 0.6
 " Goal: supports Shen, Haskell, common script languages (incl. VimL & CSS) edition
 "       adds snippets, completion & syntax checker
 "       extends indent, tabular & parentheses management (resp.for Python / Haskell / Lisp)
 "
-" hondana@gmx.com (2004-2010,2012-2013)
+" hondana@gmx.com (2004-2010,2012-2013,2015)
 "
 
 " BASIC BEHAVIOR
@@ -30,6 +30,7 @@ if v:version >= 703
 endif
 set sts=2 ts=2 sw=2 et
 set laststatus=2
+set winminheight=0
 
 " VUNDLE
 let s:iCanHazVundle=1
@@ -294,7 +295,7 @@ endif
 " KEY
 "" <F2> to paste
 set pastetoggle=<F2>
-"" ,ev & ,sv to edit & source this file
+"" <Space>ev & <Space>sv to edit & source this file
 nmap <silent> <leader>ev :sp $MYVIMRC<CR>
 nmap <silent> <leader>sv :so $MYVIMRC<CR>
 "" Q to format the current paragraph (or selection)
@@ -305,6 +306,21 @@ map <C-h> <C-w>h
 map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
+map <leader>k <C-w>k<C-w>_
+map <leader>j <C-w>j<C-w>_
+" tricky W:
+"   use <Leader>=  to view all window
+"   use <C-w><C-w> to go in the next window
+"   use <Leader>ww to maxswap window with the next one
+"   use <Leader>w  to max the current window (w once)
+"   use <Leader>wa to close other windows (AUF = open)
+"   use <Leader>wz to close the current window (ZU = close)
+map <leader>ww <C-w><C-w><C-w>_
+map <leader>wm <C-w>x<C-w>_
+map <leader>wz <C-w>c
+map <leader>wa <C-w>o
+map <leader>w <C-w>_
+map <leader>=  <C-w>=
 "" highlighted searches' clearing
 nmap <silent> ,/ :nohlsearch<CR>
 "" sudo admin
@@ -366,16 +382,13 @@ au Filetype html,htm,markdown setl omnifunc=htmlcomplete#CompleteTags
 au Filetype xml setl omnifunc=xmlcomplete#CompleteTags
 au Filetype css setl omnifunc=csscomplete#CompleteCSS
 au Filetype javascript setl omnifunc=javascriptcomplete#CompleteJS
-au Filetype python setl omnifunc=pythoncomplete#Complete
+" JEDI-VIM (for python)
+let g:jedi#force_py_version = 3
+let g:jedi#auto_initialization = 1
+let g:jedi#popup_on_dot = 0
+au FileType python let b:did_ftplugin = 1
 " + NEOCOMPLCACHE
-" if !exists('g:neocomplcache_omni_patterns')
-"   let g:neocomplcache_omni_patterns = {}
-" endif
-" let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
-"autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
-" let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-" let g:neocomplcache_omni_patterns.c = '\%(\.\|->\)\h\w*'
-" let g:neocomplcache_omni_patterns.cpp = '\h\w*\%(\.\|->\)\h\w*\|\h\w*::'
+let g:neocomplcache_force_overwrite_completefunc = 1
 
 " ADDITIONAL FILETYPE ASSOCIATION
 augroup filetypedetect
@@ -405,4 +418,40 @@ au BufReadPost * silent! cal s:CursorOldPosition()
 " if has("win32") || has("win64")
 "   if &shell=~#'cmd.exe$'
 
-" Last Modified: Tue 24 Dec 2013 15:00:41 Paris, Madrid
+"" visual search & replace
+function! EscapeString(string)
+  let string=a:string
+  " Escape regex characters
+  let string = escape(string, '^$.*\/~[]')
+  " Escape the line endings
+  let string = substitute(string, '\n', '\\n', 'g')
+  return string
+endfunction
+
+function! GetVisual() range
+  " Save the current register and clipboard
+  let reg_save = getreg('"')
+  let regtype_save = getregtype('"')
+  let cb_save = &clipboard
+  set clipboard&
+  " Put the current visual selection in the " register
+  normal! ""gvy
+  let selection = getreg('"')
+  " Put the saved registers and clipboards back
+  call setreg('"', reg_save, regtype_save)
+  let &clipboard = cb_save
+  " Escape any special characters in the selection
+  let escaped_selection = EscapeString(selection)
+  return escaped_selection
+endfunction
+" Use <leader>zvShow/Hide to replace Show/Hide in the visual
+vmap <leader>zv <Esc>:%s/\%V
+" Start the find and replace command across the entire file
+" Usage:
+"   yank a text (no need to use "ay to register A)
+"   (optional) :reg : check register
+"   <leader>z : use search-replace on a visual
+"               the last yank (ie "0) is the target
+vmap <leader>z <Esc>:%s/<c-r>=GetVisual()<cr>/<c-r><c-o>"
+
+" Last Modified: Wed 03 Jun 2015 12:18:48 Paris, Madrid (heure dété)

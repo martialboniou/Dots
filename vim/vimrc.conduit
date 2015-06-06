@@ -5,7 +5,7 @@
 " Creator: Martial
 " Version: 0.6
 " Goal: supports Shen, Haskell, common script languages (incl. VimL & CSS) edition
-"       adds snippets, completion & syntax checker (run 'python3 -m pip install jedi')
+"       adds snippets, completion & syntax checker
 "       extends indent, tabular & parentheses management (resp.for Python / Haskell / Lisp)
 "
 " hondana@gmx.com (2004-2010,2012-2013,2015)
@@ -73,30 +73,34 @@ endif
 Bundle 'majutsushi/tagbar'
 """ statusline enhancer
 Bundle 'Lokaltog/vim-powerline'
-""" motion helper: <leader><leader>w displays word jump
+""" most recent used
+Bundle 'yegappan/mru'
+nmap <Leader>oo :MRU<CR>
+nmap <Leader>o :bro<leader>ol!<CR>
+""" motion helper: <Leader><Leader>w displays word jump
 Bundle 'Lokaltog/vim-easymotion'
 """ <TAB> everywhere (completion+search)
 Bundle 'ervandew/supertab'
 Bundle 'SearchComplete'
-""" yank stack (use <leader>p instead of <M>p to cycle backwards)
+""" yank stack (use <Leader>p instead of <M>p to cycle backwards)
 Bundle 'maxbrunsfeld/vim-yankstack'
-nmap <leader>p <Plug>yankstack_substitute_older_paste
-nmap <leader>P <Plug>yankstack_substitute_newer_paste
+nmap <Leader>p <Plug>yankstack_substitute_older_paste
+nmap <Leader>P <Plug>yankstack_substitute_newer_paste
 """ undo tree
 Bundle 'Gundo'
-""" indent levels visualizer: <leader>ig to switch off
+""" indent levels visualizer: <Leader>ig to switch off
 Bundle 'nathanaelkane/vim-indent-guides'
 let g:indent_guides_start_level = 2
 let g:indent_guides_guide_size = 1
 "au VimEnter * :IndentGuidesEnable
 """ tabular
 Bundle 'godlygeek/tabular'
-""" emacs' paredit slurping/barfing tool (a bliss for Lisp): use <leader>< / <leader>>
+""" emacs' paredit slurping/barfing tool (a bliss for Lisp): use <Leader>< / <Leader>>
 Bundle 'paredit.vim'
 au BufNewFile,BufRead *.shen cal PareditInitBuffer()
 """ surrounding symbols & tags fast editing
 Bundle 'surround.vim'
-""" rainbow parens: <leader>r to switch off
+""" rainbow parens: <Leader>r to switch off
 Bundle 'rainbow_parentheses.vim'
 let g:rbpt_colorpairs = [
           \ ['blue',       '#FF6000'],
@@ -119,7 +123,7 @@ let g:rbpt_max = 16
 au VimEnter * RainbowParenthesesToggle
 au Syntax   * RainbowParenthesesLoadRound
 au Syntax   * RainbowParenthesesLoadSquare
-nmap <leader>r :RainbowParenthesesToggle<CR>
+nmap <Leader>r :RainbowParenthesesToggle<CR>
 """ circular snippets (<C-\> expands; <C-r><C-r><C-\> lists; <Tab>/<CR> goes in/out)
 Bundle 'drmingdrmer/xptemplate'
 " let g:SuperTabMappingForward = '<Plug>supertabKey' " + SuperTab
@@ -295,9 +299,9 @@ endif
 " KEY
 "" <F2> to paste
 set pastetoggle=<F2>
-"" <Space>ev & <Space>sv to edit & source this file
-nmap <silent> <leader>ev :sp $MYVIMRC<CR>
-nmap <silent> <leader>sv :so $MYVIMRC<CR>
+"" <Leader>ee & <Leader>ss to edit & source this file
+nmap <silent> <Leader>ee :sp $MYVIMRC<CR>
+nmap <silent> <Leader>ss :so $MYVIMRC<CR>
 "" Q to format the current paragraph (or selection)
 vmap Q gq
 nmap Q gqap
@@ -306,8 +310,8 @@ map <C-h> <C-w>h
 map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
-map <leader>k <C-w>k<C-w>_
-map <leader>j <C-w>j<C-w>_
+map <Leader>k <C-w>k<C-w>_
+map <Leader>j <C-w>j<C-w>_
 " tricky W:
 "   use <Leader>=  to view all window
 "   use <C-w><C-w> to go in the next window
@@ -315,18 +319,18 @@ map <leader>j <C-w>j<C-w>_
 "   use <Leader>w  to max the current window (w once)
 "   use <Leader>wa to close other windows (AUF = open)
 "   use <Leader>wz to close the current window (ZU = close)
-map <leader>ww <C-w><C-w><C-w>_
-map <leader>wm <C-w>x<C-w>_
-map <leader>wz <C-w>c
-map <leader>wa <C-w>o
-map <leader>w <C-w>_
-map <leader>=  <C-w>=
+map <Leader>ww <C-w><C-w><C-w>_
+map <Leader>wm <C-w>x<C-w>_
+map <Leader>wz <C-w>c
+map <Leader>wa <C-w>o
+map <Leader>w <C-w>_
+map <Leader>=  <C-w>=
 "" highlighted searches' clearing
 nmap <silent> ,/ :nohlsearch<CR>
 "" sudo admin
 cmap w!! w !sudo tee % >/dev/null
 "" session (function below)
-nmap <silent> <leader>ss :cal SaveSession()<CR>
+nmap <silent> <Leader>uu :cal SaveSession()<CR>
 
 " VIEW + SESSION
 set viewdir=$HOME/.vim/views
@@ -415,9 +419,6 @@ fun! s:CursorOldPosition()
 endfun
 au BufReadPost * silent! cal s:CursorOldPosition()
 
-" if has("win32") || has("win64")
-"   if &shell=~#'cmd.exe$'
-
 "" visual search & replace
 function! EscapeString(string)
   let string=a:string
@@ -444,14 +445,14 @@ function! GetVisual() range
   let escaped_selection = EscapeString(selection)
   return escaped_selection
 endfunction
-" Use <leader>zvShow/Hide to replace Show/Hide in the visual
-vmap <leader>zv <Esc>:%s/\%V
+" Use <Leader>zvShow/Hide to replace Show/Hide in the visual
+vmap <Leader>zv <Esc>:%s/\%V
 " Start the find and replace command across the entire file
 " Usage:
 "   yank a text (no need to use "ay to register A)
 "   (optional) :reg : check register
-"   <leader>z : use search-replace on a visual
+"   <Leader>z : use search-replace on a visual
 "               the last yank (ie "0) is the target
-vmap <leader>z <Esc>:%s/<c-r>=GetVisual()<cr>/<c-r><c-o>"
+vmap <Leader>z <Esc>:%s/<c-r>=GetVisual()<cr>/<c-r><c-o>"
 
-" Last Modified: Wed 03 Jun 2015 12:27:31 Paris, Madrid (heure dété)
+" Last Modified: Sat 06 Jun 2015 20:32:48 Paris, Madrid (heure dété)
